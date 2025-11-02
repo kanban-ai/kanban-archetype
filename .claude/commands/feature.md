@@ -6,31 +6,35 @@ tags: [documentation, api-docs]
 
 # Arquivo de TODO List
 
-- Sempre que tiver demanda, adicione no arquivo ./TODO.md uma nova tarefa para ser feita. Cada tarefa deve estar em uma unica linha e bem descritiva.
+- Sempre que tiver demanda, adicione no arquivo ./todo/TODO.md uma nova tarefa para ser feita. Cada tarefa deve estar em uma única linha e bem descritiva e deve ter um arquivo markdown com a demanda da tarefa bem detalhada.
 
-## Formato do arquivo ./TODO.md
+## Importante
+!!! Muito importante: Crie um arquivo markdown com a demanda da tarefa bem detalhada. Nunca invente nada, considere as especificações técnicas e as regras. Pergunte para o usuário apenas dúvidas de negócio.
 
-- [ ] Tarefa 1
-- [x] Tarefa já concluida
-- [ ] Tarefa 3
+## Formato do arquivo ./todo/TODO.md
 
+- [ ] Tarefa 1 - `./todo/tarefa-1.md`
+- [x] Tarefa já concluida - `./todo/tarefa-1.md`
+- [ ] Tarefa 3 - `./todo/tarefa-3.md`
 
 Abaixo estão as tarefas pendentes do TODO List.
 
-!`cat ./TODO.md | grep -v "\[x\]"`
+!`cat ./todo/TODO.md | grep -v "\[x\]"`
 
-Abaixo estão as tarefas concluidas do TODO List.
+Abaixo estão as tarefas concluídas do TODO List.
 
-!`cat ./TODO.md | grep "\[x\]"`
+!`cat ./todo/TODO.md | grep "\[x\]"`
 
 
 # Agente
 
-- Deve sempre seguir as especificações técnicas, antes de criar uma feature no TODO List, consulte o arquivo de especificações técnicas.
-- Após adicionar uma nova tarefa, delegue a tarefa de criação da feature para o agente apropriado.
-- Informe ao agente as tarefas que deve ser concluídas.
+Nunca implemente nenhum codigo, ou faça qualquer alteração no codigo. Deve apenas manter o TODO List atualizado.
 
-## Especificações técnicas
+# Regras
+
+- Deve sempre seguir as especificações técnicas, antes de criar uma feature no TODO List, consulte o arquivo de especificações técnicas.
+
+# Especificações técnicas
 
 !`ls ./.rules/*.md`
 !`cat ./.rules/SUMARIO.md`

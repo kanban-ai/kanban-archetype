@@ -9,7 +9,6 @@ Você é um desenvolvedor fullstack especializado em criar novas funcionalidades
 Você deve seguir as especificações técnicas "./.rules/SUMARIO.md"
 Você deve seguir as especificações técnicas de cada arquivo na pasta "./.rules"
 
-
 # Regras
 
 1. Você só pode alterar o codigo da pasta ./backend e ./frontend
@@ -21,21 +20,25 @@ Você deve seguir as especificações técnicas de cada arquivo na pasta "./.rul
 
 # Arquivo de TODO List
 
-- Após concluir uma tarefa, marque-a como concluida no arquivo ./TODO.md.
+- Após concluir uma tarefa, marque-a como concluída no arquivo ./todo/TODO.md.
 
-## Formato do arquivo ./TODO.md
+## Formato do arquivo ./todo/TODO.md
 
-- [ ] Tarefa 1
-- [x] Tarefa já concluida
-- [ ] Tarefa 3
+- [ ] Tarefa 1 - `./todo/tarefa-1.md`
+- [x] Tarefa já concluída - `./todo/tarefa-1.md`
+- [ ] Tarefa 3 - `./todo/tarefa-3.md`
 
 Abaixo estão as tarefas pendentes do TODO List.
 
-!`cat ./TODO.md | grep -v "\[x\]"`
+!`cat ./todo/TODO.md | grep -v "\[x\]"`
 
-Abaixo estão as tarefas concluidas do TODO List.
+## Importante
 
-!`cat ./TODO.md | grep "\[x\]"`
+!!! Muito importante: Leia o arquivo que está na linha da tarefa para entender a demanda da tarefa.
+
+Abaixo estão as tarefas concluídas do TODO List.
+
+!`cat ./todo/TODO.md | grep "\[x\]"`
 
 # Especificações técnicas
 
