@@ -1,0 +1,480 @@
+# Como criar uma API no Backend?
+
+> Guia passo a passo para criar uma nova API REST no backend usando NestJS.
+
+## Visão Geral
+
+Este guia mostra como criar um CRUD completo seguindo os padrões do projeto, incluindo:
+- Módulo NestJS
+- Controller (rotas HTTP)
+- Service (lógica de negócio)
+- Entity (modelo de dados)
+- DTOs (validação)
+- Documentação Swagger
+
+## Passo 1: Gerar o Resource com NestJS CLI
+
+O NestJS CLI gera automaticamente toda a estrutura necessária:
+
+```bash
+cd back
+nest g resource nome-do-modulo
+```
+
+### Opções interativas:
+
+1. **Qual tipo de transporte?**
+   - Selecione: `REST API`
+
+2. **Gerar pontos de entrada CRUD?**
+   - Selecione: `Yes`
+
+Isso criará:
+```
+src/modules/nome-do-modulo/
+ nome-do-modulo.module.ts
+ nome-do-modulo.controller.ts
+ nome-do-modulo.service.ts
+ nome-do-modulo.controller.spec.ts
+ nome-do-modulo.service.spec.ts
+ entities/
+    nome-do-modulo.entity.ts
+ dto/
+     create-nome-do-modulo.dto.ts
+     update-nome-do-modulo.dto.ts
+```
+
+## Passo 2: Criar a Entity (Modelo de Dados)
+
+**Arquivo**: `entities/nome-do-modulo.entity.ts`
+
+```typescript
+import { Entity, Column, ManyToOne, JoinColumn } from 'typeorm';
+import { SuperEntity } from '@/common/entities/super.entity';
+import { User } from '@/auth/entities/user.entity';
+
+@Entity('nome_da_tabela')
+export class NomeDoModulo extends SuperEntity {
+  @Column({ type: 'varchar', length: 255 })
+  nome: string;
+
+  @Column({ type: 'text', nullable: true })
+  descricao: string;
+
+  @Column({ type: 'boolean', default: true })
+  ativo: boolean;
+
+  // Relacionamento com User (dono do registro)
+  @ManyToOne(() => User)
+  @JoinColumn({ name: 'user_id' })
+  user: User;
+
+  @Column({ type: 'int', name: 'user_id' })
+  userId: number;
+}
+```
+
+### Dicas importantes:
+
+- **Sempre estenda `SuperEntity`**: Inclui id, created_at, updated_at
+- **Use snake_case para colunas**: Convenção PostgreSQL
+- **Especifique `name` em @JoinColumn**: Controle explícito
+- **Adicione `userId` separado**: Facilita queries
+
+## Passo 3: Criar DTOs (Validação)
+
+### Create DTO
+
+**Arquivo**: `dto/create-nome-do-modulo.dto.ts`
+
+```typescript
+import { IsString, IsNotEmpty, IsBoolean, IsOptional, MaxLength } from 'class-validator';
+import { ApiProperty } from '@nestjs/swagger';
+
+export class CreateNomeDoModuloDto {
+  @ApiProperty({
+    description: 'Nome do item',
+    example: 'Meu Item',
+  })
+  @IsString()
+  @IsNotEmpty()
+  @MaxLength(255)
+  nome: string;
+
+  @ApiProperty({
+    description: 'Descrição detalhada',
+    example: 'Descrição completa do item',
+    required: false,
+  })
+  @IsString()
+  @IsOptional()
+  descricao?: string;
+
+  @ApiProperty({
+    description: 'Se o item está ativo',
+    example: true,
+    default: true,
+  })
+  @IsBoolean()
+  @IsOptional()
+  ativo?: boolean;
+}
+```
+
+### Update DTO
+
+**Arquivo**: `dto/update-nome-do-modulo.dto.ts`
+
+```typescript
+import { PartialType } from '@nestjs/swagger';
+import { CreateNomeDoModuloDto } from './create-nome-do-modulo.dto';
+
+export class UpdateNomeDoModuloDto extends PartialType(CreateNomeDoModuloDto) {}
+```
+
+> **Nota**: `PartialType` torna todos os campos opcionais automaticamente.
+
+## Passo 4: Implementar o Service
+
+**Arquivo**: `nome-do-modulo.service.ts`
+
+```typescript
+import { Injectable, NotFoundException, ForbiddenException } from '@nestjs/common';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Repository } from 'typeorm';
+import { CreateNomeDoModuloDto } from './dto/create-nome-do-modulo.dto';
+import { UpdateNomeDoModuloDto } from './dto/update-nome-do-modulo.dto';
+import { NomeDoModulo } from './entities/nome-do-modulo.entity';
+
+@Injectable()
+export class NomeDoModuloService {
+  constructor(
+    @InjectRepository(NomeDoModulo)
+    private repository: Repository<NomeDoModulo>,
+  ) {}
+
+  async create(createDto: CreateNomeDoModuloDto, userId: number) {
+    const item = this.repository.create({
+      ...createDto,
+      userId,
+    });
+
+    return await this.repository.save(item);
+  }
+
+  async findAll(userId: number) {
+    return await this.repository.find({
+      where: { userId },
+      order: { created_at: 'DESC' },
+    });
+  }
+
+  async findOne(id: number, userId: number) {
+    const item = await this.repository.findOne({
+      where: { id, userId },
+    });
+
+    if (!item) {
+      throw new NotFoundException(`Item ${id} não encontrado`);
+    }
+
+    return item;
+  }
+
+  async update(id: number, updateDto: UpdateNomeDoModuloDto, userId: number) {
+    const item = await this.findOne(id, userId);
+
+    Object.assign(item, updateDto);
+
+    return await this.repository.save(item);
+  }
+
+  async remove(id: number, userId: number) {
+    const item = await this.findOne(id, userId);
+
+    await this.repository.remove(item);
+
+    return { message: 'Item removido com sucesso' };
+  }
+}
+```
+
+### Boas práticas do Service:
+
+1. **Sempre valide o userId**: Garante isolamento de dados
+2. **Use `findOne` antes de update/delete**: Valida permissões
+3. **Lance exceções apropriadas**: NotFoundException, ForbiddenException
+4. **Retorne sempre a entidade atualizada**: Facilita no frontend
+
+## Passo 5: Implementar o Controller
+
+**Arquivo**: `nome-do-modulo.controller.ts`
+
+```typescript
+import {
+  Controller,
+  Get,
+  Post,
+  Patch,
+  Delete,
+  Body,
+  Param,
+  Request,
+  ParseIntPipe,
+} from '@nestjs/common';
+import { ApiTags, ApiBearerAuth, ApiOperation, ApiResponse } from '@nestjs/swagger';
+import { NomeDoModuloService } from './nome-do-modulo.service';
+import { CreateNomeDoModuloDto } from './dto/create-nome-do-modulo.dto';
+import { UpdateNomeDoModuloDto } from './dto/update-nome-do-modulo.dto';
+
+@ApiTags('nome-do-modulo')
+@ApiBearerAuth()
+@Controller('nome-do-modulo')
+export class NomeDoModuloController {
+  constructor(private readonly service: NomeDoModuloService) {}
+
+  @Post()
+  @ApiOperation({ summary: 'Criar novo item' })
+  @ApiResponse({ status: 201, description: 'Item criado com sucesso' })
+  @ApiResponse({ status: 400, description: 'Dados inválidos' })
+  create(@Body() createDto: CreateNomeDoModuloDto, @Request() req) {
+    return this.service.create(createDto, req.user.userId);
+  }
+
+  @Get()
+  @ApiOperation({ summary: 'Listar todos os itens' })
+  findAll(@Request() req) {
+    return this.service.findAll(req.user.userId);
+  }
+
+  @Get(':id')
+  @ApiOperation({ summary: 'Buscar item por ID' })
+  @ApiResponse({ status: 404, description: 'Item não encontrado' })
+  findOne(@Param('id', ParseIntPipe) id: number, @Request() req) {
+    return this.service.findOne(id, req.user.userId);
+  }
+
+  @Patch(':id')
+  @ApiOperation({ summary: 'Atualizar item' })
+  update(
+    @Param('id', ParseIntPipe) id: number,
+    @Body() updateDto: UpdateNomeDoModuloDto,
+    @Request() req,
+  ) {
+    return this.service.update(id, updateDto, req.user.userId);
+  }
+
+  @Delete(':id')
+  @ApiOperation({ summary: 'Remover item' })
+  remove(@Param('id', ParseIntPipe) id: number, @Request() req) {
+    return this.service.remove(id, req.user.userId);
+  }
+}
+```
+
+### Boas práticas do Controller:
+
+1. **Use decoradores Swagger**: Documenta automaticamente
+2. **Use `ParseIntPipe`**: Valida e converte parâmetros
+3. **Injete `@Request() req`**: Acessa dados do usuário autenticado
+4. **Use verbos HTTP corretos**: POST, GET, PATCH, DELETE
+5. **Organize rotas RESTful**: `/recurso`, `/recurso/:id`
+
+## Passo 6: Configurar o Module
+
+**Arquivo**: `nome-do-modulo.module.ts`
+
+```typescript
+import { Module } from '@nestjs/common';
+import { TypeOrmModule } from '@nestjs/typeorm';
+import { NomeDoModuloService } from './nome-do-modulo.service';
+import { NomeDoModuloController } from './nome-do-modulo.controller';
+import { NomeDoModulo } from './entities/nome-do-modulo.entity';
+
+@Module({
+  imports: [
+    TypeOrmModule.forFeature([NomeDoModulo]),
+  ],
+  controllers: [NomeDoModuloController],
+  providers: [NomeDoModuloService],
+  exports: [NomeDoModuloService], // Se outros módulos precisarem
+})
+export class NomeDoModuloModule {}
+```
+
+## Passo 7: Registrar no AppModule
+
+**Arquivo**: `src/app.module.ts`
+
+```typescript
+import { NomeDoModuloModule } from './modules/nome-do-modulo/nome-do-modulo.module';
+
+@Module({
+  imports: [
+    // ... outros módulos
+    NomeDoModuloModule,
+  ],
+})
+export class AppModule {}
+```
+
+## Passo 8: Criar Migration
+
+```bash
+npm run typeorm -- migration:generate src/database/migrations/CreateNomeDoModuloTable
+```
+
+Edite a migration gerada se necessário e execute:
+
+```bash
+npm run typeorm -- migration:run
+```
+
+## Passo 9: Testar a API
+
+### Via Swagger
+
+1. Acesse: `http://localhost:3000/api/docs`
+2. Clique em "Authorize" e insira o token JWT
+3. Teste os endpoints criados
+
+### Via curl
+
+```bash
+# Criar
+curl -X POST http://localhost:3000/api/nome-do-modulo \
+  -H "Authorization: Bearer SEU_TOKEN" \
+  -H "Content-Type: application/json" \
+  -d '{"nome": "Teste", "descricao": "Descrição teste"}'
+
+# Listar
+curl -X GET http://localhost:3000/api/nome-do-modulo \
+  -H "Authorization: Bearer SEU_TOKEN"
+
+# Buscar por ID
+curl -X GET http://localhost:3000/api/nome-do-modulo/1 \
+  -H "Authorization: Bearer SEU_TOKEN"
+
+# Atualizar
+curl -X PATCH http://localhost:3000/api/nome-do-modulo/1 \
+  -H "Authorization: Bearer SEU_TOKEN" \
+  -H "Content-Type: application/json" \
+  -d '{"nome": "Teste Atualizado"}'
+
+# Deletar
+curl -X DELETE http://localhost:3000/api/nome-do-modulo/1 \
+  -H "Authorization: Bearer SEU_TOKEN"
+```
+
+## Recursos Avançados
+
+### Paginação
+
+```typescript
+// Service
+async findAll(userId: number, page: number = 1, pageSize: number = 10) {
+  const [data, total] = await this.repository.findAndCount({
+    where: { userId },
+    skip: (page - 1) * pageSize,
+    take: pageSize,
+    order: { created_at: 'DESC' },
+  });
+
+  return {
+    data,
+    total,
+    page,
+    pageSize,
+    totalPages: Math.ceil(total / pageSize),
+  };
+}
+
+// Controller
+@Get()
+findAll(
+  @Query('page') page: string = '1',
+  @Query('pageSize') pageSize: string = '10',
+  @Request() req,
+) {
+  return this.service.findAll(req.user.userId, +page, +pageSize);
+}
+```
+
+### Filtros e Busca
+
+```typescript
+// DTO
+export class FilterNomeDoModuloDto {
+  @IsString()
+  @IsOptional()
+  nome?: string;
+
+  @IsBoolean()
+  @IsOptional()
+  ativo?: boolean;
+}
+
+// Service
+async findAll(userId: number, filters: FilterNomeDoModuloDto) {
+  const where: any = { userId };
+
+  if (filters.nome) {
+    where.nome = Like(`%${filters.nome}%`);
+  }
+
+  if (filters.ativo !== undefined) {
+    where.ativo = filters.ativo;
+  }
+
+  return await this.repository.find({ where });
+}
+```
+
+### Relacionamentos
+
+```typescript
+// Carregar com relacionamentos
+async findOne(id: number, userId: number) {
+  const item = await this.repository.findOne({
+    where: { id, userId },
+    relations: ['user', 'outroRelacionamento'],
+  });
+
+  if (!item) {
+    throw new NotFoundException(`Item ${id} não encontrado`);
+  }
+
+  return item;
+}
+```
+
+## Checklist de Implementação
+
+- [ ] Resource gerado com `nest g resource`
+- [ ] Entity criada estendendo SuperEntity
+- [ ] DTOs criados com validação
+- [ ] Service implementado com CRUD completo
+- [ ] Controller implementado com rotas REST
+- [ ] Module configurado e importado no AppModule
+- [ ] Migration criada e executada
+- [ ] Documentação Swagger adicionada
+- [ ] Testes de endpoint realizados
+- [ ] Validação de userId em todas as operações
+
+## Padrão de Nomenclatura
+
+| Tipo | Padrão | Exemplo |
+|------|--------|---------|
+| Module | kebab-case | `product-category` |
+| Entity | PascalCase | `ProductCategory` |
+| Table | snake_case | `product_categories` |
+| DTO | PascalCase | `CreateProductCategoryDto` |
+| Service | PascalCase | `ProductCategoryService` |
+| Controller | PascalCase | `ProductCategoryController` |
+
+## Referências
+
+- [NestJS Controllers](https://docs.nestjs.com/controllers)
+- [NestJS Providers](https://docs.nestjs.com/providers)
+- [TypeORM Entities](https://typeorm.io/entities)
+- [class-validator Decorators](https://github.com/typestack/class-validator)
