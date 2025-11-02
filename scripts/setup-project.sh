@@ -26,6 +26,7 @@ fi
 
 # Pastas a serem copiadas
 FOLDERS=(".claude" ".rules" "scripts" "build")
+FILES=(".mcp.json")
 
 # Copiar cada pasta
 for folder in "${FOLDERS[@]}"; do
@@ -38,6 +39,19 @@ for folder in "${FOLDERS[@]}"; do
         cp -r "$SDD_ROOT/$folder" "$DEST_DIR/"
     else
         echo "Aviso: Pasta $folder não encontrada em $SDD_ROOT"
+    fi
+done
+
+for file in "${FILES[@]}"; do
+    if [ -f "$SDD_ROOT/$file" ]; then
+        # Remover arquivo de destino se existir
+        [ -f "$DEST_DIR/$file" ] && rm -f "$DEST_DIR/$file"
+
+        # Copiar
+        echo "Copiando: $file"
+        cp "$SDD_ROOT/$file" "$DEST_DIR/"
+    else
+        echo "Aviso: Arquivo $file não encontrado em $SDD_ROOT"
     fi
 done
 
