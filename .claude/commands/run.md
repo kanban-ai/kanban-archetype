@@ -18,3 +18,5 @@ tail -f logs/back.log logs/front.log
 ```
 
 Se houver erros nos logs, informe o usuário com detalhes específicos do problema encontrado.
+
+Use o comando /fix para resolver problemas tecnicos do projeto.
