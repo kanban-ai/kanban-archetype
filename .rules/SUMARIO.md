@@ -31,6 +31,21 @@
 
 ## 🔧 Backend - Desenvolvimento
 
+### Tratamento de Datas - `./como-tratar-datas-backend-frontend.md`
+
+- **Regra de Ouro** - Banco UTC, Backend UTC, Frontend converte na exibição
+- **Banco de Dados** - TIMESTAMP WITH TIME ZONE, sempre UTC
+- **Backend** - dayjs.utc() para todas manipulações
+- **DTO Backend** - Validação com @IsISO8601()
+- **Service Backend** - Conversão string ISO para Date UTC
+- **Frontend** - dayjs com plugins utc, timezone, relativeTime
+- **Helper Frontend** - Conversão UTC ↔ Local timezone
+- **Componente DateDisplay** - Exibição formatada com timezone
+- **Formulários Frontend** - datetime-local e conversão para UTC
+- **Operações Comuns** - Exemplos práticos backend e frontend
+- **Checklist** - Verificação de implementação
+- **Erros Comuns** - O que não fazer vs o que fazer
+
 ### Setup Inicial - `./como-iniciar-fazer-0-setup-do-backend.md`
 
 - **Visão Geral** - Configurar projeto NestJS + TypeORM do zero
@@ -358,6 +373,10 @@
 | DTOs | [Validação](./como-usar-validacao-de-dados-api.md), [Criar API](./como-criar-api-backend.md#passo-3-criar-dtos-validação) |
 | CRUD | [Criar API](./como-criar-api-backend.md#passo-4-implementar-o-service) |
 | Hooks | [Consumir API](./como-consumir-api-frontend.md#custom-hook-para-api) |
+| Datas | [Tratamento de Datas](./como-tratar-datas-backend-frontend.md) |
+| dayjs | [Tratamento de Datas](./como-tratar-datas-backend-frontend.md) |
+| UTC | [Tratamento de Datas](./como-tratar-datas-backend-frontend.md) |
+| Timezone | [Tratamento de Datas](./como-tratar-datas-backend-frontend.md) |
 
 ## 🗺️ Navegação por Nível
 
@@ -376,8 +395,9 @@
 2. [Criar Entity](./como-criar-uma-entity-typeorm.md#estrutura-básica)
 3. [Criar Migration](./como-criar-migration-backend.md#passo-a-passo-criar-migration-manual)
 4. [Documentar Swagger](./como-documentar-swagger-backend.md#documentar-controllers)
-5. [Criar Componentes](./como-criar-componentes-comum-frontend.md#exemplos-práticos)
-6. [Rotas Frontend](./como-funciona-as-rotas-no-frontend.md#configuração-centralizada)
+5. [Tratamento de Datas](./como-tratar-datas-backend-frontend.md#princípios-fundamentais)
+6. [Criar Componentes](./como-criar-componentes-comum-frontend.md#exemplos-práticos)
+7. [Rotas Frontend](./como-funciona-as-rotas-no-frontend.md#configuração-centralizada)
 
 ### 🌳 Avançado
 
@@ -400,7 +420,8 @@
 ├── Backend - API
 │   ├── como-criar-api-backend.md                           (11 passos + extras)
 │   ├── como-documentar-swagger-backend.md                  (10 seções)
-│   └── como-usar-validacao-de-dados-api.md                 (15 tópicos)
+│   ├── como-usar-validacao-de-dados-api.md                 (15 tópicos)
+│   └── como-tratar-datas-backend-frontend.md               (12 seções + exemplos)
 │
 ├── Backend - Banco de Dados
 │   ├── como-criar-uma-entity-typeorm.md                    (14 tópicos)
@@ -426,11 +447,11 @@
 
 ## 📊 Estatísticas
 
-- **Total de documentos**: 18
-- **Backend**: 11 documentos (133 seções)
+- **Total de documentos**: 19
+- **Backend**: 12 documentos (145 seções)
 - **Frontend**: 4 documentos (53 seções)
 - **Stack**: 2 documentos (21 seções)
-- **Total de seções**: 207 seções documentadas
+- **Total de seções**: 219 seções documentadas
 
 
 ---
