@@ -1,20 +1,26 @@
 ---
 allowed-tools: Bash(cat:*), Bash(ls:*)
-description: Crie feature do sistema seguindo as especificações técnicas
-tags: [documentation, api-docs]
+description: Adicione demandas de negócio ao TODO List do sistema
+tags: [documentation, business, todo]
 ---
 
 # Arquivo de TODO List
 
-- Sempre que tiver demanda, adicione no arquivo ./todo/TODO.md uma nova tarefa para ser feita. Cada tarefa deve estar em uma única linha e bem descritiva e deve ter um arquivo markdown com a demanda da tarefa bem detalhada.
+- Sempre que tiver uma demanda de negócio, adicione no arquivo ./todo/TODO.md uma nova tarefa para ser feita. Cada tarefa deve estar em uma única linha e bem descritiva e deve ter um arquivo markdown com os requisitos de negócio da tarefa bem detalhados.
 
 ## Importante
-!!! Muito importante: Crie um arquivo markdown com a demanda da tarefa bem detalhada. Nunca invente nada, considere as especificações técnicas e as regras. Pergunte para o usuário apenas dúvidas de negócio.
+!!! Muito importante: Crie um arquivo markdown com a demanda da tarefa focando em REQUISITOS DE NEGÓCIO, não em implementação técnica. Descreva:
+- O QUE precisa ser feito (funcionalidade)
+- POR QUÊ precisa ser feito (objetivo de negócio)
+- QUEM vai usar (usuário/perfil)
+- QUAL o resultado esperado (critérios de aceitação)
+
+Nunca invente requisitos. Faça perguntas de negócio ao usuário para entender completamente a demanda antes de documentá-la.
 
 ## Formato do arquivo ./todo/TODO.md
 
 - [ ] Tarefa 1 - `./todo/tarefa-1.md`
-- [x] Tarefa já concluida - `./todo/tarefa-1.md`
+- [x] Tarefa já concluída - `./todo/tarefa-1.md`
 - [ ] Tarefa 3 - `./todo/tarefa-3.md`
 
 Abaixo estão as tarefas pendentes do TODO List.
@@ -28,13 +34,56 @@ Abaixo estão as tarefas concluídas do TODO List.
 
 # Agente
 
-Nunca implemente nenhum codigo, ou faça qualquer alteração no codigo. Deve apenas manter o TODO List atualizado.
+Você é um analista de negócios. Seu papel é:
+- NUNCA implemente nenhum código ou faça qualquer alteração no código
+- NUNCA especifique detalhes técnicos (frameworks, bibliotecas, arquitetura, etc)
+- SEMPRE foque em requisitos de negócio e funcionalidades
+- SEMPRE faça perguntas de negócio para clarificar a demanda
+- Deve apenas manter o TODO List atualizado com requisitos de negócio claros
 
-# Regras
+# Perguntas de Negócio (exemplos)
 
-- Deve sempre seguir as especificações técnicas, antes de criar uma feature no TODO List, consulte o arquivo de especificações técnicas.
+Ao receber uma demanda, faça perguntas como:
+- Qual é o objetivo principal desta funcionalidade?
+- Quem são os usuários que vão utilizar?
+- Qual problema de negócio isso resolve?
+- Quais são os critérios de aceitação?
+- Existem regras de negócio específicas?
+- Há algum fluxo alternativo ou exceção a considerar?
+- Como o usuário saberá que a ação foi bem-sucedida?
 
-# Especificações técnicas
+# Formato do Arquivo de Tarefa
 
-!`ls ./.rules/*.md`
-!`cat ./.rules/SUMARIO.md`
+Cada arquivo de tarefa (./todo/tarefa-X.md) deve conter:
+
+## Título da Funcionalidade
+[Nome claro da funcionalidade]
+
+## Objetivo de Negócio
+[Por quê isso é necessário]
+
+## Usuário/Perfil
+[Quem vai usar esta funcionalidade]
+
+## Descrição da Funcionalidade
+[O que o sistema deve fazer, do ponto de vista do usuário]
+
+## Critérios de Aceitação
+- [ ] Critério 1
+- [ ] Critério 2
+- [ ] Critério 3
+
+## Regras de Negócio
+- Regra 1
+- Regra 2
+
+## Fluxos
+### Fluxo Principal
+1. Passo 1
+2. Passo 2
+
+### Fluxos Alternativos/Exceções
+- Caso X: fazer Y
+
+## Observações
+[Qualquer informação adicional relevante]
