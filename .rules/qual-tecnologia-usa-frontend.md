@@ -31,15 +31,20 @@
 
 ## Estilização
 
-- **Tailwind CSS**: Framework CSS utilitário
+- **Tailwind CSS v4**: Framework CSS utilitário
   - Classes utilitárias pré-definidas
   - Dark mode configurado como padrão
   - Tema customizado com cor principal azul (#3b82f6)
   - Mobile-first responsive design
 
+- **@tailwindcss/postcss**: Plugin PostCSS para Tailwind v4
+  - Plugin independente do core do Tailwind
+  - Processamento otimizado
+  - Integração com Vite
+
 - **PostCSS**: Processador CSS
   - Autoprefixer para compatibilidade cross-browser
-  - Integração com Tailwind
+  - Pipeline de processamento CSS
 
 ## Roteamento
 
@@ -344,7 +349,8 @@ import.meta.env.VITE_API_URL
 - TypeScript
 - Vite
 - React Router DOM
-- Tailwind CSS
+- Tailwind CSS v4
+- @tailwindcss/postcss
 - Axios
 - Chart.js
 - Tippy.js

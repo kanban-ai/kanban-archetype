@@ -25,7 +25,7 @@ if [ "$DEST_DIR" = "$SDD_ROOT" ]; then
 fi
 
 # Pastas a serem copiadas
-FOLDERS=(".claude" ".rules" "scripts")
+FOLDERS=(".claude" ".rules" "scripts" "build")
 
 # Copiar cada pasta
 for folder in "${FOLDERS[@]}"; do

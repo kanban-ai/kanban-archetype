@@ -20,7 +20,7 @@
 ### Frontend - `./qual-tecnologia-usa-frontend.md`
 
 - **Stack Principal** - React, TypeScript, Vite, SWC
-- **Estilização** - Tailwind CSS, PostCSS
+- **Estilização** - Tailwind CSS v4, @tailwindcss/postcss, PostCSS
 - **Roteamento** - React Router DOM
 - **Requisições HTTP** - Axios
 - **Visualização de Dados** - Chart.js, react-chartjs-2, Tippy.js
@@ -274,7 +274,7 @@
 - **Visão Geral** - Configurar projeto React + TypeScript + Vite + Tailwind do zero
 - **Pré-requisitos** - Node.js 18+, npm/yarn/pnpm
 - **Passo 1: Criar Projeto** - Vite com template React + TypeScript
-- **Passo 2: Instalar Tailwind** - Setup completo com PostCSS
+- **Passo 2: Instalar Tailwind** - Setup Tailwind CSS v4 com @tailwindcss/postcss
 - **Passo 3: React Router** - Instalação
 - **Passo 4: Axios** - Instalação
 - **Passo 5: TypeScript** - Path aliases @/*
@@ -288,7 +288,7 @@
 - **Configurações Opcionais** - ESLint, Prettier, VS Code
 - **Checklist de Setup** - Verificação completa
 - **Próximos Passos** - Referências para continuar
-- **Troubleshooting** - Problemas comuns
+- **Troubleshooting** - Cannot find module, Tailwind não funciona, Erro PostCSS Tailwind v4, CORS
 
 ### Consumir API - `./como-consumir-api-frontend.md`
 
