@@ -74,6 +74,21 @@
 - **Recursos Avançados** - Paginação, filtros, relacionamentos
 - **Checklist de Implementação** - Lista completa de verificação
 
+### Integração com API Externa - `./como-integrar-com-api-externa-backend.md`
+
+- **Configuração do Cliente HTTP** - HttpService base com Axios
+- **Estrutura de Service** - Padrão para integração externa
+- **Autenticação** - API Key, Bearer Token, Basic Auth, OAuth 2.0
+- **Timeout e Retry** - Configuração e implementação
+- **Circuit Breaker** - Proteção contra APIs instáveis
+- **Cache de Respostas** - Em memória e Redis
+- **Rate Limiting** - Detectar 429 e throttle local
+- **Webhooks** - Receber eventos de APIs externas
+- **Mocks para Testes** - Mock do HttpService e nock
+- **Variáveis de Ambiente** - Configuração segura
+- **Exemplo Completo** - Módulo Providers (Yahoo, Kinvo, B3)
+- **Boas Práticas** - Checklist de implementação
+
 ### Swagger - `./como-documentar-swagger-backend.md`
 
 - **Configuração Inicial** - Setup do Swagger no main.ts
@@ -371,7 +386,7 @@
 | Swagger | [Documentação API](./como-documentar-swagger-backend.md) |
 | Validação | [Dados API](./como-usar-validacao-de-dados-api-backend.md) |
 | React Router | [Rotas Frontend](./como-funciona-as-rotas-no-frontend.md) |
-| Axios | [Consumir API](./como-consumir-api-frontend.md) |
+| Axios | [Consumir API](./como-consumir-api-frontend.md), [API Externa Backend](./como-integrar-com-api-externa-backend.md) |
 | Tailwind | [Setup Frontend](./como-iniciar-fazer-0-setup-do-frontend.md), [Componentes](./como-criar-componentes-comum-frontend.md) |
 | NestJS | [Criar API](./como-criar-api-backend.md), [Main](./como-deve-funcionar-arquivo-main-backend.md) |
 | Guards | [Autenticação](./como-deve-funcionar-autenticacao.md#guards-proteção-de-rotas) |
@@ -385,6 +400,13 @@
 | Triggers | [Migrations](./como-criar-migration-backend.md#8-nunca-crie-triggers-ou-funções-no-banco-de-dados) |
 | Funções PostgreSQL | [Migrations](./como-criar-migration-backend.md#8-nunca-crie-triggers-ou-funções-no-banco-de-dados) |
 | Stored Procedures | [Migrations](./como-criar-migration-backend.md#8-nunca-crie-triggers-ou-funções-no-banco-de-dados) |
+| API Externa | [Integração API Externa](./como-integrar-com-api-externa-backend.md) |
+| HTTP Client | [Integração API Externa](./como-integrar-com-api-externa-backend.md) |
+| Webhooks | [Integração API Externa](./como-integrar-com-api-externa-backend.md#webhooks), [API Key](./como-deve-funcionar-api-key-autenticacao.md) |
+| Retry | [Integração API Externa](./como-integrar-com-api-externa-backend.md#timeout-e-retry) |
+| Circuit Breaker | [Integração API Externa](./como-integrar-com-api-externa-backend.md#circuit-breaker-pattern) |
+| Cache | [Integração API Externa](./como-integrar-com-api-externa-backend.md#cache-de-respostas) |
+| Rate Limit | [Integração API Externa](./como-integrar-com-api-externa-backend.md#tratamento-de-rate-limiting) |
 
 ## 🗺️ Navegação por Nível
 
@@ -403,9 +425,10 @@
 2. [Criar Entity](./como-criar-uma-entity-typeorm-backend.md#estrutura-básica)
 3. [Criar Migration](./como-criar-migration-backend.md#passo-a-passo-criar-migration-manual)
 4. [Documentar Swagger](./como-documentar-swagger-backend.md#documentar-controllers)
-5. [Tratamento de Datas](./como-tratar-datas-backend-frontend.md#princípios-fundamentais)
-6. [Criar Componentes](./como-criar-componentes-comum-frontend.md#exemplos-práticos)
-7. [Rotas Frontend](./como-funciona-as-rotas-no-frontend.md#configuração-centralizada)
+5. [Integrar API Externa](./como-integrar-com-api-externa-backend.md#configuração-do-cliente-http)
+6. [Tratamento de Datas](./como-tratar-datas-backend-frontend.md#princípios-fundamentais)
+7. [Criar Componentes](./como-criar-componentes-comum-frontend.md#exemplos-práticos)
+8. [Rotas Frontend](./como-funciona-as-rotas-no-frontend.md#configuração-centralizada)
 
 ### 🌳 Avançado
 
@@ -427,6 +450,7 @@
 │
 ├── Backend - API
 │   ├── como-criar-api-backend.md                           (11 passos + extras)
+│   ├── como-integrar-com-api-externa-backend.md            (12 seções)
 │   ├── como-documentar-swagger-backend.md                  (10 seções)
 │   ├── como-usar-validacao-de-dados-api-backend.md         (15 tópicos)
 │   └── como-tratar-datas-backend-frontend.md               (12 seções + exemplos)
@@ -455,11 +479,11 @@
 
 ## 📊 Estatísticas
 
-- **Total de documentos**: 19
-- **Backend**: 12 documentos (145 seções)
+- **Total de documentos**: 20
+- **Backend**: 13 documentos (157 seções)
 - **Frontend**: 4 documentos (53 seções)
 - **Stack**: 2 documentos (21 seções)
-- **Total de seções**: 219 seções documentadas
+- **Total de seções**: 231 seções documentadas
 
 
 ---
