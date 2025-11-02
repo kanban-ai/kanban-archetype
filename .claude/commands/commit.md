@@ -14,16 +14,12 @@ Apenas execute as etapas abaixo.
 
 # Analisar o estado do repositório
 
-```bash
-git status
-git diff
-````
+Estado atual do repositório:
+!`git status`
 
 # Avaliar mudanças
 
-```bash
-git diff
-```
+!`git diff`
 
 # Commit — gerar mensagem de commit no padrão Conventional Commits
 
