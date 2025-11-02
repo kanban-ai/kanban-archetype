@@ -34,10 +34,11 @@ api.interceptors.response.use(
   (response) => response,
   (error) => {
     if (error.response?.status === 401) {
-      // Token inválido/expirado
+      // Token inválido/expirado - limpar dados locais
       localStorage.removeItem('token');
       localStorage.removeItem('user');
-      window.location.href = '/login';
+      // Permitir que o componente lide com o redirecionamento
+      // Não usar window.location.href aqui
     }
 
     return Promise.reject(error);
@@ -109,9 +110,15 @@ export const ProductService = {
     await api.delete(`/products/${id}`);
   },
 };
+
+// NOTA: Este é apenas um exemplo de estrutura.
+// Adapte conforme as necessidades específicas do seu projeto.
 ```
 
 ## Usar Services em Componentes
+
+> **IMPORTANTE**: Todos os exemplos abaixo são apenas demonstrações de estrutura e padrões.
+> Não contêm lógica de negócio específica. Adapte-os conforme as necessidades do seu projeto.
 
 ### Com useState e useEffect
 
@@ -157,6 +164,8 @@ function ProductList() {
 ```
 
 ### Criar Item
+
+> **Exemplo**: Demonstra apenas a estrutura. Adapte a validação e lógica conforme seu contexto.
 
 ```typescript
 function ProductForm() {
@@ -219,6 +228,8 @@ function ProductForm() {
 
 ### Atualizar Item
 
+> **Exemplo**: Estrutura básica de edição. Adapte conforme necessário.
+
 ```typescript
 function EditProduct({ id }: { id: number }) {
   const [product, setProduct] = useState<Product | null>(null);
@@ -270,6 +281,8 @@ function EditProduct({ id }: { id: number }) {
 ```
 
 ### Deletar Item
+
+> **Exemplo**: Padrão básico de exclusão. Adapte a confirmação conforme UX do projeto.
 
 ```typescript
 const handleDelete = async (id: number) => {
@@ -453,6 +466,112 @@ export const ProductService = {
 
 // Gera: /products?search=notebook&active=true
 ```
+
+## React Suspense para Data Fetching
+
+### Estrutura Básica com Suspense
+
+```typescript
+import { Suspense } from 'react';
+
+// Resource pattern para Suspense
+function wrapPromise<T>(promise: Promise<T>) {
+  let status = 'pending';
+  let result: T;
+  let suspender = promise.then(
+    (r) => {
+      status = 'success';
+      result = r;
+    },
+    (e) => {
+      status = 'error';
+      result = e;
+    }
+  );
+
+  return {
+    read() {
+      if (status === 'pending') {
+        throw suspender;
+      } else if (status === 'error') {
+        throw result;
+      } else if (status === 'success') {
+        return result;
+      }
+    },
+  };
+}
+
+// Criar resource
+function fetchProductResource(id: number) {
+  return wrapPromise(ProductService.findOne(id));
+}
+
+// Componente que lê o resource
+function ProductDetail({ resource }: { resource: ReturnType<typeof fetchProductResource> }) {
+  const product = resource.read();
+
+  return (
+    <div>
+      <h1>{product.name}</h1>
+      <p>Preço: R$ {product.price}</p>
+    </div>
+  );
+}
+
+// Componente pai com Suspense
+function ProductPage({ productId }: { productId: number }) {
+  const resource = fetchProductResource(productId);
+
+  return (
+    <Suspense fallback={<div>Carregando produto...</div>}>
+      <ProductDetail resource={resource} />
+    </Suspense>
+  );
+}
+```
+
+### Exemplo com ErrorBoundary
+
+```typescript
+import { Component, ReactNode, Suspense } from 'react';
+
+// Error Boundary
+class ErrorBoundary extends Component<
+  { children: ReactNode; fallback: ReactNode },
+  { hasError: boolean; error: any }
+> {
+  constructor(props: any) {
+    super(props);
+    this.state = { hasError: false, error: null };
+  }
+
+  static getDerivedStateFromError(error: any) {
+    return { hasError: true, error };
+  }
+
+  render() {
+    if (this.state.hasError) {
+      return this.props.fallback;
+    }
+
+    return this.props.children;
+  }
+}
+
+// Uso combinado
+function App() {
+  return (
+    <ErrorBoundary fallback={<div>Erro ao carregar dados</div>}>
+      <Suspense fallback={<div>Carregando...</div>}>
+        <ProductPage productId={1} />
+      </Suspense>
+    </ErrorBoundary>
+  );
+}
+```
+
+**NOTA**: Este é um exemplo educacional do padrão Suspense. Para produção, considere usar bibliotecas como React Query ou SWR que implementam este padrão de forma mais robusta.
 
 ## Cancelar Requisições
 

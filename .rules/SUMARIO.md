@@ -236,9 +236,9 @@
 
 ### Consumir API - `./como-consumir-api-frontend.md`
 
-- **Configuração Axios** - Instância configurada
+- **Configuração Axios** - Instância configurada (interceptor 401 sem redirecionamento direto)
 - **Variável de Ambiente** - VITE_API_URL
-- **Criar Services** - Estrutura de service
+- **Criar Services** - Estrutura de service (exemplos sem lógica de negócio)
 - **useState e useEffect** - Listar dados
 - **Criar Item** - Form submit
 - **Atualizar Item** - Edit form
@@ -248,6 +248,7 @@
 - **Paginação** - Query params
 - **Upload de Arquivos** - FormData
 - **Query Params** - Filtros e busca
+- **React Suspense** - Data fetching com Suspense e ErrorBoundary
 - **Cancelar Requisições** - CancelToken
 - **Checklist** - Verificação completa
 
@@ -373,7 +374,7 @@ faq/
 â   âââ como-usar-validacao-de-dados-api.md                 (15 tópicos)
 â
 âââ Backend - Banco de Dados
-â   âââ como-criar-uma-entity-typeorm.md                    (12 tópicos)
+â   âââ como-criar-uma-entity-typeorm.md                    (14 tópicos)
 â   âââ como-criar-migration-backend.md                     (9 tipos + exemplos)
 â   âââ como-deve-ser-os-comandos-migration-packagejson-backend.md  (7 comandos)
 â
@@ -387,7 +388,7 @@ faq/
 â   âââ como-deve-ser-criado-um-padrao-escalavel-de-implementacao-no-modulo-backend.md  (10 padrões)
 â
 âââ Frontend
-    âââ como-consumir-api-frontend.md                       (12 tópicos)
+    âââ como-consumir-api-frontend.md                       (14 tópicos)
     âââ como-criar-componentes-comum-frontend.md            (8 exemplos + práticas)
     âââ como-funciona-as-rotas-no-frontend.md               (14 conceitos)
 ```
@@ -396,9 +397,9 @@ faq/
 
 - **Total de documentos**: 17
 - **Backend**: 11 documentos (124 seções)
-- **Frontend**: 3 documentos (34 seções)
+- **Frontend**: 3 documentos (36 seções)
 - **Stack**: 2 documentos (21 seções)
-- **Total de seções**: 179 seções documentadas
+- **Total de seções**: 181 seções documentadas
 
 ---
 
