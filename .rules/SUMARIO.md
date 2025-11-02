@@ -87,7 +87,7 @@
 - **Checklist de Documentação** - Verificação completa
 - **Dicas** - Boas práticas de documentação
 
-### Validação de Dados - `./como-usar-validacao-de-dados-api.md`
+### Validação de Dados - `./como-usar-validacao-de-dados-api-backend.md`
 
 - **Configuração Global** - ValidationPipe no main.ts
 - **Validadores de String** - IsString, IsEmail, MaxLength, Matches
@@ -108,7 +108,7 @@
 
 ## 💾 Banco de Dados
 
-### Entity TypeORM - `./como-criar-uma-entity-typeorm.md`
+### Entity TypeORM - `./como-criar-uma-entity-typeorm-backend.md`
 
 - **Estrutura Básica** - Entity simples, SuperEntity e SoftDeletableEntity
 - **SuperEntity** - Classe base com id, created_at, updated_at
@@ -338,10 +338,10 @@
 ### Criar novo módulo backend completo
 
 1. [Como criar uma API](./como-criar-api-backend.md#passo-a-passo)
-2. [Como criar Entity](./como-criar-uma-entity-typeorm.md#estrutura-básica)
+2. [Como criar Entity](./como-criar-uma-entity-typeorm-backend.md#estrutura-básica)
 3. [Como criar Migration](./como-criar-migration-backend.md#passo-a-passo-criar-migration-manual)
 4. [Como documentar Swagger](./como-documentar-swagger-backend.md#documentar-controllers)
-5. [Como validar dados](./como-usar-validacao-de-dados-api.md#exemplo-completo-create-dto)
+5. [Como validar dados](./como-usar-validacao-de-dados-api-backend.md#exemplo-completo-create-dto)
 
 ### Setup de autenticação
 
@@ -366,16 +366,16 @@
 | Setup Frontend | [Setup Inicial](./como-iniciar-fazer-0-setup-do-frontend.md) |
 | NestJS Setup | [Setup Inicial](./como-iniciar-fazer-0-setup-do-backend.md) |
 | Vite Setup | [Setup Frontend](./como-iniciar-fazer-0-setup-do-frontend.md) |
-| TypeORM | [Entity](./como-criar-uma-entity-typeorm.md), [Migration](./como-criar-migration-backend.md) |
+| TypeORM | [Entity](./como-criar-uma-entity-typeorm-backend.md), [Migration](./como-criar-migration-backend.md) |
 | JWT | [Autenticação](./como-deve-funcionar-autenticacao.md) |
 | Swagger | [Documentação API](./como-documentar-swagger-backend.md) |
-| Validação | [Dados API](./como-usar-validacao-de-dados-api.md) |
+| Validação | [Dados API](./como-usar-validacao-de-dados-api-backend.md) |
 | React Router | [Rotas Frontend](./como-funciona-as-rotas-no-frontend.md) |
 | Axios | [Consumir API](./como-consumir-api-frontend.md) |
 | Tailwind | [Setup Frontend](./como-iniciar-fazer-0-setup-do-frontend.md), [Componentes](./como-criar-componentes-comum-frontend.md) |
 | NestJS | [Criar API](./como-criar-api-backend.md), [Main](./como-deve-funcionar-arquivo-main-backend.md) |
 | Guards | [Autenticação](./como-deve-funcionar-autenticacao.md#guards-proteção-de-rotas) |
-| DTOs | [Validação](./como-usar-validacao-de-dados-api.md), [Criar API](./como-criar-api-backend.md#passo-3-criar-dtos-validação) |
+| DTOs | [Validação](./como-usar-validacao-de-dados-api-backend.md), [Criar API](./como-criar-api-backend.md#passo-3-criar-dtos-validação) |
 | CRUD | [Criar API](./como-criar-api-backend.md#passo-4-implementar-o-service) |
 | Hooks | [Consumir API](./como-consumir-api-frontend.md#custom-hook-para-api) |
 | Datas | [Tratamento de Datas](./como-tratar-datas-backend-frontend.md) |
@@ -400,7 +400,7 @@
 ### 🌿 Intermediário
 
 1. [Criar API Backend](./como-criar-api-backend.md#visão-geral)
-2. [Criar Entity](./como-criar-uma-entity-typeorm.md#estrutura-básica)
+2. [Criar Entity](./como-criar-uma-entity-typeorm-backend.md#estrutura-básica)
 3. [Criar Migration](./como-criar-migration-backend.md#passo-a-passo-criar-migration-manual)
 4. [Documentar Swagger](./como-documentar-swagger-backend.md#documentar-controllers)
 5. [Tratamento de Datas](./como-tratar-datas-backend-frontend.md#princípios-fundamentais)
@@ -413,7 +413,7 @@
 2. [Estrutura de Pastas](./como-deve-ser-a-estrutura-de-pastas-do-modulo-backend.md#estrutura-padrão)
 3. [Arquivo Main](./como-deve-funcionar-arquivo-main-backend.md#configuração-completa-do-projeto)
 4. [API Key](./como-deve-funcionar-api-key-autenticacao.md#implementação-avançada)
-5. [Validação Customizada](./como-usar-validacao-de-dados-api.md#validação-customizada)
+5. [Validação Customizada](./como-usar-validacao-de-dados-api-backend.md#validação-customizada)
 
 ## 📁 Estrutura de Arquivos
 
@@ -428,11 +428,11 @@
 ├── Backend - API
 │   ├── como-criar-api-backend.md                           (11 passos + extras)
 │   ├── como-documentar-swagger-backend.md                  (10 seções)
-│   ├── como-usar-validacao-de-dados-api.md                 (15 tópicos)
+│   ├── como-usar-validacao-de-dados-api-backend.md         (15 tópicos)
 │   └── como-tratar-datas-backend-frontend.md               (12 seções + exemplos)
 │
 ├── Backend - Banco de Dados
-│   ├── como-criar-uma-entity-typeorm.md                    (14 tópicos)
+│   ├── como-criar-uma-entity-typeorm-backend.md            (14 tópicos)
 │   ├── como-criar-migration-backend.md                     (9 tipos + exemplos)
 │   └── como-deve-ser-os-comandos-migration-packagejson-backend.md  (7 comandos)
 │
