@@ -498,14 +498,18 @@ async findOne(id: number, userId: number) {
 
 ## Padrão de Nomenclatura
 
-| Tipo | Padrão | Exemplo |
-|------|--------|---------|
-| Module | kebab-case | `product-category` |
-| Entity | PascalCase | `ProductCategory` |
-| Table | snake_case | `product_categories` |
-| DTO | PascalCase | `CreateProductCategoryDto` |
-| Service | PascalCase | `ProductCategoryService` |
-| Controller | PascalCase | `ProductCategoryController` |
+| Tipo | Padrão | Regras | Exemplo |
+|------|--------|--------|---------|
+| Module | kebab-case | - | `product-category` |
+| Entity | PascalCase | Singular | `ProductCategory` |
+| Table | snake_case | Minúscula + Plural | `product_categories` |
+| DTO | PascalCase | - | `CreateProductCategoryDto` |
+| Service | PascalCase | - | `ProductCategoryService` |
+| Controller | PascalCase | - | `ProductCategoryController` |
+
+**Importante**:
+- **Entity**: Sempre singular em PascalCase (ex: `Product`, `User`)
+- **Tabela**: Sempre plural em snake_case minúscula (ex: `products`, `users`)
 
 ## Referências
 

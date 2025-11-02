@@ -135,7 +135,8 @@
 - **Exemplo: Adicionar Campo** - Migration completa
 - **Exemplo: Relacionamento** - Adicionar FK
 - **Migrations Automáticas** - migration:generate
-- **Boas Práticas** - Down, testes, nomeação, responsabilidade única
+- **Boas Práticas** - Down, testes, nomeação, responsabilidade única, **NUNCA triggers/funções**
+- **Regra Importante** - Toda lógica de negócio na aplicação, não no banco
 - **Troubleshooting** - Problemas comuns e soluções
 - **Scripts package.json** - Comandos disponíveis
 
@@ -200,15 +201,17 @@
 
 - **O que é main.ts** - Ponto de entrada
 - **Estrutura Básica** - Bootstrap mínimo
-- **Configuração Completa** - Setup do projeto
-- **1. NestFactory.create** - Criar aplicação
+- **Configuração Completa** - Setup do projeto com NestExpressApplication
+- **1. NestFactory.create** - Criar aplicação com tipagem Express
 - **2. Global Prefix** - /api em todas rotas
 - **3. CORS** - Habilitar cross-origin
-- **4. ValidationPipe Global** - Validação automática
-- **5. Guards Globais** - JWT Auth
-- **6. Swagger** - Documentação interativa
-- **7. Servir Frontend** - Arquivos estáticos em produção
-- **8. Listen** - Iniciar servidor
+- **4. Servir Arquivos Estáticos** - useStaticAssets para pasta public
+- **5. Fallback SPA** - React Router com index.html
+- **6. ValidationPipe Global** - Validação automática
+- **7. Guards Globais** - JWT Auth
+- **8. Swagger** - Documentação com Bearer e API Key
+- **9. Listen** - Iniciar servidor
+- **Explicação Detalhada** - Cada seção com exemplos
 - **Configurações Opcionais** - Helmet, compressão, rate limiting
 - **Variáveis de Ambiente** - .env necessárias
 - **Checklist** - Verificação de setup
@@ -379,6 +382,9 @@
 | dayjs | [Tratamento de Datas](./como-tratar-datas-backend-frontend.md) |
 | UTC | [Tratamento de Datas](./como-tratar-datas-backend-frontend.md) |
 | Timezone | [Tratamento de Datas](./como-tratar-datas-backend-frontend.md) |
+| Triggers | [Migrations](./como-criar-migration-backend.md#8-nunca-crie-triggers-ou-funções-no-banco-de-dados) |
+| Funções PostgreSQL | [Migrations](./como-criar-migration-backend.md#8-nunca-crie-triggers-ou-funções-no-banco-de-dados) |
+| Stored Procedures | [Migrations](./como-criar-migration-backend.md#8-nunca-crie-triggers-ou-funções-no-banco-de-dados) |
 
 ## 🗺️ Navegação por Nível
 

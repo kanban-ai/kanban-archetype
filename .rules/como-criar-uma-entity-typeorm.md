@@ -34,8 +34,8 @@ src/
 import { Entity, Column } from 'typeorm';
 import { SuperEntity } from '@database/entities/super.entity';
 
-@Entity('products')
-export class Product extends SuperEntity {
+@Entity('products') // Tabela: snake_case, minúscula, plural
+export class Product extends SuperEntity { // Classe: PascalCase, singular
   @Column({ type: 'varchar', length: 255 })
   name: string;
 
@@ -46,6 +46,8 @@ export class Product extends SuperEntity {
   stock: number;
 }
 ```
+
+**Observação**: Note que a classe é `Product` (singular, PascalCase) mas a tabela é `'products'` (plural, snake_case, minúscula).
 
 ### SuperEntity (Classe Base)
 
@@ -64,6 +66,8 @@ export abstract class SuperEntity extends BaseEntity {
 }
 ```
 
+**IMPORTANTE**: Use sempre `timestamptz` (e não `timestamp with time zone`) nas entities TypeORM.
+
 **Vantagens**:
 - ID automático
 - Timestamps automáticos (created_at, updated_at)
@@ -79,6 +83,8 @@ export abstract class SoftDeletableEntity extends SuperEntity {
   deleted_at: Date;
 }
 ```
+
+**IMPORTANTE**: Use sempre `timestamptz` (e não `timestamp with time zone`) nas entities TypeORM.
 
 **Quando usar**:
 - Quando você precisa manter histórico de registros deletados
@@ -386,12 +392,18 @@ export class ProductService {
 
 ### Nomeação
 
-| Elemento | Convenção | Exemplo |
-|----------|-----------|---------|
-| Classe | PascalCase | `Product`, `UserProfile` |
-| Tabela | snake_case | `products`, `user_profiles` |
-| Coluna | snake_case | `user_id`, `created_at` |
-| Arquivo | kebab-case | `product.entity.ts` |
+| Elemento | Convenção | Regras | Exemplo |
+|----------|-----------|--------|---------|
+| Classe Entity | PascalCase | Singular | `Product`, `UserProfile` |
+| Tabela no Banco | snake_case | Minúscula + Plural | `products`, `user_profiles` |
+| Coluna | snake_case | Minúscula | `user_id`, `created_at` |
+| Arquivo | kebab-case | Singular + `.entity.ts` | `product.entity.ts` |
+
+**Regras de Nomenclatura:**
+- **Entity (classe)**: Sempre em **PascalCase** e no **singular** (ex: `Product`, `User`, `Category`)
+- **Tabela (banco)**: Sempre em **snake_case minúscula** e no **plural** (ex: `products`, `users`, `categories`)
+- **Colunas**: Sempre em **snake_case minúscula** (ex: `created_at`, `user_id`, `product_name`)
+- **Arquivo**: Sempre em **kebab-case** no **singular** com sufixo `.entity.ts` (ex: `product.entity.ts`)
 
 ### Exemplo Completo
 
@@ -505,13 +517,14 @@ export class ProductService {
 1. **Escolha a classe base correta**:
    - `SuperEntity`: Para entities normais (sem soft delete)
    - `SoftDeletableEntity`: Para entities que precisam de soft delete
-2. **Use snake_case para nomes de colunas**: Convenção PostgreSQL
-3. **Especifique `name` em @JoinColumn**: Controle explícito de FK
-4. **Adicione campo ID separado da relação**: Facilita queries (`userId` além de `user`)
-5. **Use @Exclude para dados sensíveis**: Senhas, tokens, etc
-6. **Crie índices em colunas frequentemente consultadas**: Performance
-7. **Use `nullable: true` quando apropriado**: Evite constraints desnecessárias
-8. **Não adicione deleted_at manualmente**: Se precisa de soft delete, use `SoftDeletableEntity`
+2. **Use sempre `timestamptz` para datas**: NUNCA use `timestamp with time zone` nas entities TypeORM
+3. **Use snake_case para nomes de colunas**: Convenção PostgreSQL
+4. **Especifique `name` em @JoinColumn**: Controle explícito de FK
+5. **Adicione campo ID separado da relação**: Facilita queries (`userId` além de `user`)
+6. **Use @Exclude para dados sensíveis**: Senhas, tokens, etc
+7. **Crie índices em colunas frequentemente consultadas**: Performance
+8. **Use `nullable: true` quando apropriado**: Evite constraints desnecessárias
+9. **Não adicione deleted_at manualmente**: Se precisa de soft delete, use `SoftDeletableEntity`
 
 ## Referências
 

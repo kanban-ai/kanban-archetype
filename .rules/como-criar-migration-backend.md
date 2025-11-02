@@ -446,6 +446,50 @@ export class ComplexMigration1234567890004 implements MigrationInterface {
 }
 ```
 
+### 8. NUNCA crie triggers ou funções no banco de dados
+
+**IMPORTANTE**: Toda a lógica de negócio deve estar na aplicação (backend), NUNCA no banco de dados.
+
+**❌ NÃO FAZER**:
+```typescript
+// ERRADO - Não criar triggers
+await queryRunner.query(`
+  CREATE FUNCTION update_updated_at_column()
+  RETURNS TRIGGER AS $$
+  BEGIN
+    NEW.updated_at = NOW();
+    RETURN NEW;
+  END;
+  $$ language 'plpgsql';
+`);
+
+await queryRunner.query(`
+  CREATE TRIGGER update_products_updated_at
+  BEFORE UPDATE ON products
+  FOR EACH ROW
+  EXECUTE FUNCTION update_updated_at_column();
+`);
+```
+
+**✅ FAZER**:
+```typescript
+// CORRETO - Lógica na aplicação (TypeORM já faz isso automaticamente)
+@UpdateDateColumn({ type: 'timestamptz' })
+updated_at: Date;
+```
+
+**Motivos para não usar triggers/funções:**
+- **Dificulta manutenção**: Lógica espalhada entre aplicação e banco
+- **Dificulta testes**: Não é possível testar isoladamente
+- **Dificulta debug**: Comportamentos "mágicos" no banco são difíceis de rastrear
+- **Acoplamento**: Torna o código dependente do banco específico
+- **Versionamento**: Dificulta controle de versão da lógica de negócio
+- **Portabilidade**: Dificulta migração para outro banco de dados
+
+**Exceções permitidas** (apenas se absolutamente necessário):
+- Constraints customizados via `CHECK CONSTRAINT` (validações de dados)
+- Índices parciais ou funcionais (performance)
+
 ## Troubleshooting
 
 ### Migration não está sendo detectada
