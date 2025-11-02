@@ -234,6 +234,27 @@
 
 ## 🎨 Frontend - Desenvolvimento
 
+### Setup Inicial - `./como-iniciar-fazer-0-setup-do-frontend.md`
+
+- **Visão Geral** - Configurar projeto React + TypeScript + Vite + Tailwind do zero
+- **Pré-requisitos** - Node.js 18+, npm/yarn/pnpm
+- **Passo 1: Criar Projeto** - Vite com template React + TypeScript
+- **Passo 2: Instalar Tailwind** - Setup completo com PostCSS
+- **Passo 3: React Router** - Instalação
+- **Passo 4: Axios** - Instalação
+- **Passo 5: TypeScript** - Path aliases @/*
+- **Passo 6: Estrutura de Pastas** - components, pages, services, config
+- **Passo 7: Variáveis de Ambiente** - .env com VITE_API_URL
+- **Passo 8: Scripts** - dev, build, preview, lint
+- **Passo 9: Configurar Axios** - Instância com interceptors
+- **Passo 10: Configurar Rotas** - routes.config.tsx
+- **Passo 11: Página Inicial** - HomePage exemplo
+- **Passo 12: Testar Projeto** - Comandos de execução
+- **Configurações Opcionais** - ESLint, Prettier, VS Code
+- **Checklist de Setup** - Verificação completa
+- **Próximos Passos** - Referências para continuar
+- **Troubleshooting** - Problemas comuns
+
 ### Consumir API - `./como-consumir-api-frontend.md`
 
 - **Configuração Axios** - Instância configurada (interceptor 401 sem redirecionamento direto)
@@ -307,6 +328,10 @@
 1. [Autenticação JWT](./como-deve-funcionar-autenticacao.md#componentes-do-sistema)
 2. [API Key](./como-deve-funcionar-api-key-autenticacao.md#implementação)
 
+### Setup inicial frontend
+
+1. [Setup Frontend](./como-iniciar-fazer-0-setup-do-frontend.md#passo-a-passo)
+
 ### Criar nova página frontend
 
 1. [Consumir API](./como-consumir-api-frontend.md#criar-services)
@@ -318,14 +343,16 @@
 | Palavra-Chave | Documento Principal |
 |---------------|---------------------|
 | Setup Backend | [Setup Inicial](./como-iniciar-fazer-0-setup-do-backend.md) |
+| Setup Frontend | [Setup Inicial](./como-iniciar-fazer-0-setup-do-frontend.md) |
 | NestJS Setup | [Setup Inicial](./como-iniciar-fazer-0-setup-do-backend.md) |
+| Vite Setup | [Setup Frontend](./como-iniciar-fazer-0-setup-do-frontend.md) |
 | TypeORM | [Entity](./como-criar-uma-entity-typeorm.md), [Migration](./como-criar-migration-backend.md) |
 | JWT | [Autenticação](./como-deve-funcionar-autenticacao.md) |
 | Swagger | [Documentação API](./como-documentar-swagger-backend.md) |
 | Validação | [Dados API](./como-usar-validacao-de-dados-api.md) |
 | React Router | [Rotas Frontend](./como-funciona-as-rotas-no-frontend.md) |
 | Axios | [Consumir API](./como-consumir-api-frontend.md) |
-| Tailwind | [Componentes](./como-criar-componentes-comum-frontend.md) |
+| Tailwind | [Setup Frontend](./como-iniciar-fazer-0-setup-do-frontend.md), [Componentes](./como-criar-componentes-comum-frontend.md) |
 | NestJS | [Criar API](./como-criar-api-backend.md), [Main](./como-deve-funcionar-arquivo-main-backend.md) |
 | Guards | [Autenticação](./como-deve-funcionar-autenticacao.md#guards-proteção-de-rotas) |
 | DTOs | [Validação](./como-usar-validacao-de-dados-api.md), [Criar API](./como-criar-api-backend.md#passo-3-criar-dtos-validação) |
@@ -338,8 +365,10 @@
 
 1. [Stack Backend](./qual-tecnologia-usa-backend.md#stack-principal)
 2. [Stack Frontend](./qual-tecnologia-usa-frontend.md#stack-principal)
-3. [Autenticação JWT](./como-deve-funcionar-autenticacao.md#visão-geral)
-4. [Consumir API](./como-consumir-api-frontend.md#configuração-do-axios)
+3. [Setup Backend](./como-iniciar-fazer-0-setup-do-backend.md#visão-geral)
+4. [Setup Frontend](./como-iniciar-fazer-0-setup-do-frontend.md#visão-geral)
+5. [Autenticação JWT](./como-deve-funcionar-autenticacao.md#visão-geral)
+6. [Consumir API](./como-consumir-api-frontend.md#configuração-do-axios)
 
 ### 🌿 Intermediário
 
@@ -383,11 +412,13 @@
 │   └── como-deve-funcionar-api-key-autenticacao.md         (10 tópicos)
 │
 ├── Backend - Estrutura
+│   ├── como-iniciar-fazer-0-setup-do-backend.md            (9 passos)
 │   ├── como-deve-funcionar-arquivo-main-backend.md         (8 configurações)
 │   ├── como-deve-ser-a-estrutura-de-pastas-do-modulo-backend.md  (6 seções)
 │   └── como-deve-ser-criado-um-padrao-escalavel-de-implementacao-no-modulo-backend.md  (10 padrões)
 │
 └── Frontend
+    ├── como-iniciar-fazer-0-setup-do-frontend.md           (17 passos)
     ├── como-consumir-api-frontend.md                       (14 tópicos)
     ├── como-criar-componentes-comum-frontend.md            (8 exemplos + práticas)
     └── como-funciona-as-rotas-no-frontend.md               (14 conceitos)
@@ -395,11 +426,11 @@
 
 ## 📊 Estatísticas
 
-- **Total de documentos**: 17
-- **Backend**: 11 documentos (124 seções)
-- **Frontend**: 3 documentos (36 seções)
+- **Total de documentos**: 18
+- **Backend**: 11 documentos (133 seções)
+- **Frontend**: 4 documentos (53 seções)
 - **Stack**: 2 documentos (21 seções)
-- **Total de seções**: 181 seções documentadas
+- **Total de seções**: 207 seções documentadas
 
 ---
 
