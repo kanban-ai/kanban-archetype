@@ -69,6 +69,34 @@ export abstract class SuperEntity extends BaseEntity {
 - Timestamps automáticos (created_at, updated_at)
 - Padrão consistente em todo projeto
 
+### SoftDeletableEntity (Soft Delete)
+
+Para entities que precisam de soft delete, use `SoftDeletableEntity` que estende `SuperEntity`:
+
+```typescript
+export abstract class SoftDeletableEntity extends SuperEntity {
+  @DeleteDateColumn({ type: 'timestamptz', nullable: true })
+  deleted_at: Date;
+}
+```
+
+**Quando usar**:
+- Quando você precisa manter histórico de registros deletados
+- Quando a deleção deve ser reversível
+- Para auditoria e compliance
+
+**Como usar**:
+```typescript
+import { Entity, Column } from 'typeorm';
+import { SoftDeletableEntity } from '@database/entities/soft-deletable.entity';
+
+@Entity('products')
+export class Product extends SoftDeletableEntity {
+  @Column({ type: 'varchar', length: 255 })
+  name: string;
+}
+```
+
 ## Tipos de Colunas
 
 ### Texto
@@ -282,28 +310,77 @@ export class User extends SuperEntity {
 
 ### Soft Delete
 
+Para implementar soft delete, sua entity deve estender `SoftDeletableEntity` ao invés de `SuperEntity`:
+
 ```typescript
+import { Entity, Column } from 'typeorm';
+import { SoftDeletableEntity } from '@database/entities/soft-deletable.entity';
+
 @Entity('products')
-export class Product extends SuperEntity {
+export class Product extends SoftDeletableEntity {
   @Column()
   name: string;
 
-  @Column({ type: 'timestamptz', nullable: true, name: 'deleted_at' })
-  deletedAt: Date;
-}
-
-// No service
-async softDelete(id: number) {
-  await this.repository.update(id, { deletedAt: new Date() });
-}
-
-// Queries excluindo deletados
-async findAll() {
-  return await this.repository.find({
-    where: { deletedAt: IsNull() }
-  });
+  @Column({ type: 'decimal', precision: 10, scale: 2 })
+  price: number;
 }
 ```
+
+**No service**, use os métodos nativos do TypeORM para soft delete:
+
+```typescript
+import { Injectable } from '@nestjs/common';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Repository } from 'typeorm';
+import { Product } from './entities/product.entity';
+
+@Injectable()
+export class ProductService {
+  constructor(
+    @InjectRepository(Product)
+    private repository: Repository<Product>,
+  ) {}
+
+  // Soft delete usando método nativo
+  async softDelete(id: number) {
+    return await this.repository.softDelete(id);
+  }
+
+  // Restaurar registro deletado
+  async restore(id: number) {
+    return await this.repository.restore(id);
+  }
+
+  // Listar apenas registros não deletados (padrão)
+  async findAll() {
+    return await this.repository.find({
+      order: { created_at: 'DESC' }
+    });
+  }
+
+  // Listar incluindo deletados
+  async findAllWithDeleted() {
+    return await this.repository.find({
+      withDeleted: true,
+      order: { created_at: 'DESC' }
+    });
+  }
+
+  // Listar apenas deletados
+  async findOnlyDeleted() {
+    return await this.repository
+      .createQueryBuilder('product')
+      .withDeleted()
+      .where('product.deleted_at IS NOT NULL')
+      .getMany();
+  }
+}
+```
+
+**Importante**: Quando você usa `SoftDeletableEntity`, o TypeORM automaticamente:
+- Exclui registros deletados das queries por padrão
+- Usa `softDelete()` e `softRemove()` ao invés de deletar permanentemente
+- Fornece opção `withDeleted: true` para incluir registros deletados
 
 ## Convenções do Projeto
 
@@ -370,10 +447,6 @@ export class Product extends SuperEntity {
   @Column({ type: 'jsonb', nullable: true })
   @Exclude()
   internalData: any;
-
-  // Soft delete
-  @Column({ type: 'timestamptz', nullable: true, name: 'deleted_at' })
-  deletedAt: Date;
 }
 ```
 
@@ -429,13 +502,16 @@ export class ProductService {
 
 ## Dicas Importantes
 
-1. **Sempre estenda SuperEntity**: Garante ID e timestamps padrão
+1. **Escolha a classe base correta**:
+   - `SuperEntity`: Para entities normais (sem soft delete)
+   - `SoftDeletableEntity`: Para entities que precisam de soft delete
 2. **Use snake_case para nomes de colunas**: Convenção PostgreSQL
 3. **Especifique `name` em @JoinColumn**: Controle explícito de FK
 4. **Adicione campo ID separado da relação**: Facilita queries (`userId` além de `user`)
 5. **Use @Exclude para dados sensíveis**: Senhas, tokens, etc
 6. **Crie índices em colunas frequentemente consultadas**: Performance
 7. **Use `nullable: true` quando apropriado**: Evite constraints desnecessárias
+8. **Não adicione deleted_at manualmente**: Se precisa de soft delete, use `SoftDeletableEntity`
 
 ## Referências
 

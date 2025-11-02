@@ -110,14 +110,16 @@
 
 ### Entity TypeORM - `./como-criar-uma-entity-typeorm.md`
 
-- **Estrutura Básica** - Entity simples e SuperEntity
+- **Estrutura Básica** - Entity simples, SuperEntity e SoftDeletableEntity
+- **SuperEntity** - Classe base com id, created_at, updated_at
+- **SoftDeletableEntity** - Classe base para soft delete (extends SuperEntity)
 - **Tipos de Colunas** - Texto, números, booleano, data, JSON
 - **Relacionamentos** - Many-to-One, One-to-Many, Many-to-Many
 - **Recursos Avançados** - Índices, unique, valores padrão
 - **Colunas Opcionais** - nullable
 - **Enums** - Definição e uso
 - **Exclusão de Campos** - @Exclude para dados sensíveis
-- **Soft Delete** - deleted_at e queries
+- **Soft Delete** - SoftDeletableEntity, softDelete(), restore(), withDeleted
 - **Convenções** - Nomeação de classes, tabelas, colunas
 - **Exemplo Completo** - Entity com todos recursos
 - **Registrar no Module** - TypeOrmModule.forFeature
