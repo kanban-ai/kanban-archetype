@@ -6,19 +6,19 @@
 
 ### Framework e Runtime
 
-- **React v19.1.1**: Framework principal
+- **React**: Framework principal
   - Biblioteca JavaScript para construção de interfaces
   - Baseada em componentes reutilizáveis
   - Virtual DOM para performance
   - Hooks para gerenciamento de estado
 
-- **TypeScript v5.9.3**: Linguagem de programação
+- **TypeScript**: Linguagem de programação
   - Superset do JavaScript com tipagem estática
   - Target: ES2022
   - Strict mode habilitado
   - Type safety em toda aplicação
 
-- **Vite v7.1.7**: Build tool e dev server
+- **Vite**: Build tool e dev server
   - Build extremamente rápido
   - Hot Module Replacement (HMR)
   - ES modules nativos
@@ -31,7 +31,7 @@
 
 ## Estilização
 
-- **Tailwind CSS v3.4.18**: Framework CSS utilitário
+- **Tailwind CSS**: Framework CSS utilitário
   - Classes utilitárias pré-definidas
   - Dark mode configurado como padrão
   - Tema customizado com cor principal azul (#3b82f6)
@@ -43,7 +43,7 @@
 
 ## Roteamento
 
-- **React Router DOM v7.9.4**: Sistema de rotas
+- **React Router DOM**: Sistema de rotas
   - Roteamento client-side
   - Navegação sem reload de página
   - Suporte a rotas dinâmicas e aninhadas
@@ -52,7 +52,7 @@
 
 ## Requisições HTTP
 
-- **Axios v1.12.2**: Cliente HTTP
+- **Axios**: Cliente HTTP
   - Requisições para API REST
   - Interceptors para autenticação
   - Tratamento de erros centralizado
@@ -62,34 +62,34 @@
 
 ### Gráficos
 
-- **Chart.js v4.5.1**: Biblioteca de gráficos
+- **Chart.js**: Biblioteca de gráficos
   - Gráficos de linha, barra, rosca
   - Customizável e responsivo
   - Canvas-based para performance
 
-- **react-chartjs-2 v5.3.1**: Wrapper React
+- **react-chartjs-2**: Wrapper React
   - Integração Chart.js com React
   - Componentes React para gráficos
   - Tipagem TypeScript
 
-- **chartjs-plugin-annotation v3.1.0**: Plugin de anotações
+- **chartjs-plugin-annotation**: Plugin de anotações
   - Adiciona linhas e anotações em gráficos
   - Marcadores customizados
 
 ### UI Components
 
-- **Tippy.js v6.3.7**: Tooltips e popovers
+- **Tippy.js**: Tooltips e popovers
   - Biblioteca leve e performática
   - Posicionamento automático inteligente
   - Customizável
 
-- **@tippyjs/react v4.2.6**: Integração React
+- **@tippyjs/react**: Integração React
   - Componente React para Tippy.js
   - Props tipadas
 
 ### Utilitários
 
-- **timeago.js v4.0.2**: Formatação de datas
+- **timeago.js**: Formatação de datas
   - Datas relativas (ex: "há 5 minutos")
   - Suporte a internacionalização
   - Leve e sem dependências
@@ -118,33 +118,33 @@ O projeto usa Context API nativa do React, sem bibliotecas externas:
 
 ### TypeScript
 
-- **typescript v5.9.3**
-- **@types/react v19.1.16**: Tipagens React
-- **@types/react-dom v19.1.9**: Tipagens React DOM
-- **@types/node v24.6.0**: Tipagens Node.js
+- **typescript**
+- **@types/react**: Tipagens React
+- **@types/react-dom**: Tipagens React DOM
+- **@types/node**: Tipagens Node.js
 
 ### Linting e Formatação
 
-- **ESLint v9.36.0**: Linter JavaScript/TypeScript
+- **ESLint**: Linter JavaScript/TypeScript
   - Análise estática de código
   - Detecção de problemas
   - Regras customizadas
 
-- **@eslint/js v9.36.0**: Configuração ESLint base
+- **@eslint/js**: Configuração ESLint base
 
-- **typescript-eslint v8.45.0**: Plugin TypeScript
+- **typescript-eslint**: Plugin TypeScript
   - Regras específicas para TypeScript
   - Parser TypeScript
 
-- **eslint-plugin-react-hooks v5.2.0**: Validação de Hooks
+- **eslint-plugin-react-hooks**: Validação de Hooks
   - Regras de Hooks do React
   - Previne bugs comuns
 
-- **eslint-plugin-react-refresh v0.4.22**: Fast Refresh
+- **eslint-plugin-react-refresh**: Fast Refresh
   - Validação de componentes para HMR
   - Mantém estado durante hot reload
 
-- **globals v16.4.0**: Definições globais
+- **globals**: Definições globais
   - Variáveis globais do navegador
   - Compatibilidade ESLint
 
@@ -338,19 +338,17 @@ import.meta.env.VITE_API_URL
 - Memoização de componentes pesados
 - Chart.js com Canvas (performance)
 
-## Versões Resumidas
+## Tecnologias Principais
 
-| Tecnologia | Versão |
-|------------|--------|
-| React | 19.1.1 |
-| TypeScript | 5.9.3 |
-| Vite | 7.1.7 |
-| React Router DOM | 7.9.4 |
-| Tailwind CSS | 3.4.18 |
-| Axios | 1.12.2 |
-| Chart.js | 4.5.1 |
-| Tippy.js | 6.3.7 |
-| ESLint | 9.36.0 |
+- React
+- TypeScript
+- Vite
+- React Router DOM
+- Tailwind CSS
+- Axios
+- Chart.js
+- Tippy.js
+- ESLint
 
 ## Requisitos de Sistema
 

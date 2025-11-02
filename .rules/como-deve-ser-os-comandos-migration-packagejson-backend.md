@@ -208,13 +208,13 @@ export default new DataSource({
 ```json
 {
   "devDependencies": {
-    "ts-node": "^10.9.2",
-    "tsconfig-paths": "^4.2.0",
-    "typescript": "^5.7.3"
+    "ts-node": "^10.x",
+    "tsconfig-paths": "^4.x",
+    "typescript": "^5.x"
   },
   "dependencies": {
-    "typeorm": "^0.3.27",
-    "pg": "^8.16.3"
+    "typeorm": "^0.3.x",
+    "pg": "^8.x"
   }
 }
 ```
