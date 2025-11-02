@@ -435,48 +435,6 @@ export class ProductService {
 }
 ```
 
-## Testes
-
-Estruture para fácil testabilidade:
-
-```typescript
-// product.service.spec.ts
-describe('ProductService', () => {
-  let service: ProductService;
-  let repository: Repository<Product>;
-
-  beforeEach(async () => {
-    const module: TestingModule = await Test.createTestingModule({
-      providers: [
-        ProductService,
-        {
-          provide: getRepositoryToken(Product),
-          useValue: {
-            find: jest.fn(),
-            findOne: jest.fn(),
-            save: jest.fn(),
-          },
-        },
-      ],
-    }).compile();
-
-    service = module.get<ProductService>(ProductService);
-    repository = module.get<Repository<Product>>(getRepositoryToken(Product));
-  });
-
-  it('should create a product', async () => {
-    const dto = { name: 'Test', price: 100 };
-    const userId = 1;
-
-    jest.spyOn(repository, 'save').mockResolvedValue({ id: 1, ...dto, userId });
-
-    const result = await service.create(dto, userId);
-
-    expect(result).toHaveProperty('id');
-    expect(repository.save).toHaveBeenCalledWith({ ...dto, userId });
-  });
-});
-```
 
 ## Checklist de Escalabilidade
 
@@ -487,7 +445,6 @@ describe('ProductService', () => {
 - [ ] Isolamento por userId
 - [ ] Transações para operações atômicas
 - [ ] Logging em pontos críticos
-- [ ] Testes unitários
 - [ ] Documentação Swagger
 - [ ] Código type-safe (TypeScript)
 

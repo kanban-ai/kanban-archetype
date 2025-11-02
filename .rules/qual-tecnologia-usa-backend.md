@@ -160,26 +160,6 @@
   - Desabilita regras conflitantes do ESLint
   - Evita conflitos entre ESLint e Prettier
 
-### Testes
-
-- **Jest v30.0.0**: Framework de testes
-  - Testes unitários e de integração
-  - Mocking e spies
-  - Code coverage
-
-- **ts-jest v29.2.5**: Preset Jest para TypeScript
-  - Transpilação TypeScript para Jest
-  - Source maps
-
-- **@nestjs/testing v11.0.1**: Utilities de teste
-  - Test.createTestingModule()
-  - Mocking de providers
-  - Utilities específicas do NestJS
-
-- **supertest v7.0.0**: Testes HTTP
-  - Testes de integração de APIs
-  - Simulação de requisições HTTP
-  - Usado em testes E2E
 
 ### Types (@types/*)
 

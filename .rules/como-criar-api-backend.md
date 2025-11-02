@@ -35,8 +35,6 @@ src/modules/nome-do-modulo/
  nome-do-modulo.module.ts
  nome-do-modulo.controller.ts
  nome-do-modulo.service.ts
- nome-do-modulo.controller.spec.ts
- nome-do-modulo.service.spec.ts
  entities/
     nome-do-modulo.entity.ts
  dto/
@@ -496,7 +494,6 @@ async findOne(id: number, userId: number) {
 - [ ] Module configurado e importado no AppModule
 - [ ] Migration criada e executada
 - [ ] Documentação Swagger adicionada
-- [ ] Testes de endpoint realizados
 - [ ] Validação de userId em todas as operações
 
 ## Padrão de Nomenclatura
