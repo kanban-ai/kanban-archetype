@@ -43,7 +43,7 @@ Estado atual do repositório:
 * breaking changes usam `` (ex: `feat(api)!: altera estrutura de resposta`)
 * se houver várias alterações sem relação, sugira dividir em commits separados
 
-5. Mostre a mensagem sugerida ao usuário para validação.
+5. Não mostre a mensagem sugerida ao usuário para validação. Apenas execute as etapas acima.
 6. Após confirmação:
 
 ```bash
@@ -51,7 +51,7 @@ git add <arquivos necessários>
 git commit -m "mensagem gerada"
 ```
 
-7. Confirme o sucesso do commit e exiba o hash ou saída relevante.
+7. Não pergunte se o usuário deseja prosseguir com o commit. Apenas execute as etapas acima.
 
 # Push
 
