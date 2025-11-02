@@ -2,6 +2,8 @@
 
 > Guia completo para criar e gerenciar migrations com TypeORM no projeto.
 
+> **⚠️ IMPORTANTE**: Todas as migrations devem ser escritas usando SQL puro através de `queryRunner.query()`, não objetos TypeORM como `new Table()`, `new TableColumn()`, etc.
+
 ## O que são Migrations?
 
 Migrations são arquivos de controle de versão do banco de dados. Elas permitem:
@@ -72,80 +74,39 @@ src/database/migrations/1234567890000-CreateProductsTable.ts
 O método `up` define o que será executado ao rodar a migration:
 
 ```typescript
-import { MigrationInterface, QueryRunner, Table, TableForeignKey } from 'typeorm';
+import { MigrationInterface, QueryRunner } from 'typeorm';
 
 export class CreateProductsTable1234567890000 implements MigrationInterface {
   public async up(queryRunner: QueryRunner): Promise<void> {
-    await queryRunner.createTable(
-      new Table({
-        name: 'products',
-        columns: [
-          {
-            name: 'id',
-            type: 'int',
-            isPrimary: true,
-            isGenerated: true,
-            generationStrategy: 'increment',
-          },
-          {
-            name: 'name',
-            type: 'varchar',
-            length: '255',
-            isNullable: false,
-          },
-          {
-            name: 'description',
-            type: 'text',
-            isNullable: true,
-          },
-          {
-            name: 'price',
-            type: 'decimal',
-            precision: 10,
-            scale: 2,
-            isNullable: false,
-          },
-          {
-            name: 'stock',
-            type: 'int',
-            default: 0,
-          },
-          {
-            name: 'user_id',
-            type: 'int',
-            isNullable: false,
-          },
-          {
-            name: 'created_at',
-            type: 'timestamptz',
-            default: 'now()',
-          },
-          {
-            name: 'updated_at',
-            type: 'timestamptz',
-            default: 'now()',
-          },
-        ],
-      }),
-      true, // ifNotExists
-    );
+    await queryRunner.query(`
+      CREATE TABLE products (
+        id SERIAL PRIMARY KEY,
+        name VARCHAR(255) NOT NULL,
+        description TEXT,
+        price DECIMAL(10,2) NOT NULL,
+        stock INT DEFAULT 0,
+        user_id INT NOT NULL,
+        created_at TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP,
+        updated_at TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP
+      );
+    `);
 
-    // Adicionar foreign key
-    await queryRunner.createForeignKey(
-      'products',
-      new TableForeignKey({
-        columnNames: ['user_id'],
-        referencedColumnNames: ['id'],
-        referencedTableName: 'users',
-        onDelete: 'CASCADE',
-        onUpdate: 'CASCADE',
-      }),
-    );
+    await queryRunner.query(`
+      CREATE INDEX idx_products_user_id ON products(user_id);
+    `);
+
+    await queryRunner.query(`
+      ALTER TABLE products
+        ADD CONSTRAINT fk_products_user
+        FOREIGN KEY (user_id)
+        REFERENCES users(id)
+        ON DELETE CASCADE
+        ON UPDATE CASCADE;
+    `);
   }
 
   public async down(queryRunner: QueryRunner): Promise<void> {
-    // Reverter a migration (dropar tabela)
-    await queryRunner.dropTable('products');
+    await queryRunner.query(`DROP TABLE products;`);
   }
 }
 ```
@@ -156,93 +117,80 @@ export class CreateProductsTable1234567890000 implements MigrationInterface {
 npm run typeorm -- migration:run
 ```
 
-## Tipos de Migrations
+## Tipos de Operações com SQL
 
 ### 1. Criar Tabela
 
 ```typescript
-await queryRunner.createTable(
-  new Table({
-    name: 'nome_da_tabela',
-    columns: [
-      { name: 'id', type: 'int', isPrimary: true, isGenerated: true },
-      { name: 'campo', type: 'varchar', length: '255' },
-    ],
-  }),
-);
+await queryRunner.query(`
+  CREATE TABLE nome_da_tabela (
+    id SERIAL PRIMARY KEY,
+    campo VARCHAR(255) NOT NULL,
+    created_at TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP
+  );
+`);
 ```
 
 ### 2. Adicionar Coluna
 
 ```typescript
-await queryRunner.addColumn(
-  'nome_da_tabela',
-  new TableColumn({
-    name: 'nova_coluna',
-    type: 'varchar',
-    length: '255',
-    isNullable: true,
-  }),
-);
+await queryRunner.query(`
+  ALTER TABLE nome_da_tabela
+    ADD COLUMN nova_coluna VARCHAR(255);
+`);
 ```
 
 ### 3. Remover Coluna
 
 ```typescript
-await queryRunner.dropColumn('nome_da_tabela', 'nome_da_coluna');
+await queryRunner.query(`
+  ALTER TABLE nome_da_tabela
+    DROP COLUMN nome_da_coluna;
+`);
 ```
 
 ### 4. Modificar Coluna
 
 ```typescript
-await queryRunner.changeColumn(
-  'nome_da_tabela',
-  'nome_coluna_antiga',
-  new TableColumn({
-    name: 'nome_coluna_nova',
-    type: 'varchar',
-    length: '500',
-  }),
-);
+await queryRunner.query(`
+  ALTER TABLE nome_da_tabela
+    ALTER COLUMN nome_coluna TYPE VARCHAR(500);
+`);
+
+// Renomear coluna
+await queryRunner.query(`
+  ALTER TABLE nome_da_tabela
+    RENAME COLUMN nome_antigo TO nome_novo;
+`);
 ```
 
 ### 5. Criar Índice
 
 ```typescript
-await queryRunner.createIndex(
-  'nome_da_tabela',
-  new TableIndex({
-    name: 'IDX_NOME_CAMPO',
-    columnNames: ['campo'],
-  }),
-);
+await queryRunner.query(`
+  CREATE INDEX idx_nome_campo ON nome_da_tabela(campo);
+`);
 ```
 
 ### 6. Criar Índice Composto
 
 ```typescript
-await queryRunner.createIndex(
-  'nome_da_tabela',
-  new TableIndex({
-    name: 'IDX_CAMPO1_CAMPO2',
-    columnNames: ['campo1', 'campo2'],
-  }),
-);
+await queryRunner.query(`
+  CREATE INDEX idx_campo1_campo2 ON nome_da_tabela(campo1, campo2);
+`);
 ```
 
 ### 7. Adicionar Foreign Key
 
 ```typescript
-await queryRunner.createForeignKey(
-  'tabela_filha',
-  new TableForeignKey({
-    columnNames: ['coluna_fk'],
-    referencedColumnNames: ['id'],
-    referencedTableName: 'tabela_pai',
-    onDelete: 'CASCADE',
-    onUpdate: 'CASCADE',
-  }),
-);
+await queryRunner.query(`
+  ALTER TABLE tabela_filha
+    ADD CONSTRAINT fk_tabela_filha_pai
+    FOREIGN KEY (coluna_fk)
+    REFERENCES tabela_pai(id)
+    ON DELETE CASCADE
+    ON UPDATE CASCADE;
+`);
 ```
 
 ### 8. Executar SQL Raw
@@ -251,7 +199,7 @@ await queryRunner.createForeignKey(
 await queryRunner.query(`
   UPDATE users
   SET active = true
-  WHERE created_at > '2024-01-01'
+  WHERE created_at > '2024-01-01';
 `);
 ```
 
@@ -263,7 +211,7 @@ await queryRunner.query(`
   VALUES
     ('Tecnologia', 'Setor de tecnologia'),
     ('Financeiro', 'Setor financeiro'),
-    ('Saúde', 'Setor de saúde')
+    ('Saúde', 'Setor de saúde');
 `);
 ```
 
@@ -272,23 +220,21 @@ await queryRunner.query(`
 ### Migration: Adicionar campo `active` na tabela `products`
 
 ```typescript
-import { MigrationInterface, QueryRunner, TableColumn } from 'typeorm';
+import { MigrationInterface, QueryRunner } from 'typeorm';
 
 export class AddActiveToProducts1234567890001 implements MigrationInterface {
   public async up(queryRunner: QueryRunner): Promise<void> {
-    await queryRunner.addColumn(
-      'products',
-      new TableColumn({
-        name: 'active',
-        type: 'boolean',
-        default: true,
-        isNullable: false,
-      }),
-    );
+    await queryRunner.query(`
+      ALTER TABLE products
+        ADD COLUMN active BOOLEAN DEFAULT true NOT NULL;
+    `);
   }
 
   public async down(queryRunner: QueryRunner): Promise<void> {
-    await queryRunner.dropColumn('products', 'active');
+    await queryRunner.query(`
+      ALTER TABLE products
+        DROP COLUMN active;
+    `);
   }
 }
 ```
@@ -298,45 +244,49 @@ export class AddActiveToProducts1234567890001 implements MigrationInterface {
 ### Migration: Adicionar relacionamento `category_id` em `products`
 
 ```typescript
-import { MigrationInterface, QueryRunner, TableColumn, TableForeignKey } from 'typeorm';
+import { MigrationInterface, QueryRunner } from 'typeorm';
 
 export class AddCategoryToProducts1234567890002 implements MigrationInterface {
   public async up(queryRunner: QueryRunner): Promise<void> {
     // Adicionar coluna
-    await queryRunner.addColumn(
-      'products',
-      new TableColumn({
-        name: 'category_id',
-        type: 'int',
-        isNullable: true,
-      }),
-    );
+    await queryRunner.query(`
+      ALTER TABLE products
+        ADD COLUMN category_id INT;
+    `);
 
     // Adicionar foreign key
-    await queryRunner.createForeignKey(
-      'products',
-      new TableForeignKey({
-        columnNames: ['category_id'],
-        referencedColumnNames: ['id'],
-        referencedTableName: 'categories',
-        onDelete: 'SET NULL',
-        onUpdate: 'CASCADE',
-      }),
-    );
+    await queryRunner.query(`
+      ALTER TABLE products
+        ADD CONSTRAINT fk_products_category
+        FOREIGN KEY (category_id)
+        REFERENCES categories(id)
+        ON DELETE SET NULL
+        ON UPDATE CASCADE;
+    `);
+
+    // Criar índice para performance
+    await queryRunner.query(`
+      CREATE INDEX idx_products_category_id ON products(category_id);
+    `);
   }
 
   public async down(queryRunner: QueryRunner): Promise<void> {
-    // Remover foreign key primeiro
-    const table = await queryRunner.getTable('products');
-    const foreignKey = table.foreignKeys.find(
-      (fk) => fk.columnNames.indexOf('category_id') !== -1,
-    );
-    if (foreignKey) {
-      await queryRunner.dropForeignKey('products', foreignKey);
-    }
+    // Remover índice
+    await queryRunner.query(`
+      DROP INDEX IF EXISTS idx_products_category_id;
+    `);
+
+    // Remover foreign key
+    await queryRunner.query(`
+      ALTER TABLE products
+        DROP CONSTRAINT IF EXISTS fk_products_category;
+    `);
 
     // Remover coluna
-    await queryRunner.dropColumn('products', 'category_id');
+    await queryRunner.query(`
+      ALTER TABLE products
+        DROP COLUMN category_id;
+    `);
   }
 }
 ```
@@ -460,33 +410,24 @@ L **Ruim**:
 Se adicionar coluna NOT NULL em tabela com dados:
 
 ```typescript
-// Adicionar com default ou nullable primeiro
-await queryRunner.addColumn(
-  'products',
-  new TableColumn({
-    name: 'category_id',
-    type: 'int',
-    isNullable: true, // Permitir null inicialmente
-  }),
-);
+// Adicionar com nullable primeiro
+await queryRunner.query(`
+  ALTER TABLE products
+    ADD COLUMN category_id INT;
+`);
 
 // Preencher dados
 await queryRunner.query(`
   UPDATE products
   SET category_id = 1
-  WHERE category_id IS NULL
+  WHERE category_id IS NULL;
 `);
 
 // Depois tornar NOT NULL
-await queryRunner.changeColumn(
-  'products',
-  'category_id',
-  new TableColumn({
-    name: 'category_id',
-    type: 'int',
-    isNullable: false,
-  }),
-);
+await queryRunner.query(`
+  ALTER TABLE products
+    ALTER COLUMN category_id SET NOT NULL;
+`);
 ```
 
 ### 7. Documente migrations complexas

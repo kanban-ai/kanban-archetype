@@ -1,4 +1,5 @@
 ---
+allowed-tools: Bash(cat:*), Bash(ls:*)
 description: Crie feature do sistema seguindo as especificações técnicas
 tags: [documentation, api-docs]
 ---

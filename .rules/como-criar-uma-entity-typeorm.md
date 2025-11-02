@@ -6,13 +6,33 @@
 
 Uma Entity representa uma tabela no banco de dados. Cada instância da classe é uma linha na tabela.
 
+## Localização das Entities
+
+- **SuperEntity**: Centralizada em `src/database/entities/super.entity.ts` (compartilhada por todos os módulos)
+- **Demais Entities**: Dentro de cada módulo em `src/modules/[nome-modulo]/entities/[nome].entity.ts`
+
+### Exemplo de estrutura:
+```
+src/
+├── database/
+│   └── entities/
+│       └── super.entity.ts          # ← Única entity centralizada
+└── modules/
+    ├── products/
+    │   └── entities/
+    │       └── product.entity.ts    # ← Entity do módulo products
+    └── categories/
+        └── entities/
+            └── category.entity.ts   # ← Entity do módulo categories
+```
+
 ## Estrutura Básica
 
 ### Entity Simples
 
 ```typescript
 import { Entity, Column } from 'typeorm';
-import { SuperEntity } from '@/common/entities/super.entity';
+import { SuperEntity } from '@database/entities/super.entity';
 
 @Entity('products')
 export class Product extends SuperEntity {
@@ -110,7 +130,8 @@ metadata: any;
 Exemplo: Vários produtos pertencem a um usuário
 
 ```typescript
-import { ManyToOne, JoinColumn } from 'typeorm';
+import { Entity, Column, ManyToOne, JoinColumn } from 'typeorm';
+import { SuperEntity } from '@database/entities/super.entity';
 import { User } from '@/auth/entities/user.entity';
 
 @Entity('products')
@@ -300,7 +321,7 @@ async findAll() {
 ```typescript
 import { Entity, Column, ManyToOne, JoinColumn, Index } from 'typeorm';
 import { Exclude } from 'class-transformer';
-import { SuperEntity } from '@/common/entities/super.entity';
+import { SuperEntity } from '@database/entities/super.entity';
 import { User } from '@/auth/entities/user.entity';
 import { Category } from '@/modules/categories/entities/category.entity';
 

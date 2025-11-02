@@ -50,7 +50,7 @@ src/modules/nome-do-modulo/
 
 ```typescript
 import { Entity, Column, ManyToOne, JoinColumn } from 'typeorm';
-import { SuperEntity } from '@/common/entities/super.entity';
+import { SuperEntity } from '@database/entities/super.entity';
 import { User } from '@/auth/entities/user.entity';
 
 @Entity('nome_da_tabela')
@@ -321,10 +321,48 @@ export class AppModule {}
 ## Passo 8: Criar Migration
 
 ```bash
-npm run typeorm -- migration:generate src/database/migrations/CreateNomeDoModuloTable
+npm run typeorm -- migration:create src/database/migrations/CreateNomeDoModuloTable
 ```
 
-Edite a migration gerada se necessário e execute:
+Edite a migration para usar **SQL puro**:
+
+```typescript
+import { MigrationInterface, QueryRunner } from 'typeorm';
+
+export class CreateNomeDoModuloTable1234567890000 implements MigrationInterface {
+  public async up(queryRunner: QueryRunner): Promise<void> {
+    await queryRunner.query(`
+      CREATE TABLE nome_da_tabela (
+        id SERIAL PRIMARY KEY,
+        nome VARCHAR(255) NOT NULL,
+        descricao TEXT,
+        ativo BOOLEAN DEFAULT true,
+        user_id INT NOT NULL,
+        created_at TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP,
+        updated_at TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP
+      );
+    `);
+
+    await queryRunner.query(`
+      CREATE INDEX idx_nome_tabela_user_id ON nome_da_tabela(user_id);
+    `);
+
+    await queryRunner.query(`
+      ALTER TABLE nome_da_tabela
+        ADD CONSTRAINT fk_nome_tabela_user
+        FOREIGN KEY (user_id)
+        REFERENCES users(id)
+        ON DELETE CASCADE;
+    `);
+  }
+
+  public async down(queryRunner: QueryRunner): Promise<void> {
+    await queryRunner.query(`DROP TABLE nome_da_tabela;`);
+  }
+}
+```
+
+Execute a migration:
 
 ```bash
 npm run typeorm -- migration:run

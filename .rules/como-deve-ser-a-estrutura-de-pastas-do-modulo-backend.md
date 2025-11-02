@@ -105,7 +105,7 @@ Modelo de dados (tabela do banco):
 
 ```typescript
 import { Entity, Column } from 'typeorm';
-import { SuperEntity } from '@/common/entities/super.entity';
+import { SuperEntity } from '@database/entities/super.entity';
 
 @Entity('nome_tabela')
 export class NomeDoModulo extends SuperEntity {
@@ -115,6 +115,8 @@ export class NomeDoModulo extends SuperEntity {
   // Outros campos...
 }
 ```
+
+**IMPORTANTE**: A entity deve estar localizada **dentro do módulo**, não em uma pasta centralizada. A única entity centralizada é a `SuperEntity`.
 
 ### DTOs (dto/*.dto.ts)
 

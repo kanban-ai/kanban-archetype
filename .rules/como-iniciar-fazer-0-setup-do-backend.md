@@ -99,6 +99,7 @@ mkdir -p common/decorators
 mkdir -p common/guards
 mkdir -p common/filters
 mkdir -p database/migrations
+mkdir -p database/entities
 ```
 
 **Estrutura resultante:**
@@ -114,12 +115,18 @@ backend/
 │   │   ├── guards/
 │   │   └── filters/
 │   ├── database/
-│   │   └── migrations/   # Migrations do TypeORM
+│   │   ├── migrations/   # Migrations do TypeORM
+│   │   └── entities/     # SuperEntity (centralizada)
 │   ├── app.module.ts
 │   └── main.ts
 ├── tsconfig.json
 └── package.json
 ```
+
+### Organização de Entities
+
+- **SuperEntity**: `src/database/entities/super.entity.ts` (centralizada)
+- **Outras entities**: dentro de cada módulo em `src/modules/[nome]/entities/`
 
 ### 5. Criar arquivo .env
 
