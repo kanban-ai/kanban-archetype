@@ -361,36 +361,36 @@
 ## 📁 Estrutura de Arquivos
 
 ```
-faq/
-âââ SUMARIO.md                                              (este arquivo)
-â
-âââ Stack e Tecnologias
-â   âââ qual-tecnologia-usa-backend.md                      (11 seções)
-â   âââ qual-tecnologia-usa-frontend.md                     (10 seções)
-â
-âââ Backend - API
-â   âââ como-criar-api-backend.md                           (11 passos + extras)
-â   âââ como-documentar-swagger-backend.md                  (10 seções)
-â   âââ como-usar-validacao-de-dados-api.md                 (15 tópicos)
-â
-âââ Backend - Banco de Dados
-â   âââ como-criar-uma-entity-typeorm.md                    (14 tópicos)
-â   âââ como-criar-migration-backend.md                     (9 tipos + exemplos)
-â   âââ como-deve-ser-os-comandos-migration-packagejson-backend.md  (7 comandos)
-â
-âââ Backend - Autenticação
-â   âââ como-deve-funcionar-autenticacao.md                 (15 seções)
-â   âââ como-deve-funcionar-api-key-autenticacao.md         (10 tópicos)
-â
-âââ Backend - Estrutura
-â   âââ como-deve-funcionar-arquivo-main-backend.md         (8 configurações)
-â   âââ como-deve-ser-a-estrutura-de-pastas-do-modulo-backend.md  (6 seções)
-â   âââ como-deve-ser-criado-um-padrao-escalavel-de-implementacao-no-modulo-backend.md  (10 padrões)
-â
-âââ Frontend
-    âââ como-consumir-api-frontend.md                       (14 tópicos)
-    âââ como-criar-componentes-comum-frontend.md            (8 exemplos + práticas)
-    âââ como-funciona-as-rotas-no-frontend.md               (14 conceitos)
+.rules/
+├── SUMARIO.md                                              (este arquivo)
+│
+├── Stack e Tecnologias
+│   ├── qual-tecnologia-usa-backend.md                      (11 seções)
+│   └── qual-tecnologia-usa-frontend.md                     (10 seções)
+│
+├── Backend - API
+│   ├── como-criar-api-backend.md                           (11 passos + extras)
+│   ├── como-documentar-swagger-backend.md                  (10 seções)
+│   └── como-usar-validacao-de-dados-api.md                 (15 tópicos)
+│
+├── Backend - Banco de Dados
+│   ├── como-criar-uma-entity-typeorm.md                    (14 tópicos)
+│   ├── como-criar-migration-backend.md                     (9 tipos + exemplos)
+│   └── como-deve-ser-os-comandos-migration-packagejson-backend.md  (7 comandos)
+│
+├── Backend - Autenticação
+│   ├── como-deve-funcionar-autenticacao.md                 (15 seções)
+│   └── como-deve-funcionar-api-key-autenticacao.md         (10 tópicos)
+│
+├── Backend - Estrutura
+│   ├── como-deve-funcionar-arquivo-main-backend.md         (8 configurações)
+│   ├── como-deve-ser-a-estrutura-de-pastas-do-modulo-backend.md  (6 seções)
+│   └── como-deve-ser-criado-um-padrao-escalavel-de-implementacao-no-modulo-backend.md  (10 padrões)
+│
+└── Frontend
+    ├── como-consumir-api-frontend.md                       (14 tópicos)
+    ├── como-criar-componentes-comum-frontend.md            (8 exemplos + práticas)
+    └── como-funciona-as-rotas-no-frontend.md               (14 conceitos)
 ```
 
 ## 📊 Estatísticas
