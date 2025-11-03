@@ -52,11 +52,17 @@ grep -i "error\|exception\|fail" ./logs/front.log | tail -20
 docker logs backend --tail 100
 docker logs frontend --tail 100
 docker logs postgres --tail 100
+docker logs redis --tail 100
 ```
 
 #### 2.2 Verificação do Banco de Dados
 
-**IMPORTANTE**: Use o MCP do postgres (tool `mcp__postgres__query`) para investigar o banco de dados, **NÃO use comandos `psql`**.
+**IMPORTANTE**: Use APENAS o MCP do postgres (tool `mcp__postgres__query`) para investigar o banco de dados.
+
+**NÃO use**:
+- ❌ `docker exec -it postgres psql`
+- ❌ `docker exec -it postgres bash`
+- ❌ Comandos `psql` diretamente
 
 O MCP do postgres permite executar queries SQL diretamente através da tool disponível:
 
@@ -88,7 +94,52 @@ SELECT * FROM pg_indexes WHERE tablename = 'nome_tabela';
 
 Use a tool `mcp__postgres__query` para executar essas queries diretamente.
 
-#### 2.3 Análise de Código
+#### 2.3 Verificação do Cache/Redis
+
+**IMPORTANTE**: Use APENAS as tools do MCP do Redis para investigar o cache.
+
+**NÃO use**:
+- ❌ `docker exec -it redis redis-cli`
+- ❌ `docker exec -it redis sh`
+- ❌ Comandos `redis-cli` diretamente
+
+O MCP do Redis disponibiliza várias tools para investigação:
+
+```typescript
+// Exemplos de investigação usando MCP do Redis:
+
+// Listar chaves com padrão
+mcp__redis__list_keys({ pattern: "user:*", limit: 100 })
+mcp__redis__list_keys({ pattern: "session:*" })
+
+// Verificar se chave existe
+mcp__redis__exists_key({ key: "user:123" })
+
+// Obter dados de uma chave
+mcp__redis__get_data({ key: "session:abc123" })
+
+// Obter informações detalhadas sobre chave (tipo, TTL, tamanho)
+mcp__redis__get_key_info({ key: "cache:product:456" })
+
+// Verificar informações do servidor Redis
+mcp__redis__get_redis_info()
+
+// Verificar estatísticas do banco
+mcp__redis__get_database_stats()
+
+// Verificar uso de memória
+mcp__redis__get_memory_info()
+
+// Testar conexão
+mcp__redis__test_connection()
+
+// Ver logs de operações
+mcp__redis__get_operation_logs({ limit: 50 })
+```
+
+Use as tools do MCP do Redis listadas acima para investigar problemas de cache, sessões, ou dados temporários.
+
+#### 2.4 Análise de Código
 
 Use as ferramentas disponíveis:
 
@@ -137,7 +188,9 @@ Após coletar evidências, analise:
 - [ ] Logs do backend analisados (./logs/back.log)
 - [ ] Logs do frontend analisados (./logs/front.log)
 - [ ] Logs do PostgreSQL verificados (docker logs postgres)
+- [ ] Logs do Redis verificados (docker logs redis)
 - [ ] Dados do banco investigados via MCP do postgres
+- [ ] Dados do cache investigados via MCP do Redis
 - [ ] Código relevante lido e analisado
 - [ ] Especificações técnicas em .rules/ consultadas
 - [ ] Causa raiz identificada com evidências
@@ -170,34 +223,92 @@ grep -A 10 -B 5 "palavra_chave" ./logs/back.log
 # Ver status dos containers
 docker ps -a
 
-# Ver logs de containers
+# Ver logs de containers (APENAS para verificar logs, NÃO para interagir)
 docker logs backend --tail 100
 docker logs frontend --tail 100
-docker logs postgres --tail 100
+docker logs postgres --tail 100  # Ver logs apenas, para dados use MCP do postgres
+docker logs redis --tail 100     # Ver logs apenas, para dados use MCP do Redis
 
 # Logs em tempo real
 docker logs -f backend
+docker logs -f postgres  # Útil para debug de conexões
+docker logs -f redis     # Útil para debug de conexões
 
 # Reiniciar container
 docker restart backend
+docker restart frontend
+docker restart postgres
+docker restart redis
 
-# Entrar no container
+# Entrar no container (apenas para backend/frontend)
 docker exec -it backend bash
-docker exec -it postgres bash
+docker exec -it frontend bash
+
+# ⚠️  IMPORTANTE: Interação com Dados
+# ❌ NÃO use shell do Docker para acessar DADOS do Postgres/Redis
+# ❌ NÃO faça: docker exec -it postgres bash
+# ❌ NÃO faça: docker exec -it postgres psql
+# ❌ NÃO faça: docker exec -it redis sh
+# ❌ NÃO faça: docker exec -it redis redis-cli
+#
+# ✅ SEMPRE use as tools do MCP:
+#    - Para Postgres: mcp__postgres__query
+#    - Para Redis: mcp__redis__get_data, mcp__redis__list_keys, etc.
 ```
 
 ### PostgreSQL
 
-**IMPORTANTE**: Use o MCP do postgres (tool `mcp__postgres__query`) para investigar o banco, **NÃO use `psql`**.
+**IMPORTANTE**: Use APENAS o MCP do postgres para acessar dados, **NÃO use shell do Docker ou `psql`**.
 
 ```typescript
-// Executar queries usando MCP:
+// ✅ CORRETO - Usar MCP do postgres:
 // Use a tool mcp__postgres__query com suas queries SQL
 
 // Exemplos:
 SELECT * FROM users LIMIT 5;
 SELECT table_name FROM information_schema.tables WHERE table_schema = 'public';
 SELECT * FROM pg_stat_activity WHERE state = 'active';
+```
+
+```bash
+# ❌ ERRADO - NÃO faça isso:
+docker exec -it postgres psql -U user -d database
+docker exec -it postgres bash
+
+# ✅ CORRETO - Use a tool mcp__postgres__query
+```
+
+### Redis
+
+**IMPORTANTE**: Use APENAS as tools do MCP do Redis para acessar dados, **NÃO use shell do Docker ou `redis-cli`**.
+
+```typescript
+// ✅ CORRETO - Usar tools do MCP do Redis:
+
+// Listar chaves
+mcp__redis__list_keys({ pattern: "*", limit: 100 })
+
+// Obter dados
+mcp__redis__get_data({ key: "chave" })
+
+// Informações da chave
+mcp__redis__get_key_info({ key: "chave" })
+
+// Status do Redis
+mcp__redis__get_redis_info()
+mcp__redis__get_database_stats()
+mcp__redis__get_memory_info()
+
+// Logs de operações
+mcp__redis__get_operation_logs({ limit: 50 })
+```
+
+```bash
+# ❌ ERRADO - NÃO faça isso:
+docker exec -it redis redis-cli
+docker exec -it redis sh
+
+# ✅ CORRETO - Use as tools do MCP do Redis listadas acima
 ```
 
 ### Análise de Código
@@ -259,6 +370,20 @@ Sintomas: Queries lentas, dados inconsistentes, constraint violations, conexões
 - Analisar constraints violadas nos logs
 
 **Ação**: Corrigir dados, ajustar schema, otimizar queries, adicionar validações
+
+---
+
+### 🔴 Problemas de Cache/Redis
+Sintomas: Dados desatualizados, cache miss, sessões perdidas, erros de conexão Redis
+
+**Investigação**:
+- Usar tools do MCP do Redis para verificar chaves e dados em cache
+- Verificar TTL das chaves com `mcp__redis__get_key_info`
+- Analisar uso de memória com `mcp__redis__get_memory_info`
+- Verificar logs de operações com `mcp__redis__get_operation_logs`
+- Verificar padrões de chaves com `mcp__redis__list_keys`
+
+**Ação**: Limpar cache problemático, ajustar TTL, corrigir lógica de invalidação, otimizar uso de memória
 
 ---
 
@@ -363,7 +488,8 @@ Sintomas: Build falha, dependências faltando, incompatibilidades
 
 📊 **Colete EVIDÊNCIAS**
 - Logs completos (não apenas últimas linhas)
-- Dados reais do banco via psql
+- Dados reais do banco via MCP do postgres
+- Dados reais do cache via MCP do Redis
 - Código fonte relacionado
 - Use as especificações técnicas em .rules/
 
@@ -388,7 +514,7 @@ Sintomas: Build falha, dependências faltando, incompatibilidades
 
 **Você DEVE**:
 - ✅ Seguir o fluxo de investigação sistemática acima
-- ✅ Usar logs (./logs/), MCP do postgres e análise de código
+- ✅ Usar logs (./logs/), MCP do postgres, MCP do Redis e análise de código
 - ✅ Consultar especificações técnicas em .rules/
 - ✅ Identificar causa raiz com evidências antes de corrigir
 - ✅ Implementar e testar correções
@@ -398,7 +524,8 @@ Sintomas: Build falha, dependências faltando, incompatibilidades
 - ❌ Fazer suposições sem evidências concretas
 - ❌ Pular etapas da investigação
 - ❌ Implementar correções sem entender a causa
-- ❌ Ignorar logs ou dados do banco
+- ❌ Ignorar logs ou dados do banco/cache
 - ❌ Deixar de validar a correção implementada
 - ❌ Criar novos problemas ao corrigir
 - ❌ Usar comandos `psql` - sempre use o MCP do postgres
+- ❌ Usar comandos `redis-cli` - sempre use as tools do MCP do Redis

@@ -31,6 +31,45 @@
 
 ## 🔧 Backend - Desenvolvimento
 
+### Redis - `./como-usar-redis-backend.md`
+
+- **Quando Usar** - Cache, sessões, contadores, rate limiting, dados temporários
+- **Instalação** - Pacotes necessários
+- **Configuração Global** - RedisModule comum e reutilizável
+- **Uso Básico** - Cache simples com get/set/del
+- **Operações** - SET, GET, DEL, FLUSH
+- **Contador Compartilhado** - Incremento atômico para escala horizontal
+- **Rate Limiting** - Controlar requisições por usuário/IP
+- **Cache de API Externa** - Reduzir latência e custos
+- **Sessões Compartilhadas** - Múltiplas instâncias
+- **Nomenclatura de Chaves** - Padrões hierárquicos
+- **Invalidação em Massa** - Helper com patterns
+- **Docker Compose** - Setup local
+- **Boas Práticas** - TTL, prefixos, invalidação, segurança
+- **Checklist** - Verificação de implementação
+- **Troubleshooting** - Problemas comuns
+
+### RabbitMQ - `./como-usar-rabbitmq-backend.md`
+
+- **Quando Usar** - Processamento assíncrono, tarefas demoradas, retry automático, background jobs
+- **Instalação** - Pacotes @nestjs/microservices
+- **Arquitetura Topic Exchange** - UMA única exchange `app_exchange` com roteamento por tópicos
+- **Padrão de Nomenclatura** - `<module>.<resource>.<action>` (ex: order.order.created)
+- **Configuração Global** - RabbitMQModule comum e reutilizável
+- **Producer** - Publicar mensagens com tópico
+- **Consumer** - Subscrever a tópicos específicos com @EventPattern
+- **Wildcards** - Usar `*` (uma palavra) e `#` (zero ou mais palavras)
+- **Exemplos por Módulo** - Order, Payment, Notification, Product, User, Report
+- **Dead Letter Queue** - Retentativas e mensagens que falharam
+- **Processamento em Lote** - Agrupar múltiplas mensagens por tópico
+- **Múltiplos Consumers** - Escala horizontal com round-robin
+- **Controle de Retries** - Limitar tentativas e backoff exponencial
+- **Docker Compose** - Setup local com Management UI
+- **Boas Práticas** - Padrão de nomenclatura, exchange única, ACK/NACK, logging com routing key
+- **Diferenças Redis vs RabbitMQ** - Quando usar cada um
+- **Checklist** - Verificação de implementação
+- **Troubleshooting** - Problemas comuns
+
 ### Tratamento de Datas - `./como-tratar-datas-backend-frontend.md`
 
 - **Regra de Ouro** - Banco UTC, Backend UTC, Frontend converte na exibição
@@ -403,10 +442,22 @@
 | API Externa | [Integração API Externa](./como-integrar-com-api-externa-backend.md) |
 | HTTP Client | [Integração API Externa](./como-integrar-com-api-externa-backend.md) |
 | Webhooks | [Integração API Externa](./como-integrar-com-api-externa-backend.md#webhooks), [API Key](./como-deve-funcionar-api-key-autenticacao.md) |
-| Retry | [Integração API Externa](./como-integrar-com-api-externa-backend.md#timeout-e-retry) |
 | Circuit Breaker | [Integração API Externa](./como-integrar-com-api-externa-backend.md#circuit-breaker-pattern) |
-| Cache | [Integração API Externa](./como-integrar-com-api-externa-backend.md#cache-de-respostas) |
-| Rate Limit | [Integração API Externa](./como-integrar-com-api-externa-backend.md#tratamento-de-rate-limiting) |
+| Cache | [Redis](./como-usar-redis-backend.md), [Integração API Externa](./como-integrar-com-api-externa-backend.md#cache-de-respostas) |
+| Redis | [Como usar Redis](./como-usar-redis-backend.md) |
+| RabbitMQ | [Como usar RabbitMQ](./como-usar-rabbitmq-backend.md) |
+| Topic Exchange | [RabbitMQ - Topic Exchange](./como-usar-rabbitmq-backend.md#arquitetura-topic-exchange) |
+| Filas | [RabbitMQ](./como-usar-rabbitmq-backend.md) |
+| Background Jobs | [RabbitMQ](./como-usar-rabbitmq-backend.md#quando-usar-rabbitmq) |
+| Eventos | [RabbitMQ - Tópicos](./como-usar-rabbitmq-backend.md#padrão-de-nomenclatura-de-tópicos) |
+| Retry | [RabbitMQ - Retentativas](./como-usar-rabbitmq-backend.md#2-controle-de-retries-com-contador), [API Externa](./como-integrar-com-api-externa-backend.md#timeout-e-retry) |
+| Dead Letter Queue | [RabbitMQ - DLQ](./como-usar-rabbitmq-backend.md#1-dead-letter-queue-dlq-com-topic-exchange) |
+| Processamento Assíncrono | [RabbitMQ](./como-usar-rabbitmq-backend.md#quando-usar-rabbitmq) |
+| Wildcards | [RabbitMQ - Pattern Matching](./como-usar-rabbitmq-backend.md#2-consumer-com-pattern-matching-wildcards) |
+| Rate Limit | [Redis - Rate Limiting](./como-usar-redis-backend.md#2-rate-limiting), [API Externa](./como-integrar-com-api-externa-backend.md#tratamento-de-rate-limiting) |
+| Escala Horizontal | [Redis](./como-usar-redis-backend.md#quando-usar-redis), [RabbitMQ](./como-usar-rabbitmq-backend.md) |
+| Sessões | [Redis - Sessões Compartilhadas](./como-usar-redis-backend.md#4-sessões-compartilhadas) |
+| Contador | [Redis - Contador Atômico](./como-usar-redis-backend.md#1-contador-compartilhado-incremento-atômico) |
 
 ## 🗺️ Navegação por Nível
 
@@ -425,10 +476,12 @@
 2. [Criar Entity](./como-criar-uma-entity-typeorm-backend.md#estrutura-básica)
 3. [Criar Migration](./como-criar-migration-backend.md#passo-a-passo-criar-migration-manual)
 4. [Documentar Swagger](./como-documentar-swagger-backend.md#documentar-controllers)
-5. [Integrar API Externa](./como-integrar-com-api-externa-backend.md#configuração-do-cliente-http)
-6. [Tratamento de Datas](./como-tratar-datas-backend-frontend.md#princípios-fundamentais)
-7. [Criar Componentes](./como-criar-componentes-comum-frontend.md#exemplos-práticos)
-8. [Rotas Frontend](./como-funciona-as-rotas-no-frontend.md#configuração-centralizada)
+5. [Redis - Cache e Escala Horizontal](./como-usar-redis-backend.md#configuração-global-common-module)
+6. [RabbitMQ - Filas e Background Jobs](./como-usar-rabbitmq-backend.md#configuração-global-common-module)
+7. [Integrar API Externa](./como-integrar-com-api-externa-backend.md#configuração-do-cliente-http)
+8. [Tratamento de Datas](./como-tratar-datas-backend-frontend.md#princípios-fundamentais)
+9. [Criar Componentes](./como-criar-componentes-comum-frontend.md#exemplos-práticos)
+10. [Rotas Frontend](./como-funciona-as-rotas-no-frontend.md#configuração-centralizada)
 
 ### 🌳 Avançado
 
@@ -453,7 +506,9 @@
 │   ├── como-integrar-com-api-externa-backend.md            (12 seções)
 │   ├── como-documentar-swagger-backend.md                  (10 seções)
 │   ├── como-usar-validacao-de-dados-api-backend.md         (15 tópicos)
-│   └── como-tratar-datas-backend-frontend.md               (12 seções + exemplos)
+│   ├── como-tratar-datas-backend-frontend.md               (12 seções + exemplos)
+│   ├── como-usar-redis-backend.md                          (15 seções + exemplos)
+│   └── como-usar-rabbitmq-backend.md                       (17 seções + exemplos)
 │
 ├── Backend - Banco de Dados
 │   ├── como-criar-uma-entity-typeorm-backend.md            (14 tópicos)
@@ -479,11 +534,11 @@
 
 ## 📊 Estatísticas
 
-- **Total de documentos**: 20
-- **Backend**: 13 documentos (157 seções)
+- **Total de documentos**: 22
+- **Backend**: 15 documentos (189 seções)
 - **Frontend**: 4 documentos (53 seções)
 - **Stack**: 2 documentos (21 seções)
-- **Total de seções**: 231 seções documentadas
+- **Total de seções**: 263 seções documentadas
 
 
 ---

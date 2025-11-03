@@ -10,6 +10,14 @@
       ],
       "env": {
       }
+    },
+    "redis": {
+      "command": "npx",
+      "args": ["@liangshanli/mcp-server-redis"],
+      "env": {
+        "HOST": "localhost",
+        "PORT": "6379"
+      }
     }
   }
 }

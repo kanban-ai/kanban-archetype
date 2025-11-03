@@ -652,15 +652,14 @@ export class YahooProviderService {
 
 ### 2. Cache com Redis (Recomendado para produção)
 
-```bash
-npm install @nestjs/cache-manager cache-manager cache-manager-redis-store redis
-```
+> **📖 Documentação completa**: Veja [como-usar-redis-backend.md](./como-usar-redis-backend.md) para configuração global, casos de uso avançados e boas práticas.
+
+**Resumo rápido para cache de API externa:**
 
 ```typescript
-import { Injectable } from '@nestjs/common';
-import { Cache } from 'cache-manager';
+import { Injectable, Inject } from '@nestjs/common';
 import { CACHE_MANAGER } from '@nestjs/cache-manager';
-import { Inject } from '@nestjs/common';
+import { Cache } from 'cache-manager';
 
 @Injectable()
 export class YahooProviderService {
@@ -670,7 +669,7 @@ export class YahooProviderService {
   ) {}
 
   async getQuote(symbol: string): Promise<any> {
-    const cacheKey = `quote:${symbol}`;
+    const cacheKey = `cache:api:yahoo:quote:${symbol}`;
 
     // Busca do cache
     const cached = await this.cacheManager.get(cacheKey);
@@ -688,6 +687,8 @@ export class YahooProviderService {
   }
 }
 ```
+
+**Nota:** O `CACHE_MANAGER` deve estar disponível globalmente através do `RedisModule` configurado em `src/common/redis/`. Consulte o guia de Redis para setup inicial.
 
 ## Tratamento de Rate Limiting
 
@@ -1178,7 +1179,7 @@ timeout: 10000 // 10 segundos
 ### 5. Cache inteligente
 - Cachear respostas que mudam pouco
 - Usar TTL apropriado
-- Considerar Redis para produção
+- **Use Redis para produção** - veja [como-usar-redis-backend.md](./como-usar-redis-backend.md)
 
 ### 6. Circuit Breaker
 - Proteger aplicação de APIs instáveis
