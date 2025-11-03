@@ -395,15 +395,20 @@ export class ProductService {
 | Elemento | Convenção | Regras | Exemplo |
 |----------|-----------|--------|---------|
 | Classe Entity | PascalCase | Singular | `Product`, `UserProfile` |
-| Tabela no Banco | snake_case | Minúscula + Plural | `products`, `user_profiles` |
-| Coluna | snake_case | Minúscula | `user_id`, `created_at` |
+| Tabela no Banco | snake_case | Minúscula + Plural + **Inglês** | `products`, `user_profiles` |
+| Coluna | snake_case | Minúscula + **Inglês** | `user_id`, `created_at` |
 | Arquivo | kebab-case | Singular + `.entity.ts` | `product.entity.ts` |
 
 **Regras de Nomenclatura:**
 - **Entity (classe)**: Sempre em **PascalCase** e no **singular** (ex: `Product`, `User`, `Category`)
-- **Tabela (banco)**: Sempre em **snake_case minúscula** e no **plural** (ex: `products`, `users`, `categories`)
-- **Colunas**: Sempre em **snake_case minúscula** (ex: `created_at`, `user_id`, `product_name`)
+- **Tabela (banco)**: Sempre em **snake_case minúscula** e no **plural** e em **inglês** (ex: `products`, `users`, `categories`)
+- **Colunas**: Sempre em **snake_case minúscula** e em **inglês** (ex: `created_at`, `user_id`, `product_name`)
 - **Arquivo**: Sempre em **kebab-case** no **singular** com sufixo `.entity.ts` (ex: `product.entity.ts`)
+
+**⚠️ IMPORTANTE - Idioma:**
+- **Tabelas e colunas**: SEMPRE em **inglês** (ex: `products`, `user_id`, `created_at`)
+- **Evite**: Nomes em português como `produtos`, `id_usuario`, `data_criacao`
+- **Motivo**: Padronização internacional, compatibilidade com convenções da comunidade, melhor integração com ORMs e ferramentas
 
 ### Exemplo Completo
 

@@ -446,7 +446,31 @@ export class ComplexMigration1234567890004 implements MigrationInterface {
 }
 ```
 
-### 8. NUNCA crie triggers ou funções no banco de dados
+### 8. Use nomenclatura em inglês para tabelas e colunas
+
+**⚠️ IMPORTANTE**: Todas as tabelas e colunas devem ter nomes em **inglês**, seguindo snake_case minúscula.
+
+**❌ NÃO FAZER**:
+```sql
+CREATE TABLE produtos (
+  id_produto INT PRIMARY KEY,
+  nome_produto VARCHAR(255),
+  data_criacao TIMESTAMPTZ
+);
+```
+
+**✅ FAZER**:
+```sql
+CREATE TABLE products (
+  product_id INT PRIMARY KEY,
+  product_name VARCHAR(255),
+  created_at TIMESTAMPTZ
+);
+```
+
+**Motivo**: Padronização internacional, compatibilidade com convenções da comunidade, melhor integração com ORMs e ferramentas.
+
+### 9. NUNCA crie triggers ou funções no banco de dados
 
 **IMPORTANTE**: Toda a lógica de negócio deve estar na aplicação (backend), NUNCA no banco de dados.
 
