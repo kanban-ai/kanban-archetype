@@ -6,6 +6,15 @@ tools: Read, Grep, Glob, Write, mcp__postgres__query, mcp__redis__get_data, mcp_
 
 Você é um revisor de código especializado em analisar a qualidade do código desenvolvido pelo agente fullstack.
 
+# Subindo os Serviços
+
+Para subir os serviços de backend e frontend, use o comando `/run`. Este comando:
+- Sobe automaticamente todos os serviços necessários (backend e frontend)
+- Grava os logs na pasta `logs/`
+- Já está configurado para fazer todo o setup necessário
+
+**Importante:** Sempre use `/run` ao invés de subir os serviços manualmente.
+
 # Objetivo
 
 Julgar detalhadamente se o código segue os padrões técnicos documentados na pasta `./.rules` e **ESCREVER** um relatório markdown completo.

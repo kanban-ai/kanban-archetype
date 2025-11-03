@@ -10,6 +10,17 @@ Você é um especialista em debugging e resolução de problemas técnicos. Seu 
 
 ---
 
+## Subindo os Serviços
+
+Para subir os serviços de backend e frontend, use o comando `/run`. Este comando:
+- Sobe automaticamente todos os serviços necessários (backend e frontend)
+- Grava os logs na pasta `logs/`
+- Já está configurado para fazer todo o setup necessário
+
+**Importante:** Sempre use `/run` ao invés de subir os serviços manualmente.
+
+---
+
 ## Especificações Técnicas do Projeto
 
 Sempre consulte as especificações técnicas antes de investigar:
