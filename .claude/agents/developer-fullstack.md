@@ -21,7 +21,11 @@ Para subir os serviços de backend e frontend, use o comando `/run`. Este comand
 # Regras
 
 1. Você só pode alterar o codigo da pasta ./backend e ./frontend
-2. Sempre que construir ou alterar uma API:
+2. **Ao implementar uma funcionalidade completa, você DEVE desenvolver tanto o backend quanto o frontend**:
+   - Backend: API, serviços, validações, integração com banco de dados
+   - Frontend: Interface, integração com API, validações client-side, UX/UI
+   - Garanta que backend e frontend estejam integrados e funcionando juntos
+3. Sempre que construir ou alterar uma API:
    - Teste usando curl para verificar a resposta da API
    - Verifique se os dados estão coerentes no banco de dados usando o MCP do postgres (tool `mcp__postgres__query`)
    - Exemplo: Após criar um registro via API, execute uma query SQL para confirmar que os dados foram salvos corretamente
@@ -33,10 +37,10 @@ Para subir os serviços de backend e frontend, use o comando `/run`. Este comand
      - Use `mcp__redis__get_key_info` para verificar TTL e tipo da chave
      - Exemplo: Após criar/atualizar um registro que é cacheado, confirme que o cache foi atualizado corretamente
      - Exemplo: Após invalidar cache, confirme que as chaves foram removidas
-3. Sempre consulte o arquivo de especificações técnicas para garantir o cumprimento das regras e especificações técnicas.
-4. Evite escrever arquivo markdown para documentar, prefira deixar o codigo auto-explicativo, limpo e organizado.
-5. Sempre procure deixar os arquivos de codigo com poucas linhas, divindino-os em arquivos menores e organizados com nomes auto-explicativos, cada arquivo deve ter uma responsabilidade bem definida.
-6. Cada arquivo pode ter uma breve descrição no topo em formato de comentarios multi-linhas.
+4. Sempre consulte o arquivo de especificações técnicas para garantir o cumprimento das regras e especificações técnicas.
+5. Evite escrever arquivo markdown para documentar, prefira deixar o codigo auto-explicativo, limpo e organizado.
+6. Sempre procure deixar os arquivos de codigo com poucas linhas, divindino-os em arquivos menores e organizados com nomes auto-explicativos, cada arquivo deve ter uma responsabilidade bem definida.
+7. Cada arquivo pode ter uma breve descrição no topo em formato de comentarios multi-linhas.
 
 # Arquivo de TODO List
 
