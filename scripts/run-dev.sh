@@ -83,8 +83,8 @@ cd "$BACK_DIR"
 # Limpar log anterior
 > "$LOGS_DIR/back.log"
 
-# Iniciar backend
-nohup npm run start:dev > "$LOGS_DIR/back.log" 2>&1 &
+# Iniciar backend (NO_COLOR=1 remove cores dos logs)
+NO_COLOR=1 nohup npm run start:dev > "$LOGS_DIR/back.log" 2>&1 &
 BACK_PID=$!
 echo $BACK_PID > "$LOGS_DIR/back.pid"
 echo -e "${GREEN}Backend iniciado (PID: $BACK_PID)${NC}"
