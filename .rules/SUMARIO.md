@@ -105,13 +105,28 @@
 - **Passo 2: Criar Entity** - Modelo de dados TypeORM
 - **Passo 3: Criar DTOs** - Create e Update com validação
 - **Passo 4: Implementar Service** - Lógica de negócio e CRUD
-- **Passo 5: Implementar Controller** - Rotas REST
+- **Passo 5: Implementar Controller** - Rotas REST **com versionamento v1**
 - **Passo 6: Configurar Module** - Registro de dependências
 - **Passo 7: Registrar no AppModule** - Importação global
 - **Passo 8: Criar Migration** - Versionamento do schema
 - **Passo 9: Testar API** - Via Swagger ou curl
 - **Recursos Avançados** - Paginação, filtros, relacionamentos
 - **Checklist de Implementação** - Lista completa de verificação
+
+### Versionamento de API - `./como-versionar-api-backend.md`
+
+- **Por que versionar** - Evitar quebrar integrações, permitir evolução
+- **Quando versionar** - Breaking changes, mudanças de contrato
+- **Estratégias** - URL (recomendado), Header, Query Parameter
+- **Implementação NestJS** - VersioningType.URI
+- **Estrutura de pastas** - Organização por versão (v1/, v2/)
+- **Exemplo completo** - Evolução de V1 para V2
+- **Compartilhar código** - Adapter Pattern, Services base
+- **Swagger por versão** - Documentação separada
+- **Deprecação** - Headers de aviso, período de transição
+- **Boas práticas** - Sempre começar com v1, documentar mudanças
+- **Frontend** - Consumir APIs versionadas
+- **Testes** - Testar múltiplas versões
 
 ### Integração com API Externa - `./como-integrar-com-api-externa-backend.md`
 
@@ -424,6 +439,10 @@
 | JWT | [Autenticação](./como-deve-funcionar-autenticacao.md) |
 | Swagger | [Documentação API](./como-documentar-swagger-backend.md) |
 | Validação | [Dados API](./como-usar-validacao-de-dados-api-backend.md) |
+| Versionamento | [Versionamento de API](./como-versionar-api-backend.md) |
+| API Versioning | [Versionamento de API](./como-versionar-api-backend.md) |
+| v1 v2 | [Versionamento de API](./como-versionar-api-backend.md) |
+| Breaking Changes | [Versionamento de API](./como-versionar-api-backend.md) |
 | React Router | [Rotas Frontend](./como-funciona-as-rotas-no-frontend.md) |
 | Axios | [Consumir API](./como-consumir-api-frontend.md), [API Externa Backend](./como-integrar-com-api-externa-backend.md) |
 | Tailwind | [Setup Frontend](./como-iniciar-fazer-0-setup-do-frontend.md), [Componentes](./como-criar-componentes-comum-frontend.md) |
@@ -473,15 +492,16 @@
 ### 🌿 Intermediário
 
 1. [Criar API Backend](./como-criar-api-backend.md#visão-geral)
-2. [Criar Entity](./como-criar-uma-entity-typeorm-backend.md#estrutura-básica)
-3. [Criar Migration](./como-criar-migration-backend.md#passo-a-passo-criar-migration-manual)
-4. [Documentar Swagger](./como-documentar-swagger-backend.md#documentar-controllers)
-5. [Redis - Cache e Escala Horizontal](./como-usar-redis-backend.md#configuração-global-common-module)
-6. [RabbitMQ - Filas e Background Jobs](./como-usar-rabbitmq-backend.md#configuração-global-common-module)
-7. [Integrar API Externa](./como-integrar-com-api-externa-backend.md#configuração-do-cliente-http)
-8. [Tratamento de Datas](./como-tratar-datas-backend-frontend.md#princípios-fundamentais)
-9. [Criar Componentes](./como-criar-componentes-comum-frontend.md#exemplos-práticos)
-10. [Rotas Frontend](./como-funciona-as-rotas-no-frontend.md#configuração-centralizada)
+2. [Versionamento de API](./como-versionar-api-backend.md#por-que-versionar-apis)
+3. [Criar Entity](./como-criar-uma-entity-typeorm-backend.md#estrutura-básica)
+4. [Criar Migration](./como-criar-migration-backend.md#passo-a-passo-criar-migration-manual)
+5. [Documentar Swagger](./como-documentar-swagger-backend.md#documentar-controllers)
+6. [Redis - Cache e Escala Horizontal](./como-usar-redis-backend.md#configuração-global-common-module)
+7. [RabbitMQ - Filas e Background Jobs](./como-usar-rabbitmq-backend.md#configuração-global-common-module)
+8. [Integrar API Externa](./como-integrar-com-api-externa-backend.md#configuração-do-cliente-http)
+9. [Tratamento de Datas](./como-tratar-datas-backend-frontend.md#princípios-fundamentais)
+10. [Criar Componentes](./como-criar-componentes-comum-frontend.md#exemplos-práticos)
+11. [Rotas Frontend](./como-funciona-as-rotas-no-frontend.md#configuração-centralizada)
 
 ### 🌳 Avançado
 
@@ -503,6 +523,7 @@
 │
 ├── Backend - API
 │   ├── como-criar-api-backend.md                           (11 passos + extras)
+│   ├── como-versionar-api-backend.md                       (12 seções + exemplos)
 │   ├── como-integrar-com-api-externa-backend.md            (12 seções)
 │   ├── como-documentar-swagger-backend.md                  (10 seções)
 │   ├── como-usar-validacao-de-dados-api-backend.md         (15 tópicos)
@@ -534,11 +555,11 @@
 
 ## 📊 Estatísticas
 
-- **Total de documentos**: 22
-- **Backend**: 15 documentos (189 seções)
+- **Total de documentos**: 23
+- **Backend**: 16 documentos (201 seções)
 - **Frontend**: 4 documentos (53 seções)
 - **Stack**: 2 documentos (21 seções)
-- **Total de seções**: 263 seções documentadas
+- **Total de seções**: 275 seções documentadas
 
 
 ---

@@ -31,7 +31,7 @@ bootstrap();
 
 ```typescript
 import { NestFactory, Reflector } from '@nestjs/core';
-import { ValidationPipe } from '@nestjs/common';
+import { ValidationPipe, VersioningType } from '@nestjs/common';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import { NestExpressApplication } from '@nestjs/platform-express';
 import { join } from 'path';
@@ -45,13 +45,19 @@ async function bootstrap() {
   // 2. Global Prefix (todas rotas começam com /api)
   app.setGlobalPrefix('api');
 
-  // 3. CORS
+  // 3. Versionamento de API (IMPORTANTE: sempre use desde o início)
+  app.enableVersioning({
+    type: VersioningType.URI,
+    defaultVersion: '1',
+  });
+
+  // 4. CORS
   app.enableCors({
     origin: process.env.FRONTEND_URL || 'http://localhost:5173',
     credentials: true,
   });
 
-  // 4. Servir arquivos estáticos do frontend
+  // 5. Servir arquivos estáticos do frontend
   // Em produção: /app/dist/src -> /app/public (2 níveis acima)
   // Em desenvolvimento: /app/back/dist/src -> /app/back/public (2 níveis acima)
   const publicPath = join(__dirname, '..', '..', 'public');
@@ -60,7 +66,7 @@ async function bootstrap() {
     prefix: '/',
   });
 
-  // 5. Fallback para SPA (React Router)
+  // 6. Fallback para SPA (React Router)
   app.use((req: any, res: any, next: any) => {
     // Se NÃO for rota de API, servir o index.html
     if (!req.path.startsWith('/api')) {
@@ -69,7 +75,7 @@ async function bootstrap() {
     next();
   });
 
-  // 6. Validation Pipe Global
+  // 7. Validation Pipe Global
   app.useGlobalPipes(
     new ValidationPipe({
       whitelist: true,                    // Remove props não definidas
@@ -81,11 +87,11 @@ async function bootstrap() {
     }),
   );
 
-  // 7. Guards Globais (JWT Auth)
+  // 8. Guards Globais (JWT Auth)
   const reflector = app.get(Reflector);
   app.useGlobalGuards(new JwtAuthGuard(reflector));
 
-  // 8. Swagger Documentation
+  // 9. Swagger Documentation
   const config = new DocumentBuilder()
     .setTitle('API Documentation')
     .setDescription('Documentação completa da API')
@@ -121,7 +127,7 @@ async function bootstrap() {
     },
   });
 
-  // 9. Iniciar servidor
+  // 10. Iniciar servidor
   const port = process.env.PORT ?? 3000;
   await app.listen(port);
 
@@ -131,6 +137,8 @@ async function bootstrap() {
 
 bootstrap();
 ```
+
+> **IMPORTANTE**: Veja [Como versionar API](./como-versionar-api-backend.md) para entender como funciona o versionamento.
 
 ## Explicação de Cada Seção
 
@@ -160,9 +168,9 @@ Adiciona prefixo a todas as rotas:
 app.setGlobalPrefix('api');
 ```
 
-**Resultado**:
-- `/products` → `/api/products`
-- `/users` → `/api/users`
+**Resultado** (com versionamento):
+- `/products` → `/api/v1/products`
+- `/users` → `/api/v1/users`
 
 **Excluir rotas**:
 ```typescript
@@ -171,7 +179,29 @@ app.setGlobalPrefix('api', {
 });
 ```
 
-### 3. CORS
+### 3. Versionamento de API
+
+Habilita versionamento por URL (URI):
+
+```typescript
+app.enableVersioning({
+  type: VersioningType.URI,
+  defaultVersion: '1',
+});
+```
+
+**Resultado**:
+- Controllers com `@Controller({ path: 'users', version: '1' })` → `/api/v1/users`
+- Controllers com `@Controller({ path: 'users', version: '2' })` → `/api/v2/users`
+
+**Por que sempre usar desde o início?**
+- Evita quebrar integrações quando precisar fazer breaking changes
+- Permite evoluir a API sem impactar clientes existentes
+- É profissional e demonstra maturidade
+
+Veja mais em: [Como versionar API](./como-versionar-api-backend.md)
+
+### 4. CORS
 
 Habilita requisições cross-origin:
 
@@ -190,7 +220,7 @@ app.enableCors({
 });
 ```
 
-### 4. Servir Arquivos Estáticos
+### 5. Servir Arquivos Estáticos
 
 Serve os arquivos buildados do React/frontend:
 
@@ -224,7 +254,7 @@ projeto/
 - `'..'` sobe para `/projeto`
 - Final: `/projeto/public`
 
-### 5. Fallback para SPA
+### 6. Fallback para SPA
 
 Garante que React Router funcione corretamente:
 
@@ -242,7 +272,7 @@ app.use((req: any, res: any, next: any) => {
 - Rota `/products` → Serve `index.html` (React Router assume)
 - Rota `/users/123` → Serve `index.html` (React Router assume)
 
-### 6. Validation Pipe
+### 7. Validation Pipe
 
 Valida automaticamente todos os DTOs:
 
@@ -265,7 +295,7 @@ app.useGlobalPipes(
 - `transform: true` - Converte tipos (string → number)
 - `enableImplicitConversion: false` - Desabilita conversão automática para evitar bugs
 
-### 7. Guards Globais
+### 8. Guards Globais
 
 Protege todas as rotas com JWT (exceto as marcadas com `@Public()`):
 
@@ -274,7 +304,7 @@ const reflector = app.get(Reflector);
 app.useGlobalGuards(new JwtAuthGuard(reflector));
 ```
 
-### 8. Swagger
+### 9. Swagger
 
 Documenta a API automaticamente:
 
@@ -317,7 +347,7 @@ SwaggerModule.setup('api/docs', app, document, {
 
 **Acesso**: `http://localhost:3000/api/docs`
 
-### 9. Listen
+### 10. Listen
 
 Inicia o servidor HTTP:
 
@@ -415,6 +445,7 @@ X_API_KEY=sua_api_key_secreta
 
 - [ ] NestFactory.create com `NestExpressApplication`
 - [ ] Global prefix `/api`
+- [ ] **Versionamento habilitado (`VersioningType.URI`) com `defaultVersion: '1'`**
 - [ ] CORS habilitado
 - [ ] Servir arquivos estáticos (`useStaticAssets`)
 - [ ] Fallback SPA para React Router

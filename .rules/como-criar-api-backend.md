@@ -6,11 +6,13 @@
 
 Este guia mostra como criar um CRUD completo seguindo os padrões do projeto, incluindo:
 - Módulo NestJS
-- Controller (rotas HTTP)
+- Controller (rotas HTTP) **com versionamento v1**
 - Service (lógica de negócio)
 - Entity (modelo de dados)
 - DTOs (validação)
 - Documentação Swagger
+
+**IMPORTANTE**: Todas as APIs devem começar com versionamento `/v1/` desde o início. Veja [Como versionar API](./como-versionar-api-backend.md) para entender o porquê.
 
 ## Passo 1: Gerar o Resource com NestJS CLI
 
@@ -227,7 +229,7 @@ import { UpdateNomeDoModuloDto } from './dto/update-nome-do-modulo.dto';
 
 @ApiTags('nome-do-modulo')
 @ApiBearerAuth()
-@Controller('nome-do-modulo')
+@Controller({ path: 'nome-do-modulo', version: '1' })
 export class NomeDoModuloController {
   constructor(private readonly service: NomeDoModuloService) {}
 
@@ -277,6 +279,7 @@ export class NomeDoModuloController {
 3. **Injete `@Request() req`**: Acessa dados do usuário autenticado
 4. **Use verbos HTTP corretos**: POST, GET, PATCH, DELETE
 5. **Organize rotas RESTful**: `/recurso`, `/recurso/:id`
+6. **Sempre use versionamento**: `@Controller({ path: 'recurso', version: '1' })`
 
 ## Passo 6: Configurar o Module
 
@@ -378,27 +381,27 @@ npm run typeorm -- migration:run
 
 ```bash
 # Criar
-curl -X POST http://localhost:3000/api/nome-do-modulo \
+curl -X POST http://localhost:3000/api/v1/nome-do-modulo \
   -H "Authorization: Bearer SEU_TOKEN" \
   -H "Content-Type: application/json" \
   -d '{"nome": "Teste", "descricao": "Descrição teste"}'
 
 # Listar
-curl -X GET http://localhost:3000/api/nome-do-modulo \
+curl -X GET http://localhost:3000/api/v1/nome-do-modulo \
   -H "Authorization: Bearer SEU_TOKEN"
 
 # Buscar por ID
-curl -X GET http://localhost:3000/api/nome-do-modulo/1 \
+curl -X GET http://localhost:3000/api/v1/nome-do-modulo/1 \
   -H "Authorization: Bearer SEU_TOKEN"
 
 # Atualizar
-curl -X PATCH http://localhost:3000/api/nome-do-modulo/1 \
+curl -X PATCH http://localhost:3000/api/v1/nome-do-modulo/1 \
   -H "Authorization: Bearer SEU_TOKEN" \
   -H "Content-Type: application/json" \
   -d '{"nome": "Teste Atualizado"}'
 
 # Deletar
-curl -X DELETE http://localhost:3000/api/nome-do-modulo/1 \
+curl -X DELETE http://localhost:3000/api/v1/nome-do-modulo/1 \
   -H "Authorization: Bearer SEU_TOKEN"
 ```
 
@@ -490,11 +493,12 @@ async findOne(id: number, userId: number) {
 - [ ] Entity criada estendendo SuperEntity
 - [ ] DTOs criados com validação
 - [ ] Service implementado com CRUD completo
-- [ ] Controller implementado com rotas REST
+- [ ] Controller implementado com rotas REST **e versionamento v1**
 - [ ] Module configurado e importado no AppModule
 - [ ] Migration criada e executada
 - [ ] Documentação Swagger adicionada
 - [ ] Validação de userId em todas as operações
+- [ ] Versionamento configurado (ver [Como versionar API](./como-versionar-api-backend.md))
 
 ## Padrão de Nomenclatura
 

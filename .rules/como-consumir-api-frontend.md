@@ -11,8 +11,11 @@
 ```typescript
 import axios from 'axios';
 
+// Versão da API (centralize aqui)
+const API_VERSION = 'v1';
+
 const api = axios.create({
-  baseURL: import.meta.env.VITE_API_URL || 'http://localhost:3000/api',
+  baseURL: `${import.meta.env.VITE_API_URL || 'http://localhost:3000/api'}/${API_VERSION}`,
   headers: {
     'Content-Type': 'application/json',
   },
@@ -54,6 +57,8 @@ export default api;
 ```env
 VITE_API_URL=http://localhost:3000/api
 ```
+
+> **IMPORTANTE**: A versão da API (`v1`) é configurada no `api.ts` e aplicada automaticamente em todas as requisições. Se o backend criar uma v2, basta alterar `API_VERSION = 'v2'` em um único lugar. Veja [Como versionar API](./como-versionar-api-backend.md) para mais detalhes.
 
 ## Criar Services
 

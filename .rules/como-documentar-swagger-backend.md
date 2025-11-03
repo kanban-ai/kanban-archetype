@@ -58,7 +58,7 @@ import {
 ```typescript
 @ApiTags('products') // Agrupa endpoints
 @ApiBearerAuth() // Requer token JWT
-@Controller('products')
+@Controller({ path: 'products', version: '1' })
 export class ProductController {
 
   @Post()
@@ -256,11 +256,11 @@ Agrupa endpoints relacionados:
 
 ```typescript
 @ApiTags('products')
-@Controller('products')
+@Controller({ path: 'products', version: '1' })
 export class ProductController {}
 
 @ApiTags('categories')
-@Controller('categories')
+@Controller({ path: 'categories', version: '1' })
 export class CategoryController {}
 ```
 
@@ -270,7 +270,7 @@ Indica que endpoint requer token JWT:
 
 ```typescript
 @ApiBearerAuth()
-@Controller('products')
+@Controller({ path: 'products', version: '1' })
 export class ProductController {}
 ```
 
@@ -471,6 +471,7 @@ findAll() {
 ## Checklist de Documentação
 
 Para cada endpoint:
+- [ ] **@Controller com versionamento (`version: '1'`)**
 - [ ] @ApiTags no controller
 - [ ] @ApiBearerAuth (se protegido)
 - [ ] @ApiOperation (summary)
@@ -479,6 +480,8 @@ Para cada endpoint:
 - [ ] @ApiQuery para query parameters
 - [ ] @ApiProperty em todos os campos dos DTOs
 - [ ] Exemplos em @ApiProperty
+
+> **IMPORTANTE**: Todas as APIs devem usar versionamento. Veja [Como versionar API](./como-versionar-api-backend.md).
 
 ## Dicas
 
