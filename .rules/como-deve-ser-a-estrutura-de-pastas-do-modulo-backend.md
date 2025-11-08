@@ -6,20 +6,20 @@
 
 ```
 src/modules/nome-do-modulo/
- nome-do-modulo.module.ts          # Configuração do módulo
- nome-do-modulo.controller.ts       # Rotas HTTP (endpoints)
- nome-do-modulo.service.ts          # Lógica de negócio principal
- entities/                          # Modelos de dados
-    nome-do-modulo.entity.ts
- dto/                               # Data Transfer Objects
-    create-nome-do-modulo.dto.ts
-    update-nome-do-modulo.dto.ts
- interfaces/                        # Contratos (opcional)
-    nome-do-modulo.interface.ts
- enums/                             # Enumerações (opcional)
-    nome-do-modulo-status.enum.ts
- services/                          # Sub-services (opcional)
-     nome-do-modulo-helper.service.ts
+> nome-do-modulo.module.ts          # Configuração do módulo
+> nome-do-modulo.controller.ts       # Rotas HTTP (endpoints)
+> nome-do-modulo.service.ts          # Lógica de negócio principal
+> entities/                          # Modelos de dados
+>   > nome-do-modulo.entity.ts
+> dto/                               # Data Transfer Objects
+>   > create-nome-do-modulo.dto.ts
+>   > update-nome-do-modulo.dto.ts
+> interfaces/                        # Contratos (opcional)
+>   > nome-do-modulo.interface.ts
+> enums/                             # Enumerações (opcional)
+>   > nome-do-modulo-status.enum.ts
+> services/                          # Sub-services (opcional)
+    > nome-do-modulo-helper.service.ts
 ```
 
 ## [Descrição dos Arquivos]()
@@ -149,13 +149,13 @@ Use pasta `services/` quando:
 
 ```
 src/modules/providers/
- providers.module.ts
- providers.service.ts           # Orquestrador
- providers.controller.ts
- services/
-     kinvo-provider.service.ts  # Integração Kinvo
-     yahoo-provider.service.ts  # Integração Yahoo
-     b3-provider.service.ts     # Integração B3
+> providers.module.ts
+> providers.service.ts           # Orquestrador
+> providers.controller.ts
+> services/
+    > kinvo-provider.service.ts  # Integração Kinvo
+    > yahoo-provider.service.ts  # Integração Yahoo
+    > b3-provider.service.ts     # Integração B3
 ```
 
 ```typescript
@@ -228,35 +228,35 @@ type: AlertType;
 
 ```
 src/modules/asset/
- asset.module.ts
- asset.controller.ts
- asset.service.ts
- entities/
-    asset.entity.ts
- dto/
-     create-asset.dto.ts
-     update-asset.dto.ts
+> asset.module.ts
+> asset.controller.ts
+> asset.service.ts
+> entities/
+>   > asset.entity.ts
+> dto/
+    > create-asset.dto.ts
+    > update-asset.dto.ts
 ```
 
 ### [Módulo Complexo (Rebalance)]()
 
 ```
 src/modules/rebalance/
- rebalance.module.ts
- rebalance.controller.ts
- rebalance.service.ts
- entities/
-    rebalance-recommendation.entity.ts
- dto/
-    analyze-rebalance.dto.ts
-    strategy.dto.ts
- services/
-    signal-engine.service.ts
-    portfolio-analyzer.service.ts
- interfaces/
-    strategy.interface.ts
- enums/
-     signal-type.enum.ts
+> rebalance.module.ts
+> rebalance.controller.ts
+> rebalance.service.ts
+> entities/
+>   > rebalance-recommendation.entity.ts
+> dto/
+>   > analyze-rebalance.dto.ts
+>   > strategy.dto.ts
+> services/
+>   > signal-engine.service.ts
+>   > portfolio-analyzer.service.ts
+> interfaces/
+>   > strategy.interface.ts
+> enums/
+    > signal-type.enum.ts
 ```
 
 ## [Convenções de Nomenclatura]()
@@ -278,14 +278,14 @@ src/modules/rebalance/
 Mantenha tudo nos arquivos principais:
 ```
 modulo/
- modulo.module.ts
- modulo.controller.ts
- modulo.service.ts
- entities/
-    modulo.entity.ts
- dto/
-     create-modulo.dto.ts
-     update-modulo.dto.ts
+> modulo.module.ts
+> modulo.controller.ts
+> modulo.service.ts
+> entities/
+>   > modulo.entity.ts
+> dto/
+    > create-modulo.dto.ts
+    > update-modulo.dto.ts
 ```
 
 ### [Módulo Médio (300-1000 linhas)]()
@@ -293,13 +293,13 @@ modulo/
 Separe responsabilidades em sub-services:
 ```
 modulo/
- modulo.module.ts
- modulo.controller.ts
- modulo.service.ts
- entities/
- dto/
- services/
-     modulo-helper.service.ts
+> modulo.module.ts
+> modulo.controller.ts
+> modulo.service.ts
+> entities/
+> dto/
+> services/
+    > modulo-helper.service.ts
 ```
 
 ### [Módulo Grande (> 1000 linhas)]()
@@ -307,32 +307,32 @@ modulo/
 Subdivida completamente:
 ```
 modulo/
- modulo.module.ts
- modulo.controller.ts
- modulo.service.ts
- entities/
- dto/
- services/
- interfaces/
- enums/
- guards/
-     modulo-permission.guard.ts
+> modulo.module.ts
+> modulo.controller.ts
+> modulo.service.ts
+> entities/
+> dto/
+> services/
+> interfaces/
+> enums/
+> guards/
+    > modulo-permission.guard.ts
 ```
 
 ## [Localização dos Módulos]()
 
 ```
 back/src/
- app.module.ts          # Módulo raiz
- main.ts               # Entry point
- auth/                 # Autenticação (especial)
- common/               # Código compartilhado
- database/             # Configs e migrations
- modules/              # Módulos de domínio
-     asset/
-     wallet/
-     quote/
-     ...
+> app.module.ts          # Módulo raiz
+> main.ts               # Entry point
+> auth/                 # Autenticação (especial)
+> common/               # Código compartilhado
+> database/             # Configs e migrations
+> modules/              # Módulos de domínio
+    > asset/
+    > wallet/
+    > quote/
+    > ...
 ```
 
 ## [Dicas]()

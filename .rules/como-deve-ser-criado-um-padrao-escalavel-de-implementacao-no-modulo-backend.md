@@ -17,7 +17,7 @@ export class ProductService {
   async generatePDF() { /* ... */ } // Não deveria estar aqui
 }
 
-//  Bom - Responsabilidades separadas
+// > Bom - Responsabilidades separadas
 @Injectable()
 export class ProductService {
   constructor(
@@ -46,7 +46,7 @@ export class ProductService {
   async create() { /* ... */ }
 }
 
-//  Bom - Injetando dependências
+// > Bom - Injetando dependências
 @Injectable()
 export class ProductService {
   constructor(
