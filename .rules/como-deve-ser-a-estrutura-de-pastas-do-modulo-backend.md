@@ -10,18 +10,17 @@ Organização padrão de arquivos e pastas para módulos NestJS, seguindo conven
 src/modules/nome-do-modulo/
 > nome-do-modulo.module.ts          # Configuração do módulo
 > nome-do-modulo.controller.ts       # Rotas HTTP (endpoints)
-> nome-do-modulo.service.ts          # Lógica de negócio principal
+> nome-do-modulo.service.ts          # Lógica de negócio CRUD simples
 > entities/                          # Modelos de dados
 >   > nome-do-modulo.entity.ts
 > dto/                               # Data Transfer Objects
 >   > create-nome-do-modulo.dto.ts
 >   > update-nome-do-modulo.dto.ts
-> interfaces/                        # Contratos (opcional)
->   > nome-do-modulo.interface.ts
+> use-cases/                         # Use-Cases com regras complexas (opcional)
+>   > interfaces.ts                  # Interfaces segregadas
+>   > regras-negocio.usecase.ts      # Implementação do use-case
 > enums/                             # Enumerações (opcional)
->   > nome-do-modulo-status.enum.ts
-> services/                          # Sub-services (opcional)
-    > nome-do-modulo-helper.service.ts
+    > nome-do-modulo-status.enum.ts
 ```
 
 ## [Descrição dos Arquivos]()
@@ -80,7 +79,7 @@ export class NomeDoModuloController {
 
 ### [Service (*.service.ts)]()
 
-Contém a lógica de negócio:
+Contém a lógica de negócio CRUD simples. Para regras complexas, use Use-Cases:
 
 ```typescript
 import { Injectable } from '@nestjs/common';
@@ -94,12 +93,17 @@ export class NomeDoModuloService {
     private repository: Repository<NomeDoModulo>,
   ) {}
 
+  // CRUD simples permanece no service
   async create(dto: CreateDto, userId: number) {
     const entity = this.repository.create({ ...dto, userId });
     return await this.repository.save(entity);
   }
 
-  // Outros métodos...
+  async findAll(userId: number) {
+    return await this.repository.find({ where: { userId } });
+  }
+
+  // Para regras complexas, delegue para Use-Cases
 }
 ```
 
@@ -142,72 +146,51 @@ import { PartialType } from '@nestjs/swagger';
 export class UpdateNomeDoModuloDto extends PartialType(CreateNomeDoModuloDto) {}
 ```
 
-## [Quando Criar Sub-services]()
+## [Quando Criar Use-Cases]()
 
-Use pasta `services/` quando:
-- Lógica complexa que merece separação
-- Integração com APIs externas
-- Processamento pesado
-
-### [Exemplo]()
-
-```
-src/modules/providers/
-> providers.module.ts
-> providers.service.ts           # Orquestrador
-> providers.controller.ts
-> services/
-    > kinvo-provider.service.ts  # Integração Kinvo
-    > yahoo-provider.service.ts  # Integração Yahoo
-    > b3-provider.service.ts     # Integração B3
-```
-
-```typescript
-// providers.service.ts
-@Injectable()
-export class ProvidersService {
-  constructor(
-    private kinvoProvider: KinvoProviderService,
-    private yahooProvider: YahooProviderService,
-  ) {}
-
-  async syncQuotes(provider: string) {
-    if (provider === 'kinvo') {
-      return this.kinvoProvider.syncQuotes();
-    }
-    return this.yahooProvider.syncQuotes();
-  }
-}
-```
-
-## [Quando Usar Interfaces]()
-
-Use pasta `interfaces/` para:
-- Contratos de serviços
-- Tipos complexos compartilhados
-- Definição de comportamentos
+Use pasta `use-cases/` quando:
+- Regras de negócio complexas com múltiplas transações
+- Operações que envolvem múltiplas responsabilidades relacionadas
+- Necessidade de alta testabilidade e baixo acoplamento
 
 ### [Exemplo]()
 
+```
+src/modules/financeiro/
+> financeiro.module.ts
+> financeiro.controller.ts
+> financeiro.service.ts                    # CRUD simples
+> use-cases/
+    > interfaces.ts                        # Interfaces segregadas
+    > regras-financeiras.usecase.ts        # Lógica de negócio complexa
+```
+
 ```typescript
-// interfaces/provider.interface.ts
-export interface IQuoteProvider {
-  syncQuotes(assets: string[]): Promise<Quote[]>;
-  getQuote(symbol: string): Promise<Quote>;
+// use-cases/interfaces.ts
+export interface CalcularSaldoAtual {
+  calcularSaldoAtual(userId: number): Promise<number>;
 }
 
-// services/kinvo-provider.service.ts
+export interface ProcessarInvestimento {
+  processarInvestimento(userId: number, valor: number, tipo: string): Promise<boolean>;
+}
+
+// use-cases/regras-financeiras.usecase.ts
 @Injectable()
-export class KinvoProviderService implements IQuoteProvider {
-  async syncQuotes(assets: string[]): Promise<Quote[]> {
-    // Implementação
+export class RegrasFinanceirasUseCase
+  implements CalcularSaldoAtual, ProcessarInvestimento
+{
+  async calcularSaldoAtual(userId: number): Promise<number> {
+    // Implementação com múltiplas queries e regras
   }
 
-  async getQuote(symbol: string): Promise<Quote> {
-    // Implementação
+  async processarInvestimento(userId: number, valor: number, tipo: string): Promise<boolean> {
+    // Implementação com transações e validações complexas
   }
 }
 ```
+
+**Veja mais**: [Como criar Use-Cases](./como-criar-use-case-backend.md)
 
 ## [Quando Usar Enums]()
 
@@ -244,25 +227,24 @@ src/modules/asset/
     > update-asset.dto.ts
 ```
 
-### [Módulo Complexo (Rebalance)]()
+### [Módulo Complexo (Financeiro)]()
 
 ```
-src/modules/rebalance/
-> rebalance.module.ts
-> rebalance.controller.ts
-> rebalance.service.ts
+src/modules/financeiro/
+> financeiro.module.ts
+> financeiro.controller.ts
+> financeiro.service.ts
 > entities/
->   > rebalance-recommendation.entity.ts
+>   > transacao.entity.ts
 > dto/
->   > analyze-rebalance.dto.ts
->   > strategy.dto.ts
-> services/
->   > signal-engine.service.ts
->   > portfolio-analyzer.service.ts
-> interfaces/
->   > strategy.interface.ts
+>   > create-transacao.dto.ts
+>   > processar-investimento.dto.ts
+> use-cases/
+>   > interfaces.ts
+>   > regras-financeiras.usecase.ts
+>   > calculos-tributarios.usecase.ts
 > enums/
-    > signal-type.enum.ts
+    > tipo-transacao.enum.ts
 ```
 
 ## [Convenções de Nomenclatura]()
@@ -276,7 +258,8 @@ Tabela de referência com padrões de nomenclatura para cada tipo de arquivo e c
 | Classe | PascalCase | `AssetGroupService` |
 | Entity | PascalCase | `AssetGroup` |
 | DTO | PascalCase | `CreateAssetGroupDto` |
-| Interface | PascalCase com I | `IAssetProvider` |
+| Interface (Use-Case) | PascalCase sem I | `CalcularSaldo` |
+| Use-Case | PascalCase com UseCase | `RegrasFinanceirasUseCase` |
 | Enum | PascalCase | `AssetStatus` |
 
 ## [Organização por Tamanho]()
@@ -300,7 +283,7 @@ modulo/
 
 ### [Módulo Médio (300-1000 linhas)]()
 
-Separe responsabilidades em sub-services:
+Separe responsabilidades em use-cases:
 ```
 modulo/
 > modulo.module.ts
@@ -308,13 +291,14 @@ modulo/
 > modulo.service.ts
 > entities/
 > dto/
-> services/
-    > modulo-helper.service.ts
+> use-cases/
+>   > interfaces.ts
+    > regras-negocio.usecase.ts
 ```
 
 ### [Módulo Grande (> 1000 linhas)]()
 
-Subdivida completamente:
+Subdivida completamente com múltiplos use-cases:
 ```
 modulo/
 > modulo.module.ts
@@ -322,8 +306,10 @@ modulo/
 > modulo.service.ts
 > entities/
 > dto/
-> services/
-> interfaces/
+> use-cases/
+>   > interfaces.ts
+>   > regras-negocio-a.usecase.ts
+>   > regras-negocio-b.usecase.ts
 > enums/
 > guards/
     > modulo-permission.guard.ts

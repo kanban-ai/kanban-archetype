@@ -331,6 +331,25 @@ Arquitetura, organização de código e padrões de design para módulos escalá
 - **Checklist** - Verificação de escalabilidade
 - **Dicas Finais** - Boas práticas
 
+### [Use-Cases - `./como-criar-use-case-backend.md`]()
+
+- **O que é Use-Case** - Classe com interfaces segregadas por responsabilidade
+- **Quando Usar** - Regras complexas, múltiplas transações, múltiplas responsabilidades
+- **Quando NÃO Usar** - CRUD simples, operações diretas, endpoints triviais
+- **Estrutura de Arquivos** - Pasta use-cases/, interfaces.ts, *.usecase.ts
+- **Convenção de Nomenclatura** - Padrões para interfaces e use-cases
+- **Passo 1: Definir Interfaces** - Uma responsabilidade = um método por interface
+- **Passo 2: Criar Use-Case** - Implementar múltiplas interfaces relacionadas
+- **Passo 3: Registrar no Module** - Adicionar em providers e exports
+- **Passo 4: Injetar** - Via DI no Service ou Controller
+- **Princípios SOLID** - S (Single Responsibility), O (Open/Closed), L (Liskov), I (Interface Segregation), D (Dependency Inversion)
+- **Testando Use-Cases** - Testes unitários isolados com mock de interfaces
+- **Diferenças Service vs Use-Case** - Comparação detalhada e quando usar cada um
+- **Boas Práticas** - Uma interface = um método, nomenclatura descritiva, type aliases
+- **Checklist** - Verificação completa de implementação
+- **Troubleshooting** - Cannot resolve dependency, circular dependency, use-case muito grande
+- **Exemplo Completo** - Módulo de pedidos com interfaces e use-cases
+
 ## [🎨 Frontend - Desenvolvimento]()
 
 Guias completos para desenvolvimento React, consumo de APIs e criação de componentes reutilizáveis.
