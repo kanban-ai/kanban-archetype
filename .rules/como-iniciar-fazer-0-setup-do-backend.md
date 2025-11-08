@@ -14,6 +14,8 @@ Este guia mostra como criar e configurar um projeto backend NestJS com TypeORM a
 
 ## [Passo a Passo]()
 
+Sequência detalhada de comandos e configurações para criar um projeto backend NestJS completo do zero.
+
 ### [1. Criar projeto NestJS]()
 
 ```bash

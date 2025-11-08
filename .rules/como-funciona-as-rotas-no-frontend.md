@@ -13,6 +13,8 @@ O projeto usa **React Router DOM v7** com:
 
 ## [Estrutura de Arquivos]()
 
+Esta seção apresenta a organização dos arquivos relacionados ao sistema de rotas do projeto React.
+
 ```
 src/
  App.tsx                      # Configura rotas
@@ -86,6 +88,8 @@ export const privateRoutes: RouteConfig[] = [
 
 ## [App.tsx - Configuração Principal]()
 
+Esta seção mostra como configurar o React Router DOM no componente raiz da aplicação, incluindo rotas públicas e privadas.
+
 ```typescript
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import { AuthProvider } from './contexts/AuthContext';
@@ -132,6 +136,8 @@ function App() {
 
 ## [PrivateRoute - Guard de Autenticação]()
 
+Esta seção apresenta o componente responsável por proteger rotas que requerem autenticação, redirecionando usuários não autenticados.
+
 ```typescript
 import { Navigate } from 'react-router-dom';
 import { useAuth } from '@/contexts/AuthContext';
@@ -156,6 +162,8 @@ export function PrivateRoute({ children }: PrivateRouteProps) {
 ```
 
 ## [Layout - Estrutura Compartilhada]()
+
+Esta seção demonstra como criar um layout compartilhado que envolve todas as páginas autenticadas, incluindo header, sidebar e outlet para conteúdo.
 
 ```typescript
 import { Outlet } from 'react-router-dom';
@@ -182,6 +190,8 @@ export function Layout() {
 ```
 
 ## [Navegação]()
+
+Esta seção explica como implementar navegação programática e por links usando os hooks e componentes do React Router.
 
 ### [useNavigate Hook]()
 
@@ -266,6 +276,8 @@ function Sidebar() {
 
 ## [Parâmetros de Rota]()
 
+Esta seção demonstra como trabalhar com parâmetros dinâmicos na URL usando o hook useParams.
+
 ### [useParams Hook]()
 
 ```typescript
@@ -298,6 +310,8 @@ function WalletAssetDetail() {
 ```
 
 ## [Query Parameters]()
+
+Esta seção mostra como ler e manipular query parameters (parâmetros de busca) na URL usando useSearchParams.
 
 ### [useSearchParams Hook]()
 
@@ -332,6 +346,8 @@ function ProductList() {
 ```
 
 ## [Rotas Aninhadas]()
+
+Esta seção apresenta como criar rotas aninhadas para estruturar páginas complexas com sub-navegação.
 
 ```typescript
 // Configuração
@@ -371,6 +387,8 @@ function AssetLayout() {
 
 ## [Redirecionamentos]()
 
+Esta seção demonstra como implementar redirecionamentos automáticos usando o componente Navigate.
+
 ### [Navigate Component]()
 
 ```typescript
@@ -397,6 +415,8 @@ function Dashboard() {
 
 ## [useLocation Hook]()
 
+Esta seção explica como acessar informações sobre a localização atual (pathname, search, state) usando o hook useLocation.
+
 ```typescript
 import { useLocation } from 'react-router-dom';
 
@@ -417,6 +437,8 @@ function Header() {
 
 ## [Passar Estado Entre Rotas]()
 
+Esta seção mostra como passar dados entre rotas sem query parameters usando o state do React Router.
+
 ```typescript
 // Origem
 navigate('/products/new', {
@@ -434,6 +456,8 @@ function ProductForm() {
 ```
 
 ## [Menu Dinâmico]()
+
+Esta seção apresenta como gerar um menu de navegação automaticamente a partir da configuração de rotas.
 
 ```typescript
 import { NavLink } from 'react-router-dom';
@@ -463,6 +487,8 @@ function Sidebar() {
 
 ## [Lazy Loading de Rotas]()
 
+Esta seção demonstra como implementar carregamento preguiçoso (lazy loading) de componentes de página para otimizar performance.
+
 ```typescript
 import { lazy, Suspense } from 'react';
 
@@ -482,6 +508,8 @@ const AssetProfilePage = lazy(() => import('@/pages/assets/AssetProfilePage'));
 ```
 
 ## [404 - Página Não Encontrada]()
+
+Esta seção mostra como implementar uma página customizada para rotas não encontradas (404).
 
 ```typescript
 // App.tsx
@@ -510,6 +538,8 @@ function NotFound() {
 ```
 
 ## [Breadcrumbs]()
+
+Esta seção apresenta como implementar breadcrumbs (navegação em trilha) para melhorar a experiência de navegação do usuário.
 
 ```typescript
 import { useLocation, Link } from 'react-router-dom';

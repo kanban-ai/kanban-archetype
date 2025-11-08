@@ -2,11 +2,19 @@
 
 > Guia prático para criar entidades (modelos de dados) com TypeORM no projeto.
 
-## [O que é uma Entity?]()
+## [O que é uma Entity TypeORM e para que serve]()
+
+Esta seção explica o conceito fundamental de entities no TypeORM e sua função como mapeamento objeto-relacional entre TypeScript e PostgreSQL.
+
+Entities são classes TypeScript que representam tabelas do PostgreSQL:
 
 Uma Entity representa uma tabela no banco de dados. Cada instância da classe é uma linha na tabela.
 
-## [Localização das Entities]()
+## [Localização das Entities no projeto NestJS]()
+
+Esta seção define a organização recomendada de entities no projeto, seguindo padrão modular ao invés de centralizado.
+
+Entities devem ficar dentro da pasta do módulo, não centralizadas:
 
 - **SuperEntity**: Centralizada em `src/database/entities/super.entity.ts` (compartilhada por todos os módulos)
 - **Demais Entities**: Dentro de cada módulo em `src/modules/[nome-modulo]/entities/[nome].entity.ts`
@@ -26,7 +34,11 @@ src/
             └── category.entity.ts   # ← Entity do módulo categories
 ```
 
-## [Estrutura Básica]()
+## [Estrutura Básica de Entity TypeORM no NestJS]()
+
+Esta seção apresenta a estrutura padrão de entities no projeto, incluindo uso de SuperEntity e SoftDeletableEntity para funcionalidades comuns.
+
+Como criar entities que estendem SuperEntity ou SoftDeletableEntity:
 
 ### [Entity Simples]()
 
@@ -103,7 +115,11 @@ export class Product extends SoftDeletableEntity {
 }
 ```
 
-## [Tipos de Colunas]()
+## [Tipos de Colunas disponíveis no TypeORM]()
+
+Esta seção cataloga todos os tipos de dados suportados pelo TypeORM para colunas PostgreSQL, com exemplos práticos de uso.
+
+Lista completa de tipos de dados para colunas PostgreSQL:
 
 ### [Texto]()
 
@@ -157,7 +173,11 @@ birthDate: Date;
 metadata: any;
 ```
 
-## [Relacionamentos]()
+## [Relacionamentos entre Entities no TypeORM]()
+
+Esta seção ensina como implementar relacionamentos entre tabelas usando decorators TypeORM, permitindo consultas com joins e eager loading.
+
+Como criar relacionamentos Many-to-One, One-to-Many e Many-to-Many:
 
 ### [Many-to-One (N:1)]()
 
@@ -225,7 +245,11 @@ export class Product extends SuperEntity {
 }
 ```
 
-## [Recursos Avançados]()
+## [Recursos Avançados de Entities TypeORM]()
+
+Esta seção apresenta recursos avançados para otimizar consultas e garantir integridade de dados com índices, constraints e tipos especiais.
+
+Índices, unique constraints, valores padrão e enums:
 
 ### [Índices]()
 
@@ -388,7 +412,9 @@ export class ProductService {
 - Usa `softDelete()` e `softRemove()` ao invés de deletar permanentemente
 - Fornece opção `withDeleted: true` para incluir registros deletados
 
-## [Convenções do Projeto]()
+## [Convenções de Nomenclatura de Entities no Projeto]()
+
+Padrões estabelecidos para classes, tabelas e colunas:
 
 ### [Nomeação]()
 
@@ -467,7 +493,9 @@ export class Product extends SuperEntity {
 }
 ```
 
-## [Registrar Entity no Module]()
+## [Registrar Entity no Module do NestJS]()
+
+Como importar entities com TypeOrmModule.forFeature:
 
 ```typescript
 import { Module } from '@nestjs/common';
@@ -487,7 +515,9 @@ import { ProductController } from './product.controller';
 export class ProductModule {}
 ```
 
-## [Usar Entity no Service]()
+## [Usar Entity no Service com Repository Pattern]()
+
+Injetar repository para fazer operações no banco de dados:
 
 ```typescript
 import { Injectable } from '@nestjs/common';
@@ -517,7 +547,9 @@ export class ProductService {
 }
 ```
 
-## [Dicas Importantes]()
+## [Dicas Importantes ao trabalhar com Entities TypeORM]()
+
+Boas práticas essenciais para evitar problemas comuns:
 
 1. **Escolha a classe base correta**:
    - `SuperEntity`: Para entities normais (sem soft delete)
@@ -531,7 +563,9 @@ export class ProductService {
 8. **Use `nullable: true` quando apropriado**: Evite constraints desnecessárias
 9. **Não adicione deleted_at manualmente**: Se precisa de soft delete, use `SoftDeletableEntity`
 
-## [Referências]()
+## [Referências e documentação oficial do TypeORM]()
+
+Links para documentação oficial de entities e decorators:
 
 - [TypeORM Entities Documentation](https://typeorm.io/entities)
 - [TypeORM Relations Documentation](https://typeorm.io/relations)

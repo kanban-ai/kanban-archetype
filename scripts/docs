@@ -487,13 +487,8 @@ async function queryDocuments(queryText, nResults = 5) {
     log('\n' + colors.yellow + 'Conteúdo:' + colors.reset);
     log('────────────────────────────────────────────────────────────────', 'blue');
 
-    // Exibir conteúdo (até 1000 caracteres)
-    if (doc.length > 1000) {
-      console.log(doc.substring(0, 1000));
-      log('\n... (conteúdo truncado)', 'yellow');
-    } else {
-      console.log(doc);
-    }
+    // Exibir conteúdo completo
+    console.log(doc);
     console.log('');
   }
 }

@@ -4,6 +4,8 @@
 
 ## [Configuração do Axios]()
 
+Configure uma instância centralizada do Axios com interceptors para autenticação JWT e tratamento de erros. Esta configuração será reutilizada em todos os services da aplicação.
+
 ### [1. Criar instância configurada]()
 
 **Arquivo**: `src/services/api.ts`
@@ -61,6 +63,8 @@ VITE_API_URL=http://localhost:3000/api
 > **IMPORTANTE**: A versão da API (`v1`) é configurada no `api.ts` e aplicada automaticamente em todas as requisições. Se o backend criar uma v2, basta alterar `API_VERSION = 'v2'` em um único lugar. Veja [Como versionar API](./como-versionar-api-backend.md) para mais detalhes.
 
 ## [Criar Services]()
+
+Organize chamadas de API em services separados por domínio. Cada service encapsula a lógica de comunicação com endpoints específicos, incluindo tipagem TypeScript completa para requests e responses.
 
 ### [Estrutura de Service]()
 
@@ -121,6 +125,8 @@ export const ProductService = {
 ```
 
 ## [Usar Services em Componentes]()
+
+Consuma os services em componentes React usando hooks como useState e useEffect para gerenciar estados de carregamento, dados e erros. Implemente feedback visual adequado para cada estado da requisição.
 
 > **IMPORTANTE**: Todos os exemplos abaixo são apenas demonstrações de estrutura e padrões.
 > Não contêm lógica de negócio específica. Adapte-os conforme as necessidades do seu projeto.
@@ -305,6 +311,8 @@ const handleDelete = async (id: number) => {
 
 ## [Tratamento de Erros]()
 
+Implemente tratamento consistente de erros da API. Extraia mensagens de erro do backend e apresente feedback claro ao usuário, considerando que erros de validação podem retornar arrays de mensagens.
+
 ### [Estrutura de Erro da API]()
 
 ```typescript
@@ -343,6 +351,8 @@ try {
 ```
 
 ## [Custom Hook para API]()
+
+Crie hooks customizados para reutilizar lógica de requisições HTTP. Um hook genérico centraliza estados de loading, dados e erros, simplificando o código dos componentes.
 
 ### [useApi Hook]()
 
@@ -398,6 +408,8 @@ function ProductList() {
 
 ## [Paginação]()
 
+Implemente paginação de resultados passando parâmetros de página e tamanho nas queries. Gerencie o estado da página atual no componente para navegar entre páginas.
+
 ```typescript
 export const ProductService = {
   async findAll(page: number = 1, pageSize: number = 10) {
@@ -423,6 +435,8 @@ const loadProducts = async () => {
 ```
 
 ## [Upload de Arquivos]()
+
+Para upload de arquivos, use FormData e configure o header Content-Type como multipart/form-data. O Axios gerencia automaticamente o formato correto da requisição.
 
 ```typescript
 export const ProductService = {
@@ -456,6 +470,8 @@ const handleFileChange = async (e: ChangeEvent<HTMLInputElement>) => {
 
 ## [Query Params]()
 
+Passe query parameters usando a propriedade params do Axios. Os parâmetros são automaticamente serializados e anexados à URL.
+
 ```typescript
 export const ProductService = {
   async search(query: string, active?: boolean) {
@@ -473,6 +489,8 @@ export const ProductService = {
 ```
 
 ## [React Suspense para Data Fetching]()
+
+Use React Suspense para carregamento declarativo de dados. Este padrão permite separar a lógica de loading do componente, criando uma interface mais limpa e componível.
 
 ### [Estrutura Básica com Suspense]()
 
@@ -580,6 +598,8 @@ function App() {
 
 ## [Cancelar Requisições]()
 
+Cancele requisições em andamento quando o componente desmontar para evitar memory leaks e atualizações de estado em componentes desmontados. Use CancelToken do Axios no cleanup do useEffect.
+
 ```typescript
 import { useEffect, useState } from 'react';
 import axios from 'axios';
@@ -613,6 +633,8 @@ function ProductList() {
 
 ## [Checklist]()
 
+Checklist de implementação para garantir que todos os aspectos de consumo de API estejam configurados corretamente.
+
 - [ ] Instância Axios configurada em `api.ts`
 - [ ] Interceptor para token JWT
 - [ ] Interceptor para erros 401
@@ -623,6 +645,8 @@ function ProductList() {
 - [ ] Feedback visual para usuário
 
 ## [Referências]()
+
+Links para documentação oficial das tecnologias utilizadas.
 
 - [Axios Documentation](https://axios-http.com/docs/intro)
 - [React + Axios Best Practices](https://blog.logrocket.com/how-to-make-http-requests-like-a-pro-with-axios/)

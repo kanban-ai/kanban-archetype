@@ -2,11 +2,17 @@
 
 > Guia completo sobre validação de dados usando class-validator no NestJS.
 
-## [Visão Geral]()
+## [Visão Geral - Validação de dados com class-validator no NestJS]()
+
+Esta seção introduz o sistema de validação automática do projeto usando class-validator e class-transformer, explicando como DTOs garantem integridade dos dados.
+
+O projeto usa class-validator para validar automaticamente dados de requisições HTTP através de DTOs:
 
 O projeto usa **class-validator** para validar automaticamente todos os dados recebidos nas requisições HTTP através de DTOs (Data Transfer Objects).
 
-## [Configuração Global]()
+## [Configuração Global do ValidationPipe no NestJS]()
+
+Configuração do ValidationPipe no main.ts para validação automática em toda aplicação:
 
 ### [ValidationPipe no main.ts]()
 
@@ -38,7 +44,9 @@ async function bootstrap() {
 - **transform**: Converte query params e params para o tipo correto
 - **enableImplicitConversion**: false para evitar conversões estranhas
 
-## [Validadores Disponíveis]()
+## [Validadores Disponíveis no class-validator para DTOs]()
+
+Lista completa de decorators de validação do class-validator:
 
 ### [Validadores de String]()
 
@@ -196,7 +204,9 @@ export class ExampleDto {
 }
 ```
 
-## [Exemplo Completo: Create DTO]()
+## [Exemplo Completo de Create DTO com validação]()
+
+DTO completo com todas validações e documentação Swagger:
 
 ```typescript
 import {
@@ -260,7 +270,11 @@ export class CreateProductDto {
 }
 ```
 
-## [Validação em Objetos Aninhados]()
+## [Validação em Objetos Aninhados com @ValidateNested]()
+
+Para validar DTOs aninhados, utilize o decorator `@ValidateNested()` combinado com `@Type()` do class-transformer para garantir que objetos complexos sejam validados recursivamente.
+
+Como validar DTOs aninhados usando class-validator:
 
 ### [DTO Aninhado]()
 
@@ -293,7 +307,9 @@ export class CreateUserDto {
 }
 ```
 
-## [Validação Customizada]()
+## [Validação Customizada com decorators próprios]()
+
+Criar validadores personalizados para regras de negócio específicas:
 
 ### [Decorator Customizado]()
 
@@ -337,7 +353,9 @@ export class CreateUserDto {
 }
 ```
 
-## [Mensagens de Erro Customizadas]()
+## [Mensagens de Erro Customizadas nos validadores]()
+
+Personalizar mensagens de erro para melhor UX no frontend:
 
 ```typescript
 export class CreateProductDto {
@@ -352,7 +370,11 @@ export class CreateProductDto {
 }
 ```
 
-## [Validação Condicional]()
+## [Validação Condicional com @ValidateIf]()
+
+O decorator `@ValidateIf()` permite aplicar validações condicionalmente baseado em valores de outros campos do DTO, útil para cenários onde a obrigatoriedade de um campo depende de outro.
+
+Validar campos condicionalmente baseado em outros campos:
 
 ```typescript
 import { ValidateIf } from 'class-validator';
@@ -374,7 +396,11 @@ export class CreateOrderDto {
 }
 ```
 
-## [Transformação de Tipos]()
+## [Transformação de Tipos com @Type e @Transform]()
+
+Utilize `@Type()` e `@Transform()` do class-transformer para converter automaticamente tipos de dados (ex: string para number, string para Date), essencial quando recebendo dados de query params ou formulários.
+
+Converter automaticamente tipos de dados (string para number, etc):
 
 ### [Com @Type()]()
 
@@ -419,7 +445,9 @@ export class QueryDto {
 }
 ```
 
-## [Validação de Arrays]()
+## [Validação de Arrays e cada elemento]()
+
+Validar arrays e seus elementos com class-validator:
 
 ### [Array de Strings]()
 
@@ -454,7 +482,9 @@ export class CreateOrderDto {
 }
 ```
 
-## [Tratamento de Erros]()
+## [Tratamento de Erros de validação no NestJS]()
+
+Como o NestJS retorna erros de validação e como customizar:
 
 ### [Estrutura da Resposta de Erro]()
 
@@ -495,7 +525,9 @@ export class ValidationExceptionFilter implements ExceptionFilter {
 }
 ```
 
-## [Validação Manual (Sem DTO)]()
+## [Validação Manual sem DTO usando class-validator]()
+
+Validar objetos manualmente sem usar ValidationPipe:
 
 Se precisar validar manualmente:
 
@@ -517,7 +549,9 @@ async function validateData() {
 }
 ```
 
-## [Boas Práticas]()
+## [Boas Práticas ao usar validação no NestJS]()
+
+Recomendações essenciais para validação robusta e segura:
 
 1. **Sempre use DTOs**: Nunca aceite `any` no controller
 2. **Validação no backend**: Nunca confie apenas no frontend
@@ -527,7 +561,9 @@ async function validateData() {
 6. **Use @Type() para conversão**: Garanta tipos corretos
 7. **Documente com @ApiProperty**: Integre com Swagger
 
-## [Checklist]()
+## [Checklist de Validação de DTOs]()
+
+Lista de verificação para cada DTO criado:
 
 Para cada DTO:
 - [ ] Validadores em todos os campos obrigatórios
@@ -538,7 +574,9 @@ Para cada DTO:
 - [ ] Mensagens de erro customizadas (se necessário)
 - [ ] Transformação de tipos (se necessário)
 
-## [Referências]()
+## [Referências e documentação oficial sobre validação]()
+
+Links para class-validator, class-transformer e NestJS validation:
 
 - [class-validator Documentation](https://github.com/typestack/class-validator)
 - [class-transformer Documentation](https://github.com/typestack/class-transformer)

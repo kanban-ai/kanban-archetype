@@ -17,6 +17,8 @@ API Key é uma chave de autenticação alternativa ao JWT, usada para:
 
 ## [Implementação]()
 
+Esta seção apresenta o processo completo de implementação de autenticação via API Key, incluindo configuração de variáveis de ambiente, criação de guards e decorators.
+
 ### [1. Configurar Variável de Ambiente]()
 
 **.env**:
@@ -106,6 +108,8 @@ async function bootstrap() {
 
 ## [Como Usar]()
 
+Exemplos práticos de como aplicar autenticação API Key em endpoints do backend NestJS.
+
 ### [Endpoint que Aceita API Key]()
 
 ```typescript
@@ -151,6 +155,8 @@ export class DataController {
 
 ## [Como Chamar o Endpoint]()
 
+Exemplos de requisições HTTP utilizando API Key em diferentes ferramentas e linguagens.
+
 ### [Com cURL]()
 
 ```bash
@@ -191,6 +197,8 @@ const response = await fetch('http://localhost:3000/api/webhooks/process', {
 ```
 
 ## [Implementação Avançada]()
+
+Cenários avançados incluindo múltiplas API Keys por cliente, controle de acesso granular e rate limiting.
 
 ### [API Key por Cliente]()
 
@@ -287,6 +295,8 @@ async webhook() {
 
 ## [Documentar no Swagger]()
 
+Configuração do Swagger para exibir e testar endpoints protegidos por API Key na documentação interativa.
+
 ```typescript
 import { ApiHeader, ApiSecurity } from '@nestjs/swagger';
 
@@ -306,6 +316,8 @@ async webhook() {}
 ```
 
 ## [Segurança]()
+
+Práticas recomendadas para geração, armazenamento e gerenciamento seguro de API Keys em produção.
 
 ### [Boas Práticas]()
 
@@ -329,6 +341,8 @@ node -e "console.log(require('crypto').randomBytes(32).toString('hex'))"
 
 ## [Diferenças: JWT vs API Key]()
 
+Comparação detalhada entre JWT e API Key para auxiliar na escolha do método de autenticação apropriado.
+
 | Aspecto | JWT | API Key |
 |---------|-----|---------|
 | **Uso** | Usuários finais | Integrações |
@@ -339,6 +353,8 @@ node -e "console.log(require('crypto').randomBytes(32).toString('hex'))"
 | **Performance** | Valida assinatura | Busca em BD |
 
 ## [Troubleshooting]()
+
+Soluções para problemas comuns ao implementar e utilizar autenticação por API Key.
 
 ### [Erro: "API Key ausente"]()
 

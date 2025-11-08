@@ -13,6 +13,8 @@ Componentes comuns devem ser:
 
 ## [Localização]()
 
+Esta seção define onde os componentes comuns devem ser armazenados na estrutura do projeto React.
+
 ```
 src/components/common/
  Button.tsx
@@ -23,6 +25,8 @@ src/components/common/
 ```
 
 ## [Exemplos Práticos]()
+
+Esta seção apresenta implementações completas de componentes comuns do projeto, incluindo tipagem TypeScript, estilos Tailwind e boas práticas de React.
 
 ### [1. Button Component]()
 
@@ -369,6 +373,8 @@ export function Badge({ children, variant = 'default' }: BadgeProps) {
 
 ## [Padrões de Composição]()
 
+Esta seção demonstra padrões avançados de composição de componentes para criar APIs flexíveis e expressivas.
+
 ### [Compound Components]()
 
 ```typescript
@@ -404,6 +410,8 @@ Card.Footer = function CardFooter({ children }: { children: React.ReactNode }) {
 ```
 
 ## [Boas Práticas]()
+
+Esta seção lista as principais práticas recomendadas para criação de componentes robustos, reutilizáveis e manuteníveis.
 
 ### [1. Props com valores padrão]()
 
@@ -476,6 +484,8 @@ interface ButtonProps {
 ```
 
 ## [Organização]()
+
+Esta seção explica como organizar os arquivos de componentes comuns e criar um ponto de importação centralizado.
 
 ```
 src/components/common/

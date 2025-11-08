@@ -2,7 +2,11 @@
 
 > Guia completo sobre como consumir APIs externas no backend NestJS usando Axios.
 
-## [Configuração do Cliente HTTP]()
+## [Configuração do Cliente HTTP para integração com APIs externas]()
+
+Esta seção apresenta a configuração de um cliente HTTP reutilizável usando Axios, incluindo interceptors para logging, tratamento de erros e retry automático.
+
+Configuração do HttpService do NestJS com Axios para fazer requisições HTTP:
 
 ### [1. Instalar Axios]()
 
@@ -134,7 +138,11 @@ export class HttpService {
 }
 ```
 
-## [Estrutura de Service para Integração]()
+## [Estrutura de Service para Integração com API externa no NestJS]()
+
+Esta seção define a arquitetura de services especializados em consumir APIs externas, seguindo padrão modular e reutilizável.
+
+Padrão recomendado para criar services que consomem APIs externas:
 
 ### [Padrão de Service Externo]()
 
@@ -274,7 +282,9 @@ export class YahooProviderService {
 }
 ```
 
-## [Autenticação com APIs Externas]()
+## [Autenticação com APIs Externas usando diferentes métodos]()
+
+Implementação de API Key, Bearer Token, Basic Auth e OAuth 2.0:
 
 ### [1. API Key no Header]()
 
@@ -386,7 +396,9 @@ export class OAuthProviderService {
 }
 ```
 
-## [Timeout e Retry]()
+## [Timeout e Retry automático para requisições HTTP]()
+
+Configuração de timeout e retentativas automáticas com backoff exponencial:
 
 ### [1. Configurar Timeout]()
 
@@ -479,7 +491,9 @@ export class ExternalApiService {
 }
 ```
 
-## [Circuit Breaker Pattern]()
+## [Circuit Breaker Pattern para proteger contra APIs instáveis]()
+
+Implementação de circuit breaker para evitar sobrecarga quando API externa falha:
 
 ```typescript
 import { Injectable, Logger } from '@nestjs/common';
@@ -570,7 +584,9 @@ export class ExternalApiService {
 }
 ```
 
-## [Cache de Respostas]()
+## [Cache de Respostas de APIs externas com Redis]()
+
+Cachear respostas HTTP para reduzir latência e custos de chamadas externas:
 
 ### [1. Cache simples em memória]()
 
@@ -690,7 +706,9 @@ export class YahooProviderService {
 
 **Nota:** O `CACHE_MANAGER` deve estar disponível globalmente através do `RedisModule` configurado em `src/common/redis/`. Consulte o guia de Redis para setup inicial.
 
-## [Tratamento de Rate Limiting]()
+## [Tratamento de Rate Limiting de APIs externas]()
+
+Detectar e lidar com erro 429 (Too Many Requests) de APIs externas:
 
 ### [1. Detectar e tratar 429]()
 
@@ -779,7 +797,9 @@ export class ExternalApiService {
 }
 ```
 
-## [Webhooks]()
+## [Webhooks - Receber eventos de APIs externas]()
+
+Implementar endpoints para receber callbacks de APIs externas:
 
 ### [Receber Webhooks de APIs Externas]()
 
@@ -828,6 +848,8 @@ export class WebhooksController {
 ```
 
 ## [Mocks para Testes]()
+
+Estratégias para criar mocks do HttpService e simular respostas de APIs externas em testes unitários.
 
 ### [1. Mock do HttpService]()
 
@@ -988,7 +1010,9 @@ describe('YahooProviderService with nock', () => {
 });
 ```
 
-## [Variáveis de Ambiente]()
+## [Variáveis de Ambiente para configuração de APIs externas]()
+
+Organização de URLs, tokens e configurações de APIs em .env:
 
 **Arquivo**: `.env`
 
@@ -1032,7 +1056,9 @@ export default registerAs('external-apis', () => ({
 }));
 ```
 
-## [Exemplo Completo: Módulo de Providers]()
+## [Exemplo Completo de Módulo de Providers para APIs externas]()
+
+Implementação real integrando Yahoo Finance, Kinvo e B3:
 
 ### [1. Module]()
 
@@ -1154,7 +1180,9 @@ export class ProvidersService {
 }
 ```
 
-## [Boas Práticas]()
+## [Boas Práticas ao integrar com APIs externas no NestJS]()
+
+Recomendações essenciais para integrações robustas e confiáveis:
 
 ### [1. Sempre usar timeout]()
 ```typescript
@@ -1204,7 +1232,9 @@ timeout: 10000 // 10 segundos
 - Testar cenários de erro
 - Testar timeout e retry
 
-## [Checklist]()
+## [Checklist de Integração com API externa]()
+
+Lista de verificação para implementação completa de integração:
 
 - [ ] HttpService base criado
 - [ ] Service específico para cada API externa
@@ -1220,7 +1250,9 @@ timeout: 10000 // 10 segundos
 - [ ] Testes unitários criados
 - [ ] Documentação Swagger (se expor endpoints)
 
-## [Referências]()
+## [Referências e documentação oficial sobre integrações HTTP]()
+
+Links para documentação do Axios, NestJS HttpModule e boas práticas:
 
 - [Axios Documentation](https://axios-http.com/docs/intro)
 - [NestJS HTTP Module](https://docs.nestjs.com/techniques/http-module)

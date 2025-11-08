@@ -4,6 +4,8 @@
 
 ## [📋 Princípios Fundamentais]()
 
+Conceitos essenciais para tratamento correto de datas em sistemas distribuídos, garantindo consistência entre banco, backend e frontend.
+
 ### [Regra de Ouro]()
 
 1. **Banco de Dados**: Sempre gravar em **ISODate UTC** (GMT-0)
@@ -18,6 +20,8 @@
 - Simplifica cálculos e comparações de datas
 
 ## [🗄️ Banco de Dados - PostgreSQL]()
+
+Configuração de tipos de colunas e migrations para armazenamento correto de datas em UTC no PostgreSQL.
 
 ### [Tipo de Coluna]()
 
@@ -74,6 +78,8 @@ export class CreateEventosTable1234567890123 implements MigrationInterface {
 - **Use `timestamptz` nas entities TypeORM e `TIMESTAMPTZ` nas migrations SQL**
 
 ## [🔧 Backend - NestJS]()
+
+Implementação de manipulação de datas em UTC usando dayjs no backend, incluindo validação de DTOs e operações em services.
 
 ### [Instalação do dayjs]()
 
@@ -291,6 +297,8 @@ const dateObject = dayjs.utc().toDate();
 ```
 
 ## [🎨 Frontend - React]()
+
+Conversão de datas UTC para timezone do usuário, formatação para exibição e submissão de formulários com datas.
 
 ### [Instalação do dayjs]()
 
@@ -572,6 +580,8 @@ const dataUtcParaBackend = dayjs.tz(dataLocalInput, timezone).utc().toISOString(
 
 ## [✅ Checklist de Implementação]()
 
+Lista de verificação completa para garantir que o tratamento de datas está correto em todas as camadas da aplicação.
+
 ### [Backend]()
 
 - [ ] Usar `{ type: 'timestamptz' }` nas entities TypeORM
@@ -595,6 +605,8 @@ const dataUtcParaBackend = dayjs.tz(dataLocalInput, timezone).utc().toISOString(
 - [ ] Mostrar datas relativas quando apropriado
 
 ## [🚨 Erros Comuns]()
+
+Erros frequentes no tratamento de datas e as formas corretas de implementação.
 
 ### [❌ Não Fazer]()
 
@@ -637,6 +649,8 @@ await api.post('/api/eventos', {
 ```
 
 ## [📖 Resumo do Fluxo]()
+
+Fluxo completo end-to-end mostrando como as datas são tratadas desde a entrada do usuário até a exibição final.
 
 ### [Criar um Evento]()
 

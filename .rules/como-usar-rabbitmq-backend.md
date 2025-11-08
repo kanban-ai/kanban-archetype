@@ -2,7 +2,9 @@
 
 > Guia completo para usar RabbitMQ com Topic Exchange para processamento assíncrono e confiável
 
-## [Quando usar RabbitMQ]()
+## [Quando usar RabbitMQ para filas e processamento assíncrono]()
+
+Esta seção define os cenários ideais para utilizar RabbitMQ no projeto, diferenciando-o de outras tecnologias como Redis para casos de uso específicos.
 
 - ✅ **Processamento assíncrono** - Tarefas que não bloqueiam a resposta da API
 - ✅ **Tarefas demoradas** - Processamentos longos (envio de emails, relatórios, etc)
@@ -15,24 +17,26 @@
 - ❌ **Comunicação síncrona** - Use HTTP/REST para respostas imediatas
 - ❌ **Dados temporários compartilhados** - Use Redis
 
-## [Instalação]()
+## [Instalação de pacotes RabbitMQ no NestJS]()
+
+Pacotes necessários para integrar RabbitMQ com NestJS usando o módulo de microservices.
 
 ```bash
 npm install @nestjs/microservices amqplib amqp-connection-manager
 ```
 
-## [Arquitetura: Topic Exchange]()
+## [Arquitetura RabbitMQ com Topic Exchange única]()
 
 Este projeto usa **Topic Exchange** com **UMA ÚNICA EXCHANGE** chamada `app_exchange`.
 
-### [Conceitos]()
+### [Conceitos fundamentais do RabbitMQ Topic Exchange]()
 
 - **Exchange**: Recebe mensagens e roteia para filas (usamos apenas `app_exchange`)
 - **Topic (Routing Key)**: Padrão de roteamento no formato `<module>.<resource>.<action>`
 - **Queue**: Fila que recebe mensagens baseado no topic
 - **Binding**: Ligação entre Exchange e Queue com pattern de topic
 
-### [Padrão de Nomenclatura de Tópicos]()
+### [Padrão de Nomenclatura de Tópicos RabbitMQ no projeto]()
 
 ```
 <module_name>.<resource_name>.<action>
@@ -58,9 +62,11 @@ Este projeto usa **Topic Exchange** com **UMA ÚNICA EXCHANGE** chamada `app_exc
 - `registered`, `activated`, `suspended` - Usuários
 - `placed`, `accepted`, `rejected` - Ofertas/Lances
 
-## [Configuração Global (Common Module)]()
+## [Configuração Global do RabbitMQ usando Common Module reutilizável]()
 
-### [1. Criar módulo comum de RabbitMQ com Topic Exchange]()
+Setup de um módulo RabbitMQ global e reutilizável para ser importado uma única vez no AppModule.
+
+### [1. Criar RabbitMQModule comum com Topic Exchange no NestJS]()
 
 `src/common/rabbitmq/rabbitmq.module.ts`
 
@@ -101,7 +107,7 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
 export class RabbitMQModule {}
 ```
 
-### [2. Registrar no AppModule]()
+### [2. Registrar RabbitMQModule no AppModule raiz]()
 
 `src/app.module.ts`
 
@@ -119,7 +125,7 @@ import { RabbitMQModule } from './common/rabbitmq/rabbitmq.module';
 export class AppModule {}
 ```
 
-### [3. Variáveis de ambiente]()
+### [3. Configurar variáveis de ambiente do RabbitMQ]()
 
 `.env`
 
@@ -130,9 +136,11 @@ RABBITMQ_USER=guest        # Opcional
 RABBITMQ_PASSWORD=guest    # Opcional
 ```
 
-## [Uso Básico - Publicar Mensagem (Producer)]()
+## [Uso Básico do RabbitMQ - Publicar mensagens como Producer]()
 
-### [Controller/Service publica mensagem com tópico]()
+Como publicar eventos no RabbitMQ com tópicos específicos a partir de Controllers e Services.
+
+### [Publicar mensagens no RabbitMQ com tópicos em Controllers/Services]()
 
 ```typescript
 import { Controller, Post, Body, Inject } from '@nestjs/common';
@@ -175,9 +183,11 @@ export class OrderController {
 }
 ```
 
-## [Consumir Mensagens com Tópicos (Consumer)]()
+## [Consumir mensagens do RabbitMQ com pattern de tópicos]()
 
-### [1. Criar serviço consumidor]()
+Criação de consumers que subscrevem a tópicos específicos ou padrões com wildcards para processar eventos assincronamente.
+
+### [1. Criar serviço Consumer para processar mensagens do RabbitMQ]()
 
 `src/modules/notification/notification.consumer.ts`
 
@@ -242,9 +252,9 @@ export class NotificationConsumer {
 }
 ```
 
-### [2. Consumer com pattern matching (wildcards)]()
+### [2. Criar Consumer com pattern matching usando wildcards]()
 
-Você pode usar wildcards para subscrever a múltiplos tópicos:
+Você pode usar wildcards para subscrever a múltiplos tópicos RabbitMQ:
 
 - `*` - Corresponde exatamente a uma palavra
 - `#` - Corresponde a zero ou mais palavras
@@ -375,7 +385,9 @@ async function bootstrap() {
 bootstrap();
 ```
 
-## [Exemplos Práticos por Módulo]()
+## [Exemplos Práticos de uso do RabbitMQ por Módulo do sistema]()
+
+Catálogo de tópicos e eventos reais utilizados em diferentes módulos do projeto.
 
 ### [Módulo Order]()
 
@@ -465,7 +477,9 @@ await this.rabbitClient.emit('report.export.failed', { reportId, error });
 @EventPattern('report.export.completed')
 ```
 
-## [Casos de Uso Avançados]()
+## [Casos de Uso Avançados do RabbitMQ no Backend]()
+
+Implementações avançadas incluindo Dead Letter Queue, controle de retries, processamento em lote e escala horizontal.
 
 ### [1. Dead Letter Queue (DLQ) com Topic Exchange]()
 
@@ -610,7 +624,7 @@ npm run start
 # Ambas processarão mensagens de 'order.order.created' em paralelo
 ```
 
-## [Docker Compose - RabbitMQ com Management UI]()
+## [Configurar RabbitMQ local com Docker Compose e Management UI]()
 
 `docker-compose.yml`
 
@@ -655,7 +669,9 @@ Acessar Management UI:
 3. Acesse **Queues** - Verá todas as filas criadas automaticamente
 4. Em cada fila, veja **Bindings** para ver quais tópicos ela está ouvindo
 
-## [Boas Práticas]()
+## [Boas Práticas ao usar RabbitMQ no NestJS]()
+
+Recomendações essenciais para implementação robusta e manutenível de filas com RabbitMQ.
 
 ### [1. Sempre seguir padrão de nomenclatura]()
 
@@ -771,7 +787,9 @@ private timeout(ms: number): Promise<never> {
 }
 ```
 
-## [Diferenças: RabbitMQ vs Redis]()
+## [Diferenças entre RabbitMQ e Redis - Quando usar cada um]()
+
+Tabela comparativa para auxiliar na escolha entre RabbitMQ e Redis baseado nas necessidades do projeto.
 
 | Recurso | RabbitMQ | Redis |
 |---------|----------|-------|
@@ -786,7 +804,7 @@ private timeout(ms: number): Promise<never> {
 | **Escala horizontal** | ✅ Múltiplos consumers | ✅ Compartilhamento de dados |
 | **Quando usar** | Background jobs, eventos, retry | Cache, sessões, contadores |
 
-## [Checklist de Implementação]()
+## [Checklist de Implementação do RabbitMQ no NestJS]()
 
 - [ ] RabbitMQ rodando (Docker ou servidor)
 - [ ] Pacotes instalados (`@nestjs/microservices`, `amqplib`, `amqp-connection-manager`)
@@ -806,7 +824,9 @@ private timeout(ms: number): Promise<never> {
 - [ ] Validação de payload
 - [ ] Monitoramento via Management UI
 
-## [Troubleshooting]()
+## [Troubleshooting - Problemas comuns ao usar RabbitMQ]()
+
+Diagnóstico e solução de problemas frequentes ao configurar e usar RabbitMQ no NestJS.
 
 ### [RabbitMQ connection refused]()
 
@@ -895,7 +915,7 @@ async handleOrderCreated(@Payload() data: any) {
 }
 ```
 
-## [Referências]()
+## [Referências e documentação oficial sobre RabbitMQ e NestJS]()
 
 - [NestJS Microservices](https://docs.nestjs.com/microservices/basics)
 - [RabbitMQ Topic Exchange](https://www.rabbitmq.com/tutorials/tutorial-five-javascript.html)

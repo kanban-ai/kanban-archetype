@@ -2,7 +2,9 @@
 
 > Guia passo a passo para criar uma nova API REST no backend usando NestJS.
 
-## [Visão Geral]()
+## [Visão Geral - Como criar API REST completa no NestJS]()
+
+Esta seção apresenta a visão geral do processo de criação de uma API REST no NestJS, detalhando todos os componentes necessários para um CRUD funcional e bem estruturado.
 
 Este guia mostra como criar um CRUD completo seguindo os padrões do projeto, incluindo:
 - Módulo NestJS
@@ -14,7 +16,9 @@ Este guia mostra como criar um CRUD completo seguindo os padrões do projeto, in
 
 **IMPORTANTE**: Todas as APIs devem começar com versionamento `/v1/` desde o início. Veja [Como versionar API](./como-versionar-api-backend.md) para entender o porquê.
 
-## [Passo 1: Gerar o Resource com NestJS CLI]()
+## [Passo 1: Gerar Resource completo usando NestJS CLI]()
+
+Este passo mostra como utilizar o CLI do NestJS para gerar automaticamente toda estrutura de arquivos necessária para um módulo, economizando tempo e seguindo convenções do framework.
 
 O NestJS CLI gera automaticamente toda a estrutura necessária:
 
@@ -24,6 +28,8 @@ nest g resource nome-do-modulo
 ```
 
 ### [Opções interativas:]()
+
+Durante a execução do comando CLI, você será questionado sobre configurações do módulo. Escolha as opções adequadas para criar uma API REST com endpoints CRUD.
 
 1. **Qual tipo de transporte?**
    - Selecione: `REST API`
@@ -44,7 +50,9 @@ src/modules/nome-do-modulo/
      update-nome-do-modulo.dto.ts
 ```
 
-## [Passo 2: Criar a Entity (Modelo de Dados)]()
+## [Passo 2: Criar Entity TypeORM como modelo de dados]()
+
+Este passo detalha a criação da entity TypeORM que representa a tabela do banco de dados, definindo estrutura, tipos de colunas e relacionamentos.
 
 **Arquivo**: `entities/nome-do-modulo.entity.ts`
 
@@ -76,14 +84,20 @@ export class NomeDoModulo extends SuperEntity {
 
 ### [Dicas importantes:]()
 
+Esta seção lista boas práticas essenciais ao criar entities TypeORM, garantindo consistência e evitando erros comuns no projeto.
+
 - **Sempre estenda `SuperEntity`**: Inclui id, created_at, updated_at
 - **Use snake_case para colunas**: Convenção PostgreSQL
 - **Especifique `name` em @JoinColumn**: Controle explícito
 - **Adicione `userId` separado**: Facilita queries
 
-## [Passo 3: Criar DTOs (Validação)]()
+## [Passo 3: Criar DTOs para validação de dados da API]()
+
+Este passo explica a criação de DTOs (Data Transfer Objects) usando decorators de validação do class-validator para garantir integridade dos dados recebidos nas requisições.
 
 ### [Create DTO]()
+
+O Create DTO define a estrutura e validações para criação de novos registros, especificando campos obrigatórios, tipos e regras de negócio.
 
 **Arquivo**: `dto/create-nome-do-modulo.dto.ts`
 
@@ -123,6 +137,8 @@ export class CreateNomeDoModuloDto {
 
 ### [Update DTO]()
 
+O Update DTO herda do Create DTO tornando todos campos opcionais, permitindo atualizações parciais de registros existentes.
+
 **Arquivo**: `dto/update-nome-do-modulo.dto.ts`
 
 ```typescript
@@ -134,7 +150,9 @@ export class UpdateNomeDoModuloDto extends PartialType(CreateNomeDoModuloDto) {}
 
 > **Nota**: `PartialType` torna todos os campos opcionais automaticamente.
 
-## [Passo 4: Implementar o Service]()
+## [Passo 4: Implementar Service com lógica de negócio e CRUD]()
+
+Este passo mostra como implementar o Service contendo toda lógica de negócio e operações CRUD, injetando o repository TypeORM para acesso ao banco de dados.
 
 **Arquivo**: `nome-do-modulo.service.ts`
 
@@ -201,12 +219,16 @@ export class NomeDoModuloService {
 
 ### [Boas práticas do Service:]()
 
+Lista de boas práticas essenciais ao implementar services, focando em segurança, validação e retorno consistente de dados.
+
 1. **Sempre valide o userId**: Garante isolamento de dados
 2. **Use `findOne` antes de update/delete**: Valida permissões
 3. **Lance exceções apropriadas**: NotFoundException, ForbiddenException
 4. **Retorne sempre a entidade atualizada**: Facilita no frontend
 
-## [Passo 5: Implementar o Controller]()
+## [Passo 5: Implementar Controller com endpoints REST versionados]()
+
+Este passo detalha a implementação do Controller definindo rotas HTTP versionadas, decorators Swagger e integração com o Service.
 
 **Arquivo**: `nome-do-modulo.controller.ts`
 
@@ -274,6 +296,8 @@ export class NomeDoModuloController {
 
 ### [Boas práticas do Controller:]()
 
+Recomendações fundamentais para controllers robustos, incluindo documentação automática, validação de tipos e uso correto de verbos HTTP.
+
 1. **Use decoradores Swagger**: Documenta automaticamente
 2. **Use `ParseIntPipe`**: Valida e converte parâmetros
 3. **Injete `@Request() req`**: Acessa dados do usuário autenticado
@@ -281,7 +305,9 @@ export class NomeDoModuloController {
 5. **Organize rotas RESTful**: `/recurso`, `/recurso/:id`
 6. **Sempre use versionamento**: `@Controller({ path: 'recurso', version: '1' })`
 
-## [Passo 6: Configurar o Module]()
+## [Passo 6: Configurar Module do NestJS com dependências]()
+
+Este passo explica como configurar o módulo NestJS registrando controllers, providers e importando dependências necessárias como TypeORM.
 
 **Arquivo**: `nome-do-modulo.module.ts`
 
@@ -303,7 +329,9 @@ import { NomeDoModulo } from './entities/nome-do-modulo.entity';
 export class NomeDoModuloModule {}
 ```
 
-## [Passo 7: Registrar no AppModule]()
+## [Passo 7: Registrar novo módulo no AppModule raiz]()
+
+Este passo mostra como importar o módulo recém-criado no AppModule para disponibilizar suas funcionalidades na aplicação.
 
 **Arquivo**: `src/app.module.ts`
 
@@ -319,7 +347,9 @@ import { NomeDoModuloModule } from './modules/nome-do-modulo/nome-do-modulo.modu
 export class AppModule {}
 ```
 
-## [Passo 8: Criar Migration]()
+## [Passo 8: Criar Migration do TypeORM para schema do banco]()
+
+Este passo ensina a criar migrations para versionamento do schema do banco de dados, permitindo criar, modificar ou deletar tabelas de forma controlada.
 
 ```bash
 npm run typeorm -- migration:create src/database/migrations/CreateNomeDoModuloTable
@@ -369,15 +399,21 @@ Execute a migration:
 npm run typeorm -- migration:run
 ```
 
-## [Passo 9: Testar a API]()
+## [Passo 9: Testar API REST usando Swagger ou ferramentas HTTP]()
+
+Este passo final mostra como testar os endpoints criados usando interface Swagger UI ou ferramentas de linha de comando como curl.
 
 ### [Via Swagger]()
+
+O Swagger UI fornece uma interface visual interativa para testar todos endpoints documentados com decorators @Api.
 
 1. Acesse: `http://localhost:3000/api/docs`
 2. Clique em "Authorize" e insira o token JWT
 3. Teste os endpoints criados
 
 ### [Via curl]()
+
+Exemplos de comandos curl para testar cada operação CRUD da API via linha de comando, útil para automação e scripts.
 
 ```bash
 # Criar
@@ -405,9 +441,13 @@ curl -X DELETE http://localhost:3000/api/v1/nome-do-modulo/1 \
   -H "Authorization: Bearer SEU_TOKEN"
 ```
 
-## [Recursos Avançados]()
+## [Recursos Avançados para APIs REST no NestJS]()
+
+Esta seção apresenta funcionalidades avançadas para tornar suas APIs mais robustas, incluindo paginação, filtros e tratamento de relacionamentos.
 
 ### [Paginação]()
+
+Implementação de paginação para listar grandes volumes de dados de forma eficiente, retornando metadados de navegação.
 
 ```typescript
 // Service
@@ -487,7 +527,7 @@ async findOne(id: number, userId: number) {
 }
 ```
 
-## [Checklist de Implementação]()
+## [Checklist de Implementação de API REST completa]()
 
 - [ ] Resource gerado com `nest g resource`
 - [ ] Entity criada estendendo SuperEntity
@@ -500,7 +540,9 @@ async findOne(id: number, userId: number) {
 - [ ] Validação de userId em todas as operações
 - [ ] Versionamento configurado (ver [Como versionar API](./como-versionar-api-backend.md))
 
-## [Padrão de Nomenclatura]()
+## [Padrão de Nomenclatura de arquivos e classes no NestJS]()
+
+Esta seção define as convenções de nomenclatura para arquivos, classes e tabelas do projeto seguindo as melhores práticas do NestJS e TypeORM.
 
 | Tipo | Padrão | Regras | Exemplo |
 |------|--------|--------|---------|
@@ -515,7 +557,7 @@ async findOne(id: number, userId: number) {
 - **Entity**: Sempre singular em PascalCase (ex: `Product`, `User`)
 - **Tabela**: Sempre plural em snake_case minúscula (ex: `products`, `users`)
 
-## [Referências]()
+## [Referências e documentação oficial NestJS e TypeORM]()
 
 - [NestJS Controllers](https://docs.nestjs.com/controllers)
 - [NestJS Providers](https://docs.nestjs.com/providers)

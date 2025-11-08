@@ -2,7 +2,11 @@
 
 > Configuração dos scripts npm para gerenciar migrations do TypeORM.
 
-## [Scripts Necessários]()
+## [Scripts Necessários no package.json para Migrations]()
+
+Esta seção apresenta os scripts npm essenciais para gerenciar migrations do TypeORM. Cada script é um atalho que facilita a execução de comandos como gerar, criar e executar migrations no projeto.
+
+Lista de scripts npm essenciais para gerenciar migrations TypeORM:
 
 Adicione no `package.json`:
 
@@ -20,7 +24,11 @@ Adicione no `package.json`:
 }
 ```
 
-## [Descrição dos Comandos]()
+## [Descrição Detalhada de cada Comando de Migration]()
+
+Esta seção detalha cada comando de migration, explicando quando usar, o que faz e exemplos práticos de uso no dia a dia.
+
+Explicação completa de cada script npm e seus parâmetros:
 
 ### [typeorm (Base)]()
 
@@ -126,7 +134,9 @@ npm run db:drop
 
 **  CUIDADO**: Apaga todos os dados!
 
-## [Fluxo de Trabalho]()
+## [Fluxo de Trabalho para criar e aplicar Migrations]()
+
+Sequência de comandos para workflow completo de migrations:
 
 ### [1. Criar nova entity]()
 
@@ -177,7 +187,9 @@ npm run migration:revert
 npm run migration:run
 ```
 
-## [Configuração do DataSource]()
+## [Configuração do DataSource para TypeORM CLI]()
+
+Arquivo database.config.ts necessário para comandos de migration:
 
 Para os comandos funcionarem, configure `database.config.ts`:
 
@@ -203,7 +215,9 @@ export default new DataSource({
 });
 ```
 
-## [Dependências Necessárias]()
+## [Dependências Necessárias para executar Migrations]()
+
+Pacotes npm requeridos para TypeORM CLI funcionar:
 
 ```json
 {
@@ -219,7 +233,9 @@ export default new DataSource({
 }
 ```
 
-## [Scripts Adicionais Úteis]()
+## [Scripts Adicionais Úteis para desenvolvimento]()
+
+Comandos extras para seed, backup e verificação de migrations:
 
 ### [Seed de Dados]()
 
@@ -252,7 +268,9 @@ export default new DataSource({
 }
 ```
 
-## [CI/CD Integration]()
+## [Integração com CI/CD para Migrations automáticas]()
+
+Como executar migrations em pipelines GitHub Actions e Docker:
 
 ### [GitHub Actions]()
 
@@ -273,7 +291,9 @@ export default new DataSource({
 CMD ["sh", "-c", "npm run migration:run && npm run start:prod"]
 ```
 
-## [Troubleshooting]()
+## [Troubleshooting - Erros comuns com comandos de Migration]()
+
+Soluções para problemas frequentes ao executar migrations:
 
 ### [Erro: "Cannot find module"]()
 
@@ -300,7 +320,9 @@ echo $DB_HOST
 echo $DB_USERNAME
 ```
 
-## [Exemplo Completo]()
+## [Exemplo Completo de package.json com todos scripts]()
+
+Package.json completo com todos comandos de migration configurados:
 
 ```json
 {
@@ -325,7 +347,9 @@ echo $DB_USERNAME
 }
 ```
 
-## [Referências]()
+## [Referências e documentação TypeORM CLI]()
+
+Links para documentação oficial do TypeORM CLI:
 
 - [TypeORM Migrations CLI](https://typeorm.io/migrations#creating-a-new-migration)
 - [NestJS TypeORM](https://docs.nestjs.com/recipes/sql-typeorm)

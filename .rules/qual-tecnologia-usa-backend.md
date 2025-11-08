@@ -4,6 +4,8 @@
 
 ## [Stack Principal]()
 
+Tecnologias core utilizadas no backend incluindo framework, runtime, linguagem e servidor HTTP.
+
 ### [Framework e Runtime]()
 
 - **NestJS**: Framework principal do backend
@@ -117,6 +119,8 @@
 
 ## [Ferramentas de Desenvolvimento]()
 
+Tools para compilação, build, qualidade de código e desenvolvimento em geral.
+
 ### [Compilação e Build]()
 
 - **@nestjs/cli**: CLI do NestJS
@@ -175,6 +179,8 @@
 
 ## [Arquitetura e Padrões]()
 
+Padrões de design e princípios de arquitetura implementados no projeto backend.
+
 ### [Padrões de Design Implementados]()
 
 1. **Dependency Injection**: Container IoC nativo do NestJS
@@ -194,6 +200,8 @@
 - **D** (Dependency Inversion): Dependências injetadas, não instanciadas
 
 ## [Módulos Personalizados do Projeto]()
+
+Módulos de domínio específicos desenvolvidos para o projeto, organizados por funcionalidade de negócio.
 
 ### [Módulos de Domínio]()
 

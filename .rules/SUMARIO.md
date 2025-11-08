@@ -4,6 +4,8 @@
 
 ## [📚 Stack e Tecnologias]()
 
+Documentação sobre todas as tecnologias, frameworks e bibliotecas utilizadas no backend e frontend.
+
 ### [Backend - `./qual-tecnologia-usa-backend.md`]()
 
 - **Stack Principal** - Framework NestJS, TypeScript, Node.js, Express
@@ -30,6 +32,8 @@
 - **Bibliotecas de Formulários** - Validação nativa HTML5
 
 ## [🔧 Backend - Desenvolvimento]()
+
+Guias completos para desenvolvimento de APIs, integração de serviços e implementação de features no backend.
 
 ### [Redis - `./como-usar-redis-backend.md`]()
 
@@ -177,6 +181,8 @@
 
 ## [💾 Banco de Dados]()
 
+Documentação sobre TypeORM, entities, migrations e gerenciamento de schema do banco de dados.
+
 ### [Entity TypeORM - `./como-criar-uma-entity-typeorm-backend.md`]()
 
 - **Estrutura Básica** - Entity simples, SuperEntity e SoftDeletableEntity
@@ -228,6 +234,8 @@
 
 ## [🔐 Autenticação e Segurança]()
 
+Guias de implementação de autenticação JWT, API Key e estratégias de segurança.
+
 ### [Autenticação JWT - `./como-deve-funcionar-autenticacao.md`]()
 
 - **Visão Geral** - Sistema JWT completo
@@ -265,6 +273,8 @@
 - **Troubleshooting** - Erros comuns
 
 ## [🏗️ Estrutura e Padrões Backend]()
+
+Arquitetura, organização de código e padrões de design para módulos escaláveis no backend.
 
 ### [Arquivo Main - `./como-deve-funcionar-arquivo-main-backend.md`]()
 
@@ -322,6 +332,8 @@
 - **Dicas Finais** - Boas práticas
 
 ## [🎨 Frontend - Desenvolvimento]()
+
+Guias completos para desenvolvimento React, consumo de APIs e criação de componentes reutilizáveis.
 
 ### [Setup Inicial - `./como-iniciar-fazer-0-setup-do-frontend.md`]()
 
@@ -405,6 +417,8 @@
 
 ## [📖 Guias Rápidos]()
 
+Atalhos para tarefas comuns com links diretos para as seções específicas dos guias.
+
 ### [Criar novo módulo backend completo]()
 
 1. [Como criar uma API](./como-criar-api-backend.md#passo-a-passo)
@@ -429,6 +443,8 @@
 3. [Configurar rotas](./como-funciona-as-rotas-no-frontend.md#configuração-centralizada)
 
 ## [🔍 Busca por Palavra-Chave]()
+
+Índice alfabético de termos técnicos com links diretos para os guias correspondentes.
 
 | Palavra-Chave | Documento Principal |
 |---------------|---------------------|
@@ -481,6 +497,8 @@
 
 ## [🗺️ Navegação por Nível]()
 
+Guias organizados por nível de complexidade: iniciante, intermediário e avançado.
+
 ### [🌱 Iniciante]()
 
 1. [Stack Backend](./qual-tecnologia-usa-backend.md#stack-principal)
@@ -513,6 +531,8 @@
 5. [Validação Customizada](./como-usar-validacao-de-dados-api-backend.md#validação-customizada)
 
 ## [📁 Estrutura de Arquivos]()
+
+Árvore completa de diretórios mostrando a organização de todos os arquivos de documentação.
 
 ```
 .rules/

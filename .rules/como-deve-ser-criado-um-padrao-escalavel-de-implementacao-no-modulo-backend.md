@@ -4,6 +4,8 @@
 
 ## [Princípios Fundamentais]()
 
+Conceitos essenciais de design de software aplicados ao desenvolvimento de módulos escaláveis no NestJS.
+
 ### [1. Single Responsibility Principle]()
 
 Cada classe deve ter uma única responsabilidade:
@@ -98,6 +100,8 @@ export class ProductService {
 ```
 
 ## [Padrões de Implementação]()
+
+Padrões de design comprovados para estruturar código escalável e manutenível em aplicações NestJS.
 
 ### [1. Repository Pattern (TypeORM)]()
 
@@ -223,6 +227,8 @@ export class ReportFactory {
 
 ## [Organização Escalável]()
 
+Estruturação de código em camadas bem definidas para facilitar manutenção e evolução do sistema.
+
 ### [Separação por Camadas]()
 
 ```
@@ -289,6 +295,8 @@ export class ProductService {
 ```
 
 ## [Error Handling]()
+
+Estratégias para tratamento de erros consistente e informativo usando exceções do NestJS.
 
 ### [Use Exceções do NestJS]()
 

@@ -4,6 +4,8 @@
 
 ## [Estrutura Padrão]()
 
+Organização padrão de arquivos e pastas para módulos NestJS, seguindo convenções e boas práticas do framework.
+
 ```
 src/modules/nome-do-modulo/
 > nome-do-modulo.module.ts          # Configuração do módulo
@@ -23,6 +25,8 @@ src/modules/nome-do-modulo/
 ```
 
 ## [Descrição dos Arquivos]()
+
+Explicação detalhada da responsabilidade e conteúdo de cada tipo de arquivo na estrutura de um módulo.
 
 ### [Module (*.module.ts)]()
 
@@ -224,6 +228,8 @@ type: AlertType;
 
 ## [Exemplo Real do Projeto]()
 
+Exemplos concretos de estruturas de módulos simples e complexos utilizados no projeto real.
+
 ### [Módulo Simples (Asset)]()
 
 ```
@@ -261,6 +267,8 @@ src/modules/rebalance/
 
 ## [Convenções de Nomenclatura]()
 
+Tabela de referência com padrões de nomenclatura para cada tipo de arquivo e classe no módulo.
+
 | Item | Padrão | Exemplo |
 |------|--------|---------|
 | Pasta do módulo | kebab-case | `asset-group` |
@@ -272,6 +280,8 @@ src/modules/rebalance/
 | Enum | PascalCase | `AssetStatus` |
 
 ## [Organização por Tamanho]()
+
+Recomendações de organização de código baseadas no tamanho e complexidade do módulo.
 
 ### [Módulo Pequeno (< 300 linhas)]()
 
@@ -320,6 +330,8 @@ modulo/
 ```
 
 ## [Localização dos Módulos]()
+
+Estrutura hierárquica de diretórios do projeto indicando onde os módulos de domínio devem ser criados.
 
 ```
 back/src/

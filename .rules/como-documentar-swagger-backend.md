@@ -8,6 +8,8 @@ Swagger (OpenAPI) gera automaticamente uma interface interativa para testar e do
 
 ## [Configuração Inicial]()
 
+Setup básico do Swagger no projeto NestJS para habilitar documentação automática de APIs.
+
 ### [1. Instalar dependências]()
 
 ```bash
@@ -38,6 +40,8 @@ async function bootstrap() {
 ```
 
 ## [Documentar Controllers]()
+
+Decorators para documentar endpoints REST incluindo tags, operações, parâmetros e respostas.
 
 ### [Decorators Principais]()
 
@@ -131,6 +135,8 @@ export class ProductController {
 
 ## [Documentar DTOs]()
 
+Anotação de Data Transfer Objects com @ApiProperty para gerar documentação precisa dos schemas de entrada e saída.
+
 ### [Exemplo Create DTO]()
 
 ```typescript
@@ -211,6 +217,8 @@ export class CreateProductDto {
 
 ## [Documentar Respostas]()
 
+Especificação de formatos de resposta HTTP com tipos, status codes e estruturas de dados.
+
 ### [Resposta com Type]()
 
 ```typescript
@@ -249,6 +257,8 @@ create(@Body() dto: CreateProductDto) {
 ```
 
 ## [Decorators Úteis]()
+
+Coleção de decorators do @nestjs/swagger para documentar diferentes aspectos da API de forma declarativa.
 
 ### [@ApiTags]()
 
@@ -386,6 +396,8 @@ description?: string;
 
 ## [Ocultar Propriedades]()
 
+Métodos para excluir propriedades sensíveis da documentação Swagger e das respostas da API.
+
 ### [@ApiHideProperty]()
 
 Oculta propriedade da documentação:
@@ -417,6 +429,8 @@ export class UserEntity {
 
 ## [Testar no Swagger UI]()
 
+Instruções para utilizar a interface interativa do Swagger para testar endpoints autenticados e não autenticados.
+
 ### [1. Acessar a documentação]()
 
 ```
@@ -438,6 +452,8 @@ http://localhost:3000/api/docs
 5. Veja a resposta
 
 ## [Documentar Paginação]()
+
+Exemplo de DTO genérico para documentar respostas paginadas de forma consistente em toda API.
 
 ```typescript
 export class PaginatedResponseDto<T> {

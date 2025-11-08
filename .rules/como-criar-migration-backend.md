@@ -4,7 +4,11 @@
 
 > **⚠️ IMPORTANTE**: Todas as migrations devem ser escritas usando SQL puro através de `queryRunner.query()`, não objetos TypeORM como `new Table()`, `new TableColumn()`, etc.
 
-## [O que são Migrations?]()
+## [O que são Migrations do TypeORM e por que usar]()
+
+Esta seção explica o conceito de migrations e seus benefícios para controle de versão do schema do banco de dados em ambientes de desenvolvimento e produção.
+
+Migrations são scripts de versionamento do schema do banco de dados:
 
 Migrations são arquivos de controle de versão do banco de dados. Elas permitem:
 - Versionar alterações no schema do banco
@@ -12,9 +16,15 @@ Migrations são arquivos de controle de versão do banco de dados. Elas permitem
 - Sincronizar banco entre ambientes (dev, staging, prod)
 - Reverter alterações quando necessário
 
-## [Comandos Disponíveis]()
+## [Comandos Disponíveis do TypeORM CLI para Migrations]()
+
+Esta seção lista todos os comandos essenciais do TypeORM CLI para criar, executar, reverter e gerenciar migrations no projeto.
+
+Lista completa de comandos para gerenciar migrations:
 
 ### [Criar Migration Vazia]()
+
+Comando para gerar um arquivo de migration vazio onde você implementará manualmente os métodos up e down.
 
 ```bash
 npm run typeorm -- migration:create src/database/migrations/NomeDaMigration
@@ -54,9 +64,15 @@ npm run typeorm -- migration:show
 
 Mostra quais migrations foram executadas e quais estão pendentes.
 
-## [Passo a Passo: Criar Migration Manual]()
+## [Passo a Passo para Criar Migration Manual]()
+
+Esta seção guia você através do processo completo de criação de uma migration manual, desde a geração do arquivo até a execução das operações SQL.
+
+Como criar migration manualmente com métodos up e down:
 
 ### [1. Criar o arquivo]()
+
+Primeiro passo é gerar o arquivo de migration com timestamp único para garantir ordem de execução.
 
 ```bash
 npm run typeorm -- migration:create src/database/migrations/CreateProductsTable
@@ -117,9 +133,15 @@ export class CreateProductsTable1234567890000 implements MigrationInterface {
 npm run typeorm -- migration:run
 ```
 
-## [Tipos de Operações com SQL]()
+## [Tipos de Operações SQL em Migrations]()
+
+Esta seção apresenta exemplos práticos de todas operações SQL comuns em migrations, incluindo criação, alteração e remoção de estruturas do banco.
+
+Exemplos de DDL para criar tabelas, colunas, índices e FKs:
 
 ### [1. Criar Tabela]()
+
+Comando SQL para criar uma nova tabela com colunas, tipos e constraints.
 
 ```typescript
 await queryRunner.query(`
@@ -215,7 +237,9 @@ await queryRunner.query(`
 `);
 ```
 
-## [Exemplo Completo: Adicionar Campo]()
+## [Exemplo Completo de Migration para Adicionar Campo]()
+
+Migration completa adicionando nova coluna em tabela existente:
 
 ### [Migration: Adicionar campo `active` na tabela `products`]()
 
@@ -239,7 +263,9 @@ export class AddActiveToProducts1234567890001 implements MigrationInterface {
 }
 ```
 
-## [Exemplo Completo: Adicionar Relacionamento]()
+## [Exemplo Completo de Migration para Adicionar Foreign Key]()
+
+Migration para adicionar relacionamento entre tabelas:
 
 ### [Migration: Adicionar relacionamento `category_id` em `products`]()
 
@@ -291,7 +317,9 @@ export class AddCategoryToProducts1234567890002 implements MigrationInterface {
 }
 ```
 
-## [Migrations Automáticas (Generate)]()
+## [Migrations Automáticas geradas pelo TypeORM]()
+
+Como usar migration:generate para criar migrations baseadas em entities:
 
 ### [Quando usar]()
 
@@ -348,7 +376,9 @@ export class AddBrandToProducts1234567890003 implements MigrationInterface {
 npm run typeorm -- migration:run
 ```
 
-## [Boas Práticas]()
+## [Boas Práticas ao criar Migrations no TypeORM]()
+
+Recomendações essenciais para migrations seguras e manuteníveis:
 
 ### [1. Sempre implemente `down()`]()
 
@@ -514,7 +544,9 @@ updated_at: Date;
 - Constraints customizados via `CHECK CONSTRAINT` (validações de dados)
 - Índices parciais ou funcionais (performance)
 
-## [Troubleshooting]()
+## [Troubleshooting - Problemas comuns com Migrations]()
+
+Soluções para erros frequentes ao trabalhar com migrations:
 
 ### [Migration não está sendo detectada]()
 
@@ -552,7 +584,9 @@ npm run typeorm -- migration:revert
 npm run typeorm -- migration:run
 ```
 
-## [Scripts package.json]()
+## [Scripts package.json para Migrations]()
+
+Comandos npm recomendados para gerenciar migrations:
 
 Verifique se estes scripts existem em `package.json`:
 
@@ -569,7 +603,9 @@ Verifique se estes scripts existem em `package.json`:
 }
 ```
 
-## [Exemplo do Projeto]()
+## [Exemplo Real de Migration do Projeto]()
+
+Migration real criando tabela users com todas colunas:
 
 No projeto, as migrations estão em:
 ```
@@ -583,7 +619,9 @@ Migrations existentes:
 - `1738500000000-create-alerts-table.ts` - Tabela de alertas
 - E outras...
 
-## [Referências]()
+## [Referências e documentação oficial do TypeORM Migrations]()
+
+Links para documentação oficial de migrations:
 
 - [TypeORM Migrations](https://typeorm.io/migrations)
 - [Migration API](https://typeorm.io/migrations#migration-api)

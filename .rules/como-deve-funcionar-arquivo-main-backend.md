@@ -15,6 +15,8 @@ O `main.ts` é o ponto de entrada da aplicação. Ele:
 
 ## [Estrutura Básica]()
 
+Exemplo mínimo de um arquivo main.ts funcional para iniciar uma aplicação NestJS.
+
 ```typescript
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
@@ -28,6 +30,8 @@ bootstrap();
 ```
 
 ## [Configuração Completa do Projeto]()
+
+Configuração completa e pronta para produção incluindo CORS, validação global, guards, Swagger e servir arquivos estáticos do frontend.
 
 ```typescript
 import { NestFactory, Reflector } from '@nestjs/core';
@@ -141,6 +145,8 @@ bootstrap();
 > **IMPORTANTE**: Veja [Como versionar API](./como-versionar-api-backend.md) para entender como funciona o versionamento.
 
 ## [Explicação de Cada Seção]()
+
+Detalhamento de cada configuração do main.ts com exemplos práticos e opções adicionais.
 
 ### [1. NestFactory.create()]()
 
@@ -359,6 +365,8 @@ console.log(`Aplicação rodando na porta ${port}`);
 ```
 
 ## [Configurações Opcionais]()
+
+Middlewares e funcionalidades adicionais para aumentar segurança, performance e monitoramento da aplicação.
 
 ### [Helmet (Segurança)]()
 

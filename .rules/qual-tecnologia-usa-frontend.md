@@ -4,6 +4,8 @@
 
 ## [Stack Principal]()
 
+Tecnologias core utilizadas no frontend incluindo framework React, build tool Vite e linguagem TypeScript.
+
 ### [Framework e Runtime]()
 
 - **React**: Framework principal
@@ -60,6 +62,8 @@
 
 ## [Visualização de Dados]()
 
+Bibliotecas para renderização de gráficos, tooltips e formatação de datas visuais.
+
 ### [Gráficos]()
 
 - **Chart.js**: Biblioteca de gráficos
@@ -96,6 +100,8 @@
 
 ## [Gerenciamento de Estado]()
 
+Solução de gerenciamento de estado global utilizando Context API nativa do React sem bibliotecas externas.
+
 ### [Context API (Nativo React)]()
 
 O projeto usa Context API nativa do React, sem bibliotecas externas:
@@ -115,6 +121,8 @@ O projeto usa Context API nativa do React, sem bibliotecas externas:
    - Breadcrumbs e título
 
 ## [Ferramentas de Desenvolvimento]()
+
+Tools para desenvolvimento TypeScript, linting e validação de código.
 
 ### [TypeScript]()
 
@@ -150,6 +158,8 @@ O projeto usa Context API nativa do React, sem bibliotecas externas:
 
 ## [Estrutura de Componentes]()
 
+Organização de componentes reutilizáveis categorizados por tipo e funcionalidade.
+
 ### [Componentes Comuns (src/components/common/)]()
 
 - **Modals**: Modal, AlertModal, ConfirmModal, CommentModal, SelectWalletModal
@@ -171,6 +181,8 @@ O projeto usa Context API nativa do React, sem bibliotecas externas:
 - **ToastContainer**: Container de notificações
 
 ## [Páginas (src/pages/)]()
+
+Lista completa de páginas da aplicação organizadas por módulo funcional.
 
 ### [Autenticação]()
 - Login
@@ -216,15 +228,21 @@ O projeto usa Context API nativa do React, sem bibliotecas externas:
 
 ## [Utilitários (src/utils/)]()
 
+Funções auxiliares para formatação de moeda e manipulação de datas.
+
 - **currency.utils.ts**: Formatação de moeda
 - **date.utils.ts**: Manipulação de datas
 
 ## [Tipos TypeScript (src/types/)]()
 
+Definições de tipos e interfaces TypeScript para autenticação e modelos de dados.
+
 - **auth.ts**: Tipos de autenticação
 - **models/user.ts**: Model de usuário
 
 ## [Configurações]()
+
+Arquivos de configuração do projeto incluindo Vite, TypeScript e Tailwind.
 
 ### [Vite (vite.config.ts)]()
 
@@ -271,6 +289,8 @@ O projeto usa Context API nativa do React, sem bibliotecas externas:
 
 ## [Scripts NPM]()
 
+Comandos disponíveis no package.json para desenvolvimento, build e verificação de código.
+
 ```json
 {
   "dev": "vite",
@@ -282,6 +302,8 @@ O projeto usa Context API nativa do React, sem bibliotecas externas:
 
 ## [Variáveis de Ambiente]()
 
+Configuração de variáveis de ambiente com prefixo VITE_ para uso no código cliente.
+
 ```env
 VITE_API_URL=http://localhost:3000/api
 ```
@@ -292,6 +314,8 @@ import.meta.env.VITE_API_URL
 ```
 
 ## [Padrões e Convenções]()
+
+Convenções de nomenclatura, organização de código e boas práticas adotadas no projeto.
 
 ### [Estrutura de Arquivos]()
 - Componentes: PascalCase (ex: MetricCard.tsx)
@@ -315,6 +339,8 @@ import.meta.env.VITE_API_URL
 - Localizados em `src/contexts/`
 
 ## [Características do Projeto]()
+
+Funcionalidades e decisões de design implementadas no projeto frontend.
 
 ### [Dark Mode]()
 - Tema escuro por padrão
