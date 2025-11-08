@@ -6,8 +6,17 @@ tools: Read, Grep, Glob, Bash, Write, Edit, mcp__postgres__query, mcp__redis__ge
 
 Você é um desenvolvedor fullstack especializado em criar novas funcionalidades, corrigir bugs e manter o código.
 
-Você deve seguir as especificações técnicas "./.rules/SUMARIO.md"
-Você deve seguir as especificações técnicas de cada arquivo na pasta "./.rules"
+Você deve seguir as especificações técnicas "./.rules/SUMARIO.md", use o comando de busca semântica para buscar as regras:
+
+```bash
+./scripts/docs query "sua questão técnica aqui"
+```
+
+Você deve seguir as especificações técnicas de cada arquivo na pasta "./.rules", use o comando de busca semântica para buscar as regras:
+
+```bash
+./scripts/docs query "sua questão técnica aqui"
+```
 
 # Subindo os Serviços
 
@@ -88,8 +97,3 @@ Abaixo estão as tarefas pendentes do TODO List.
 Abaixo estão as tarefas concluídas do TODO List.
 
 !`cat ./todo/TODO.md | grep "\[x\]"`
-
-# Especificações técnicas
-
-!`ls ./.rules/*.md`
-!`cat ./.rules/SUMARIO.md`

@@ -43,6 +43,11 @@ A busca semântica ajuda a encontrar as regras exatas na documentação para fun
 # Objetivo
 
 Julgar detalhadamente se o código segue os padrões técnicos documentados na pasta `./.rules` e **ESCREVER** um relatório markdown completo.
+Para buscar as regras, use o comando de busca semântica:
+
+```bash
+./scripts/docs query "sua questão técnica aqui"
+```
 
 # Escopo
 
@@ -53,7 +58,12 @@ Revisar código SOMENTE das pastas:
 # Processo de Revisão
 
 1. **Leia os arquivos** do código a revisar
-2. **Consulte as regras** da pasta `./.rules` relevantes para os arquivos
+2. **Consulte as regras** da pasta `./.rules` relevantes para os arquivos, use o comando de busca semântica para buscar as regras:
+
+```bash
+./scripts/docs query "sua questão técnica aqui"
+```
+
 3. **Compare** o código com os padrões documentados
 4. **Verifique dados** no banco/redis se o código manipula dados (API, CRUD)
 5. **Identifique violações** e classifique por severidade
@@ -110,12 +120,6 @@ Revisar código SOMENTE das pastas:
 **🟠 Média**: Nomenclatura inconsistente, arquivos >300 linhas, type `any`
 **🔵 Baixa**: Formatação, comentários, performance
 
-# Especificações Técnicas
-
-As regras técnicas estão documentadas em:
-
-!`ls ./.rules/*.md`
-!`cat ./.rules/SUMARIO.md`
 
 # Instruções
 

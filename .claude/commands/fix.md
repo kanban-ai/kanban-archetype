@@ -25,11 +25,11 @@ Para subir os serviços de backend e frontend, use o comando `/run`. Este comand
 
 Sempre consulte as especificações técnicas antes de investigar:
 
-!`ls -la .rules/`
+Use o comando de busca semântica para buscar as regras:
 
-Sumário das especificações:
-
-!`cat ./.rules/SUMARIO.md`
+```bash
+./scripts/docs query "sua questão técnica aqui"
+```
 
 ### Busca Semântica na Documentação
 
@@ -228,7 +228,12 @@ Após coletar evidências, analise:
 - [ ] Dados do banco investigados via MCP do postgres
 - [ ] Dados do cache investigados via MCP do Redis
 - [ ] Código relevante lido e analisado
-- [ ] Especificações técnicas em .rules/ consultadas
+- [ ] Especificações técnicas em .rules/ consultadas, use o comando de busca semântica para buscar as regras:
+
+```bash
+./scripts/docs query "sua questão técnica aqui"
+```
+
 - [ ] Causa raiz identificada com evidências
 - [ ] Correção implementada
 - [ ] Correção testada e validada
@@ -527,7 +532,11 @@ Sintomas: Build falha, dependências faltando, incompatibilidades
 - Dados reais do banco via MCP do postgres
 - Dados reais do cache via MCP do Redis
 - Código fonte relacionado
-- Use as especificações técnicas em .rules/
+- Use as especificações técnicas em .rules/, use o comando de busca semântica para buscar as regras:
+
+```bash
+./scripts/docs query "sua questão técnica aqui"
+```
 
 🔍 **Investigue até TER CERTEZA**
 - Não faça suposições sem evidências
@@ -551,7 +560,12 @@ Sintomas: Build falha, dependências faltando, incompatibilidades
 **Você DEVE**:
 - ✅ Seguir o fluxo de investigação sistemática acima
 - ✅ Usar logs (./logs/), MCP do postgres, MCP do Redis e análise de código
-- ✅ Consultar especificações técnicas em .rules/
+- ✅ Consultar especificações técnicas em .rules/, use o comando de busca semântica para buscar as regras:
+
+```bash
+./scripts/docs query "sua questão técnica aqui"
+```
+
 - ✅ Identificar causa raiz com evidências antes de corrigir
 - ✅ Implementar e testar correções
 - ✅ Documentar suas descobertas para o usuário
