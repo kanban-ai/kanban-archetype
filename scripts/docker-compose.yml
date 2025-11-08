@@ -24,3 +24,18 @@ services:
     environment:
       - RABBITMQ_DEFAULT_USER=rabbitmq
       - RABBITMQ_DEFAULT_PASS=rabbitmq
+
+
+# TOOLS
+
+  chroma:
+    image: chromadb/chroma:latest
+    ports:
+      - "8000:8000"
+    environment:
+      - CHROMA_SERVER_HOST=0.0.0.0
+      - CHROMA_SERVER_PORT=8000
+      # opcional: habilitar persistência, telemetria, etc
+      - IS_PERSISTENT=true
+      - ANONYMIZED_TELEMETRY=false
+    restart: unless-stopped

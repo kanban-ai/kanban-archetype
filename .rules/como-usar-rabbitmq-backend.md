@@ -1,8 +1,8 @@
-# Como usar RabbitMQ no Backend
+# [Como usar RabbitMQ no Backend]()
 
 > Guia completo para usar RabbitMQ com Topic Exchange para processamento assíncrono e confiável
 
-## Quando usar RabbitMQ
+## [Quando usar RabbitMQ]()
 
 - ✅ **Processamento assíncrono** - Tarefas que não bloqueiam a resposta da API
 - ✅ **Tarefas demoradas** - Processamentos longos (envio de emails, relatórios, etc)
@@ -15,24 +15,24 @@
 - ❌ **Comunicação síncrona** - Use HTTP/REST para respostas imediatas
 - ❌ **Dados temporários compartilhados** - Use Redis
 
-## Instalação
+## [Instalação]()
 
 ```bash
 npm install @nestjs/microservices amqplib amqp-connection-manager
 ```
 
-## Arquitetura: Topic Exchange
+## [Arquitetura: Topic Exchange]()
 
 Este projeto usa **Topic Exchange** com **UMA ÚNICA EXCHANGE** chamada `app_exchange`.
 
-### Conceitos
+### [Conceitos]()
 
 - **Exchange**: Recebe mensagens e roteia para filas (usamos apenas `app_exchange`)
 - **Topic (Routing Key)**: Padrão de roteamento no formato `<module>.<resource>.<action>`
 - **Queue**: Fila que recebe mensagens baseado no topic
 - **Binding**: Ligação entre Exchange e Queue com pattern de topic
 
-### Padrão de Nomenclatura de Tópicos
+### [Padrão de Nomenclatura de Tópicos]()
 
 ```
 <module_name>.<resource_name>.<action>
@@ -58,9 +58,9 @@ Este projeto usa **Topic Exchange** com **UMA ÚNICA EXCHANGE** chamada `app_exc
 - `registered`, `activated`, `suspended` - Usuários
 - `placed`, `accepted`, `rejected` - Ofertas/Lances
 
-## Configuração Global (Common Module)
+## [Configuração Global (Common Module)]()
 
-### 1. Criar módulo comum de RabbitMQ com Topic Exchange
+### [1. Criar módulo comum de RabbitMQ com Topic Exchange]()
 
 `src/common/rabbitmq/rabbitmq.module.ts`
 
@@ -101,7 +101,7 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
 export class RabbitMQModule {}
 ```
 
-### 2. Registrar no AppModule
+### [2. Registrar no AppModule]()
 
 `src/app.module.ts`
 
@@ -119,7 +119,7 @@ import { RabbitMQModule } from './common/rabbitmq/rabbitmq.module';
 export class AppModule {}
 ```
 
-### 3. Variáveis de ambiente
+### [3. Variáveis de ambiente]()
 
 `.env`
 
@@ -130,9 +130,9 @@ RABBITMQ_USER=guest        # Opcional
 RABBITMQ_PASSWORD=guest    # Opcional
 ```
 
-## Uso Básico - Publicar Mensagem (Producer)
+## [Uso Básico - Publicar Mensagem (Producer)]()
 
-### Controller/Service publica mensagem com tópico
+### [Controller/Service publica mensagem com tópico]()
 
 ```typescript
 import { Controller, Post, Body, Inject } from '@nestjs/common';
@@ -175,9 +175,9 @@ export class OrderController {
 }
 ```
 
-## Consumir Mensagens com Tópicos (Consumer)
+## [Consumir Mensagens com Tópicos (Consumer)]()
 
-### 1. Criar serviço consumidor
+### [1. Criar serviço consumidor]()
 
 `src/modules/notification/notification.consumer.ts`
 
@@ -242,7 +242,7 @@ export class NotificationConsumer {
 }
 ```
 
-### 2. Consumer com pattern matching (wildcards)
+### [2. Consumer com pattern matching (wildcards)]()
 
 Você pode usar wildcards para subscrever a múltiplos tópicos:
 
@@ -321,7 +321,7 @@ export class AuditConsumer {
 }
 ```
 
-### 3. Registrar consumidor no módulo
+### [3. Registrar consumidor no módulo]()
 
 `src/modules/notification/notification.module.ts`
 
@@ -335,7 +335,7 @@ import { NotificationConsumer } from './notification.consumer';
 export class NotificationModule {}
 ```
 
-### 4. Configurar bootstrap com Topic Exchange
+### [4. Configurar bootstrap com Topic Exchange]()
 
 `src/main.ts`
 
@@ -375,9 +375,9 @@ async function bootstrap() {
 bootstrap();
 ```
 
-## Exemplos Práticos por Módulo
+## [Exemplos Práticos por Módulo]()
 
-### Módulo Order
+### [Módulo Order]()
 
 ```typescript
 // Producer
@@ -394,7 +394,7 @@ await this.rabbitClient.emit('order.order.shipped', { orderId, trackingCode });
 @EventPattern('order.order.canceled')
 ```
 
-### Módulo Payment
+### [Módulo Payment]()
 
 ```typescript
 // Producer
@@ -408,7 +408,7 @@ await this.rabbitClient.emit('payment.payment.failed', { paymentId, error });
 @EventPattern('payment.payment.failed')
 ```
 
-### Módulo Notification
+### [Módulo Notification]()
 
 ```typescript
 // Producer
@@ -422,7 +422,7 @@ await this.rabbitClient.emit('notification.push.sent', { pushId, userId });
 @EventPattern('notification.email.failed')
 ```
 
-### Módulo Product
+### [Módulo Product]()
 
 ```typescript
 // Producer
@@ -437,7 +437,7 @@ await this.rabbitClient.emit('product.price.changed', { productId, oldPrice, new
 @EventPattern('product.stock.depleted')
 ```
 
-### Módulo User
+### [Módulo User]()
 
 ```typescript
 // Producer
@@ -451,7 +451,7 @@ await this.rabbitClient.emit('user.user.deleted', { userId });
 @EventPattern('user.user.activated')
 ```
 
-### Módulo Report
+### [Módulo Report]()
 
 ```typescript
 // Producer
@@ -465,9 +465,9 @@ await this.rabbitClient.emit('report.export.failed', { reportId, error });
 @EventPattern('report.export.completed')
 ```
 
-## Casos de Uso Avançados
+## [Casos de Uso Avançados]()
 
-### 1. Dead Letter Queue (DLQ) com Topic Exchange
+### [1. Dead Letter Queue (DLQ) com Topic Exchange]()
 
 Configurar DLQ para mensagens que falharam.
 
@@ -492,7 +492,7 @@ app.connectMicroservice<MicroserviceOptions>({
 });
 ```
 
-### 2. Controle de Retries com contador
+### [2. Controle de Retries com contador]()
 
 ```typescript
 @Injectable()
@@ -542,7 +542,7 @@ export class EmailConsumer {
 }
 ```
 
-### 3. Processamento em lote por tópico
+### [3. Processamento em lote por tópico]()
 
 ```typescript
 @Injectable()
@@ -596,7 +596,7 @@ export class BatchConsumer {
 }
 ```
 
-### 4. Múltiplos consumers para o mesmo tópico (escala)
+### [4. Múltiplos consumers para o mesmo tópico (escala)]()
 
 Você pode ter múltiplas instâncias do mesmo consumer processando mensagens do mesmo tópico em paralelo. RabbitMQ distribui as mensagens entre eles (round-robin).
 
@@ -610,7 +610,7 @@ npm run start
 # Ambas processarão mensagens de 'order.order.created' em paralelo
 ```
 
-## Docker Compose - RabbitMQ com Management UI
+## [Docker Compose - RabbitMQ com Management UI]()
 
 `docker-compose.yml`
 
@@ -648,16 +648,16 @@ Acessar Management UI:
 - Usuário: `guest`
 - Senha: `guest`
 
-### Verificar Exchange e Bindings no Management UI
+### [Verificar Exchange e Bindings no Management UI]()
 
 1. Acesse **Exchanges** - Você verá `app_exchange` (type: topic)
 2. Clique em `app_exchange` > **Bindings** - Verá todas as filas vinculadas e seus patterns
 3. Acesse **Queues** - Verá todas as filas criadas automaticamente
 4. Em cada fila, veja **Bindings** para ver quais tópicos ela está ouvindo
 
-## Boas Práticas
+## [Boas Práticas]()
 
-### 1. Sempre seguir padrão de nomenclatura
+### [1. Sempre seguir padrão de nomenclatura]()
 
 ```typescript
 // ✅ Bom - padrão <module>.<resource>.<action>
@@ -671,7 +671,7 @@ Acessar Management UI:
 'email-sent'
 ```
 
-### 2. Usar uma única exchange
+### [2. Usar uma única exchange]()
 
 ```typescript
 // ✅ Bom - todos eventos vão para app_exchange
@@ -682,7 +682,7 @@ await this.orderExchange.emit('created', data);
 await this.paymentExchange.emit('paid', data);
 ```
 
-### 3. Validar payload antes de processar
+### [3. Validar payload antes de processar]()
 
 ```typescript
 @EventPattern('order.order.created')
@@ -701,7 +701,7 @@ async handleOrderCreated(@Payload() data: any, @Ctx() context: RmqContext) {
 }
 ```
 
-### 4. Sempre usar ACK/NACK manual
+### [4. Sempre usar ACK/NACK manual]()
 
 ```typescript
 // ✅ Bom - controle explícito
@@ -711,7 +711,7 @@ channel.ack(originalMsg);
 noAck: true
 ```
 
-### 5. Logging com routing key
+### [5. Logging com routing key]()
 
 ```typescript
 const routingKey = originalMsg.fields.routingKey;
@@ -719,7 +719,7 @@ this.logger.log(`[${routingKey}] Processando mensagem`);
 this.logger.error(`[${routingKey}] Erro: ${error.message}`);
 ```
 
-### 6. Usar wildcards com cuidado
+### [6. Usar wildcards com cuidado]()
 
 ```typescript
 // ✅ Bom - específico
@@ -732,7 +732,7 @@ this.logger.error(`[${routingKey}] Erro: ${error.message}`);
 @EventPattern('#')
 ```
 
-### 7. Separar consumers por responsabilidade
+### [7. Separar consumers por responsabilidade]()
 
 ```typescript
 // ✅ Bom - consumers especializados
@@ -744,7 +744,7 @@ analytics.consumer.ts      // Analytics
 app.consumer.ts
 ```
 
-### 8. Timeout para processamento longo
+### [8. Timeout para processamento longo]()
 
 ```typescript
 async handleLongTask(@Payload() data: any, @Ctx() context: RmqContext) {
@@ -771,7 +771,7 @@ private timeout(ms: number): Promise<never> {
 }
 ```
 
-## Diferenças: RabbitMQ vs Redis
+## [Diferenças: RabbitMQ vs Redis]()
 
 | Recurso | RabbitMQ | Redis |
 |---------|----------|-------|
@@ -786,7 +786,7 @@ private timeout(ms: number): Promise<never> {
 | **Escala horizontal** | ✅ Múltiplos consumers | ✅ Compartilhamento de dados |
 | **Quando usar** | Background jobs, eventos, retry | Cache, sessões, contadores |
 
-## Checklist de Implementação
+## [Checklist de Implementação]()
 
 - [ ] RabbitMQ rodando (Docker ou servidor)
 - [ ] Pacotes instalados (`@nestjs/microservices`, `amqplib`, `amqp-connection-manager`)
@@ -806,9 +806,9 @@ private timeout(ms: number): Promise<never> {
 - [ ] Validação de payload
 - [ ] Monitoramento via Management UI
 
-## Troubleshooting
+## [Troubleshooting]()
 
-### RabbitMQ connection refused
+### [RabbitMQ connection refused]()
 
 ```bash
 # Verificar se RabbitMQ está rodando
@@ -821,7 +821,7 @@ docker logs sdd-rabbitmq
 docker-compose restart rabbitmq
 ```
 
-### Mensagens não estão sendo consumidas
+### [Mensagens não estão sendo consumidas]()
 
 ```typescript
 // 1. Verificar se microserviço foi iniciado
@@ -835,7 +835,7 @@ const routingKey = originalMsg.fields.routingKey;
 this.logger.log(`Recebido: ${routingKey}`);
 ```
 
-### Exchange não aparece no Management UI
+### [Exchange não aparece no Management UI]()
 
 ```bash
 # A exchange é criada automaticamente pelo NestJS ao:
@@ -848,7 +848,7 @@ this.logger.log(`Recebido: ${routingKey}`);
 # - Verificar logs de erro
 ```
 
-### Mensagens indo para fila errada
+### [Mensagens indo para fila errada]()
 
 ```bash
 # Verificar no Management UI:
@@ -861,7 +861,7 @@ this.logger.log(`Recebido: ${routingKey}`);
 # - Wildcards estão corretos (* vs #)?
 ```
 
-### Mensagens acumulando na fila
+### [Mensagens acumulando na fila]()
 
 ```bash
 # Acessar Management UI: http://localhost:15672
@@ -876,7 +876,7 @@ this.logger.log(`Recebido: ${routingKey}`);
 # - Aumentar prefetchCount (processar mais em paralelo)
 ```
 
-### Mensagens duplicadas
+### [Mensagens duplicadas]()
 
 ```typescript
 // Implementar idempotência no consumer
@@ -895,7 +895,7 @@ async handleOrderCreated(@Payload() data: any) {
 }
 ```
 
-## Referências
+## [Referências]()
 
 - [NestJS Microservices](https://docs.nestjs.com/microservices/basics)
 - [RabbitMQ Topic Exchange](https://www.rabbitmq.com/tutorials/tutorial-five-javascript.html)

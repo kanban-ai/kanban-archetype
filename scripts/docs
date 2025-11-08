@@ -1,0 +1,534 @@
+#!/usr/bin/env node
+
+const fs = require('fs');
+const path = require('path');
+
+// Configurações
+const CHROMA_HOST = process.env.CHROMA_HOST || 'http://localhost:8000';
+const OPENAI_API_KEY = process.env.OPENAI_API_KEY;
+const TENANT = 'default_tenant';
+const DATABASE = 'default_database';
+const COLLECTION_NAME = 'rules_documentation';
+const RULES_DIR = path.join(__dirname, '..', '.rules');
+const API_BASE = `/api/v2/tenants/${TENANT}/databases/${DATABASE}`;
+
+// Cores para output
+const colors = {
+  reset: '\x1b[0m',
+  red: '\x1b[0;31m',
+  green: '\x1b[0;32m',
+  yellow: '\x1b[1;33m',
+  blue: '\x1b[0;34m',
+  cyan: '\x1b[0;36m'
+};
+
+function log(message, color = 'reset') {
+  console.log(`${colors[color]}${message}${colors.reset}`);
+}
+
+// Função para gerar embedding via OpenAI API
+async function generateEmbedding(text) {
+  const truncatedText = truncateText(text);
+
+  const response = await fetch('https://api.openai.com/v1/embeddings', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'Authorization': `Bearer ${OPENAI_API_KEY}`
+    },
+    body: JSON.stringify({
+      model: 'text-embedding-ada-002',
+      input: truncatedText
+    })
+  });
+
+  if (!response.ok) {
+    const error = await response.text();
+    throw new Error(`OpenAI API error: ${response.status} - ${error}`);
+  }
+
+  const data = await response.json();
+  return data.data[0].embedding;
+}
+
+// Função para truncar texto para caber no limite de tokens
+function truncateText(text, maxTokens = 8000) {
+  // Estimativa: ~4 caracteres por token em português
+  const maxChars = maxTokens * 4;
+  if (text.length <= maxChars) return text;
+
+  const truncated = text.substring(0, maxChars);
+  log(`  ⚠️  Texto truncado de ${text.length} para ${maxChars} caracteres`, 'yellow');
+  return truncated;
+}
+
+// Função para gerar embeddings em lote via OpenAI API
+async function generateEmbeddingsBatch(texts, batchSize = 100) {
+  const embeddings = [];
+  const totalBatches = Math.ceil(texts.length / batchSize);
+
+  for (let i = 0; i < texts.length; i += batchSize) {
+    const batch = texts.slice(i, i + batchSize);
+    const batchNum = Math.floor(i / batchSize) + 1;
+
+    // Mostrar progresso apenas se houver múltiplos lotes
+    if (totalBatches > 1) {
+      log(`  Processando lote ${batchNum}/${totalBatches}...`, 'blue');
+    }
+
+    // Truncar textos que são muito grandes
+    const truncatedBatch = batch.map(text => truncateText(text));
+
+    const response = await fetch('https://api.openai.com/v1/embeddings', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${OPENAI_API_KEY}`
+      },
+      body: JSON.stringify({
+        model: 'text-embedding-ada-002',
+        input: truncatedBatch
+      })
+    });
+
+    if (!response.ok) {
+      const error = await response.text();
+      log(`✗ Erro ao gerar embeddings: ${error}`, 'red');
+      throw new Error('Falha ao gerar embeddings');
+    }
+
+    const data = await response.json();
+    embeddings.push(...data.data.map(item => item.embedding));
+  }
+
+  return embeddings;
+}
+
+// Função para fazer requisições HTTP usando fetch nativo
+async function chromaFetch(endpoint, options = {}) {
+  const url = `${CHROMA_HOST}${endpoint}`;
+  try {
+    const response = await fetch(url, {
+      ...options,
+      headers: {
+        'Content-Type': 'application/json',
+        ...options.headers
+      }
+    });
+
+    const text = await response.text();
+    const data = text ? JSON.parse(text) : null;
+
+    return { ok: response.ok, status: response.status, data };
+  } catch (error) {
+    throw new Error(`Erro na requisição: ${error.message}`);
+  }
+}
+
+// Função para obter ID da coleção
+async function getCollectionId() {
+  const { data: collections } = await chromaFetch(`${API_BASE}/collections`);
+  const collection = collections?.find(c => c.name === COLLECTION_NAME);
+  return collection?.id;
+}
+
+// Função para criar ou obter coleção existente
+async function getOrCreateCollection() {
+  log('Verificando coleção "rules_documentation"...', 'yellow');
+
+  // Tentar obter coleção existente
+  let collectionId = await getCollectionId();
+
+  if (collectionId) {
+    log('✓ Coleção já existe, será atualizada.', 'green');
+    return collectionId;
+  }
+
+  // Criar nova coleção se não existir
+  log('Criando nova coleção...', 'yellow');
+  const { ok, data } = await chromaFetch(`${API_BASE}/collections`, {
+    method: 'POST',
+    body: JSON.stringify({
+      name: COLLECTION_NAME,
+      metadata: { description: 'Documentação de regras do projeto SDD' }
+    })
+  });
+
+  if (ok) {
+    log('✓ Coleção criada com sucesso.', 'green');
+    return data.id;
+  } else {
+    throw new Error(`Erro ao criar coleção: ${JSON.stringify(data)}`);
+  }
+}
+
+
+// Função para extrair blocos de um arquivo markdown
+function extractBlocks(content, filename, filepath) {
+  const lines = content.split('\n');
+  const blocks = [];
+
+  let currentBlock = '';
+  let currentHeader = '';
+  let currentTitle = ''; // Rastrear título de nível #
+  let startLine = 1;
+  let blockCount = 0;
+
+  // Regex para capturar títulos de nível 1: # [texto]()
+  const titleRegex = /^#\s+\[(.+?)\]\(\)/;
+  // Regex para capturar títulos de nível 2: ## [texto]()
+  const headerRegex = /^##\s+\[(.+?)\]\(\)/;
+
+  for (let lineNum = 1; lineNum <= lines.length; lineNum++) {
+    const line = lines[lineNum - 1];
+
+    // Verificar se linha é um título # [texto]()
+    const titleMatch = line.match(titleRegex);
+    if (titleMatch) {
+      currentTitle = `# ${titleMatch[1]}`;
+    }
+
+    // Verificar se linha é um título ## [texto]()
+    const headerMatch = line.match(headerRegex);
+
+    if (headerMatch) {
+      // Se já temos um bloco, salvar
+      if (currentBlock) {
+        blocks.push({
+          id: `${filename}:block:${blockCount}`.replace(/[^a-zA-Z0-9:._-]/g, '_'),
+          document: currentBlock,
+          metadata: {
+            type: 'block',
+            filename,
+            filepath,
+            start_line: startLine,
+            end_line: lineNum - 1,
+            title: currentTitle,
+            header: currentHeader
+          }
+        });
+        blockCount++;
+      }
+
+      // Iniciar novo bloco
+      const headerTitle = headerMatch[1];
+      currentHeader = `## ${headerTitle}`;
+      currentBlock = line;
+      startLine = lineNum;
+    } else {
+      // Adicionar linha ao bloco atual
+      if (currentBlock) {
+        currentBlock += '\n' + line;
+      } else {
+        // Primeira linha do arquivo não é header semântico
+        if (!currentHeader) {
+          currentHeader = '(início do arquivo)';
+          currentBlock = line;
+          startLine = lineNum;
+        }
+      }
+    }
+  }
+
+  // Salvar último bloco
+  if (currentBlock) {
+    blocks.push({
+      id: `${filename}:block:${blockCount}`.replace(/[^a-zA-Z0-9:._-]/g, '_'),
+      document: currentBlock,
+      metadata: {
+        type: 'block',
+        filename,
+        filepath,
+        start_line: startLine,
+        end_line: lines.length,
+        title: currentTitle,
+        header: currentHeader
+      }
+    });
+  }
+
+  return blocks;
+}
+
+// Função para indexar documentos
+async function indexDocuments() {
+  log('Indexando documentos da pasta .rules...\n', 'yellow');
+
+  // Validar OPENAI_API_KEY obrigatória
+  if (!OPENAI_API_KEY) {
+    log('✗ Erro: OPENAI_API_KEY não configurada!', 'red');
+    log('\nConfigure a variável de ambiente OPENAI_API_KEY:', 'yellow');
+    log('  export OPENAI_API_KEY="sua-chave-aqui"\n', 'cyan');
+    process.exit(1);
+  }
+
+  log(`Processando blocos com ${colors.yellow}##${colors.reset}`, 'reset');
+
+  if (!fs.existsSync(RULES_DIR)) {
+    log(`✗ Pasta .rules não encontrada: ${RULES_DIR}`, 'red');
+    process.exit(1);
+  }
+
+  const collectionId = await getOrCreateCollection();
+
+  // Ler todos os arquivos .md
+  const files = fs.readdirSync(RULES_DIR).filter(f => f.endsWith('.md'));
+
+  if (files.length === 0) {
+    log('⚠️  Nenhum arquivo .md encontrado', 'yellow');
+    return;
+  }
+
+  const allBlocks = [];
+
+  for (const filename of files) {
+    const filepath = path.join(RULES_DIR, filename);
+    const content = fs.readFileSync(filepath, 'utf-8');
+    const blocks = extractBlocks(content, filename, filepath);
+    allBlocks.push(...blocks);
+  }
+
+  log(`✓ ${allBlocks.length} blocos extraídos de ${files.length} arquivos`, 'green');
+
+  if (allBlocks.length === 0) {
+    log('✗ Nenhum bloco encontrado para indexar.', 'red');
+    return;
+  }
+
+  log(`Gerando embeddings via OpenAI...`, 'yellow');
+
+  // Preparar dados para o ChromaDB
+  const ids = allBlocks.map(b => b.id);
+  const documents = allBlocks.map(b => b.document);
+  const metadatas = allBlocks.map(b => b.metadata);
+
+  // Gerar embeddings em lote via OpenAI (batch size máximo para minimizar chamadas)
+  const embeddings = await generateEmbeddingsBatch(documents, 100);
+
+  log(`Salvando no ChromaDB...`, 'yellow');
+
+  // Adicionar ao ChromaDB
+  const { ok, data } = await chromaFetch(`${API_BASE}/collections/${collectionId}/upsert`, {
+    method: 'POST',
+    body: JSON.stringify({ ids, documents, metadatas, embeddings })
+  });
+
+  if (ok) {
+    log(`✓ ${allBlocks.length} blocos indexados com sucesso!`, 'green');
+
+    // Mostrar resumo da coleção
+    await showCollectionSummary(collectionId);
+  } else {
+    log(`✗ Erro ao indexar: ${JSON.stringify(data)}`, 'red');
+    process.exit(1);
+  }
+}
+
+// Função para mostrar resumo da coleção
+async function showCollectionSummary(collectionId) {
+  log('\n════════════════════════════════════════════════════════════════', 'blue');
+  log('📊 RESUMO DA COLEÇÃO', 'yellow');
+  log('════════════════════════════════════════════════════════════════', 'blue');
+
+  try {
+    // Obter todos os metadados da coleção
+    const { ok: queryOk, data: queryData } = await chromaFetch(`${API_BASE}/collections/${collectionId}/get`, {
+      method: 'POST',
+      body: JSON.stringify({
+        include: ['metadatas']
+      })
+    });
+
+    if (!queryOk || !queryData.metadatas) {
+      log('✗ Erro ao obter dados da coleção', 'red');
+      return;
+    }
+
+    const totalDocs = queryData.metadatas.length;
+
+    log(`\n${colors.yellow}Nome da Coleção:${colors.reset} rules_documentation`);
+    log(`${colors.yellow}ID da Coleção:${colors.reset} ${collectionId}`);
+    log(`${colors.yellow}Total de Documentos:${colors.reset} ${totalDocs}`);
+    log(`${colors.yellow}Descrição:${colors.reset} Documentação de regras do projeto SDD`);
+
+    if (queryData.metadatas && totalDocs > 0) {
+      const fileStats = {};
+
+      queryData.metadatas.forEach(meta => {
+        const filename = meta.filename;
+        if (!fileStats[filename]) {
+          fileStats[filename] = {
+            count: 0,
+            filepath: meta.filepath
+          };
+        }
+        fileStats[filename].count++;
+      });
+
+      log(`\n${colors.yellow}Arquivos Indexados:${colors.reset} ${Object.keys(fileStats).length}`);
+      log('\n┌─────────────────────────────────────────────────────────────┬──────────┐');
+      log('│ Arquivo                                                     │ Blocos   │');
+      log('├─────────────────────────────────────────────────────────────┼──────────┤');
+
+      const sortedFiles = Object.entries(fileStats).sort((a, b) => b[1].count - a[1].count);
+
+      for (const [filename, stats] of sortedFiles) {
+        const paddedFilename = filename.padEnd(59);
+        const paddedCount = stats.count.toString().padStart(8);
+        log(`│ ${paddedFilename} │ ${paddedCount} │`);
+      }
+
+      log('└─────────────────────────────────────────────────────────────┴──────────┘');
+
+      // Estatísticas adicionais
+      const totalBlocks = queryData.metadatas.length;
+      const avgBlocksPerFile = (totalBlocks / Object.keys(fileStats).length).toFixed(1);
+
+      log(`\n${colors.yellow}Estatísticas:${colors.reset}`);
+      log(`  • Total de blocos indexados: ${colors.green}${totalBlocks}${colors.reset}`);
+      log(`  • Média de blocos por arquivo: ${colors.green}${avgBlocksPerFile}${colors.reset}`);
+      log(`  • Maior arquivo: ${colors.green}${sortedFiles[0][0]}${colors.reset} (${sortedFiles[0][1].count} blocos)`);
+      log(`  • Menor arquivo: ${colors.green}${sortedFiles[sortedFiles.length - 1][0]}${colors.reset} (${sortedFiles[sortedFiles.length - 1][1].count} blocos)`);
+    }
+
+    log(`\n${colors.yellow}ChromaDB Host:${colors.reset} ${CHROMA_HOST}`);
+    log(`${colors.yellow}Tenant:${colors.reset} ${TENANT}`);
+    log(`${colors.yellow}Database:${colors.reset} ${DATABASE}`);
+    log(`${colors.yellow}Modelo de Embedding:${colors.reset} ${OPENAI_API_KEY ? 'text-embedding-ada-002 (OpenAI)' : 'Simple Embedding (fallback)'}`);
+
+    log('\n════════════════════════════════════════════════════════════════', 'blue');
+    log('✓ Indexação concluída com sucesso!', 'green');
+    log('════════════════════════════════════════════════════════════════\n', 'blue');
+
+  } catch (error) {
+    log(`\n✗ Erro ao gerar resumo: ${error.message}`, 'red');
+  }
+}
+
+// Função para buscar documentos
+async function queryDocuments(queryText, nResults = 5) {
+  if (!queryText) {
+    log('✗ Erro: Forneça um texto para busca.', 'red');
+    log('Uso: docs query "como criar uma api backend"');
+    process.exit(1);
+  }
+
+  // Validar OPENAI_API_KEY obrigatória
+  if (!OPENAI_API_KEY) {
+    log('✗ Erro: OPENAI_API_KEY não configurada!', 'red');
+    log('\nConfigure a variável de ambiente OPENAI_API_KEY:', 'yellow');
+    log('  export OPENAI_API_KEY="sua-chave-aqui"\n', 'cyan');
+    process.exit(1);
+  }
+
+  log(`Buscando por: "${queryText}"\n`, 'yellow');
+
+  // Obter coleção
+  const collectionId = await getCollectionId();
+
+  if (!collectionId) {
+    log('✗ Coleção não encontrada. Execute primeiro: docs index', 'red');
+    process.exit(1);
+  }
+
+  // Gerar embedding para o query
+  const queryEmbedding = await generateEmbedding(queryText);
+
+  // Fazer busca
+  const { ok, data } = await chromaFetch(`${API_BASE}/collections/${collectionId}/query`, {
+    method: 'POST',
+    body: JSON.stringify({
+      query_embeddings: [queryEmbedding],
+      n_results: nResults,
+      include: ['documents', 'metadatas', 'distances']
+    })
+  });
+
+  if (!ok) {
+    log(`✗ Erro ao buscar: ${JSON.stringify(data)}`, 'red');
+    process.exit(1);
+  }
+
+  const results = data.documents[0];
+
+  if (results.length === 0) {
+    log('✗ Nenhum resultado encontrado.', 'red');
+    return;
+  }
+
+  log(`✓ Encontrados ${results.length} resultados\n`, 'green');
+
+  // Exibir resultados
+  for (let i = 0; i < results.length; i++) {
+    const doc = results[i];
+    const metadata = data.metadatas[0][i];
+    const distance = data.distances[0][i];
+    const score = (1 - distance).toFixed(3);
+    const scorePercent = (parseFloat(score) * 100).toFixed(1);
+
+    // Definir cor do score baseado na relevância
+    let scoreColor = 'green';
+    if (scorePercent < 50) scoreColor = 'red';
+    else if (scorePercent < 70) scoreColor = 'yellow';
+
+    log('════════════════════════════════════════════════════════════════', 'blue');
+    log(`Resultado #${i + 1}`, 'green');
+    log(`${colors.yellow}Score de Relevância:${colors.reset} ${colors[scoreColor]}${scorePercent}%${colors.reset} (${score})`);
+    log(`${colors.yellow}Arquivo:${colors.reset} ${metadata.filename}`);
+    log(`${colors.yellow}Caminho:${colors.reset} ${metadata.filepath}`);
+
+    // Exibir título se existir
+    if (metadata.title && metadata.title.trim()) {
+      log(`${colors.yellow}Título:${colors.reset} ${colors.cyan}${metadata.title}${colors.reset}`);
+    }
+
+    log(`${colors.yellow}Seção:${colors.reset} ${metadata.header}`);
+    log(`${colors.yellow}Linhas:${colors.reset} ${metadata.start_line}-${metadata.end_line}`);
+    log('\n' + colors.yellow + 'Conteúdo:' + colors.reset);
+    log('────────────────────────────────────────────────────────────────', 'blue');
+
+    // Exibir conteúdo (até 1000 caracteres)
+    if (doc.length > 1000) {
+      console.log(doc.substring(0, 1000));
+      log('\n... (conteúdo truncado)', 'yellow');
+    } else {
+      console.log(doc);
+    }
+    console.log('');
+  }
+}
+
+// Função principal
+async function main() {
+  const args = process.argv.slice(2);
+  const command = args[0];
+
+  try {
+    if (command === 'index') {
+      log('📚 Iniciando indexação de documentos...\n', 'blue');
+      await indexDocuments();
+    } else if (command === 'query') {
+      const queryText = args.slice(1).join(' ');
+      await queryDocuments(queryText);
+    } else {
+      console.log('Uso:');
+      console.log('  docs index                          # Indexa todos os documentos da pasta .rules');
+      console.log('  docs query "texto de busca"         # Busca semântica nos documentos');
+      console.log('');
+      console.log('Exemplos:');
+      console.log('  docs index                          # Divide por títulos ## [texto]()');
+      console.log('  docs query "como criar api"         # Busca semanticamente');
+      console.log('');
+      console.log('Variáveis de ambiente:');
+      console.log('  OPENAI_API_KEY                      # Chave da API OpenAI (OBRIGATÓRIA)');
+      console.log('');
+      console.log('Nota: Este script requer a OPENAI_API_KEY configurada para gerar embeddings semânticos.');
+      process.exit(1);
+    }
+  } catch (error) {
+    log(`✗ Erro: ${error.message}`, 'red');
+    process.exit(1);
+  }
+}
+
+main();

@@ -1,10 +1,10 @@
-# Qual tecnologia usa o Frontend?
+# [Qual tecnologia usa o Frontend?]()
 
 > Este documento descreve todas as tecnologias, frameworks e bibliotecas utilizadas no frontend do projeto.
 
-## Stack Principal
+## [Stack Principal]()
 
-### Framework e Runtime
+### [Framework e Runtime]()
 
 - **React**: Framework principal
   - Biblioteca JavaScript para construção de interfaces
@@ -29,7 +29,7 @@
   - Escrito em Rust
   - Usado via @vitejs/plugin-react-swc
 
-## Estilização
+## [Estilização]()
 
 - **Tailwind CSS v4**: Framework CSS utilitário
   - Classes utilitárias pré-definidas
@@ -46,7 +46,7 @@
   - Autoprefixer para compatibilidade cross-browser
   - Pipeline de processamento CSS
 
-## Roteamento
+## [Roteamento]()
 
 - **React Router DOM**: Sistema de rotas
   - Roteamento client-side
@@ -55,7 +55,7 @@
   - Guards de autenticação (PrivateRoute)
   - Configuração centralizada de rotas
 
-## Requisições HTTP
+## [Requisições HTTP]()
 
 - **Axios**: Cliente HTTP
   - Requisições para API REST
@@ -63,9 +63,9 @@
   - Tratamento de erros centralizado
   - Suporte a cancelamento de requisições
 
-## Visualização de Dados
+## [Visualização de Dados]()
 
-### Gráficos
+### [Gráficos]()
 
 - **Chart.js**: Biblioteca de gráficos
   - Gráficos de linha, barra, rosca
@@ -81,7 +81,7 @@
   - Adiciona linhas e anotações em gráficos
   - Marcadores customizados
 
-### UI Components
+### [UI Components]()
 
 - **Tippy.js**: Tooltips e popovers
   - Biblioteca leve e performática
@@ -92,16 +92,16 @@
   - Componente React para Tippy.js
   - Props tipadas
 
-### Utilitários
+### [Utilitários]()
 
 - **timeago.js**: Formatação de datas
   - Datas relativas (ex: "há 5 minutos")
   - Suporte a internacionalização
   - Leve e sem dependências
 
-## Gerenciamento de Estado
+## [Gerenciamento de Estado]()
 
-### Context API (Nativo React)
+### [Context API (Nativo React)]()
 
 O projeto usa Context API nativa do React, sem bibliotecas externas:
 
@@ -119,16 +119,16 @@ O projeto usa Context API nativa do React, sem bibliotecas externas:
    - Metadados da página atual
    - Breadcrumbs e título
 
-## Ferramentas de Desenvolvimento
+## [Ferramentas de Desenvolvimento]()
 
-### TypeScript
+### [TypeScript]()
 
 - **typescript**
 - **@types/react**: Tipagens React
 - **@types/react-dom**: Tipagens React DOM
 - **@types/node**: Tipagens Node.js
 
-### Linting e Formatação
+### [Linting e Formatação]()
 
 - **ESLint**: Linter JavaScript/TypeScript
   - Análise estática de código
@@ -153,9 +153,9 @@ O projeto usa Context API nativa do React, sem bibliotecas externas:
   - Variáveis globais do navegador
   - Compatibilidade ESLint
 
-## Estrutura de Componentes
+## [Estrutura de Componentes]()
 
-### Componentes Comuns (src/components/common/)
+### [Componentes Comuns (src/components/common/)]()
 
 - **Modals**: Modal, AlertModal, ConfirmModal, CommentModal, SelectWalletModal
 - **Charts**: LineChart, BarChart, DoughnutChart, EvolutionBarChart
@@ -165,24 +165,24 @@ O projeto usa Context API nativa do React, sem bibliotecas externas:
 - **Form Elements**: DatePicker
 - **UI**: ActionButtonBar, AllocationBar, TreeView, MiniPerfil
 
-### Componentes de Autenticação
+### [Componentes de Autenticação]()
 
 - **AuthBanner**: Banner de autenticação
 - **PrivateRoute**: Guard de rotas privadas
 
-### Componentes de Layout
+### [Componentes de Layout]()
 
 - **Layout**: Layout principal com navegação
 - **ToastContainer**: Container de notificações
 
-## Páginas (src/pages/)
+## [Páginas (src/pages/)]()
 
-### Autenticação
+### [Autenticação]()
 - Login
 - Signup
 - ChangePassword
 
-### Dashboard/Views
+### [Dashboard/Views]()
 - OverviewPage
 - AllocationPage
 - PerformancePage
@@ -193,25 +193,25 @@ O projeto usa Context API nativa do React, sem bibliotecas externas:
 - SettingsPage
 - NotificationsPage
 
-### Gestão de Ativos
+### [Gestão de Ativos]()
 - AssetListPage
 - AssetFormPage
 - AssetProfilePage (com tabs)
 
-### Rebalanceamento
+### [Rebalanceamento]()
 - RebalancePage
 - RebalanceDetailPage
 - RebalanceAnalyzePage
 
-### Cadastros
+### [Cadastros]()
 - SectorListPage, SectorFormPage
 - CurrencyListPage, CurrencyFormPage
 - WalletListPage, WalletFormPage, WalletDashboardPage
 
-### Erros
+### [Erros]()
 - Forbidden
 
-## Serviços (src/services/)
+## [Serviços (src/services/)]()
 
 - **api.ts**: Instância Axios configurada
 - **auth.service.ts**: Serviço de autenticação
@@ -219,19 +219,19 @@ O projeto usa Context API nativa do React, sem bibliotecas externas:
 - **comment.service.ts**: Serviço de comentários
 - **config.service.ts**: Serviço de configurações
 
-## Utilitários (src/utils/)
+## [Utilitários (src/utils/)]()
 
 - **currency.utils.ts**: Formatação de moeda
 - **date.utils.ts**: Manipulação de datas
 
-## Tipos TypeScript (src/types/)
+## [Tipos TypeScript (src/types/)]()
 
 - **auth.ts**: Tipos de autenticação
 - **models/user.ts**: Model de usuário
 
-## Configurações
+## [Configurações]()
 
-### Vite (vite.config.ts)
+### [Vite (vite.config.ts)]()
 
 ```typescript
 {
@@ -244,7 +244,7 @@ O projeto usa Context API nativa do React, sem bibliotecas externas:
 }
 ```
 
-### TypeScript (tsconfig.app.json)
+### [TypeScript (tsconfig.app.json)]()
 
 ```json
 {
@@ -259,7 +259,7 @@ O projeto usa Context API nativa do React, sem bibliotecas externas:
 }
 ```
 
-### Tailwind (tailwind.config.js)
+### [Tailwind (tailwind.config.js)]()
 
 ```javascript
 {
@@ -274,7 +274,7 @@ O projeto usa Context API nativa do React, sem bibliotecas externas:
 }
 ```
 
-## Scripts NPM
+## [Scripts NPM]()
 
 ```json
 {
@@ -285,7 +285,7 @@ O projeto usa Context API nativa do React, sem bibliotecas externas:
 }
 ```
 
-## Variáveis de Ambiente
+## [Variáveis de Ambiente]()
 
 ```env
 VITE_API_URL=http://localhost:3000/api
@@ -296,54 +296,54 @@ Acessível em código via:
 import.meta.env.VITE_API_URL
 ```
 
-## Padrões e Convenções
+## [Padrões e Convenções]()
 
-### Estrutura de Arquivos
+### [Estrutura de Arquivos]()
 - Componentes: PascalCase (ex: MetricCard.tsx)
 - Utilitários: kebab-case (ex: currency.utils.ts)
 - Serviços: kebab-case (ex: auth.service.ts)
 
-### Organização de Imports
+### [Organização de Imports]()
 1. React e bibliotecas externas
 2. Componentes locais
 3. Serviços e utils
 4. Tipos
 5. Estilos
 
-### Hooks Customizados
+### [Hooks Customizados]()
 - Prefixo `use` (ex: useNotifications, useAuth)
 - Localizados em `src/hooks/`
 
-### Context API
+### [Context API]()
 - Sufixo `Context` (ex: AuthContext)
 - Hook correspondente: `use[Nome]` (ex: useAuth)
 - Localizados em `src/contexts/`
 
-## Características do Projeto
+## [Características do Projeto]()
 
-### Dark Mode
+### [Dark Mode]()
 - Tema escuro por padrão
 - Background: gray-900
 - Texto: gray-100
 - Acentos: blue portifolio
 
-### Responsividade
+### [Responsividade]()
 - Mobile-first approach
 - Breakpoints Tailwind padrão
 - Componentes adaptáveis
 
-### Acessibilidade
+### [Acessibilidade]()
 - Semântica HTML adequada
 - ARIA labels quando necessário
 - Contraste adequado (dark mode)
 
-### Performance
+### [Performance]()
 - Code splitting automático (Vite)
 - Lazy loading de rotas
 - Memoização de componentes pesados
 - Chart.js com Canvas (performance)
 
-## Tecnologias Principais
+## [Tecnologias Principais]()
 
 - React
 - TypeScript
@@ -356,13 +356,13 @@ import.meta.env.VITE_API_URL
 - Tippy.js
 - ESLint
 
-## Requisitos de Sistema
+## [Requisitos de Sistema]()
 
 - Node.js >= 18.x
 - npm >= 9.x ou pnpm >= 8.x
 - Navegadores modernos (Chrome, Firefox, Safari, Edge)
 
-## Referências
+## [Referências]()
 
 - [React Documentation](https://react.dev)
 - [Vite Documentation](https://vitejs.dev)

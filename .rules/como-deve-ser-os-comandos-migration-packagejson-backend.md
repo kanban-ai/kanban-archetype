@@ -1,8 +1,8 @@
-# Como devem ser os comandos de migration no package.json do Backend?
+# [Como devem ser os comandos de migration no package.json do Backend?]()
 
 > Configuração dos scripts npm para gerenciar migrations do TypeORM.
 
-## Scripts Necessários
+## [Scripts Necessários]()
 
 Adicione no `package.json`:
 
@@ -20,9 +20,9 @@ Adicione no `package.json`:
 }
 ```
 
-## Descrição dos Comandos
+## [Descrição dos Comandos]()
 
-### typeorm (Base)
+### [typeorm (Base)]()
 
 ```bash
 npm run typeorm -- <comando>
@@ -32,7 +32,7 @@ Script base que executa o CLI do TypeORM com suporte a:
 - TypeScript (ts-node)
 - Path aliases (@/*) via tsconfig-paths
 
-### migration:generate
+### [migration:generate]()
 
 ```bash
 npm run migration:generate src/database/migrations/NomeDaMigration
@@ -50,7 +50,7 @@ npm run migration:generate src/database/migrations/NomeDaMigration
 npm run migration:generate src/database/migrations/AddActiveToProducts
 ```
 
-### migration:create
+### [migration:create]()
 
 ```bash
 npm run migration:create src/database/migrations/NomeDaMigration
@@ -69,7 +69,7 @@ npm run migration:create src/database/migrations/NomeDaMigration
 npm run migration:create src/database/migrations/SeedSectors
 ```
 
-### migration:run
+### [migration:run]()
 
 ```bash
 npm run migration:run
@@ -82,7 +82,7 @@ npm run migration:run
 - Setup de ambiente novo
 - Deploy em produção
 
-### migration:revert
+### [migration:revert]()
 
 ```bash
 npm run migration:revert
@@ -96,7 +96,7 @@ npm run migration:revert
 
 **Nota**: Executa o método `down()` da migration
 
-### migration:show
+### [migration:show]()
 
 ```bash
 npm run migration:show
@@ -111,7 +111,7 @@ npm run migration:show
 [ ] Migration1738500000000-create-alerts-table
 ```
 
-### db:drop
+### [db:drop]()
 
 ```bash
 npm run db:drop
@@ -126,9 +126,9 @@ npm run db:drop
 
 **  CUIDADO**: Apaga todos os dados!
 
-## Fluxo de Trabalho
+## [Fluxo de Trabalho]()
 
-### 1. Criar nova entity
+### [1. Criar nova entity]()
 
 ```typescript
 // src/modules/product/entities/product.entity.ts
@@ -139,13 +139,13 @@ export class Product extends SuperEntity {
 }
 ```
 
-### 2. Gerar migration
+### [2. Gerar migration]()
 
 ```bash
 npm run migration:generate src/database/migrations/CreateProductsTable
 ```
 
-### 3. Revisar migration gerada
+### [3. Revisar migration gerada]()
 
 ```typescript
 // src/database/migrations/1234567890000-CreateProductsTable.ts
@@ -160,13 +160,13 @@ export class CreateProductsTable1234567890000 implements MigrationInterface {
 }
 ```
 
-### 4. Executar migration
+### [4. Executar migration]()
 
 ```bash
 npm run migration:run
 ```
 
-### 5. Se houver erro
+### [5. Se houver erro]()
 
 ```bash
 # Reverter
@@ -177,7 +177,7 @@ npm run migration:revert
 npm run migration:run
 ```
 
-## Configuração do DataSource
+## [Configuração do DataSource]()
 
 Para os comandos funcionarem, configure `database.config.ts`:
 
@@ -203,7 +203,7 @@ export default new DataSource({
 });
 ```
 
-## Dependências Necessárias
+## [Dependências Necessárias]()
 
 ```json
 {
@@ -219,9 +219,9 @@ export default new DataSource({
 }
 ```
 
-## Scripts Adicionais Úteis
+## [Scripts Adicionais Úteis]()
 
-### Seed de Dados
+### [Seed de Dados]()
 
 ```json
 {
@@ -231,7 +231,7 @@ export default new DataSource({
 }
 ```
 
-### Verificar Conexão
+### [Verificar Conexão]()
 
 ```json
 {
@@ -241,7 +241,7 @@ export default new DataSource({
 }
 ```
 
-### Backup/Restore (Produção)
+### [Backup/Restore (Produção)]()
 
 ```json
 {
@@ -252,9 +252,9 @@ export default new DataSource({
 }
 ```
 
-## CI/CD Integration
+## [CI/CD Integration]()
 
-### GitHub Actions
+### [GitHub Actions]()
 
 ```yaml
 # .github/workflows/deploy.yml
@@ -266,16 +266,16 @@ export default new DataSource({
     DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
 ```
 
-### Docker
+### [Docker]()
 
 ```dockerfile
 # Dockerfile
 CMD ["sh", "-c", "npm run migration:run && npm run start:prod"]
 ```
 
-## Troubleshooting
+## [Troubleshooting]()
 
-### Erro: "Cannot find module"
+### [Erro: "Cannot find module"]()
 
 **Solução**: Instale `ts-node` e `tsconfig-paths`
 
@@ -283,7 +283,7 @@ CMD ["sh", "-c", "npm run migration:run && npm run start:prod"]
 npm install -D ts-node tsconfig-paths
 ```
 
-### Erro: "No migrations found"
+### [Erro: "No migrations found"]()
 
 **Solução**: Verifique o caminho em `database.config.ts`:
 
@@ -291,7 +291,7 @@ npm install -D ts-node tsconfig-paths
 migrations: [__dirname + '/migrations/*{.ts,.js}']
 ```
 
-### Migrations não executam
+### [Migrations não executam]()
 
 **Solução**: Verifique variáveis de ambiente:
 
@@ -300,7 +300,7 @@ echo $DB_HOST
 echo $DB_USERNAME
 ```
 
-## Exemplo Completo
+## [Exemplo Completo]()
 
 ```json
 {
@@ -325,7 +325,7 @@ echo $DB_USERNAME
 }
 ```
 
-## Referências
+## [Referências]()
 
 - [TypeORM Migrations CLI](https://typeorm.io/migrations#creating-a-new-migration)
 - [NestJS TypeORM](https://docs.nestjs.com/recipes/sql-typeorm)

@@ -1,8 +1,8 @@
-# Como deve funcionar a Autenticação?
+# [Como deve funcionar a Autenticação?]()
 
 > Guia completo sobre o sistema de autenticação JWT implementado no projeto.
 
-## Visão Geral
+## [Visão Geral]()
 
 O projeto usa autenticação baseada em **JWT (JSON Web Tokens)** com as seguintes características:
 - Login com email/senha
@@ -11,7 +11,7 @@ O projeto usa autenticação baseada em **JWT (JSON Web Tokens)** com as seguint
 - Proteção global de rotas (opt-out com @Public())
 - Isolamento de dados por usuário
 
-## Fluxo de Autenticação
+## [Fluxo de Autenticação]()
 
 ```
 1. Usuário faz signup  Hash senha  Salva no BD
@@ -20,9 +20,9 @@ O projeto usa autenticação baseada em **JWT (JSON Web Tokens)** com as seguint
 4. Backend valida token  Extrai userId  Autoriza acesso
 ```
 
-## Componentes do Sistema
+## [Componentes do Sistema]()
 
-### 1. User Entity
+### [1. User Entity]()
 
 ```typescript
 @Entity('users')
@@ -42,7 +42,7 @@ export class User extends SuperEntity {
 }
 ```
 
-### 2. JWT Strategy
+### [2. JWT Strategy]()
 
 Valida o token JWT em cada requisição:
 
@@ -79,7 +79,7 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
 }
 ```
 
-### 3. Local Strategy (Login)
+### [3. Local Strategy (Login)]()
 
 Valida credenciais de login:
 
@@ -105,7 +105,7 @@ export class LocalStrategy extends PassportStrategy(Strategy) {
 }
 ```
 
-### 4. Auth Service
+### [4. Auth Service]()
 
 Lógica de autenticação:
 
@@ -172,7 +172,7 @@ export class AuthService {
 }
 ```
 
-### 5. Auth Controller
+### [5. Auth Controller]()
 
 Endpoints públicos de autenticação:
 
@@ -201,9 +201,9 @@ export class AuthController {
 }
 ```
 
-## Guards (Proteção de Rotas)
+## [Guards (Proteção de Rotas)]()
 
-### JWT Auth Guard (Global)
+### [JWT Auth Guard (Global)]()
 
 Aplicado globalmente, protege todas as rotas por padrão:
 
@@ -238,7 +238,7 @@ const reflector = app.get(Reflector);
 app.useGlobalGuards(new JwtAuthGuard(reflector));
 ```
 
-### Public Decorator
+### [Public Decorator]()
 
 Marca rotas como públicas:
 
@@ -257,9 +257,9 @@ async login(@Body() loginDto: LoginDto) {
 }
 ```
 
-## Como Usar no Controller
+## [Como Usar no Controller]()
 
-### Acessar Usuário Logado
+### [Acessar Usuário Logado]()
 
 ```typescript
 @Controller('products')
@@ -277,7 +277,7 @@ export class ProductController {
 }
 ```
 
-### Objeto req.user
+### [Objeto req.user]()
 
 Injetado automaticamente após validação JWT:
 
@@ -288,11 +288,11 @@ Injetado automaticamente após validação JWT:
 }
 ```
 
-## Isolamento de Dados por Usuário
+## [Isolamento de Dados por Usuário]()
 
 **Regra**: Todos os dados devem ser filtrados por `userId`
 
-### Service Exemplo
+### [Service Exemplo]()
 
 ```typescript
 @Injectable()
@@ -325,9 +325,9 @@ export class ProductService {
 }
 ```
 
-## Fluxo Completo de Requisição
+## [Fluxo Completo de Requisição]()
 
-### 1. Signup (Criar conta)
+### [1. Signup (Criar conta)]()
 
 **Request**:
 ```http
@@ -350,7 +350,7 @@ Content-Type: application/json
 }
 ```
 
-### 2. Login
+### [2. Login]()
 
 **Request**:
 ```http
@@ -375,7 +375,7 @@ Content-Type: application/json
 }
 ```
 
-### 3. Requisição Autenticada
+### [3. Requisição Autenticada]()
 
 **Request**:
 ```http
@@ -394,9 +394,9 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
 ]
 ```
 
-## Frontend: Como Implementar
+## [Frontend: Como Implementar]()
 
-### 1. Armazenar Token
+### [1. Armazenar Token]()
 
 Após login bem-sucedido:
 
@@ -406,7 +406,7 @@ localStorage.setItem('token', response.access_token);
 localStorage.setItem('user', JSON.stringify(response.user));
 ```
 
-### 2. Enviar em Todas Requisições
+### [2. Enviar em Todas Requisições]()
 
 Configurar Axios interceptor:
 
@@ -445,7 +445,7 @@ api.interceptors.response.use(
 export default api;
 ```
 
-### 3. Proteger Rotas (React Router)
+### [3. Proteger Rotas (React Router)]()
 
 ```typescript
 const PrivateRoute = ({ children }) => {
@@ -469,7 +469,7 @@ const PrivateRoute = ({ children }) => {
 />
 ```
 
-## Variáveis de Ambiente
+## [Variáveis de Ambiente]()
 
 **.env**:
 ```env
@@ -481,9 +481,9 @@ JWT_EXPIRATION=24h
 - Use chave longa e aleatória em produção
 - Nunca commite o `.env` no git
 
-## Segurança
+## [Segurança]()
 
-### Boas Práticas Implementadas
+### [Boas Práticas Implementadas]()
 
 1. **Senha hasheada com bcrypt**: Nunca salva senha em texto plano
 2. **Token com expiração**: 24h por padrão
@@ -492,7 +492,7 @@ JWT_EXPIRATION=24h
 5. **@Exclude em passwordHash**: Nunca retorna senha ao cliente
 6. **Global guard**: Todas rotas protegidas por padrão
 
-### Melhorias Possíveis
+### [Melhorias Possíveis]()
 
 - [ ] Refresh tokens para renovação automática
 - [ ] Rate limiting em /login
@@ -500,21 +500,21 @@ JWT_EXPIRATION=24h
 - [ ] 2FA (autenticação de dois fatores)
 - [ ] OAuth (Google, GitHub, etc)
 
-## Troubleshooting
+## [Troubleshooting]()
 
-### Token inválido/expirado
+### [Token inválido/expirado]()
 
 **Erro**: `401 Unauthorized`
 
 **Solução**: Fazer login novamente
 
-### Usuário desativado
+### [Usuário desativado]()
 
 **Erro**: `401 Unauthorized`
 
 **Causa**: Campo `active = false` no banco
 
-### Token não enviado
+### [Token não enviado]()
 
 **Erro**: `401 Unauthorized`
 
@@ -522,7 +522,7 @@ JWT_EXPIRATION=24h
 
 **Correto**: `Authorization: Bearer <token>`
 
-## Referências
+## [Referências]()
 
 - [JWT.io](https://jwt.io)
 - [Passport.js Documentation](https://www.passportjs.org)

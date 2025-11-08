@@ -1,8 +1,8 @@
-# Como deve funcionar o arquivo main do Backend?
+# [Como deve funcionar o arquivo main do Backend?]()
 
 > Guia sobre o arquivo main.ts, ponto de entrada da aplicação NestJS.
 
-## O que é o main.ts?
+## [O que é o main.ts?]()
 
 O `main.ts` é o ponto de entrada da aplicação. Ele:
 - Inicializa a aplicação NestJS
@@ -13,7 +13,7 @@ O `main.ts` é o ponto de entrada da aplicação. Ele:
 - Serve arquivos estáticos do frontend
 - Inicia o servidor HTTP
 
-## Estrutura Básica
+## [Estrutura Básica]()
 
 ```typescript
 import { NestFactory } from '@nestjs/core';
@@ -27,7 +27,7 @@ async function bootstrap() {
 bootstrap();
 ```
 
-## Configuração Completa do Projeto
+## [Configuração Completa do Projeto]()
 
 ```typescript
 import { NestFactory, Reflector } from '@nestjs/core';
@@ -140,9 +140,9 @@ bootstrap();
 
 > **IMPORTANTE**: Veja [Como versionar API](./como-versionar-api-backend.md) para entender como funciona o versionamento.
 
-## Explicação de Cada Seção
+## [Explicação de Cada Seção]()
 
-### 1. NestFactory.create()
+### [1. NestFactory.create()]()
 
 Cria a instância da aplicação:
 
@@ -160,7 +160,7 @@ const app = await NestFactory.create(AppModule, {
 });
 ```
 
-### 2. Global Prefix
+### [2. Global Prefix]()
 
 Adiciona prefixo a todas as rotas:
 
@@ -179,7 +179,7 @@ app.setGlobalPrefix('api', {
 });
 ```
 
-### 3. Versionamento de API
+### [3. Versionamento de API]()
 
 Habilita versionamento por URL (URI):
 
@@ -201,7 +201,7 @@ app.enableVersioning({
 
 Veja mais em: [Como versionar API](./como-versionar-api-backend.md)
 
-### 4. CORS
+### [4. CORS]()
 
 Habilita requisições cross-origin:
 
@@ -220,7 +220,7 @@ app.enableCors({
 });
 ```
 
-### 5. Servir Arquivos Estáticos
+### [5. Servir Arquivos Estáticos]()
 
 Serve os arquivos buildados do React/frontend:
 
@@ -254,7 +254,7 @@ projeto/
 - `'..'` sobe para `/projeto`
 - Final: `/projeto/public`
 
-### 6. Fallback para SPA
+### [6. Fallback para SPA]()
 
 Garante que React Router funcione corretamente:
 
@@ -272,7 +272,7 @@ app.use((req: any, res: any, next: any) => {
 - Rota `/products` → Serve `index.html` (React Router assume)
 - Rota `/users/123` → Serve `index.html` (React Router assume)
 
-### 7. Validation Pipe
+### [7. Validation Pipe]()
 
 Valida automaticamente todos os DTOs:
 
@@ -295,7 +295,7 @@ app.useGlobalPipes(
 - `transform: true` - Converte tipos (string → number)
 - `enableImplicitConversion: false` - Desabilita conversão automática para evitar bugs
 
-### 8. Guards Globais
+### [8. Guards Globais]()
 
 Protege todas as rotas com JWT (exceto as marcadas com `@Public()`):
 
@@ -304,7 +304,7 @@ const reflector = app.get(Reflector);
 app.useGlobalGuards(new JwtAuthGuard(reflector));
 ```
 
-### 9. Swagger
+### [9. Swagger]()
 
 Documenta a API automaticamente:
 
@@ -347,7 +347,7 @@ SwaggerModule.setup('api/docs', app, document, {
 
 **Acesso**: `http://localhost:3000/api/docs`
 
-### 10. Listen
+### [10. Listen]()
 
 Inicia o servidor HTTP:
 
@@ -358,9 +358,9 @@ await app.listen(port);
 console.log(`Aplicação rodando na porta ${port}`);
 ```
 
-## Configurações Opcionais
+## [Configurações Opcionais]()
 
-### Helmet (Segurança)
+### [Helmet (Segurança)]()
 
 ```bash
 npm install helmet
@@ -372,7 +372,7 @@ import helmet from 'helmet';
 app.use(helmet());
 ```
 
-### Compressão
+### [Compressão]()
 
 ```bash
 npm install compression
@@ -384,7 +384,7 @@ import compression from 'compression';
 app.use(compression());
 ```
 
-### Rate Limiting
+### [Rate Limiting]()
 
 ```bash
 npm install @nestjs/throttler
@@ -404,7 +404,7 @@ import { ThrottlerModule } from '@nestjs/throttler';
 })
 ```
 
-### Logger Customizado
+### [Logger Customizado]()
 
 ```typescript
 import { Logger } from '@nestjs/common';
@@ -414,7 +414,7 @@ const app = await NestFactory.create(AppModule, {
 });
 ```
 
-## Variáveis de Ambiente
+## [Variáveis de Ambiente]()
 
 Crie um arquivo `.env` na raiz do backend:
 
@@ -441,7 +441,7 @@ JWT_EXPIRATION=7d
 X_API_KEY=sua_api_key_secreta
 ```
 
-## Checklist
+## [Checklist]()
 
 - [ ] NestFactory.create com `NestExpressApplication`
 - [ ] Global prefix `/api`
@@ -455,7 +455,7 @@ X_API_KEY=sua_api_key_secreta
 - [ ] Porta via variável de ambiente
 - [ ] Console.log com URLs úteis
 
-## Dicas
+## [Dicas]()
 
 1. **Sempre use `NestExpressApplication`**: Para ter acesso aos métodos do Express
 2. **Configure CORS corretamente**: Evite `origin: '*'` em produção
@@ -465,7 +465,7 @@ X_API_KEY=sua_api_key_secreta
 6. **Use helmet em produção**: Aumenta segurança
 7. **Configure rate limiting**: Previne abuso da API
 
-## Referências
+## [Referências]()
 
 - [NestJS Application](https://docs.nestjs.com/first-steps)
 - [NestJS CORS](https://docs.nestjs.com/security/cors)

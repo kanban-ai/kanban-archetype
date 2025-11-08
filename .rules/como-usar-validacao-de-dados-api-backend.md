@@ -1,14 +1,14 @@
-# Como usar validação de dados na API?
+# [Como usar validação de dados na API?]()
 
 > Guia completo sobre validação de dados usando class-validator no NestJS.
 
-## Visão Geral
+## [Visão Geral]()
 
 O projeto usa **class-validator** para validar automaticamente todos os dados recebidos nas requisições HTTP através de DTOs (Data Transfer Objects).
 
-## Configuração Global
+## [Configuração Global]()
 
-### ValidationPipe no main.ts
+### [ValidationPipe no main.ts]()
 
 ```typescript
 import { ValidationPipe } from '@nestjs/common';
@@ -31,16 +31,16 @@ async function bootstrap() {
 }
 ```
 
-### O que cada opção faz:
+### [O que cada opção faz:]()
 
 - **whitelist**: Remove campos não definidos no DTO
 - **forbidNonWhitelisted**: Retorna erro 400 se enviar campos extras
 - **transform**: Converte query params e params para o tipo correto
 - **enableImplicitConversion**: false para evitar conversões estranhas
 
-## Validadores Disponíveis
+## [Validadores Disponíveis]()
 
-### Validadores de String
+### [Validadores de String]()
 
 ```typescript
 import {
@@ -78,7 +78,7 @@ export class ExampleDto {
 }
 ```
 
-### Validadores Numéricos
+### [Validadores Numéricos]()
 
 ```typescript
 import {
@@ -110,7 +110,7 @@ export class ExampleDto {
 }
 ```
 
-### Validadores Booleanos
+### [Validadores Booleanos]()
 
 ```typescript
 import { IsBoolean } from 'class-validator';
@@ -124,7 +124,7 @@ export class ExampleDto {
 }
 ```
 
-### Validadores de Data
+### [Validadores de Data]()
 
 ```typescript
 import { IsDate, MinDate, MaxDate } from 'class-validator';
@@ -141,7 +141,7 @@ export class ExampleDto {
 }
 ```
 
-### Validadores de Array
+### [Validadores de Array]()
 
 ```typescript
 import { IsArray, ArrayMinSize, ArrayMaxSize } from 'class-validator';
@@ -158,7 +158,7 @@ export class ExampleDto {
 }
 ```
 
-### Validadores de Enum
+### [Validadores de Enum]()
 
 ```typescript
 import { IsEnum } from 'class-validator';
@@ -175,7 +175,7 @@ export class ExampleDto {
 }
 ```
 
-### Campos Opcionais
+### [Campos Opcionais]()
 
 ```typescript
 import { IsOptional, IsString } from 'class-validator';
@@ -196,7 +196,7 @@ export class ExampleDto {
 }
 ```
 
-## Exemplo Completo: Create DTO
+## [Exemplo Completo: Create DTO]()
 
 ```typescript
 import {
@@ -260,9 +260,9 @@ export class CreateProductDto {
 }
 ```
 
-## Validação em Objetos Aninhados
+## [Validação em Objetos Aninhados]()
 
-### DTO Aninhado
+### [DTO Aninhado]()
 
 ```typescript
 import { ValidateNested, IsString, IsNotEmpty } from 'class-validator';
@@ -293,9 +293,9 @@ export class CreateUserDto {
 }
 ```
 
-## Validação Customizada
+## [Validação Customizada]()
 
-### Decorator Customizado
+### [Decorator Customizado]()
 
 ```typescript
 import {
@@ -337,7 +337,7 @@ export class CreateUserDto {
 }
 ```
 
-## Mensagens de Erro Customizadas
+## [Mensagens de Erro Customizadas]()
 
 ```typescript
 export class CreateProductDto {
@@ -352,7 +352,7 @@ export class CreateProductDto {
 }
 ```
 
-## Validação Condicional
+## [Validação Condicional]()
 
 ```typescript
 import { ValidateIf } from 'class-validator';
@@ -374,9 +374,9 @@ export class CreateOrderDto {
 }
 ```
 
-## Transformação de Tipos
+## [Transformação de Tipos]()
 
-### Com @Type()
+### [Com @Type()]()
 
 ```typescript
 import { Type } from 'class-transformer';
@@ -399,7 +399,7 @@ export class QueryDto {
 }
 ```
 
-### Com @Transform()
+### [Com @Transform()]()
 
 ```typescript
 import { Transform } from 'class-transformer';
@@ -419,9 +419,9 @@ export class QueryDto {
 }
 ```
 
-## Validação de Arrays
+## [Validação de Arrays]()
 
-### Array de Strings
+### [Array de Strings]()
 
 ```typescript
 export class CreateProductDto {
@@ -432,7 +432,7 @@ export class CreateProductDto {
 }
 ```
 
-### Array de Objetos
+### [Array de Objetos]()
 
 ```typescript
 import { ValidateNested } from 'class-validator';
@@ -454,9 +454,9 @@ export class CreateOrderDto {
 }
 ```
 
-## Tratamento de Erros
+## [Tratamento de Erros]()
 
-### Estrutura da Resposta de Erro
+### [Estrutura da Resposta de Erro]()
 
 Quando a validação falha, o NestJS retorna automaticamente:
 
@@ -472,7 +472,7 @@ Quando a validação falha, o NestJS retorna automaticamente:
 }
 ```
 
-### Capturar Erros de Validação
+### [Capturar Erros de Validação]()
 
 ```typescript
 import { ExceptionFilter, Catch, ArgumentsHost, BadRequestException } from '@nestjs/common';
@@ -495,7 +495,7 @@ export class ValidationExceptionFilter implements ExceptionFilter {
 }
 ```
 
-## Validação Manual (Sem DTO)
+## [Validação Manual (Sem DTO)]()
 
 Se precisar validar manualmente:
 
@@ -517,7 +517,7 @@ async function validateData() {
 }
 ```
 
-## Boas Práticas
+## [Boas Práticas]()
 
 1. **Sempre use DTOs**: Nunca aceite `any` no controller
 2. **Validação no backend**: Nunca confie apenas no frontend
@@ -527,7 +527,7 @@ async function validateData() {
 6. **Use @Type() para conversão**: Garanta tipos corretos
 7. **Documente com @ApiProperty**: Integre com Swagger
 
-## Checklist
+## [Checklist]()
 
 Para cada DTO:
 - [ ] Validadores em todos os campos obrigatórios
@@ -538,7 +538,7 @@ Para cada DTO:
 - [ ] Mensagens de erro customizadas (se necessário)
 - [ ] Transformação de tipos (se necessário)
 
-## Referências
+## [Referências]()
 
 - [class-validator Documentation](https://github.com/typestack/class-validator)
 - [class-transformer Documentation](https://github.com/typestack/class-transformer)

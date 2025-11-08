@@ -1,17 +1,17 @@
-# Como criar uma Entity TypeORM?
+# [Como criar uma Entity TypeORM?]()
 
 > Guia prático para criar entidades (modelos de dados) com TypeORM no projeto.
 
-## O que é uma Entity?
+## [O que é uma Entity?]()
 
 Uma Entity representa uma tabela no banco de dados. Cada instância da classe é uma linha na tabela.
 
-## Localização das Entities
+## [Localização das Entities]()
 
 - **SuperEntity**: Centralizada em `src/database/entities/super.entity.ts` (compartilhada por todos os módulos)
 - **Demais Entities**: Dentro de cada módulo em `src/modules/[nome-modulo]/entities/[nome].entity.ts`
 
-### Exemplo de estrutura:
+### [Exemplo de estrutura:]()
 ```
 src/
 ├── database/
@@ -26,9 +26,9 @@ src/
             └── category.entity.ts   # ← Entity do módulo categories
 ```
 
-## Estrutura Básica
+## [Estrutura Básica]()
 
-### Entity Simples
+### [Entity Simples]()
 
 ```typescript
 import { Entity, Column } from 'typeorm';
@@ -49,7 +49,7 @@ export class Product extends SuperEntity { // Classe: PascalCase, singular
 
 **Observação**: Note que a classe é `Product` (singular, PascalCase) mas a tabela é `'products'` (plural, snake_case, minúscula).
 
-### SuperEntity (Classe Base)
+### [SuperEntity (Classe Base)]()
 
 Todas as entities devem estender `SuperEntity`:
 
@@ -73,7 +73,7 @@ export abstract class SuperEntity extends BaseEntity {
 - Timestamps automáticos (created_at, updated_at)
 - Padrão consistente em todo projeto
 
-### SoftDeletableEntity (Soft Delete)
+### [SoftDeletableEntity (Soft Delete)]()
 
 Para entities que precisam de soft delete, use `SoftDeletableEntity` que estende `SuperEntity`:
 
@@ -103,9 +103,9 @@ export class Product extends SoftDeletableEntity {
 }
 ```
 
-## Tipos de Colunas
+## [Tipos de Colunas]()
 
-### Texto
+### [Texto]()
 
 ```typescript
 // String curta
@@ -117,7 +117,7 @@ name: string;
 description: string;
 ```
 
-### Números
+### [Números]()
 
 ```typescript
 // Inteiro
@@ -133,14 +133,14 @@ price: number;
 percentage: number;
 ```
 
-### Booleano
+### [Booleano]()
 
 ```typescript
 @Column({ type: 'boolean', default: true })
 active: boolean;
 ```
 
-### Data/Hora
+### [Data/Hora]()
 
 ```typescript
 @Column({ type: 'timestamptz', nullable: true })
@@ -150,16 +150,16 @@ lastLoginAt: Date;
 birthDate: Date;
 ```
 
-### JSON
+### [JSON]()
 
 ```typescript
 @Column({ type: 'jsonb', nullable: true })
 metadata: any;
 ```
 
-## Relacionamentos
+## [Relacionamentos]()
 
-### Many-to-One (N:1)
+### [Many-to-One (N:1)]()
 
 Exemplo: Vários produtos pertencem a um usuário
 
@@ -184,7 +184,7 @@ export class Product extends SuperEntity {
 }
 ```
 
-### One-to-Many (1:N)
+### [One-to-Many (1:N)]()
 
 Exemplo: Um usuário tem vários produtos
 
@@ -202,7 +202,7 @@ export class User extends SuperEntity {
 }
 ```
 
-### Many-to-Many (N:N)
+### [Many-to-Many (N:N)]()
 
 Exemplo: Produtos têm várias categorias, categorias têm vários produtos
 
@@ -225,9 +225,9 @@ export class Product extends SuperEntity {
 }
 ```
 
-## Recursos Avançados
+## [Recursos Avançados]()
 
-### Índices
+### [Índices]()
 
 ```typescript
 import { Entity, Column, Index } from 'typeorm';
@@ -244,7 +244,7 @@ export class Product extends SuperEntity {
 }
 ```
 
-### Unique Constraints
+### [Unique Constraints]()
 
 ```typescript
 @Column({ type: 'varchar', length: 255, unique: true })
@@ -262,7 +262,7 @@ export class Product extends SuperEntity {
 }
 ```
 
-### Valores Padrão
+### [Valores Padrão]()
 
 ```typescript
 @Column({ type: 'boolean', default: true })
@@ -275,7 +275,7 @@ viewCount: number;
 status: string;
 ```
 
-### Colunas Opcionais
+### [Colunas Opcionais]()
 
 ```typescript
 @Column({ nullable: true })
@@ -285,7 +285,7 @@ middleName: string;
 bio: string;
 ```
 
-### Enums
+### [Enums]()
 
 ```typescript
 export enum UserRole {
@@ -298,7 +298,7 @@ export enum UserRole {
 role: UserRole;
 ```
 
-### Exclusão de Campos (Sensitive Data)
+### [Exclusão de Campos (Sensitive Data)]()
 
 ```typescript
 import { Exclude } from 'class-transformer';
@@ -314,7 +314,7 @@ export class User extends SuperEntity {
 }
 ```
 
-### Soft Delete
+### [Soft Delete]()
 
 Para implementar soft delete, sua entity deve estender `SoftDeletableEntity` ao invés de `SuperEntity`:
 
@@ -388,9 +388,9 @@ export class ProductService {
 - Usa `softDelete()` e `softRemove()` ao invés de deletar permanentemente
 - Fornece opção `withDeleted: true` para incluir registros deletados
 
-## Convenções do Projeto
+## [Convenções do Projeto]()
 
-### Nomeação
+### [Nomeação]()
 
 | Elemento | Convenção | Regras | Exemplo |
 |----------|-----------|--------|---------|
@@ -410,7 +410,7 @@ export class ProductService {
 - **Evite**: Nomes em português como `produtos`, `id_usuario`, `data_criacao`
 - **Motivo**: Padronização internacional, compatibilidade com convenções da comunidade, melhor integração com ORMs e ferramentas
 
-### Exemplo Completo
+### [Exemplo Completo]()
 
 ```typescript
 import { Entity, Column, ManyToOne, JoinColumn, Index } from 'typeorm';
@@ -467,7 +467,7 @@ export class Product extends SuperEntity {
 }
 ```
 
-## Registrar Entity no Module
+## [Registrar Entity no Module]()
 
 ```typescript
 import { Module } from '@nestjs/common';
@@ -487,7 +487,7 @@ import { ProductController } from './product.controller';
 export class ProductModule {}
 ```
 
-## Usar Entity no Service
+## [Usar Entity no Service]()
 
 ```typescript
 import { Injectable } from '@nestjs/common';
@@ -517,7 +517,7 @@ export class ProductService {
 }
 ```
 
-## Dicas Importantes
+## [Dicas Importantes]()
 
 1. **Escolha a classe base correta**:
    - `SuperEntity`: Para entities normais (sem soft delete)
@@ -531,7 +531,7 @@ export class ProductService {
 8. **Use `nullable: true` quando apropriado**: Evite constraints desnecessárias
 9. **Não adicione deleted_at manualmente**: Se precisa de soft delete, use `SoftDeletableEntity`
 
-## Referências
+## [Referências]()
 
 - [TypeORM Entities Documentation](https://typeorm.io/entities)
 - [TypeORM Relations Documentation](https://typeorm.io/relations)

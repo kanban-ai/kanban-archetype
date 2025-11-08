@@ -1,8 +1,8 @@
-# Como criar uma API no Backend?
+# [Como criar uma API no Backend?]()
 
 > Guia passo a passo para criar uma nova API REST no backend usando NestJS.
 
-## Visão Geral
+## [Visão Geral]()
 
 Este guia mostra como criar um CRUD completo seguindo os padrões do projeto, incluindo:
 - Módulo NestJS
@@ -14,7 +14,7 @@ Este guia mostra como criar um CRUD completo seguindo os padrões do projeto, in
 
 **IMPORTANTE**: Todas as APIs devem começar com versionamento `/v1/` desde o início. Veja [Como versionar API](./como-versionar-api-backend.md) para entender o porquê.
 
-## Passo 1: Gerar o Resource com NestJS CLI
+## [Passo 1: Gerar o Resource com NestJS CLI]()
 
 O NestJS CLI gera automaticamente toda a estrutura necessária:
 
@@ -23,7 +23,7 @@ cd back
 nest g resource nome-do-modulo
 ```
 
-### Opções interativas:
+### [Opções interativas:]()
 
 1. **Qual tipo de transporte?**
    - Selecione: `REST API`
@@ -44,7 +44,7 @@ src/modules/nome-do-modulo/
      update-nome-do-modulo.dto.ts
 ```
 
-## Passo 2: Criar a Entity (Modelo de Dados)
+## [Passo 2: Criar a Entity (Modelo de Dados)]()
 
 **Arquivo**: `entities/nome-do-modulo.entity.ts`
 
@@ -74,16 +74,16 @@ export class NomeDoModulo extends SuperEntity {
 }
 ```
 
-### Dicas importantes:
+### [Dicas importantes:]()
 
 - **Sempre estenda `SuperEntity`**: Inclui id, created_at, updated_at
 - **Use snake_case para colunas**: Convenção PostgreSQL
 - **Especifique `name` em @JoinColumn**: Controle explícito
 - **Adicione `userId` separado**: Facilita queries
 
-## Passo 3: Criar DTOs (Validação)
+## [Passo 3: Criar DTOs (Validação)]()
 
-### Create DTO
+### [Create DTO]()
 
 **Arquivo**: `dto/create-nome-do-modulo.dto.ts`
 
@@ -121,7 +121,7 @@ export class CreateNomeDoModuloDto {
 }
 ```
 
-### Update DTO
+### [Update DTO]()
 
 **Arquivo**: `dto/update-nome-do-modulo.dto.ts`
 
@@ -134,7 +134,7 @@ export class UpdateNomeDoModuloDto extends PartialType(CreateNomeDoModuloDto) {}
 
 > **Nota**: `PartialType` torna todos os campos opcionais automaticamente.
 
-## Passo 4: Implementar o Service
+## [Passo 4: Implementar o Service]()
 
 **Arquivo**: `nome-do-modulo.service.ts`
 
@@ -199,14 +199,14 @@ export class NomeDoModuloService {
 }
 ```
 
-### Boas práticas do Service:
+### [Boas práticas do Service:]()
 
 1. **Sempre valide o userId**: Garante isolamento de dados
 2. **Use `findOne` antes de update/delete**: Valida permissões
 3. **Lance exceções apropriadas**: NotFoundException, ForbiddenException
 4. **Retorne sempre a entidade atualizada**: Facilita no frontend
 
-## Passo 5: Implementar o Controller
+## [Passo 5: Implementar o Controller]()
 
 **Arquivo**: `nome-do-modulo.controller.ts`
 
@@ -272,7 +272,7 @@ export class NomeDoModuloController {
 }
 ```
 
-### Boas práticas do Controller:
+### [Boas práticas do Controller:]()
 
 1. **Use decoradores Swagger**: Documenta automaticamente
 2. **Use `ParseIntPipe`**: Valida e converte parâmetros
@@ -281,7 +281,7 @@ export class NomeDoModuloController {
 5. **Organize rotas RESTful**: `/recurso`, `/recurso/:id`
 6. **Sempre use versionamento**: `@Controller({ path: 'recurso', version: '1' })`
 
-## Passo 6: Configurar o Module
+## [Passo 6: Configurar o Module]()
 
 **Arquivo**: `nome-do-modulo.module.ts`
 
@@ -303,7 +303,7 @@ import { NomeDoModulo } from './entities/nome-do-modulo.entity';
 export class NomeDoModuloModule {}
 ```
 
-## Passo 7: Registrar no AppModule
+## [Passo 7: Registrar no AppModule]()
 
 **Arquivo**: `src/app.module.ts`
 
@@ -319,7 +319,7 @@ import { NomeDoModuloModule } from './modules/nome-do-modulo/nome-do-modulo.modu
 export class AppModule {}
 ```
 
-## Passo 8: Criar Migration
+## [Passo 8: Criar Migration]()
 
 ```bash
 npm run typeorm -- migration:create src/database/migrations/CreateNomeDoModuloTable
@@ -369,15 +369,15 @@ Execute a migration:
 npm run typeorm -- migration:run
 ```
 
-## Passo 9: Testar a API
+## [Passo 9: Testar a API]()
 
-### Via Swagger
+### [Via Swagger]()
 
 1. Acesse: `http://localhost:3000/api/docs`
 2. Clique em "Authorize" e insira o token JWT
 3. Teste os endpoints criados
 
-### Via curl
+### [Via curl]()
 
 ```bash
 # Criar
@@ -405,9 +405,9 @@ curl -X DELETE http://localhost:3000/api/v1/nome-do-modulo/1 \
   -H "Authorization: Bearer SEU_TOKEN"
 ```
 
-## Recursos Avançados
+## [Recursos Avançados]()
 
-### Paginação
+### [Paginação]()
 
 ```typescript
 // Service
@@ -439,7 +439,7 @@ findAll(
 }
 ```
 
-### Filtros e Busca
+### [Filtros e Busca]()
 
 ```typescript
 // DTO
@@ -469,7 +469,7 @@ async findAll(userId: number, filters: FilterNomeDoModuloDto) {
 }
 ```
 
-### Relacionamentos
+### [Relacionamentos]()
 
 ```typescript
 // Carregar com relacionamentos
@@ -487,7 +487,7 @@ async findOne(id: number, userId: number) {
 }
 ```
 
-## Checklist de Implementação
+## [Checklist de Implementação]()
 
 - [ ] Resource gerado com `nest g resource`
 - [ ] Entity criada estendendo SuperEntity
@@ -500,7 +500,7 @@ async findOne(id: number, userId: number) {
 - [ ] Validação de userId em todas as operações
 - [ ] Versionamento configurado (ver [Como versionar API](./como-versionar-api-backend.md))
 
-## Padrão de Nomenclatura
+## [Padrão de Nomenclatura]()
 
 | Tipo | Padrão | Regras | Exemplo |
 |------|--------|--------|---------|
@@ -515,7 +515,7 @@ async findOne(id: number, userId: number) {
 - **Entity**: Sempre singular em PascalCase (ex: `Product`, `User`)
 - **Tabela**: Sempre plural em snake_case minúscula (ex: `products`, `users`)
 
-## Referências
+## [Referências]()
 
 - [NestJS Controllers](https://docs.nestjs.com/controllers)
 - [NestJS Providers](https://docs.nestjs.com/providers)

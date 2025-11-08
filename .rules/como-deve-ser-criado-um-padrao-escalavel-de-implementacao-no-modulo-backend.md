@@ -1,10 +1,10 @@
-# Como deve ser criado um padrão escalável de implementação no módulo Backend?
+# [Como deve ser criado um padrão escalável de implementação no módulo Backend?]()
 
 > Guia de boas práticas para criar módulos escaláveis e manuteníveis no NestJS.
 
-## Princípios Fundamentais
+## [Princípios Fundamentais]()
 
-### 1. Single Responsibility Principle
+### [1. Single Responsibility Principle]()
 
 Cada classe deve ter uma única responsabilidade:
 
@@ -33,7 +33,7 @@ export class ProductService {
 }
 ```
 
-### 2. Dependency Injection
+### [2. Dependency Injection]()
 
 Sempre use injeção de dependência:
 
@@ -56,7 +56,7 @@ export class ProductService {
 }
 ```
 
-### 3. Inversão de Dependência
+### [3. Inversão de Dependência]()
 
 Dependa de abstrações, não de implementações:
 
@@ -97,9 +97,9 @@ export class ProductService {
 }
 ```
 
-## Padrões de Implementação
+## [Padrões de Implementação]()
 
-### 1. Repository Pattern (TypeORM)
+### [1. Repository Pattern (TypeORM)]()
 
 Use repository do TypeORM para acesso a dados:
 
@@ -119,7 +119,7 @@ export class ProductService {
 }
 ```
 
-### 2. DTO Pattern
+### [2. DTO Pattern]()
 
 Use DTOs para validação e transferência de dados:
 
@@ -151,7 +151,7 @@ async create(dto: CreateProductDto, userId: number) {
 }
 ```
 
-### 3. Strategy Pattern
+### [3. Strategy Pattern]()
 
 Use quando há múltiplas implementações de um comportamento:
 
@@ -199,7 +199,7 @@ export class PaymentService {
 }
 ```
 
-### 4. Factory Pattern
+### [4. Factory Pattern]()
 
 Use para criação complexa de objetos:
 
@@ -221,9 +221,9 @@ export class ReportFactory {
 }
 ```
 
-## Organização Escalável
+## [Organização Escalável]()
 
-### Separação por Camadas
+### [Separação por Camadas]()
 
 ```
 modulo/
@@ -235,7 +235,7 @@ modulo/
  services/               # Sub-services
 ```
 
-### Exemplo Real
+### [Exemplo Real]()
 
 ```typescript
 // Controller - Camada HTTP
@@ -288,9 +288,9 @@ export class ProductService {
 }
 ```
 
-## Error Handling
+## [Error Handling]()
 
-### Use Exceções do NestJS
+### [Use Exceções do NestJS]()
 
 ```typescript
 import {
@@ -330,7 +330,7 @@ export class ProductService {
 }
 ```
 
-## Validação de Ownership
+## [Validação de Ownership]()
 
 Sempre valide que o recurso pertence ao usuário:
 
@@ -365,7 +365,7 @@ export class ProductService {
 }
 ```
 
-## Transações
+## [Transações]()
 
 Use transações para operações atômicas:
 
@@ -407,7 +407,7 @@ export class OrderService {
 }
 ```
 
-## Logging
+## [Logging]()
 
 Adicione logging estratégico:
 
@@ -436,7 +436,7 @@ export class ProductService {
 ```
 
 
-## Checklist de Escalabilidade
+## [Checklist de Escalabilidade]()
 
 - [ ] Um service = Uma responsabilidade
 - [ ] Injeção de dependência em tudo
@@ -448,7 +448,7 @@ export class ProductService {
 - [ ] Documentação Swagger
 - [ ] Código type-safe (TypeScript)
 
-## Dicas Finais
+## [Dicas Finais]()
 
 1. **Comece simples**: Não otimize prematuramente
 2. **Refatore quando necessário**: Quando passar de 300 linhas
@@ -459,7 +459,7 @@ export class ProductService {
 7. **Doc inline**: Comente código complexo
 8. **Consistência**: Siga os padrões do projeto
 
-## Referências
+## [Referências]()
 
 - [NestJS Best Practices](https://docs.nestjs.com/techniques/performance)
 - [Clean Architecture](https://blog.cleancoder.com/uncle-bob/2012/08/13/the-clean-architecture.html)

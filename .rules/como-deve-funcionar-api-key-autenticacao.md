@@ -1,8 +1,8 @@
-# Como deve funcionar a autenticação com API Key?
+# [Como deve funcionar a autenticação com API Key?]()
 
 > Guia sobre autenticação alternativa usando API Key para integrações e serviços externos.
 
-## O que é API Key?
+## [O que é API Key?]()
 
 API Key é uma chave de autenticação alternativa ao JWT, usada para:
 - Integrações entre serviços
@@ -10,14 +10,14 @@ API Key é uma chave de autenticação alternativa ao JWT, usada para:
 - Webhooks
 - Serviços internos que não usam login de usuário
 
-## Quando Usar
+## [Quando Usar]()
 
 -  **Use API Key**: Integração backend-to-backend, cron jobs, webhooks
 - L **Use JWT**: Autenticação de usuários, frontend, apps mobile
 
-## Implementação
+## [Implementação]()
 
-### 1. Configurar Variável de Ambiente
+### [1. Configurar Variável de Ambiente]()
 
 **.env**:
 ```env
@@ -29,7 +29,7 @@ Gere uma chave segura:
 openssl rand -hex 32
 ```
 
-### 2. Criar API Key Guard
+### [2. Criar API Key Guard]()
 
 **`auth/guards/api-key-auth.guard.ts`**:
 
@@ -71,7 +71,7 @@ export class ApiKeyAuthGuard implements CanActivate {
 }
 ```
 
-### 3. Criar Decorator
+### [3. Criar Decorator]()
 
 **`auth/decorators/api-key-auth.decorator.ts`**:
 
@@ -82,7 +82,7 @@ export const API_KEY_AUTH = 'api-key-auth';
 export const ApiKeyAuth = () => SetMetadata(API_KEY_AUTH, true);
 ```
 
-### 4. Registrar Guard Globalmente
+### [4. Registrar Guard Globalmente]()
 
 **`main.ts`**:
 
@@ -104,9 +104,9 @@ async function bootstrap() {
 }
 ```
 
-## Como Usar
+## [Como Usar]()
 
-### Endpoint que Aceita API Key
+### [Endpoint que Aceita API Key]()
 
 ```typescript
 import { Controller, Post, Body } from '@nestjs/common';
@@ -126,7 +126,7 @@ export class WebhookController {
 }
 ```
 
-### Endpoint que Aceita JWT OU API Key
+### [Endpoint que Aceita JWT OU API Key]()
 
 ```typescript
 @Controller('data')
@@ -149,9 +149,9 @@ export class DataController {
 }
 ```
 
-## Como Chamar o Endpoint
+## [Como Chamar o Endpoint]()
 
-### Com cURL
+### [Com cURL]()
 
 ```bash
 curl -X POST http://localhost:3000/api/webhooks/process \
@@ -160,7 +160,7 @@ curl -X POST http://localhost:3000/api/webhooks/process \
   -d '{"event": "test"}'
 ```
 
-### Com Axios (Node.js)
+### [Com Axios (Node.js)]()
 
 ```typescript
 import axios from 'axios';
@@ -177,7 +177,7 @@ const response = await axios.post(
 );
 ```
 
-### Com fetch
+### [Com fetch]()
 
 ```typescript
 const response = await fetch('http://localhost:3000/api/webhooks/process', {
@@ -190,9 +190,9 @@ const response = await fetch('http://localhost:3000/api/webhooks/process', {
 });
 ```
 
-## Implementação Avançada
+## [Implementação Avançada]()
 
-### API Key por Cliente
+### [API Key por Cliente]()
 
 Se precisar de múltiplas API Keys (uma por cliente):
 
@@ -265,7 +265,7 @@ export class ApiKeyAuthGuard implements CanActivate {
 }
 ```
 
-### Rate Limiting
+### [Rate Limiting]()
 
 Limitar requisições por API Key:
 
@@ -285,7 +285,7 @@ async webhook() {
 }
 ```
 
-## Documentar no Swagger
+## [Documentar no Swagger]()
 
 ```typescript
 import { ApiHeader, ApiSecurity } from '@nestjs/swagger';
@@ -305,9 +305,9 @@ const config = new DocumentBuilder()
 async webhook() {}
 ```
 
-## Segurança
+## [Segurança]()
 
-### Boas Práticas
+### [Boas Práticas]()
 
 1. **Use chaves longas e aleatórias**: Mínimo 32 caracteres
 2. **Nunca commite chaves no git**: Use .env
@@ -317,7 +317,7 @@ async webhook() {}
 6. **Revogação**: Permita desativar chaves comprometidas
 7. **Rate limiting**: Previna abuso
 
-### Gerar Chaves Seguras
+### [Gerar Chaves Seguras]()
 
 ```bash
 # Linux/Mac
@@ -327,7 +327,7 @@ openssl rand -hex 32
 node -e "console.log(require('crypto').randomBytes(32).toString('hex'))"
 ```
 
-## Diferenças: JWT vs API Key
+## [Diferenças: JWT vs API Key]()
 
 | Aspecto | JWT | API Key |
 |---------|-----|---------|
@@ -338,21 +338,21 @@ node -e "console.log(require('crypto').randomBytes(32).toString('hex'))"
 | **Revogação** | Difícil | Fácil |
 | **Performance** | Valida assinatura | Busca em BD |
 
-## Troubleshooting
+## [Troubleshooting]()
 
-### Erro: "API Key ausente"
+### [Erro: "API Key ausente"]()
 
 **Causa**: Header `X-API-KEY` não enviado
 
 **Solução**: Adicione o header na requisição
 
-### Erro: "API Key inválida"
+### [Erro: "API Key inválida"]()
 
 **Causa**: Chave incorreta ou não configurada
 
 **Solução**: Verifique `.env` e valor enviado
 
-### Conflito com JWT
+### [Conflito com JWT]()
 
 Se endpoint aceita ambos, configure a ordem dos guards:
 
@@ -364,7 +364,7 @@ app.useGlobalGuards(
 );
 ```
 
-## Referências
+## [Referências]()
 
 - [API Key Best Practices](https://cloud.google.com/endpoints/docs/openapi/when-why-api-key)
 - [NestJS Guards](https://docs.nestjs.com/guards)

@@ -1,10 +1,10 @@
-# Sumário - Documentação FAQ
+# [Sumário - Documentação FAQ]()
 
 > Índice completo com todos os guias, seções e tópicos do projeto.
 
-## 📚 Stack e Tecnologias
+## [📚 Stack e Tecnologias]()
 
-### Backend - `./qual-tecnologia-usa-backend.md`
+### [Backend - `./qual-tecnologia-usa-backend.md`]()
 
 - **Stack Principal** - Framework NestJS, TypeScript, Node.js, Express
 - **Banco de Dados** - PostgreSQL, TypeORM, driver pg
@@ -17,7 +17,7 @@
 - **Arquitetura e Padrões** - Dependency Injection, Repository Pattern
 - **Módulos Personalizados** - 15 módulos de domínio implementados
 
-### Frontend - `./qual-tecnologia-usa-frontend.md`
+### [Frontend - `./qual-tecnologia-usa-frontend.md`]()
 
 - **Stack Principal** - React, TypeScript, Vite, SWC
 - **Estilização** - Tailwind CSS v4, @tailwindcss/postcss, PostCSS
@@ -29,9 +29,9 @@
 - **Estrutura de Componentes** - Componentes comuns reutilizáveis
 - **Bibliotecas de Formulários** - Validação nativa HTML5
 
-## 🔧 Backend - Desenvolvimento
+## [🔧 Backend - Desenvolvimento]()
 
-### Redis - `./como-usar-redis-backend.md`
+### [Redis - `./como-usar-redis-backend.md`]()
 
 - **Quando Usar** - Cache, sessões, contadores, rate limiting, dados temporários
 - **Instalação** - Pacotes necessários
@@ -49,7 +49,7 @@
 - **Checklist** - Verificação de implementação
 - **Troubleshooting** - Problemas comuns
 
-### RabbitMQ - `./como-usar-rabbitmq-backend.md`
+### [RabbitMQ - `./como-usar-rabbitmq-backend.md`]()
 
 - **Quando Usar** - Processamento assíncrono, tarefas demoradas, retry automático, background jobs
 - **Instalação** - Pacotes @nestjs/microservices
@@ -70,7 +70,7 @@
 - **Checklist** - Verificação de implementação
 - **Troubleshooting** - Problemas comuns
 
-### Tratamento de Datas - `./como-tratar-datas-backend-frontend.md`
+### [Tratamento de Datas - `./como-tratar-datas-backend-frontend.md`]()
 
 - **Regra de Ouro** - Banco UTC, Backend UTC, Frontend converte na exibição
 - **Banco de Dados** - TIMESTAMP WITH TIME ZONE, sempre UTC
@@ -85,7 +85,7 @@
 - **Checklist** - Verificação de implementação
 - **Erros Comuns** - O que não fazer vs o que fazer
 
-### Setup Inicial - `./como-iniciar-fazer-0-setup-do-backend.md`
+### [Setup Inicial - `./como-iniciar-fazer-0-setup-do-backend.md`]()
 
 - **Visão Geral** - Configurar projeto NestJS + TypeORM do zero
 - **Pré-requisitos** - Node.js 18+, PostgreSQL, npm/yarn
@@ -99,7 +99,7 @@
 - **Passo 8: app.module.ts** - ConfigModule e TypeOrmModule
 - **Próximos Passos** - Referências para continuar o setup
 
-### API e Endpoints - `./como-criar-api-backend.md`
+### [API e Endpoints - `./como-criar-api-backend.md`]()
 
 - **Passo 1: Gerar Resource** - Comando nest g resource
 - **Passo 2: Criar Entity** - Modelo de dados TypeORM
@@ -113,7 +113,7 @@
 - **Recursos Avançados** - Paginação, filtros, relacionamentos
 - **Checklist de Implementação** - Lista completa de verificação
 
-### Versionamento de API - `./como-versionar-api-backend.md`
+### [Versionamento de API - `./como-versionar-api-backend.md`]()
 
 - **Por que versionar** - Evitar quebrar integrações, permitir evolução
 - **Quando versionar** - Breaking changes, mudanças de contrato
@@ -128,7 +128,7 @@
 - **Frontend** - Consumir APIs versionadas
 - **Testes** - Testar múltiplas versões
 
-### Integração com API Externa - `./como-integrar-com-api-externa-backend.md`
+### [Integração com API Externa - `./como-integrar-com-api-externa-backend.md`]()
 
 - **Configuração do Cliente HTTP** - HttpService base com Axios
 - **Estrutura de Service** - Padrão para integração externa
@@ -143,7 +143,7 @@
 - **Exemplo Completo** - Módulo Providers (Yahoo, Kinvo, B3)
 - **Boas Práticas** - Checklist de implementação
 
-### Swagger - `./como-documentar-swagger-backend.md`
+### [Swagger - `./como-documentar-swagger-backend.md`]()
 
 - **Configuração Inicial** - Setup do Swagger no main.ts
 - **Documentar Controllers** - Decorators principais
@@ -156,7 +156,7 @@
 - **Checklist de Documentação** - Verificação completa
 - **Dicas** - Boas práticas de documentação
 
-### Validação de Dados - `./como-usar-validacao-de-dados-api-backend.md`
+### [Validação de Dados - `./como-usar-validacao-de-dados-api-backend.md`]()
 
 - **Configuração Global** - ValidationPipe no main.ts
 - **Validadores de String** - IsString, IsEmail, MaxLength, Matches
@@ -175,9 +175,9 @@
 - **Tratamento de Erros** - Estrutura e captura
 - **Boas Práticas** - Checklist de validação
 
-## 💾 Banco de Dados
+## [💾 Banco de Dados]()
 
-### Entity TypeORM - `./como-criar-uma-entity-typeorm-backend.md`
+### [Entity TypeORM - `./como-criar-uma-entity-typeorm-backend.md`]()
 
 - **Estrutura Básica** - Entity simples, SuperEntity e SoftDeletableEntity
 - **SuperEntity** - Classe base com id, created_at, updated_at
@@ -195,7 +195,7 @@
 - **Usar no Service** - @InjectRepository
 - **Dicas Importantes** - Boas práticas
 
-### Migrations - `./como-criar-migration-backend.md`
+### [Migrations - `./como-criar-migration-backend.md`]()
 
 - **O que são Migrations** - Versionamento de banco
 - **Comandos Disponíveis** - create, generate, run, revert, show
@@ -209,7 +209,7 @@
 - **Troubleshooting** - Problemas comuns e soluções
 - **Scripts package.json** - Comandos disponíveis
 
-### Comandos Migration - `./como-deve-ser-os-comandos-migration-packagejson-backend.md`
+### [Comandos Migration - `./como-deve-ser-os-comandos-migration-packagejson-backend.md`]()
 
 - **Scripts Necessários** - typeorm, generate, create, run, revert, show
 - **typeorm (Base)** - Script base com ts-node
@@ -226,9 +226,9 @@
 - **CI/CD Integration** - GitHub Actions, Docker
 - **Troubleshooting** - Erros comuns
 
-## 🔐 Autenticação e Segurança
+## [🔐 Autenticação e Segurança]()
 
-### Autenticação JWT - `./como-deve-funcionar-autenticacao.md`
+### [Autenticação JWT - `./como-deve-funcionar-autenticacao.md`]()
 
 - **Visão Geral** - Sistema JWT completo
 - **Fluxo de Autenticação** - Signup â Login â Requisições
@@ -247,7 +247,7 @@
 - **Segurança** - Boas práticas implementadas
 - **Troubleshooting** - Problemas comuns
 
-### API Key - `./como-deve-funcionar-api-key-autenticacao.md`
+### [API Key - `./como-deve-funcionar-api-key-autenticacao.md`]()
 
 - **O que é API Key** - Autenticação alternativa
 - **Quando Usar** - Integrações, webhooks, cron jobs
@@ -264,9 +264,9 @@
 - **Diferenças JWT vs API Key** - Tabela comparativa
 - **Troubleshooting** - Erros comuns
 
-## 🏗️ Estrutura e Padrões Backend
+## [🏗️ Estrutura e Padrões Backend]()
 
-### Arquivo Main - `./como-deve-funcionar-arquivo-main-backend.md`
+### [Arquivo Main - `./como-deve-funcionar-arquivo-main-backend.md`]()
 
 - **O que é main.ts** - Ponto de entrada
 - **Estrutura Básica** - Bootstrap mínimo
@@ -285,7 +285,7 @@
 - **Variáveis de Ambiente** - .env necessárias
 - **Checklist** - Verificação de setup
 
-### Estrutura de Pastas - `./como-deve-ser-a-estrutura-de-pastas-do-modulo-backend.md`
+### [Estrutura de Pastas - `./como-deve-ser-a-estrutura-de-pastas-do-modulo-backend.md`]()
 
 - **Estrutura Padrão** - Organização de arquivos
 - **Module** - Configuração do módulo
@@ -302,7 +302,7 @@
 - **Localização dos Módulos** - src/modules
 - **Dicas** - Boas práticas
 
-### Padrão Escalável - `./como-deve-ser-criado-um-padrao-escalavel-de-implementacao-no-modulo-backend.md`
+### [Padrão Escalável - `./como-deve-ser-criado-um-padrao-escalavel-de-implementacao-no-modulo-backend.md`]()
 
 - **Princípios Fundamentais** - Single Responsibility, DI, Inversão
 - **1. Single Responsibility** - Uma classe, uma responsabilidade
@@ -321,9 +321,9 @@
 - **Checklist** - Verificação de escalabilidade
 - **Dicas Finais** - Boas práticas
 
-## 🎨 Frontend - Desenvolvimento
+## [🎨 Frontend - Desenvolvimento]()
 
-### Setup Inicial - `./como-iniciar-fazer-0-setup-do-frontend.md`
+### [Setup Inicial - `./como-iniciar-fazer-0-setup-do-frontend.md`]()
 
 - **Visão Geral** - Configurar projeto React + TypeScript + Vite + Tailwind do zero
 - **Pré-requisitos** - Node.js 18+, npm/yarn/pnpm
@@ -344,7 +344,7 @@
 - **Próximos Passos** - Referências para continuar
 - **Troubleshooting** - Cannot find module, Tailwind não funciona, Erro PostCSS Tailwind v4, CORS
 
-### Consumir API - `./como-consumir-api-frontend.md`
+### [Consumir API - `./como-consumir-api-frontend.md`]()
 
 - **Configuração Axios** - Instância configurada (interceptor 401 sem redirecionamento direto)
 - **Variável de Ambiente** - VITE_API_URL
@@ -362,7 +362,7 @@
 - **Cancelar Requisições** - CancelToken
 - **Checklist** - Verificação completa
 
-### Componentes Comuns - `./como-criar-componentes-comum-frontend.md`
+### [Componentes Comuns - `./como-criar-componentes-comum-frontend.md`]()
 
 - **Princípios** - Reutilizáveis, configuráveis, tipados
 - **Localização** - src/components/common
@@ -379,7 +379,7 @@
 - **Organização** - index.ts para re-export
 - **Checklist** - Verificação de componente
 
-### Rotas Frontend - `./como-funciona-as-rotas-no-frontend.md`
+### [Rotas Frontend - `./como-funciona-as-rotas-no-frontend.md`]()
 
 - **Visão Geral** - React Router DOM
 - **Estrutura de Arquivos** - App, config, components, pages
@@ -402,9 +402,9 @@
 - **Breadcrumbs** - Navegação hierárquica
 - **Boas Práticas** - Checklist
 
-## 📖 Guias Rápidos
+## [📖 Guias Rápidos]()
 
-### Criar novo módulo backend completo
+### [Criar novo módulo backend completo]()
 
 1. [Como criar uma API](./como-criar-api-backend.md#passo-a-passo)
 2. [Como criar Entity](./como-criar-uma-entity-typeorm-backend.md#estrutura-básica)
@@ -412,22 +412,22 @@
 4. [Como documentar Swagger](./como-documentar-swagger-backend.md#documentar-controllers)
 5. [Como validar dados](./como-usar-validacao-de-dados-api-backend.md#exemplo-completo-create-dto)
 
-### Setup de autenticação
+### [Setup de autenticação]()
 
 1. [Autenticação JWT](./como-deve-funcionar-autenticacao.md#componentes-do-sistema)
 2. [API Key](./como-deve-funcionar-api-key-autenticacao.md#implementação)
 
-### Setup inicial frontend
+### [Setup inicial frontend]()
 
 1. [Setup Frontend](./como-iniciar-fazer-0-setup-do-frontend.md#passo-a-passo)
 
-### Criar nova página frontend
+### [Criar nova página frontend]()
 
 1. [Consumir API](./como-consumir-api-frontend.md#criar-services)
 2. [Criar componentes](./como-criar-componentes-comum-frontend.md#exemplos-práticos)
 3. [Configurar rotas](./como-funciona-as-rotas-no-frontend.md#configuração-centralizada)
 
-## 🔍 Busca por Palavra-Chave
+## [🔍 Busca por Palavra-Chave]()
 
 | Palavra-Chave | Documento Principal |
 |---------------|---------------------|
@@ -478,9 +478,9 @@
 | Sessões | [Redis - Sessões Compartilhadas](./como-usar-redis-backend.md#4-sessões-compartilhadas) |
 | Contador | [Redis - Contador Atômico](./como-usar-redis-backend.md#1-contador-compartilhado-incremento-atômico) |
 
-## 🗺️ Navegação por Nível
+## [🗺️ Navegação por Nível]()
 
-### 🌱 Iniciante
+### [🌱 Iniciante]()
 
 1. [Stack Backend](./qual-tecnologia-usa-backend.md#stack-principal)
 2. [Stack Frontend](./qual-tecnologia-usa-frontend.md#stack-principal)
@@ -489,7 +489,7 @@
 5. [Autenticação JWT](./como-deve-funcionar-autenticacao.md#visão-geral)
 6. [Consumir API](./como-consumir-api-frontend.md#configuração-do-axios)
 
-### 🌿 Intermediário
+### [🌿 Intermediário]()
 
 1. [Criar API Backend](./como-criar-api-backend.md#visão-geral)
 2. [Versionamento de API](./como-versionar-api-backend.md#por-que-versionar-apis)
@@ -503,7 +503,7 @@
 10. [Criar Componentes](./como-criar-componentes-comum-frontend.md#exemplos-práticos)
 11. [Rotas Frontend](./como-funciona-as-rotas-no-frontend.md#configuração-centralizada)
 
-### 🌳 Avançado
+### [🌳 Avançado]()
 
 1. [Padrão Escalável](./como-deve-ser-criado-um-padrao-escalavel-de-implementacao-no-modulo-backend.md#princípios-fundamentais)
 2. [Estrutura de Pastas](./como-deve-ser-a-estrutura-de-pastas-do-modulo-backend.md#estrutura-padrão)
@@ -511,7 +511,7 @@
 4. [API Key](./como-deve-funcionar-api-key-autenticacao.md#implementação-avançada)
 5. [Validação Customizada](./como-usar-validacao-de-dados-api-backend.md#validação-customizada)
 
-## 📁 Estrutura de Arquivos
+## [📁 Estrutura de Arquivos]()
 
 ```
 .rules/
@@ -553,7 +553,7 @@
     └── como-funciona-as-rotas-no-frontend.md               (14 conceitos)
 ```
 
-## 📊 Estatísticas
+## [📊 Estatísticas]()
 
 - **Total de documentos**: 23
 - **Backend**: 16 documentos (201 seções)

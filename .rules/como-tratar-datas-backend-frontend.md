@@ -1,25 +1,25 @@
-# Como Tratar Datas - Backend e Frontend
+# [Como Tratar Datas - Backend e Frontend]()
 
 > Guia completo sobre o tratamento correto de datas no backend e frontend, usando ISODate UTC no banco de dados e dayjs para manipulação.
 
-## 📋 Princípios Fundamentais
+## [📋 Princípios Fundamentais]()
 
-### Regra de Ouro
+### [Regra de Ouro]()
 
 1. **Banco de Dados**: Sempre gravar em **ISODate UTC** (GMT-0)
 2. **Backend**: Sempre manipular em **UTC** (GMT-0)
 3. **Frontend**: Transformar para GMT do usuário **apenas na exibição**
 
-### Por que UTC?
+### [Por que UTC?]()
 
 - Evita problemas com horário de verão
 - Facilita sincronização entre servidores em diferentes regiões
 - Elimina ambiguidade em sistemas distribuídos
 - Simplifica cálculos e comparações de datas
 
-## 🗄️ Banco de Dados - PostgreSQL
+## [🗄️ Banco de Dados - PostgreSQL]()
 
-### Tipo de Coluna
+### [Tipo de Coluna]()
 
 ```typescript
 @Entity('eventos')
@@ -37,7 +37,7 @@ export class Evento extends SuperEntity {
 
 **Importante**: Use `timestamptz` ao invés de `timestamp with time zone` para garantir que o TypeORM sempre trabalhe com UTC.
 
-### Migration
+### [Migration]()
 
 ```typescript
 import { MigrationInterface, QueryRunner } from 'typeorm';
@@ -65,7 +65,7 @@ export class CreateEventosTable1234567890123 implements MigrationInterface {
 
 **Importante**: Use `TIMESTAMPTZ` nas migrations SQL. É a abreviação de `TIMESTAMP WITH TIME ZONE` e garante armazenamento em UTC.
 
-### Observações PostgreSQL
+### [Observações PostgreSQL]()
 
 - `TIMESTAMPTZ` é a abreviação de `TIMESTAMP WITH TIME ZONE`
 - Armazena sempre em UTC internamente
@@ -73,15 +73,15 @@ export class CreateEventosTable1234567890123 implements MigrationInterface {
 - Ao consultar, PostgreSQL pode converter para timezone da conexão
 - **Use `timestamptz` nas entities TypeORM e `TIMESTAMPTZ` nas migrations SQL**
 
-## 🔧 Backend - NestJS
+## [🔧 Backend - NestJS]()
 
-### Instalação do dayjs
+### [Instalação do dayjs]()
 
 ```bash
 npm install dayjs
 ```
 
-### Configuração do dayjs
+### [Configuração do dayjs]()
 
 Crie um arquivo de configuração (opcional):
 
@@ -98,7 +98,7 @@ dayjs.extend(timezone);
 export default dayjs;
 ```
 
-### DTO - Receber Data do Frontend
+### [DTO - Receber Data do Frontend]()
 
 ```typescript
 import { IsISO8601, IsOptional } from 'class-validator';
@@ -130,7 +130,7 @@ export class CreateEventoDto {
 }
 ```
 
-### Service - Manipulação de Datas
+### [Service - Manipulação de Datas]()
 
 ```typescript
 import { Injectable } from '@nestjs/common';
@@ -211,7 +211,7 @@ export class EventosService {
 }
 ```
 
-### Controller - Retornar Datas
+### [Controller - Retornar Datas]()
 
 ```typescript
 import { Controller, Get, Post, Body, Param, Query } from '@nestjs/common';
@@ -254,7 +254,7 @@ export class EventosController {
 }
 ```
 
-### Operações Comuns com dayjs (Backend)
+### [Operações Comuns com dayjs (Backend)]()
 
 ```typescript
 import dayjs from 'dayjs';
@@ -290,15 +290,15 @@ const fimMes = dayjs.utc().endOf('month');
 const dateObject = dayjs.utc().toDate();
 ```
 
-## 🎨 Frontend - React
+## [🎨 Frontend - React]()
 
-### Instalação do dayjs
+### [Instalação do dayjs]()
 
 ```bash
 npm install dayjs
 ```
 
-### Configuração do dayjs
+### [Configuração do dayjs]()
 
 ```typescript
 // src/config/dayjs.config.ts
@@ -319,7 +319,7 @@ dayjs.locale('pt-br');
 export default dayjs;
 ```
 
-### Helper de Formatação
+### [Helper de Formatação]()
 
 ```typescript
 // src/utils/date.utils.ts
@@ -357,7 +357,7 @@ export const isValidISODate = (date: string): boolean => {
 };
 ```
 
-### Componente de Exibição de Data
+### [Componente de Exibição de Data]()
 
 ```typescript
 // src/components/common/DateDisplay.tsx
@@ -393,7 +393,7 @@ export const DateDisplay: React.FC<DateDisplayProps> = ({
 };
 ```
 
-### Formulário - Input de Data
+### [Formulário - Input de Data]()
 
 ```typescript
 // src/components/EventoForm.tsx
@@ -475,7 +475,7 @@ export const EventoForm: React.FC = () => {
 };
 ```
 
-### Lista de Eventos
+### [Lista de Eventos]()
 
 ```typescript
 // src/components/EventosList.tsx
@@ -546,7 +546,7 @@ export const EventosList: React.FC = () => {
 };
 ```
 
-### Operações Comuns com dayjs (Frontend)
+### [Operações Comuns com dayjs (Frontend)]()
 
 ```typescript
 import dayjs from '@/config/dayjs.config';
@@ -570,9 +570,9 @@ const dataLocalInput = '2025-11-02 14:30';
 const dataUtcParaBackend = dayjs.tz(dataLocalInput, timezone).utc().toISOString();
 ```
 
-## ✅ Checklist de Implementação
+## [✅ Checklist de Implementação]()
 
-### Backend
+### [Backend]()
 
 - [ ] Usar `{ type: 'timestamptz' }` nas entities TypeORM
 - [ ] Usar `TIMESTAMPTZ` nas migrations SQL
@@ -583,7 +583,7 @@ const dataUtcParaBackend = dayjs.tz(dataLocalInput, timezone).utc().toISOString(
 - [ ] Documentar formato esperado no Swagger
 - [ ] Retornar datas em formato ISO UTC nas respostas
 
-### Frontend
+### [Frontend]()
 
 - [ ] Instalar dayjs com plugins utc, timezone, relativeTime
 - [ ] Configurar locale para pt-br
@@ -594,9 +594,9 @@ const dataUtcParaBackend = dayjs.tz(dataLocalInput, timezone).utc().toISOString(
 - [ ] Converter para timezone local ao exibir
 - [ ] Mostrar datas relativas quando apropriado
 
-## 🚨 Erros Comuns
+## [🚨 Erros Comuns]()
 
-### ❌ Não Fazer
+### [❌ Não Fazer]()
 
 ```typescript
 // Backend - NÃO usar new Date() diretamente
@@ -616,7 +616,7 @@ await api.post('/api/eventos', {
 <span>{evento.data_evento}</span> // Vai mostrar hora errada
 ```
 
-### ✅ Fazer
+### [✅ Fazer]()
 
 ```typescript
 // Backend - Usar dayjs.utc()
@@ -636,9 +636,9 @@ await api.post('/api/eventos', {
 <DateDisplay date={evento.data_evento} />
 ```
 
-## 📖 Resumo do Fluxo
+## [📖 Resumo do Fluxo]()
 
-### Criar um Evento
+### [Criar um Evento]()
 
 1. **Frontend**: Usuário seleciona `02/11/2025 14:30` (GMT-3)
 2. **Frontend**: Converte para UTC: `2025-11-02T17:30:00Z`
@@ -651,7 +651,7 @@ await api.post('/api/eventos', {
 9. **Frontend**: Recebe string ISO UTC
 10. **Frontend**: Converte para GMT-3 e exibe: `02/11/2025 14:30`
 
-### Consultar Eventos
+### [Consultar Eventos]()
 
 1. **PostgreSQL**: Retorna Date em UTC
 2. **TypeORM**: Converte para Date object
@@ -660,7 +660,7 @@ await api.post('/api/eventos', {
 5. **Frontend**: Converte para timezone do usuário
 6. **Frontend**: Exibe formatado
 
-## 🔗 Referências
+## [🔗 Referências]()
 
 - [dayjs Documentation](https://day.js.org/docs/en/installation/installation)
 - [dayjs UTC Plugin](https://day.js.org/docs/en/plugin/utc)

@@ -1,20 +1,20 @@
-# Como iniciar/fazer setup do backend (0-setup)
+# [Como iniciar/fazer setup do backend (0-setup)]()
 
 > Guia para configurar o projeto backend NestJS + TypeORM do zero
 
-## Visão Geral
+## [Visão Geral]()
 
 Este guia mostra como criar e configurar um projeto backend NestJS com TypeORM a partir do zero, incluindo todas as configurações necessárias para iniciar o desenvolvimento.
 
-## Pré-requisitos
+## [Pré-requisitos]()
 
 - Node.js 18+ instalado
 - PostgreSQL instalado e rodando
 - npm ou yarn
 
-## Passo a Passo
+## [Passo a Passo]()
 
-### 1. Criar projeto NestJS
+### [1. Criar projeto NestJS]()
 
 ```bash
 # Instalar Nest CLI globalmente (se ainda não tiver)
@@ -30,7 +30,7 @@ cd backend
 **Opções na criação:**
 - Gerenciador de pacotes: `npm` ou `yarn`
 
-### 2. Instalar dependências necessárias
+### [2. Instalar dependências necessárias]()
 
 ```bash
 # TypeORM e PostgreSQL
@@ -53,7 +53,7 @@ npm install @nestjs/swagger
 npm install axios dayjs
 ```
 
-### 3. Configurar tsconfig.json
+### [3. Configurar tsconfig.json]()
 
 Editar `backend/tsconfig.json` para adicionar path aliases:
 
@@ -88,7 +88,7 @@ Editar `backend/tsconfig.json` para adicionar path aliases:
 - Importações mais limpas: `import { User } from '@/modules/user/entities/user.entity'`
 - Em vez de: `import { User } from '../../../modules/user/entities/user.entity'`
 
-### 4. Criar estrutura de pastas
+### [4. Criar estrutura de pastas]()
 
 ```bash
 # Dentro de backend/src
@@ -123,12 +123,12 @@ backend/
 └── package.json
 ```
 
-### Organização de Entities
+### [Organização de Entities]()
 
 - **SuperEntity**: `src/database/entities/super.entity.ts` (centralizada)
 - **Outras entities**: dentro de cada módulo em `src/modules/[nome]/entities/`
 
-### 5. Criar arquivo .env
+### [5. Criar arquivo .env]()
 
 Criar `backend/.env`:
 
@@ -156,7 +156,7 @@ X_API_KEY=your-api-key-for-integrations
 - Nunca commitar o `.env` no git
 - Criar `.env.example` com valores de exemplo
 
-### 6. Configurar database.config.ts
+### [6. Configurar database.config.ts]()
 
 Criar `backend/src/config/database.config.ts`:
 
@@ -196,7 +196,7 @@ const dataSourceOptions: DataSourceOptions = {
 export const dataSource = new DataSource(dataSourceOptions);
 ```
 
-### 7. Adicionar scripts no package.json
+### [7. Adicionar scripts no package.json]()
 
 Editar `backend/package.json` para adicionar scripts de migration:
 
@@ -223,7 +223,7 @@ Editar `backend/package.json` para adicionar scripts de migration:
 npm install -D ts-node tsconfig-paths
 ```
 
-### 8. Configurar app.module.ts
+### [8. Configurar app.module.ts]()
 
 Editar `backend/src/app.module.ts`:
 
@@ -259,14 +259,14 @@ export class AppModule {}
 ```
 
 
-## Próximos Passos
+## [Próximos Passos]()
 
 1. ✅ Setup básico concluído
 2. ➡️ [Configurar main.ts e finalizar setup](./como-criar-api-backend.md)
 3. ➡️ [Criar módulo User](./como-criar-api-backend.md)
 4. ➡️ [Criar sistema de autenticação](./como-deve-funcionar-autenticacao.md)
 
-## Referências
+## [Referências]()
 
 - [NestJS Documentation](https://docs.nestjs.com)
 - [TypeORM Documentation](https://typeorm.io)

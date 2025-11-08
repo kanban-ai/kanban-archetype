@@ -1,20 +1,20 @@
-# Como documentar com Swagger no Backend?
+# [Como documentar com Swagger no Backend?]()
 
 > Guia prático para documentar APIs usando Swagger/OpenAPI no NestJS.
 
-## O que é Swagger?
+## [O que é Swagger?]()
 
 Swagger (OpenAPI) gera automaticamente uma interface interativa para testar e documentar sua API. Acesse em: `http://localhost:3000/api/docs`
 
-## Configuração Inicial
+## [Configuração Inicial]()
 
-### 1. Instalar dependências
+### [1. Instalar dependências]()
 
 ```bash
 npm install @nestjs/swagger
 ```
 
-### 2. Configurar no main.ts
+### [2. Configurar no main.ts]()
 
 ```typescript
 import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
@@ -37,9 +37,9 @@ async function bootstrap() {
 }
 ```
 
-## Documentar Controllers
+## [Documentar Controllers]()
 
-### Decorators Principais
+### [Decorators Principais]()
 
 ```typescript
 import {
@@ -53,7 +53,7 @@ import {
 } from '@nestjs/swagger';
 ```
 
-### Exemplo Completo
+### [Exemplo Completo]()
 
 ```typescript
 @ApiTags('products') // Agrupa endpoints
@@ -129,9 +129,9 @@ export class ProductController {
 }
 ```
 
-## Documentar DTOs
+## [Documentar DTOs]()
 
-### Exemplo Create DTO
+### [Exemplo Create DTO]()
 
 ```typescript
 import { ApiProperty } from '@nestjs/swagger';
@@ -177,7 +177,7 @@ export class CreateProductDto {
 }
 ```
 
-### Update DTO
+### [Update DTO]()
 
 Para DTOs de update, use `PartialType`:
 
@@ -189,7 +189,7 @@ import { CreateProductDto } from './create-product.dto';
 export class UpdateProductDto extends PartialType(CreateProductDto) {}
 ```
 
-### Com Enum
+### [Com Enum]()
 
 ```typescript
 export enum ProductStatus {
@@ -209,9 +209,9 @@ export class CreateProductDto {
 }
 ```
 
-## Documentar Respostas
+## [Documentar Respostas]()
 
-### Resposta com Type
+### [Resposta com Type]()
 
 ```typescript
 import { ApiResponse, ApiOkResponse } from '@nestjs/swagger';
@@ -235,7 +235,7 @@ findOne(@Param('id') id: number) {
 }
 ```
 
-### Múltiplas Respostas
+### [Múltiplas Respostas]()
 
 ```typescript
 @ApiResponse({ status: 200, description: 'Sucesso' })
@@ -248,9 +248,9 @@ create(@Body() dto: CreateProductDto) {
 }
 ```
 
-## Decorators Úteis
+## [Decorators Úteis]()
 
-### @ApiTags
+### [@ApiTags]()
 
 Agrupa endpoints relacionados:
 
@@ -264,7 +264,7 @@ export class ProductController {}
 export class CategoryController {}
 ```
 
-### @ApiBearerAuth
+### [@ApiBearerAuth]()
 
 Indica que endpoint requer token JWT:
 
@@ -274,7 +274,7 @@ Indica que endpoint requer token JWT:
 export class ProductController {}
 ```
 
-### @ApiOperation
+### [@ApiOperation]()
 
 Descreve o que o endpoint faz:
 
@@ -287,7 +287,7 @@ Descreve o que o endpoint faz:
 create() {}
 ```
 
-### @ApiParam
+### [@ApiParam]()
 
 Documenta parâmetros de rota:
 
@@ -302,7 +302,7 @@ Documenta parâmetros de rota:
 findOne(@Param('id') id: number) {}
 ```
 
-### @ApiQuery
+### [@ApiQuery]()
 
 Documenta query parameters:
 
@@ -326,7 +326,7 @@ findAll(
 ) {}
 ```
 
-### @ApiBody
+### [@ApiBody]()
 
 Documenta body da requisição:
 
@@ -339,7 +339,7 @@ Documenta body da requisição:
 create(@Body() dto: CreateProductDto) {}
 ```
 
-### @ApiProperty no DTO
+### [@ApiProperty no DTO]()
 
 Documenta propriedades:
 
@@ -370,7 +370,7 @@ price: number;
 tags?: string[];
 ```
 
-### @ApiPropertyOptional
+### [@ApiPropertyOptional]()
 
 Para campos opcionais:
 
@@ -384,9 +384,9 @@ import { ApiPropertyOptional } from '@nestjs/swagger';
 description?: string;
 ```
 
-## Ocultar Propriedades
+## [Ocultar Propriedades]()
 
-### @ApiHideProperty
+### [@ApiHideProperty]()
 
 Oculta propriedade da documentação:
 
@@ -402,7 +402,7 @@ export class UserEntity {
 }
 ```
 
-### @Exclude (class-transformer)
+### [@Exclude (class-transformer)]()
 
 Exclui da serialização:
 
@@ -415,21 +415,21 @@ export class UserEntity {
 }
 ```
 
-## Testar no Swagger UI
+## [Testar no Swagger UI]()
 
-### 1. Acessar a documentação
+### [1. Acessar a documentação]()
 
 ```
 http://localhost:3000/api/docs
 ```
 
-### 2. Autenticar
+### [2. Autenticar]()
 
 1. Clique no botão "Authorize" (cadeado)
 2. Cole o token JWT: `Bearer seu_token_aqui`
 3. Clique em "Authorize"
 
-### 3. Testar endpoints
+### [3. Testar endpoints]()
 
 1. Expanda o endpoint desejado
 2. Clique em "Try it out"
@@ -437,7 +437,7 @@ http://localhost:3000/api/docs
 4. Clique em "Execute"
 5. Veja a resposta
 
-## Documentar Paginação
+## [Documentar Paginação]()
 
 ```typescript
 export class PaginatedResponseDto<T> {
@@ -468,7 +468,7 @@ findAll() {
 }
 ```
 
-## Checklist de Documentação
+## [Checklist de Documentação]()
 
 Para cada endpoint:
 - [ ] **@Controller com versionamento (`version: '1'`)**
@@ -483,7 +483,7 @@ Para cada endpoint:
 
 > **IMPORTANTE**: Todas as APIs devem usar versionamento. Veja [Como versionar API](./como-versionar-api-backend.md).
 
-## Dicas
+## [Dicas]()
 
 1. **Use exemplos realistas**: Ajuda quem vai usar a API
 2. **Documente todos os status codes**: 200, 400, 401, 404, etc
@@ -491,7 +491,7 @@ Para cada endpoint:
 4. **Agrupe com @ApiTags**: Organiza a documentação
 5. **Oculte dados sensíveis**: Use @Exclude ou @ApiHideProperty
 
-## Referências
+## [Referências]()
 
 - [NestJS Swagger Documentation](https://docs.nestjs.com/openapi/introduction)
 - [OpenAPI Specification](https://swagger.io/specification/)

@@ -1,10 +1,10 @@
-# Qual tecnologia usa o Backend?
+# [Qual tecnologia usa o Backend?]()
 
 > Este documento descreve todas as tecnologias, frameworks e bibliotecas utilizadas no backend do projeto.
 
-## Stack Principal
+## [Stack Principal]()
 
-### Framework e Runtime
+### [Framework e Runtime]()
 
 - **NestJS**: Framework principal do backend
   - Framework progressivo para construir aplicações server-side eficientes e escaláveis
@@ -25,7 +25,7 @@
   - Integrado via `@nestjs/platform-express`
   - Framework web minimalista e rápido
 
-## Banco de Dados
+## [Banco de Dados]()
 
 - **PostgreSQL**: Banco de dados relacional
   - Sistema robusto de banco de dados SQL
@@ -42,7 +42,7 @@
   - Cliente PostgreSQL nativo
   - Pool de conexões
 
-## Autenticação e Segurança
+## [Autenticação e Segurança]()
 
 - **Passport**: Middleware de autenticação
   - Estratégia modular de autenticação
@@ -64,7 +64,7 @@
   - Algoritmo de hashing seguro
   - Salt rounds configuráveis (padrão: 10)
 
-## Validação de Dados
+## [Validação de Dados]()
 
 - **class-validator**: Validação de DTOs
   - Validação declarativa usando decorators
@@ -76,14 +76,14 @@
   - Serialização e deserialização
   - Exclusão de campos sensíveis (@Exclude)
 
-## Documentação de API
+## [Documentação de API]()
 
 - **@nestjs/swagger**: Documentação automática
   - Geração de documentação OpenAPI/Swagger
   - UI interativa para testar endpoints
   - Decorators para documentar DTOs e endpoints
 
-## Configuração
+## [Configuração]()
 
 - **@nestjs/config**: Gerenciamento de configurações
   - Carregamento de variáveis de ambiente
@@ -94,7 +94,7 @@
   - Carregamento de arquivos .env
   - Separação de configs por ambiente
 
-## Utilitários
+## [Utilitários]()
 
 - **axios**: Cliente HTTP
   - Requisições HTTP para APIs externas
@@ -115,9 +115,9 @@
   - Polyfill para Metadata Reflection API
   - Requerido para decorators TypeScript
 
-## Ferramentas de Desenvolvimento
+## [Ferramentas de Desenvolvimento]()
 
-### Compilação e Build
+### [Compilação e Build]()
 
 - **@nestjs/cli**: CLI do NestJS
   - Geração de código (modules, controllers, services)
@@ -136,7 +136,7 @@
   - Resolve aliases de paths (ex: @/*)
   - Compatível com tsconfig.json
 
-### Qualidade de Código
+### [Qualidade de Código]()
 
 - **ESLint**: Linter JavaScript/TypeScript
   - Análise estática de código
@@ -161,7 +161,7 @@
   - Evita conflitos entre ESLint e Prettier
 
 
-### Types (@types/*)
+### [Types (@types/*)]()
 
 ```json
 {
@@ -173,9 +173,9 @@
 }
 ```
 
-## Arquitetura e Padrões
+## [Arquitetura e Padrões]()
 
-### Padrões de Design Implementados
+### [Padrões de Design Implementados]()
 
 1. **Dependency Injection**: Container IoC nativo do NestJS
 2. **Repository Pattern**: Abstração de acesso a dados via TypeORM
@@ -185,7 +185,7 @@
 6. **Decorator Pattern**: Extensão de funcionalidades via decorators
 7. **Module Pattern**: Organização em módulos independentes
 
-### Princípios SOLID Aplicados
+### [Princípios SOLID Aplicados]()
 
 - **S** (Single Responsibility): Cada service tem uma responsabilidade única
 - **O** (Open/Closed): Extensível via decorators e guards
@@ -193,9 +193,9 @@
 - **I** (Interface Segregation): Interfaces específicas por contexto
 - **D** (Dependency Inversion): Dependências injetadas, não instanciadas
 
-## Módulos Personalizados do Projeto
+## [Módulos Personalizados do Projeto]()
 
-### Módulos de Domínio
+### [Módulos de Domínio]()
 
 1. **AuthModule**: Autenticação e gerenciamento de usuários
 2. **AssetModule**: Gerenciamento de ativos (ações)
@@ -213,7 +213,7 @@
 14. **ConfigModule**: Configurações do usuário
 15. **RebalanceModule**: Rebalanceamento de carteira
 
-## Tecnologias Principais
+## [Tecnologias Principais]()
 
 - NestJS
 - TypeScript
@@ -231,19 +231,19 @@
 - ESLint
 - Prettier
 
-## Gerenciadores de Pacotes
+## [Gerenciadores de Pacotes]()
 
 O projeto suporta ambos:
 - **npm**: package.json + package-lock.json
 - **pnpm**: pnpm-lock.yaml (recomendado para performance)
 
-## Requisitos de Sistema
+## [Requisitos de Sistema]()
 
 - Node.js >= 18.x
 - PostgreSQL >= 14.x
 - npm >= 9.x ou pnpm >= 8.x
 
-## Referências
+## [Referências]()
 
 - [NestJS Documentation](https://docs.nestjs.com)
 - [TypeORM Documentation](https://typeorm.io)

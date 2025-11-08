@@ -1,8 +1,8 @@
-# Como versionar API no Backend?
+# [Como versionar API no Backend?]()
 
 > Guia completo para implementar versionamento de API REST no backend usando NestJS.
 
-## Por que versionar APIs?
+## [Por que versionar APIs?]()
 
 O versionamento de API é **essencial** para:
 
@@ -12,25 +12,25 @@ O versionamento de API é **essencial** para:
 4. **Migração gradual**: Dar tempo aos clientes para migrarem
 5. **Profissionalismo**: Demonstra maturidade no desenvolvimento
 
-## Quando versionar?
+## [Quando versionar?]()
 
-### ✅ Versione quando:
+### [✅ Versione quando:]()
 
 - **Mudança de contrato**: Remover/renomear campos
 - **Mudança de comportamento**: Lógica diferente para mesma rota
 - **Breaking changes**: Qualquer mudança que quebre clientes existentes
 - **Desde o início**: Sempre comece com `/v1/` mesmo que seja a primeira versão
 
-### ❌ Não precisa versionar quando:
+### [❌ Não precisa versionar quando:]()
 
 - **Adicionar novos campos opcionais**: Não quebra clientes
 - **Adicionar novos endpoints**: Não afeta rotas existentes
 - **Corrigir bugs**: Mantém o contrato
 - **Melhorar performance**: Não muda comportamento externo
 
-## Estratégias de Versionamento
+## [Estratégias de Versionamento]()
 
-### 1. URL Versioning (Recomendado) ⭐
+### [1. URL Versioning (Recomendado) ⭐]()
 
 Versão na URL é a abordagem **mais simples e clara**.
 
@@ -49,7 +49,7 @@ GET /api/v2/users
 **Desvantagens**:
 - ❌ URLs diferentes para mesma funcionalidade
 
-### 2. Header Versioning
+### [2. Header Versioning]()
 
 Versão no header HTTP.
 
@@ -67,7 +67,7 @@ Accept: application/vnd.api.v1+json
 - ❌ Menos descobrível
 - ❌ Cache HTTP pode ser problemático
 
-### 3. Query Parameter Versioning
+### [3. Query Parameter Versioning]()
 
 Versão como parâmetro.
 
@@ -83,9 +83,9 @@ GET /api/users?version=1
 - ❌ Menos profissional
 - ❌ Não recomendado
 
-## Implementação no NestJS (URL Versioning)
+## [Implementação no NestJS (URL Versioning)]()
 
-### Passo 1: Habilitar versionamento global
+### [Passo 1: Habilitar versionamento global]()
 
 **Arquivo**: `src/main.ts`
 
@@ -111,7 +111,7 @@ async function bootstrap() {
 bootstrap();
 ```
 
-### Passo 2: Versionar Controller
+### [Passo 2: Versionar Controller]()
 
 **Opção A: Versão no Controller inteiro**
 
@@ -164,7 +164,7 @@ export class UsersV2Controller {
 }
 ```
 
-### Passo 3: Estrutura de pastas por versão
+### [Passo 3: Estrutura de pastas por versão]()
 
 ```
 src/modules/users/
@@ -185,7 +185,7 @@ src/modules/users/
         └── update-user.dto.ts
 ```
 
-### Passo 4: Registrar múltiplas versões no Module
+### [Passo 4: Registrar múltiplas versões no Module]()
 
 ```typescript
 import { Module } from '@nestjs/common';
@@ -208,9 +208,9 @@ import { UsersV2Service } from './v2/users.service';
 export class UsersModule {}
 ```
 
-## Exemplo Completo: Evolução de API
+## [Exemplo Completo: Evolução de API]()
 
-### V1: Estrutura inicial
+### [V1: Estrutura inicial]()
 
 ```typescript
 // v1/dto/create-user.dto.ts
@@ -248,7 +248,7 @@ export class UsersV1Controller {
 ]
 ```
 
-### V2: Estrutura com paginação e campos novos
+### [V2: Estrutura com paginação e campos novos]()
 
 ```typescript
 // v2/dto/create-user.dto.ts
@@ -308,9 +308,9 @@ export class UsersV2Controller {
 }
 ```
 
-## Compartilhar código entre versões
+## [Compartilhar código entre versões]()
 
-### Adapter Pattern para DTOs
+### [Adapter Pattern para DTOs]()
 
 ```typescript
 // v2/users.service.ts
@@ -337,7 +337,7 @@ export class UsersV2Service {
 }
 ```
 
-### Service compartilhado com transformações
+### [Service compartilhado com transformações]()
 
 ```typescript
 // shared/users-base.service.ts
@@ -384,7 +384,7 @@ export class UsersV2Service extends UsersBaseService {
 }
 ```
 
-## Documentação Swagger por versão
+## [Documentação Swagger por versão]()
 
 ```typescript
 // main.ts
@@ -425,9 +425,9 @@ async function bootstrap() {
 - Swagger V1: `http://localhost:3000/api/docs/v1`
 - Swagger V2: `http://localhost:3000/api/docs/v2`
 
-## Estratégia de Deprecação
+## [Estratégia de Deprecação]()
 
-### 1. Avisar sobre deprecação
+### [1. Avisar sobre deprecação]()
 
 ```typescript
 @Controller({ path: 'users', version: '1' })
@@ -458,7 +458,7 @@ export class UsersV1Controller {
 }
 ```
 
-### 2. Desabilitar versão antiga
+### [2. Desabilitar versão antiga]()
 
 ```typescript
 // main.ts
@@ -470,9 +470,9 @@ app.enableVersioning({
 // Remover UsersV1Controller do Module após período de transição
 ```
 
-## Boas Práticas
+## [Boas Práticas]()
 
-### 1. Sempre comece com v1
+### [1. Sempre comece com v1]()
 
 ```typescript
 // ❌ Errado
@@ -484,7 +484,7 @@ export class UsersController {}
 export class UsersController {}
 ```
 
-### 2. Documente mudanças entre versões
+### [2. Documente mudanças entre versões]()
 
 Crie arquivo `CHANGELOG-API.md`:
 
@@ -503,26 +503,26 @@ Crie arquivo `CHANGELOG-API.md`:
 - V2: `{ firstName: "João", lastName: "Silva" }`
 ```
 
-### 3. Versão major apenas para breaking changes
+### [3. Versão major apenas para breaking changes]()
 
 - **v1 → v2**: Breaking change (estrutura diferente)
 - **v1.1**: Adicionar campo opcional (não quebra)
 - **v1.2**: Novo endpoint (não quebra)
 
-### 4. Suporte no mínimo 2 versões simultâneas
+### [4. Suporte no mínimo 2 versões simultâneas]()
 
 - **v1**: Versão legada (deprecated)
 - **v2**: Versão atual (recomendada)
 - **v3**: Versão beta (opcional)
 
-### 5. Período de transição
+### [5. Período de transição]()
 
 Dê pelo menos **6 meses** entre:
 1. Lançamento da nova versão
 2. Deprecação da versão antiga
 3. Remoção da versão antiga
 
-## Frontend: Consumir APIs versionadas
+## [Frontend: Consumir APIs versionadas]()
 
 ```typescript
 // src/config/api.config.ts
@@ -541,7 +541,7 @@ export const api = axios.create({
 api.get('/users'); // chama /api/v2/users
 ```
 
-## Testes: Versões diferentes
+## [Testes: Versões diferentes]()
 
 ```typescript
 // users.controller.spec.ts
@@ -567,7 +567,7 @@ describe('UsersV2Controller', () => {
 });
 ```
 
-## Checklist de Versionamento
+## [Checklist de Versionamento]()
 
 - [ ] Versionamento habilitado no main.ts
 - [ ] Controllers sempre com versão explícita (começar com v1)
@@ -579,9 +579,9 @@ describe('UsersV2Controller', () => {
 - [ ] Testes para cada versão
 - [ ] Período de transição definido (mínimo 6 meses)
 
-## Troubleshooting
+## [Troubleshooting]()
 
-### Erro: Cannot GET /api/users
+### [Erro: Cannot GET /api/users]()
 
 ```typescript
 // Certifique-se de ter versão definida
@@ -594,7 +594,7 @@ app.enableVersioning({
 });
 ```
 
-### Swagger não mostra versão
+### [Swagger não mostra versão]()
 
 ```typescript
 // Use include no SwaggerModule.createDocument
@@ -603,7 +603,7 @@ const document = SwaggerModule.createDocument(app, config, {
 });
 ```
 
-### Versão padrão não funciona
+### [Versão padrão não funciona]()
 
 ```typescript
 // defaultVersion só funciona se controller não especificar versão
@@ -613,7 +613,7 @@ app.enableVersioning({
 });
 ```
 
-## Referências
+## [Referências]()
 
 - [NestJS Versioning](https://docs.nestjs.com/techniques/versioning)
 - [API Versioning Best Practices](https://www.freecodecamp.org/news/rest-api-best-practices-rest-endpoint-design-examples/)

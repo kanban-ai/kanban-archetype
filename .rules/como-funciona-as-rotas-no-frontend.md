@@ -1,8 +1,8 @@
-# Como funcionam as rotas no Frontend?
+# [Como funcionam as rotas no Frontend?]()
 
 > Guia completo sobre roteamento com React Router DOM no projeto.
 
-## Visão Geral
+## [Visão Geral]()
 
 O projeto usa **React Router DOM v7** com:
 - Configuração centralizada de rotas
@@ -11,7 +11,7 @@ O projeto usa **React Router DOM v7** com:
 - Layout compartilhado
 - Parâmetros dinâmicos
 
-## Estrutura de Arquivos
+## [Estrutura de Arquivos]()
 
 ```
 src/
@@ -33,7 +33,7 @@ src/
          ...
 ```
 
-## Configuração Centralizada
+## [Configuração Centralizada]()
 
 **`src/config/routes.config.tsx`**:
 
@@ -84,7 +84,7 @@ export const privateRoutes: RouteConfig[] = [
 ];
 ```
 
-## App.tsx - Configuração Principal
+## [App.tsx - Configuração Principal]()
 
 ```typescript
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
@@ -130,7 +130,7 @@ function App() {
 }
 ```
 
-## PrivateRoute - Guard de Autenticação
+## [PrivateRoute - Guard de Autenticação]()
 
 ```typescript
 import { Navigate } from 'react-router-dom';
@@ -155,7 +155,7 @@ export function PrivateRoute({ children }: PrivateRouteProps) {
 }
 ```
 
-## Layout - Estrutura Compartilhada
+## [Layout - Estrutura Compartilhada]()
 
 ```typescript
 import { Outlet } from 'react-router-dom';
@@ -181,9 +181,9 @@ export function Layout() {
 }
 ```
 
-## Navegação
+## [Navegação]()
 
-### useNavigate Hook
+### [useNavigate Hook]()
 
 ```typescript
 import { useNavigate } from 'react-router-dom';
@@ -212,7 +212,7 @@ function ProductList() {
 }
 ```
 
-### Link Component
+### [Link Component]()
 
 ```typescript
 import { Link } from 'react-router-dom';
@@ -234,7 +234,7 @@ function ProductList() {
 }
 ```
 
-### NavLink (com active state)
+### [NavLink (com active state)]()
 
 ```typescript
 import { NavLink } from 'react-router-dom';
@@ -264,9 +264,9 @@ function Sidebar() {
 }
 ```
 
-## Parâmetros de Rota
+## [Parâmetros de Rota]()
 
-### useParams Hook
+### [useParams Hook]()
 
 ```typescript
 import { useParams } from 'react-router-dom';
@@ -282,7 +282,7 @@ function AssetProfile() {
 }
 ```
 
-### Múltiplos Parâmetros
+### [Múltiplos Parâmetros]()
 
 ```typescript
 // Rota: /wallets/:walletId/assets/:assetId
@@ -297,9 +297,9 @@ function WalletAssetDetail() {
 }
 ```
 
-## Query Parameters
+## [Query Parameters]()
 
-### useSearchParams Hook
+### [useSearchParams Hook]()
 
 ```typescript
 import { useSearchParams } from 'react-router-dom';
@@ -331,7 +331,7 @@ function ProductList() {
 }
 ```
 
-## Rotas Aninhadas
+## [Rotas Aninhadas]()
 
 ```typescript
 // Configuração
@@ -369,9 +369,9 @@ function AssetLayout() {
 }
 ```
 
-## Redirecionamentos
+## [Redirecionamentos]()
 
-### Navigate Component
+### [Navigate Component]()
 
 ```typescript
 import { Navigate } from 'react-router-dom';
@@ -381,7 +381,7 @@ function OldProductPage() {
 }
 ```
 
-### Redirect Condicional
+### [Redirect Condicional]()
 
 ```typescript
 function Dashboard() {
@@ -395,7 +395,7 @@ function Dashboard() {
 }
 ```
 
-## useLocation Hook
+## [useLocation Hook]()
 
 ```typescript
 import { useLocation } from 'react-router-dom';
@@ -415,7 +415,7 @@ function Header() {
 }
 ```
 
-## Passar Estado Entre Rotas
+## [Passar Estado Entre Rotas]()
 
 ```typescript
 // Origem
@@ -433,7 +433,7 @@ function ProductForm() {
 }
 ```
 
-## Menu Dinâmico
+## [Menu Dinâmico]()
 
 ```typescript
 import { NavLink } from 'react-router-dom';
@@ -461,7 +461,7 @@ function Sidebar() {
 }
 ```
 
-## Lazy Loading de Rotas
+## [Lazy Loading de Rotas]()
 
 ```typescript
 import { lazy, Suspense } from 'react';
@@ -481,7 +481,7 @@ const AssetProfilePage = lazy(() => import('@/pages/assets/AssetProfilePage'));
 />
 ```
 
-## 404 - Página Não Encontrada
+## [404 - Página Não Encontrada]()
 
 ```typescript
 // App.tsx
@@ -509,7 +509,7 @@ function NotFound() {
 }
 ```
 
-## Breadcrumbs
+## [Breadcrumbs]()
 
 ```typescript
 import { useLocation, Link } from 'react-router-dom';
@@ -539,7 +539,7 @@ function Breadcrumbs() {
 }
 ```
 
-## Boas Práticas
+## [Boas Práticas]()
 
 1. **Centralize rotas**: Use arquivo de configuração
 2. **Lazy loading**: Para rotas pesadas
@@ -549,7 +549,7 @@ function Breadcrumbs() {
 6. **TypeScript**: Tipo os parâmetros com useParams
 7. **Replace**: Use quando não quer histórico (`navigate('/login', { replace: true })`)
 
-## Checklist
+## [Checklist]()
 
 - [ ] Rotas públicas e privadas separadas
 - [ ] PrivateRoute implementado
@@ -560,7 +560,7 @@ function Breadcrumbs() {
 - [ ] Navegação via useNavigate ou Link
 - [ ] Menu dinâmico a partir de config
 
-## Referências
+## [Referências]()
 
 - [React Router Documentation](https://reactrouter.com/en/main)
 - [React Router Tutorial](https://reactrouter.com/en/main/start/tutorial)

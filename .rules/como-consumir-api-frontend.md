@@ -1,10 +1,10 @@
-# Como consumir a API no Frontend?
+# [Como consumir a API no Frontend?]()
 
 > Guia completo sobre como fazer requisições HTTP para a API usando Axios no React.
 
-## Configuração do Axios
+## [Configuração do Axios]()
 
-### 1. Criar instância configurada
+### [1. Criar instância configurada]()
 
 **Arquivo**: `src/services/api.ts`
 
@@ -51,7 +51,7 @@ api.interceptors.response.use(
 export default api;
 ```
 
-### 2. Variável de ambiente
+### [2. Variável de ambiente]()
 
 **.env**:
 ```env
@@ -60,9 +60,9 @@ VITE_API_URL=http://localhost:3000/api
 
 > **IMPORTANTE**: A versão da API (`v1`) é configurada no `api.ts` e aplicada automaticamente em todas as requisições. Se o backend criar uma v2, basta alterar `API_VERSION = 'v2'` em um único lugar. Veja [Como versionar API](./como-versionar-api-backend.md) para mais detalhes.
 
-## Criar Services
+## [Criar Services]()
 
-### Estrutura de Service
+### [Estrutura de Service]()
 
 **Arquivo**: `src/services/product.service.ts`
 
@@ -120,12 +120,12 @@ export const ProductService = {
 // Adapte conforme as necessidades específicas do seu projeto.
 ```
 
-## Usar Services em Componentes
+## [Usar Services em Componentes]()
 
 > **IMPORTANTE**: Todos os exemplos abaixo são apenas demonstrações de estrutura e padrões.
 > Não contêm lógica de negócio específica. Adapte-os conforme as necessidades do seu projeto.
 
-### Com useState e useEffect
+### [Com useState e useEffect]()
 
 ```typescript
 import { useState, useEffect } from 'react';
@@ -168,7 +168,7 @@ function ProductList() {
 }
 ```
 
-### Criar Item
+### [Criar Item]()
 
 > **Exemplo**: Demonstra apenas a estrutura. Adapte a validação e lógica conforme seu contexto.
 
@@ -231,7 +231,7 @@ function ProductForm() {
 }
 ```
 
-### Atualizar Item
+### [Atualizar Item]()
 
 > **Exemplo**: Estrutura básica de edição. Adapte conforme necessário.
 
@@ -285,7 +285,7 @@ function EditProduct({ id }: { id: number }) {
 }
 ```
 
-### Deletar Item
+### [Deletar Item]()
 
 > **Exemplo**: Padrão básico de exclusão. Adapte a confirmação conforme UX do projeto.
 
@@ -303,9 +303,9 @@ const handleDelete = async (id: number) => {
 };
 ```
 
-## Tratamento de Erros
+## [Tratamento de Erros]()
 
-### Estrutura de Erro da API
+### [Estrutura de Erro da API]()
 
 ```typescript
 interface ApiError {
@@ -315,7 +315,7 @@ interface ApiError {
 }
 ```
 
-### Função Helper
+### [Função Helper]()
 
 ```typescript
 export function getErrorMessage(error: any): string {
@@ -342,9 +342,9 @@ try {
 }
 ```
 
-## Custom Hook para API
+## [Custom Hook para API]()
 
-### useApi Hook
+### [useApi Hook]()
 
 ```typescript
 import { useState } from 'react';
@@ -396,7 +396,7 @@ function ProductList() {
 }
 ```
 
-## Paginação
+## [Paginação]()
 
 ```typescript
 export const ProductService = {
@@ -422,7 +422,7 @@ const loadProducts = async () => {
 <button onClick={() => setPage(p => p + 1)}>Próxima</button>
 ```
 
-## Upload de Arquivos
+## [Upload de Arquivos]()
 
 ```typescript
 export const ProductService = {
@@ -454,7 +454,7 @@ const handleFileChange = async (e: ChangeEvent<HTMLInputElement>) => {
 };
 ```
 
-## Query Params
+## [Query Params]()
 
 ```typescript
 export const ProductService = {
@@ -472,9 +472,9 @@ export const ProductService = {
 // Gera: /products?search=notebook&active=true
 ```
 
-## React Suspense para Data Fetching
+## [React Suspense para Data Fetching]()
 
-### Estrutura Básica com Suspense
+### [Estrutura Básica com Suspense]()
 
 ```typescript
 import { Suspense } from 'react';
@@ -536,7 +536,7 @@ function ProductPage({ productId }: { productId: number }) {
 }
 ```
 
-### Exemplo com ErrorBoundary
+### [Exemplo com ErrorBoundary]()
 
 ```typescript
 import { Component, ReactNode, Suspense } from 'react';
@@ -578,7 +578,7 @@ function App() {
 
 **NOTA**: Este é um exemplo educacional do padrão Suspense. Para produção, considere usar bibliotecas como React Query ou SWR que implementam este padrão de forma mais robusta.
 
-## Cancelar Requisições
+## [Cancelar Requisições]()
 
 ```typescript
 import { useEffect, useState } from 'react';
@@ -611,7 +611,7 @@ function ProductList() {
 }
 ```
 
-## Checklist
+## [Checklist]()
 
 - [ ] Instância Axios configurada em `api.ts`
 - [ ] Interceptor para token JWT
@@ -622,7 +622,7 @@ function ProductList() {
 - [ ] Loading states
 - [ ] Feedback visual para usuário
 
-## Referências
+## [Referências]()
 
 - [Axios Documentation](https://axios-http.com/docs/intro)
 - [React + Axios Best Practices](https://blog.logrocket.com/how-to-make-http-requests-like-a-pro-with-axios/)

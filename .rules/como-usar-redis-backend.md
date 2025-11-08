@@ -1,8 +1,8 @@
-# Como usar Redis no Backend
+# [Como usar Redis no Backend]()
 
 > Guia completo para usar Redis como cache e memória compartilhada para escalabilidade horizontal
 
-## Quando usar Redis
+## [Quando usar Redis]()
 
 - ✅ **Cache de dados** - Reduzir carga no banco de dados
 - ✅ **Sessões compartilhadas** - Compartilhar sessões entre instâncias
@@ -14,15 +14,15 @@
 - ❌ **Filas de tarefas** - Use RabbitMQ para background jobs (veja [como-usar-rabbitmq-backend.md](./como-usar-rabbitmq-backend.md))
 - ❌ **Pub/Sub** - Não usar Redis para comunicação entre instâncias
 
-## Instalação
+## [Instalação]()
 
 ```bash
 npm install @nestjs/cache-manager cache-manager cache-manager-redis-store redis
 ```
 
-## Configuração Global (Common Module)
+## [Configuração Global (Common Module)]()
 
-### 1. Criar módulo comum compartilhado
+### [1. Criar módulo comum compartilhado]()
 
 `src/common/redis/redis.module.ts`
 
@@ -53,7 +53,7 @@ import { redisStore } from 'cache-manager-redis-store';
 export class RedisModule {}
 ```
 
-### 2. Registrar no AppModule
+### [2. Registrar no AppModule]()
 
 `src/app.module.ts`
 
@@ -71,7 +71,7 @@ import { RedisModule } from './common/redis/redis.module';
 export class AppModule {}
 ```
 
-### 3. Variáveis de ambiente
+### [3. Variáveis de ambiente]()
 
 `.env`
 
@@ -83,9 +83,9 @@ REDIS_DB=0
 REDIS_TTL=300         # 5 minutos em segundos
 ```
 
-## Uso Básico - Cache Simples
+## [Uso Básico - Cache Simples]()
 
-### Injetar no Service
+### [Injetar no Service]()
 
 ```typescript
 import { Injectable, Inject } from '@nestjs/common';
@@ -158,9 +158,9 @@ export class ProductService {
 }
 ```
 
-## Operações Disponíveis
+## [Operações Disponíveis]()
 
-### 1. Salvar (SET)
+### [1. Salvar (SET)]()
 
 ```typescript
 // Simples
@@ -173,7 +173,7 @@ await this.cacheManager.set('key', 'value', 300); // 5 minutos
 await this.cacheManager.set('user:123', { id: 123, name: 'João' }, 600);
 ```
 
-### 2. Buscar (GET)
+### [2. Buscar (GET)]()
 
 ```typescript
 // Retorna null se não existir
@@ -183,7 +183,7 @@ const value = await this.cacheManager.get('key');
 const user = await this.cacheManager.get<User>('user:123');
 ```
 
-### 3. Deletar (DEL)
+### [3. Deletar (DEL)]()
 
 ```typescript
 // Deletar uma chave
@@ -194,16 +194,16 @@ await this.cacheManager.del('key1');
 await this.cacheManager.del('key2');
 ```
 
-### 4. Resetar tudo (FLUSH)
+### [4. Resetar tudo (FLUSH)]()
 
 ```typescript
 // ⚠️ Cuidado: remove TODAS as chaves
 await this.cacheManager.reset();
 ```
 
-## Casos de Uso Avançados
+## [Casos de Uso Avançados]()
 
-### 1. Contador compartilhado (Incremento atômico)
+### [1. Contador compartilhado (Incremento atômico)]()
 
 Útil para estatísticas, rate limiting, contadores distribuídos.
 
@@ -242,7 +242,7 @@ export class StatsService {
 }
 ```
 
-### 2. Rate Limiting
+### [2. Rate Limiting]()
 
 Limitar requisições por usuário/IP.
 
@@ -323,7 +323,7 @@ export class RateLimitGuard implements CanActivate {
 }
 ```
 
-### 3. Cache de API externa
+### [3. Cache de API externa]()
 
 Cachear respostas de APIs externas para reduzir latência e custos.
 
@@ -357,7 +357,7 @@ export class ExternalApiService {
 }
 ```
 
-### 4. Sessões compartilhadas
+### [4. Sessões compartilhadas]()
 
 Para múltiplas instâncias compartilharem sessões de usuário.
 
@@ -398,7 +398,7 @@ export class SessionService {
 }
 ```
 
-## Padrões de Nomenclatura de Chaves
+## [Padrões de Nomenclatura de Chaves]()
 
 Use prefixos consistentes para organizar dados:
 
@@ -419,7 +419,7 @@ Use prefixos consistentes para organizar dados:
 'temp'
 ```
 
-## Helper para invalidação em massa
+## [Helper para invalidação em massa]()
 
 ```typescript
 import { Injectable, Inject } from '@nestjs/common';
@@ -451,7 +451,7 @@ export class CacheService {
 }
 ```
 
-## Docker Compose - Redis Local
+## [Docker Compose - Redis Local]()
 
 `docker-compose.yml`
 
@@ -481,9 +481,9 @@ Subir o Redis:
 docker-compose up -d redis
 ```
 
-## Boas Práticas
+## [Boas Práticas]()
 
-### 1. Sempre definir TTL
+### [1. Sempre definir TTL]()
 ```typescript
 // ✅ Bom - evita memória infinita
 await this.cacheManager.set('key', value, 300);
@@ -492,7 +492,7 @@ await this.cacheManager.set('key', value, 300);
 await this.cacheManager.set('key', value);
 ```
 
-### 2. Invalidar cache ao atualizar
+### [2. Invalidar cache ao atualizar]()
 ```typescript
 async update(id: string, dto: UpdateDto) {
   const updated = await this.repository.save({ id, ...dto });
@@ -505,7 +505,7 @@ async update(id: string, dto: UpdateDto) {
 }
 ```
 
-### 3. Prefixos consistentes
+### [3. Prefixos consistentes]()
 ```typescript
 // ✅ Bom - fácil identificar e invalidar
 const cacheKey = `user:${userId}:orders`;
@@ -514,7 +514,7 @@ const cacheKey = `user:${userId}:orders`;
 const cacheKey = `${userId}_orders`;
 ```
 
-### 4. Tratar erros do Redis
+### [4. Tratar erros do Redis]()
 ```typescript
 async getCachedData(key: string): Promise<any> {
   try {
@@ -527,12 +527,12 @@ async getCachedData(key: string): Promise<any> {
 }
 ```
 
-### 5. Usar módulo comum
+### [5. Usar módulo comum]()
 - **Criar uma vez** - RedisModule no `src/common/redis/`
 - **Global** - Decorator `@Global()` para disponibilizar em todos módulos
 - **Reutilizar** - Apenas injetar `CACHE_MANAGER` onde precisar
 
-### 6. Não cachear dados sensíveis
+### [6. Não cachear dados sensíveis]()
 ```typescript
 // ❌ Evitar - dados sensíveis
 await this.cacheManager.set('user:password', hashedPassword);
@@ -541,7 +541,7 @@ await this.cacheManager.set('user:password', hashedPassword);
 await this.cacheManager.set('user:profile', { name, email });
 ```
 
-## Checklist de Implementação
+## [Checklist de Implementação]()
 
 - [ ] Redis instalado (Docker ou local)
 - [ ] Pacotes instalados (`@nestjs/cache-manager`, `cache-manager-redis-store`, `redis`)
@@ -554,9 +554,9 @@ await this.cacheManager.set('user:profile', { name, email });
 - [ ] Invalidação ao atualizar/deletar dados
 - [ ] Tratamento de erro para quedas do Redis
 
-## Troubleshooting
+## [Troubleshooting]()
 
-### Redis connection refused
+### [Redis connection refused]()
 
 ```bash
 # Verificar se Redis está rodando
@@ -569,7 +569,7 @@ docker logs sdd-redis
 docker-compose restart redis
 ```
 
-### Cache não está funcionando
+### [Cache não está funcionando]()
 
 ```typescript
 // Debug - verificar se está salvando
@@ -580,7 +580,7 @@ const retrieved = await this.cacheManager.get('test');
 console.log('Retrieved:', retrieved);
 ```
 
-### Memória alta no Redis
+### [Memória alta no Redis]()
 
 ```bash
 # Conectar ao Redis CLI
@@ -596,7 +596,7 @@ KEYS *
 FLUSHALL
 ```
 
-## Referências
+## [Referências]()
 
 - [NestJS Cache](https://docs.nestjs.com/techniques/caching)
 - [Redis Commands](https://redis.io/commands)

@@ -1,10 +1,10 @@
-# Como criar uma Migration no Backend?
+# [Como criar uma Migration no Backend?]()
 
 > Guia completo para criar e gerenciar migrations com TypeORM no projeto.
 
 > **⚠️ IMPORTANTE**: Todas as migrations devem ser escritas usando SQL puro através de `queryRunner.query()`, não objetos TypeORM como `new Table()`, `new TableColumn()`, etc.
 
-## O que são Migrations?
+## [O que são Migrations?]()
 
 Migrations são arquivos de controle de versão do banco de dados. Elas permitem:
 - Versionar alterações no schema do banco
@@ -12,9 +12,9 @@ Migrations são arquivos de controle de versão do banco de dados. Elas permitem
 - Sincronizar banco entre ambientes (dev, staging, prod)
 - Reverter alterações quando necessário
 
-## Comandos Disponíveis
+## [Comandos Disponíveis]()
 
-### Criar Migration Vazia
+### [Criar Migration Vazia]()
 
 ```bash
 npm run typeorm -- migration:create src/database/migrations/NomeDaMigration
@@ -22,7 +22,7 @@ npm run typeorm -- migration:create src/database/migrations/NomeDaMigration
 
 Cria um arquivo vazio para você implementar manualmente.
 
-### Gerar Migration Automática
+### [Gerar Migration Automática]()
 
 ```bash
 npm run typeorm -- migration:generate src/database/migrations/NomeDaMigration
@@ -30,7 +30,7 @@ npm run typeorm -- migration:generate src/database/migrations/NomeDaMigration
 
 Gera automaticamente baseado nas diferenças entre entities e banco de dados.
 
-### Executar Migrations
+### [Executar Migrations]()
 
 ```bash
 npm run typeorm -- migration:run
@@ -38,7 +38,7 @@ npm run typeorm -- migration:run
 
 Executa todas as migrations pendentes em ordem cronológica.
 
-### Reverter Última Migration
+### [Reverter Última Migration]()
 
 ```bash
 npm run typeorm -- migration:revert
@@ -46,7 +46,7 @@ npm run typeorm -- migration:revert
 
 Reverte a última migration executada (chama o método `down`).
 
-### Listar Migrations
+### [Listar Migrations]()
 
 ```bash
 npm run typeorm -- migration:show
@@ -54,9 +54,9 @@ npm run typeorm -- migration:show
 
 Mostra quais migrations foram executadas e quais estão pendentes.
 
-## Passo a Passo: Criar Migration Manual
+## [Passo a Passo: Criar Migration Manual]()
 
-### 1. Criar o arquivo
+### [1. Criar o arquivo]()
 
 ```bash
 npm run typeorm -- migration:create src/database/migrations/CreateProductsTable
@@ -69,7 +69,7 @@ src/database/migrations/1234567890000-CreateProductsTable.ts
 
 > O timestamp no início garante ordem de execução.
 
-### 2. Implementar método `up`
+### [2. Implementar método `up`]()
 
 O método `up` define o que será executado ao rodar a migration:
 
@@ -111,15 +111,15 @@ export class CreateProductsTable1234567890000 implements MigrationInterface {
 }
 ```
 
-### 3. Executar a migration
+### [3. Executar a migration]()
 
 ```bash
 npm run typeorm -- migration:run
 ```
 
-## Tipos de Operações com SQL
+## [Tipos de Operações com SQL]()
 
-### 1. Criar Tabela
+### [1. Criar Tabela]()
 
 ```typescript
 await queryRunner.query(`
@@ -131,7 +131,7 @@ await queryRunner.query(`
 `);
 ```
 
-### 2. Adicionar Coluna
+### [2. Adicionar Coluna]()
 
 ```typescript
 await queryRunner.query(`
@@ -140,7 +140,7 @@ await queryRunner.query(`
 `);
 ```
 
-### 3. Remover Coluna
+### [3. Remover Coluna]()
 
 ```typescript
 await queryRunner.query(`
@@ -149,7 +149,7 @@ await queryRunner.query(`
 `);
 ```
 
-### 4. Modificar Coluna
+### [4. Modificar Coluna]()
 
 ```typescript
 await queryRunner.query(`
@@ -164,7 +164,7 @@ await queryRunner.query(`
 `);
 ```
 
-### 5. Criar Índice
+### [5. Criar Índice]()
 
 ```typescript
 await queryRunner.query(`
@@ -172,7 +172,7 @@ await queryRunner.query(`
 `);
 ```
 
-### 6. Criar Índice Composto
+### [6. Criar Índice Composto]()
 
 ```typescript
 await queryRunner.query(`
@@ -180,7 +180,7 @@ await queryRunner.query(`
 `);
 ```
 
-### 7. Adicionar Foreign Key
+### [7. Adicionar Foreign Key]()
 
 ```typescript
 await queryRunner.query(`
@@ -193,7 +193,7 @@ await queryRunner.query(`
 `);
 ```
 
-### 8. Executar SQL Raw
+### [8. Executar SQL Raw]()
 
 ```typescript
 await queryRunner.query(`
@@ -203,7 +203,7 @@ await queryRunner.query(`
 `);
 ```
 
-### 9. Inserir Dados (Seed)
+### [9. Inserir Dados (Seed)]()
 
 ```typescript
 await queryRunner.query(`
@@ -215,9 +215,9 @@ await queryRunner.query(`
 `);
 ```
 
-## Exemplo Completo: Adicionar Campo
+## [Exemplo Completo: Adicionar Campo]()
 
-### Migration: Adicionar campo `active` na tabela `products`
+### [Migration: Adicionar campo `active` na tabela `products`]()
 
 ```typescript
 import { MigrationInterface, QueryRunner } from 'typeorm';
@@ -239,9 +239,9 @@ export class AddActiveToProducts1234567890001 implements MigrationInterface {
 }
 ```
 
-## Exemplo Completo: Adicionar Relacionamento
+## [Exemplo Completo: Adicionar Relacionamento]()
 
-### Migration: Adicionar relacionamento `category_id` em `products`
+### [Migration: Adicionar relacionamento `category_id` em `products`]()
 
 ```typescript
 import { MigrationInterface, QueryRunner } from 'typeorm';
@@ -291,16 +291,16 @@ export class AddCategoryToProducts1234567890002 implements MigrationInterface {
 }
 ```
 
-## Migrations Automáticas (Generate)
+## [Migrations Automáticas (Generate)]()
 
-### Quando usar
+### [Quando usar]()
 
 Use `migration:generate` quando:
 - Você alterou entities existentes
 - Quer sincronizar entities com o banco
 - Prefere que o TypeORM gere o SQL
 
-### Como funciona
+### [Como funciona]()
 
 1. **Altere suas entities**:
 
@@ -348,9 +348,9 @@ export class AddBrandToProducts1234567890003 implements MigrationInterface {
 npm run typeorm -- migration:run
 ```
 
-## Boas Práticas
+## [Boas Práticas]()
 
-### 1. Sempre implemente `down()`
+### [1. Sempre implemente `down()`]()
 
 Permita reverter a migration se necessário:
 
@@ -361,11 +361,11 @@ public async down(queryRunner: QueryRunner): Promise<void> {
 }
 ```
 
-### 2. Use transações
+### [2. Use transações]()
 
 As migrations já rodam em transação por padrão. Se falhar, tudo é revertido.
 
-### 3. Teste em desenvolvimento primeiro
+### [3. Teste em desenvolvimento primeiro]()
 
 ```bash
 # Executar
@@ -379,7 +379,7 @@ npm run typeorm -- migration:revert
 npm run typeorm -- migration:run
 ```
 
-### 4. Nomeie adequadamente
+### [4. Nomeie adequadamente]()
 
 Use nomes descritivos:
 -  `CreateProductsTable`
@@ -388,7 +388,7 @@ Use nomes descritivos:
 - L `Migration1`
 - L `UpdateTable`
 
-### 5. Uma responsabilidade por migration
+### [5. Uma responsabilidade por migration]()
 
 Não misture múltiplas alterações não relacionadas:
 
@@ -405,7 +405,7 @@ L **Ruim**:
 // CreateOrdersTable.ts
 ```
 
-### 6. Cuidado com dados existentes
+### [6. Cuidado com dados existentes]()
 
 Se adicionar coluna NOT NULL em tabela com dados:
 
@@ -430,7 +430,7 @@ await queryRunner.query(`
 `);
 ```
 
-### 7. Documente migrations complexas
+### [7. Documente migrations complexas]()
 
 ```typescript
 export class ComplexMigration1234567890004 implements MigrationInterface {
@@ -446,7 +446,7 @@ export class ComplexMigration1234567890004 implements MigrationInterface {
 }
 ```
 
-### 8. Use nomenclatura em inglês para tabelas e colunas
+### [8. Use nomenclatura em inglês para tabelas e colunas]()
 
 **⚠️ IMPORTANTE**: Todas as tabelas e colunas devem ter nomes em **inglês**, seguindo snake_case minúscula.
 
@@ -470,7 +470,7 @@ CREATE TABLE products (
 
 **Motivo**: Padronização internacional, compatibilidade com convenções da comunidade, melhor integração com ORMs e ferramentas.
 
-### 9. NUNCA crie triggers ou funções no banco de dados
+### [9. NUNCA crie triggers ou funções no banco de dados]()
 
 **IMPORTANTE**: Toda a lógica de negócio deve estar na aplicação (backend), NUNCA no banco de dados.
 
@@ -514,16 +514,16 @@ updated_at: Date;
 - Constraints customizados via `CHECK CONSTRAINT` (validações de dados)
 - Índices parciais ou funcionais (performance)
 
-## Troubleshooting
+## [Troubleshooting]()
 
-### Migration não está sendo detectada
+### [Migration não está sendo detectada]()
 
 Verifique `database.config.ts`:
 ```typescript
 migrations: [__dirname + '/migrations/*{.ts,.js}'],
 ```
 
-### Erro: "Migration has already been executed"
+### [Erro: "Migration has already been executed"]()
 
 ```bash
 # Ver quais foram executadas
@@ -533,7 +533,7 @@ npm run typeorm -- migration:show
 npm run typeorm -- migration:revert
 ```
 
-### Forçar re-execução (CUIDADO!)
+### [Forçar re-execução (CUIDADO!)]()
 
 ```bash
 # Limpar e recriar banco
@@ -541,7 +541,7 @@ npm run db:drop
 npm run typeorm -- migration:run
 ```
 
-### Migration quebrou o banco
+### [Migration quebrou o banco]()
 
 ```bash
 # Reverter
@@ -552,7 +552,7 @@ npm run typeorm -- migration:revert
 npm run typeorm -- migration:run
 ```
 
-## Scripts package.json
+## [Scripts package.json]()
 
 Verifique se estes scripts existem em `package.json`:
 
@@ -569,7 +569,7 @@ Verifique se estes scripts existem em `package.json`:
 }
 ```
 
-## Exemplo do Projeto
+## [Exemplo do Projeto]()
 
 No projeto, as migrations estão em:
 ```
@@ -583,7 +583,7 @@ Migrations existentes:
 - `1738500000000-create-alerts-table.ts` - Tabela de alertas
 - E outras...
 
-## Referências
+## [Referências]()
 
 - [TypeORM Migrations](https://typeorm.io/migrations)
 - [Migration API](https://typeorm.io/migrations#migration-api)

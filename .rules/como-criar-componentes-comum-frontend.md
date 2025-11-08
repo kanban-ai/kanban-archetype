@@ -1,8 +1,8 @@
-# Como criar componentes comuns no Frontend?
+# [Como criar componentes comuns no Frontend?]()
 
 > Guia para criar componentes reutilizáveis em React + TypeScript + Tailwind CSS.
 
-## Princípios de Componentes Comuns
+## [Princípios de Componentes Comuns]()
 
 Componentes comuns devem ser:
 - **Reutilizáveis**: Funcionam em diferentes contextos
@@ -11,7 +11,7 @@ Componentes comuns devem ser:
 - **Autocontidos**: Não dependem de contexto específico
 - **Documentados**: Props bem descritas
 
-## Localização
+## [Localização]()
 
 ```
 src/components/common/
@@ -22,9 +22,9 @@ src/components/common/
  ...
 ```
 
-## Exemplos Práticos
+## [Exemplos Práticos]()
 
-### 1. Button Component
+### [1. Button Component]()
 
 ```typescript
 import { ButtonHTMLAttributes } from 'react';
@@ -75,7 +75,7 @@ export function Button({
 </Button>
 ```
 
-### 2. Modal Component
+### [2. Modal Component]()
 
 ```typescript
 import { ReactNode } from 'react';
@@ -146,7 +146,7 @@ const [isOpen, setIsOpen] = useState(false);
 </Modal>
 ```
 
-### 3. Card Component
+### [3. Card Component]()
 
 ```typescript
 import { ReactNode } from 'react';
@@ -182,7 +182,7 @@ export function Card({ title, children, className = '', footer }: CardProps) {
 </Card>
 ```
 
-### 4. Input Component
+### [4. Input Component]()
 
 ```typescript
 import { InputHTMLAttributes, forwardRef } from 'react';
@@ -231,7 +231,7 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
 />
 ```
 
-### 5. Select Component
+### [5. Select Component]()
 
 ```typescript
 import { SelectHTMLAttributes } from 'react';
@@ -284,7 +284,7 @@ export function Select({ label, error, options, className = '', ...props }: Sele
 />
 ```
 
-### 6. Loading Spinner
+### [6. Loading Spinner]()
 
 ```typescript
 interface SpinnerProps {
@@ -307,7 +307,7 @@ export function Spinner({ size = 'md' }: SpinnerProps) {
 <Spinner size="lg" />
 ```
 
-### 7. Alert Component
+### [7. Alert Component]()
 
 ```typescript
 interface AlertProps {
@@ -340,7 +340,7 @@ export function Alert({ type, message, onClose }: AlertProps) {
 <Alert type="success" message="Operação realizada com sucesso!" />
 ```
 
-### 8. Badge Component
+### [8. Badge Component]()
 
 ```typescript
 interface BadgeProps {
@@ -367,9 +367,9 @@ export function Badge({ children, variant = 'default' }: BadgeProps) {
 <Badge variant="success">Ativo</Badge>
 ```
 
-## Padrões de Composição
+## [Padrões de Composição]()
 
-### Compound Components
+### [Compound Components]()
 
 ```typescript
 // Card.tsx
@@ -403,9 +403,9 @@ Card.Footer = function CardFooter({ children }: { children: React.ReactNode }) {
 </Card>
 ```
 
-## Boas Práticas
+## [Boas Práticas]()
 
-### 1. Props com valores padrão
+### [1. Props com valores padrão]()
 
 ```typescript
 interface ButtonProps {
@@ -422,7 +422,7 @@ export function Button({
 }
 ```
 
-### 2. Spread de props nativas
+### [2. Spread de props nativas]()
 
 ```typescript
 interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
@@ -434,7 +434,7 @@ export function Button({ variant, ...props }: ButtonProps) {
 }
 ```
 
-### 3. forwardRef para refs
+### [3. forwardRef para refs]()
 
 ```typescript
 export const Input = forwardRef<HTMLInputElement, InputProps>(
@@ -444,7 +444,7 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
 );
 ```
 
-### 4. Tipagem estrita
+### [4. Tipagem estrita]()
 
 ```typescript
 // L Ruim
@@ -458,7 +458,7 @@ interface ButtonProps {
 }
 ```
 
-### 5. Documentação inline
+### [5. Documentação inline]()
 
 ```typescript
 interface ButtonProps {
@@ -475,7 +475,7 @@ interface ButtonProps {
 }
 ```
 
-## Organização
+## [Organização]()
 
 ```
 src/components/common/
@@ -504,7 +504,7 @@ export { Card } from './Card';
 import { Button, Input, Modal } from '@/components/common';
 ```
 
-## Checklist
+## [Checklist]()
 
 - [ ] Componente aceita className para customização
 - [ ] Props tipadas com TypeScript
@@ -515,7 +515,7 @@ import { Button, Input, Modal } from '@/components/common';
 - [ ] Responsivo (mobile-first)
 - [ ] Acessível (ARIA quando necessário)
 
-## Referências
+## [Referências]()
 
 - [React TypeScript Cheatsheet](https://react-typescript-cheatsheet.netlify.app/)
 - [Tailwind CSS Components](https://tailwindui.com/components)
