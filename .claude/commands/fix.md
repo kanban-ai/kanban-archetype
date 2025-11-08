@@ -31,6 +31,31 @@ Sumário das especificações:
 
 !`cat ./.rules/SUMARIO.md`
 
+### Busca Semântica na Documentação
+
+Durante a investigação, use o comando de busca semântica para encontrar informações relevantes rapidamente:
+
+```bash
+./scripts/docs query "sua questão técnica aqui"
+```
+
+**Quando usar durante a investigação:**
+- Entender padrões esperados (ex: "estrutura esperada de services")
+- Buscar regras de validação (ex: "validação de dados de entrada")
+- Encontrar configurações corretas (ex: "configuração de conexão com banco")
+- Consultar exemplos de implementação (ex: "exemplo de error handling")
+- Verificar convenções técnicas (ex: "formato de log de erros")
+
+**Exemplos úteis para debugging:**
+```bash
+./scripts/docs query "como debugar erros de API"
+./scripts/docs query "estrutura de logs do projeto"
+./scripts/docs query "troubleshooting de conexão com banco"
+./scripts/docs query "validação de dados em controllers"
+```
+
+A busca semântica ajuda a identificar rapidamente se o código está seguindo os padrões documentados ou se o erro vem de um desvio das especificações.
+
 ---
 
 ## Fluxo de Investigação Sistemática

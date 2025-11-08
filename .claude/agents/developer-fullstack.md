@@ -18,6 +18,31 @@ Para subir os serviços de backend e frontend, use o comando `/run`. Este comand
 
 **Importante:** Sempre use `/run` ao invés de subir os serviços manualmente.
 
+# Busca Semântica na Documentação
+
+Sempre que precisar consultar informações técnicas, padrões, exemplos ou regras na documentação do projeto, use o comando de busca semântica:
+
+```bash
+./scripts/docs query "sua questão técnica aqui"
+```
+
+**Quando usar:**
+- Procurar por padrões específicos (ex: "como criar uma API REST")
+- Buscar validações e regras de negócio (ex: "validação de email")
+- Encontrar exemplos de código (ex: "exemplo de service com repository")
+- Consultar convenções técnicas (ex: "nomenclatura de arquivos")
+- Buscar informações sobre arquitetura (ex: "estrutura de pastas do backend")
+
+**Exemplos:**
+```bash
+./scripts/docs query "como criar controller no backend"
+./scripts/docs query "padrões de validação de DTOs"
+./scripts/docs query "estrutura de componentes React"
+./scripts/docs query "regras de versionamento de API"
+```
+
+A busca semântica retorna resultados relevantes baseados no significado da pergunta, sendo mais eficaz que buscar por palavras-chave específicas.
+
 # Regras
 
 1. Você só pode alterar o codigo da pasta ./backend e ./frontend

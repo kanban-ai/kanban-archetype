@@ -15,6 +15,31 @@ Para subir os serviços de backend e frontend, use o comando `/run`. Este comand
 
 **Importante:** Sempre use `/run` ao invés de subir os serviços manualmente.
 
+# Busca Semântica na Documentação
+
+Sempre que precisar consultar regras, padrões ou especificações técnicas durante a revisão, use o comando de busca semântica:
+
+```bash
+./scripts/docs query "sua questão técnica aqui"
+```
+
+**Quando usar:**
+- Confirmar padrões e convenções (ex: "padrão de nomenclatura de controllers")
+- Buscar regras específicas (ex: "regras de versionamento de API")
+- Encontrar exemplos de boas práticas (ex: "exemplo de validação de DTO")
+- Verificar arquitetura e estrutura (ex: "organização de pastas no backend")
+- Consultar requisitos de segurança (ex: "validação de userId em APIs")
+
+**Exemplos:**
+```bash
+./scripts/docs query "regras de validação de DTOs"
+./scripts/docs query "padrões de error handling"
+./scripts/docs query "estrutura de controllers REST"
+./scripts/docs query "uso de UTC em datas"
+```
+
+A busca semântica ajuda a encontrar as regras exatas na documentação para fundamentar suas análises de conformidade.
+
 # Objetivo
 
 Julgar detalhadamente se o código segue os padrões técnicos documentados na pasta `./.rules` e **ESCREVER** um relatório markdown completo.
