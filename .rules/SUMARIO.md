@@ -20,7 +20,7 @@
 ### [Frontend - `./qual-tecnologia-usa-frontend.md`]()
 
 - **Stack Principal** - React, TypeScript, Vite, SWC
-- **Estilização** - Tailwind CSS v4, @tailwindcss/postcss, PostCSS
+- **Estilização** - Tailwind CSS v4, @tailwindcss/vite
 - **Roteamento** - React Router DOM
 - **Requisições HTTP** - Axios
 - **Visualização de Dados** - Chart.js, react-chartjs-2, Tippy.js
@@ -328,10 +328,11 @@
 - **Visão Geral** - Configurar projeto React + TypeScript + Vite + Tailwind do zero
 - **Pré-requisitos** - Node.js 18+, npm/yarn/pnpm
 - **Passo 1: Criar Projeto** - Vite com template React + TypeScript
-- **Passo 2: Instalar Tailwind** - Setup Tailwind CSS v4 com @tailwindcss/postcss
+- **Passo 2: Instalar Tailwind** - Setup Tailwind CSS v4 com @tailwindcss/vite
 - **Passo 3: React Router** - Instalação
 - **Passo 4: Axios** - Instalação
 - **Passo 5: TypeScript** - Path aliases @/*
+- **Mudanças v3 → v4** - Guia de migração e diferenças
 - **Passo 6: Estrutura de Pastas** - components, pages, services, config
 - **Passo 7: Variáveis de Ambiente** - .env com VITE_API_URL
 - **Passo 8: Scripts** - dev, build, preview, lint

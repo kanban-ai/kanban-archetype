@@ -36,15 +36,10 @@
   - Dark mode configurado como padrão
   - Tema customizado com cor principal azul (#3b82f6)
   - Mobile-first responsive design
-
-- **@tailwindcss/postcss**: Plugin PostCSS para Tailwind v4
-  - Plugin independente do core do Tailwind
-  - Processamento otimizado
-  - Integração com Vite
-
-- **PostCSS**: Processador CSS
-  - Autoprefixer para compatibilidade cross-browser
-  - Pipeline de processamento CSS
+  - Versão mais recente (v4.0+) lançada em janeiro/2025
+  - Plugin Vite nativo (`@tailwindcss/vite`) para performance máxima
+  - Configuração zero - sem necessidade de `tailwind.config.js` ou `postcss.config.js`
+  - Sintaxe CSS moderna com `@import` e `@theme`
 
 ## [Roteamento]()
 
@@ -350,7 +345,7 @@ import.meta.env.VITE_API_URL
 - Vite
 - React Router DOM
 - Tailwind CSS v4
-- @tailwindcss/postcss
+- @tailwindcss/vite (plugin Vite)
 - Axios
 - Chart.js
 - Tippy.js
