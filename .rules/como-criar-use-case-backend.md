@@ -139,7 +139,7 @@ Quando você precisa testar cada responsabilidade isoladamente ou trocar impleme
 - **Operações diretas**: Leitura/escrita simples sem regras complexas
 - **Endpoints triviais**: Consultas básicas sem processamento
 
-## Estrutura de Arquivos: Use-Cases Magros em Arquivos Separados
+## [Estrutura de Arquivos: Use-Cases Magros em Arquivos Separados]()
 
 Padrão de organização de arquivos para Use-Cases dentro de um módulo.
 

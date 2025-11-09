@@ -507,7 +507,7 @@ export class UsersController {}
 Crie arquivo `CHANGELOG-API.md`:
 
 ```markdown
-## V2 (2025-11-02)
+## [V2 (2025-11-02)]()
 
 ### Breaking Changes
 - `name` foi dividido em `firstName` e `lastName`
