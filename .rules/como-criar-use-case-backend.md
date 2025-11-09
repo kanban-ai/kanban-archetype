@@ -240,7 +240,14 @@ export interface GerarRelatorioFinanceiro {
 - Um único método público por interface
 - Parâmetros explícitos e tipados
 - Retorno sempre tipado (pode ser Promise)
-- **Sempre nomear interfaces e classes em inglês** (ex: `CalculateBalance`, `ProcessPayment`, `GenerateReport`)
+- **Sempre nomear interfaces, classes E métodos em inglês** (ex: `CalculateBalance`, `ProcessPayment`, `GenerateReport`)
+
+**IMPORTANTE**: Todos os nomes devem ser em inglês:
+- ✅ Classes: `CalculateBalanceUseCase`, `ProcessInvestmentUseCase`
+- ✅ Interfaces: `CalculateBalance`, `ProcessInvestment`
+- ✅ Métodos públicos: `calculateBalance()`, `processInvestment()`
+- ✅ Métodos privados: `getUserAssets()`, `calculateTotalInvested()`
+- ❌ NUNCA use português: `calcularSaldo()`, `processarInvestimento()`
 
 ### Passo 2: Criar o Use-Case
 
@@ -786,11 +793,26 @@ export interface CalculatePortfolioBalance { }
 export interface GenerateFinancialReport { }
 ```
 
-**Regra**: Todas as interfaces, classes e métodos devem ser nomeados em **inglês** para manter consistência com:
+**Regra**: Todas as interfaces, classes e métodos (públicos e privados) devem ser nomeados em **inglês** para manter consistência com:
 - Convenções do TypeScript/JavaScript
 - Boas práticas internacionais
 - Facilitar colaboração em projetos globais
 - Manter compatibilidade com bibliotecas e frameworks
+
+**Exemplos de métodos corretos:**
+```typescript
+// ✅ CORRETO: Métodos em inglês
+async calculateBalance(userId: number): Promise<number> { }
+async processInvestment(data: InvestmentData): Promise<Result> { }
+private async getUserAssets(userId: number): Promise<Asset[]> { }
+private calculateTotalInvested(transactions: Transaction[]): number { }
+
+// ❌ ERRADO: Métodos em português
+async calcularSaldo(userId: number): Promise<number> { }
+async processarInvestimento(dados: any): Promise<any> { }
+private async obterAtivosDoUsuario(userId: number): Promise<any[]> { }
+private calcularTotalInvestido(transacoes: any[]): number { }
+```
 
 ### 3. Use Type Aliases para Combinações
 ```typescript
