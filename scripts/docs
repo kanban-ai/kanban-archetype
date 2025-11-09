@@ -28,8 +28,6 @@ function log(message, color = 'reset') {
 
 // Função para gerar embedding via OpenAI API
 async function generateEmbedding(text) {
-  const truncatedText = truncateText(text);
-
   const response = await fetch('https://api.openai.com/v1/embeddings', {
     method: 'POST',
     headers: {
@@ -38,7 +36,7 @@ async function generateEmbedding(text) {
     },
     body: JSON.stringify({
       model: 'text-embedding-ada-002',
-      input: truncatedText
+      input: text
     })
   });
 
@@ -51,15 +49,23 @@ async function generateEmbedding(text) {
   return data.data[0].embedding;
 }
 
-// Função para truncar texto para caber no limite de tokens
-function truncateText(text, maxTokens = 8000) {
+// Função para validar tamanho do texto
+function validateTextSize(text, metadata, maxTokens = 8000) {
   // Estimativa: ~4 caracteres por token em português
   const maxChars = maxTokens * 4;
-  if (text.length <= maxChars) return text;
 
-  const truncated = text.substring(0, maxChars);
-  log(`  ⚠️  Texto truncado de ${text.length} para ${maxChars} caracteres`, 'yellow');
-  return truncated;
+  if (text.length <= maxChars) {
+    return { valid: true };
+  }
+
+  // Texto excede o limite - retornar erro detalhado
+  return {
+    valid: false,
+    size: text.length,
+    maxSize: maxChars,
+    exceeded: text.length - maxChars,
+    metadata
+  };
 }
 
 // Função para gerar embeddings em lote via OpenAI API
@@ -76,9 +82,6 @@ async function generateEmbeddingsBatch(texts, batchSize = 100) {
       log(`  Processando lote ${batchNum}/${totalBatches}...`, 'blue');
     }
 
-    // Truncar textos que são muito grandes
-    const truncatedBatch = batch.map(text => truncateText(text));
-
     const response = await fetch('https://api.openai.com/v1/embeddings', {
       method: 'POST',
       headers: {
@@ -87,7 +90,7 @@ async function generateEmbeddingsBatch(texts, batchSize = 100) {
       },
       body: JSON.stringify({
         model: 'text-embedding-ada-002',
-        input: truncatedBatch
+        input: batch
       })
     });
 
@@ -295,6 +298,66 @@ async function indexDocuments() {
     return;
   }
 
+  // Validar tamanho de todos os blocos ANTES de gerar embeddings
+  log(`Validando tamanho dos blocos...`, 'yellow');
+  const oversizedBlocks = [];
+
+  for (const block of allBlocks) {
+    const validation = validateTextSize(block.document, block.metadata);
+    if (!validation.valid) {
+      oversizedBlocks.push(validation);
+    }
+  }
+
+  // Se encontrou blocos muito grandes, parar e reportar
+  if (oversizedBlocks.length > 0) {
+    log('\n════════════════════════════════════════════════════════════════', 'red');
+    log('✗ ERRO: Blocos excedem o limite de tamanho!', 'red');
+    log('════════════════════════════════════════════════════════════════', 'red');
+    log(`\n${colors.yellow}Limite máximo:${colors.reset} 32000 caracteres (~8000 tokens)`, 'reset');
+    log(`${colors.yellow}Blocos com problema:${colors.reset} ${oversizedBlocks.length}`, 'reset');
+    log('');
+
+    for (let i = 0; i < oversizedBlocks.length; i++) {
+      const block = oversizedBlocks[i];
+      const meta = block.metadata;
+
+      log(`\n${colors.red}Bloco #${i + 1}:${colors.reset}`, 'reset');
+      log(`  ${colors.yellow}Arquivo:${colors.reset} ${meta.filepath}`);
+      log(`  ${colors.yellow}Seção:${colors.reset} ${meta.header}`);
+      log(`  ${colors.yellow}Linhas:${colors.reset} ${meta.start_line}-${meta.end_line} (${meta.end_line - meta.start_line + 1} linhas)`);
+      log(`  ${colors.yellow}Tamanho:${colors.reset} ${block.size.toLocaleString()} caracteres`);
+      log(`  ${colors.yellow}Excedeu:${colors.reset} ${colors.red}${block.exceeded.toLocaleString()} caracteres${colors.reset}`);
+      log(`  ${colors.yellow}Título:${colors.reset} ${meta.title || '(sem título)'}`);
+    }
+
+    log('\n════════════════════════════════════════════════════════════════', 'red');
+    log('💡 SOLUÇÃO:', 'yellow');
+    log('════════════════════════════════════════════════════════════════', 'red');
+    log('\nDivida a seção grande em MÚLTIPLOS BLOCOS ## com contextos específicos.');
+    log('Cada bloco ## representa um chunk para embeddings semânticos.\n');
+    log('Exemplo:', 'cyan');
+    log('  ❌ Em vez de um único bloco grande:', 'reset');
+    log('  ## [Implementação Passo a Passo]() - 36000 caracteres', 'yellow');
+    log('');
+    log('  ✅ Divida em múltiplos blocos ## específicos:', 'reset');
+    log('  ## [Passo 1: Definir Interfaces do Use-Case]() - 8000 caracteres', 'green');
+    log('  ## [Passo 2: Criar Classe Use-Case]() - 7000 caracteres', 'green');
+    log('  ## [Passo 3: Registrar Use-Case no Module]() - 5000 caracteres', 'green');
+    log('  ## [Passo 4: Injetar Use-Case via Dependency Injection]() - 6000 caracteres', 'green');
+    log('  ## [Exemplo Completo: Use-Case Financeiro]() - 10000 caracteres', 'green');
+    log('');
+    log('Cada bloco ## deve:', 'cyan');
+    log('  • Ter um título específico e descritivo');
+    log('  • Representar um contexto único e bem delimitado');
+    log('  • Ter idealmente < 30000 caracteres');
+    log('  • Ser pesquisável independentemente nos embeddings');
+    log('');
+
+    process.exit(1);
+  }
+
+  log(`✓ Todos os blocos estão dentro do limite`, 'green');
   log(`Gerando embeddings via OpenAI...`, 'yellow');
 
   // Preparar dados para o ChromaDB

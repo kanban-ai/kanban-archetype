@@ -2,7 +2,7 @@
 
 > Guia para implementar Use-Cases seguindo princípios SOLID e segregação de interfaces no backend.
 
-## O que é um Use-Case?
+## [O que é um Use-Case?]()
 
 Um Use-Case é uma classe que implementa uma ou mais interfaces, onde cada interface representa uma responsabilidade específica do domínio. Esta abordagem promove alta coesão, baixo acoplamento e facilita testes unitários.
 
@@ -11,8 +11,112 @@ Um Use-Case é uma classe que implementa uma ou mais interfaces, onde cada inter
 - O Use-Case implementa todos os métodos das interfaces que representa
 - Promove separação de responsabilidades (Single Responsibility Principle)
 - Facilita mock e teste de componentes isolados
+- **Prefira use-cases "magros"**: 1 interface por use-case (ideal) ou no máximo 2-3 interfaces relacionadas
 
-## Quando Usar Use-Cases?
+**Filosofia: Keep Use-Cases Thin (Mantenha Use-Cases Magros)**
+
+**REGRA PRINCIPAL**: Prefira **uma classe use-case implementando UMA ÚNICA interface/regra de negócio**.
+
+Isso significa que você terá **muitos arquivos de use-case** no projeto, e isso é **desejável e correto**! Não tenha medo de criar múltiplos arquivos pequenos.
+
+**Vantagens dessa abordagem:**
+- ✅ Classes pequenas e focadas em uma única responsabilidade
+- ✅ Código extremamente fácil de testar e mockar
+- ✅ Maior reusabilidade e composição
+- ✅ Melhor aderência aos princípios SOLID (especialmente SRP)
+- ✅ Fácil de entender, manter e modificar
+- ✅ Reduz acoplamento entre diferentes regras de negócio
+- ✅ Permite evolução independente de cada regra
+
+**Estrutura de uma classe Use-Case:**
+- Implementação de **UM método público** da interface
+- Métodos **privados** auxiliares para organizar a lógica interna
+- Dependências injetadas via construtor
+- Mantém a classe pequena e coesa (idealmente < 100 linhas)
+
+**Exemplo de estrutura de pasta com múltiplos use-cases:**
+```
+src/modules/financial/
+├── use-cases/
+│   ├── interfaces.ts                           # Todas interfaces do módulo
+│   ├── calculate-balance.usecase.ts            # Use-case 1
+│   ├── process-investment.usecase.ts           # Use-case 2
+│   ├── generate-report.usecase.ts              # Use-case 3
+│   ├── validate-credit.usecase.ts              # Use-case 4
+│   ├── calculate-interest.usecase.ts           # Use-case 5
+│   ├── process-transfer.usecase.ts             # Use-case 6
+│   └── apply-discount.usecase.ts               # Use-case 7
+```
+
+**Não tenha medo de ter muitos arquivos!** Ter 10-20 use-cases pequenos é **melhor** do que ter 2-3 use-cases grandes.
+
+**Exemplo de Use-Case Magro:**
+
+```typescript
+// Interface com uma única responsabilidade
+export interface CalculatePortfolioBalance {
+  calculatePortfolioBalance(userId: number): Promise<BalanceResult>;
+}
+
+// Use-Case magro implementando uma interface
+@Injectable()
+export class CalculatePortfolioBalanceUseCase implements CalculatePortfolioBalance {
+  constructor(
+    @InjectRepository(Asset)
+    private readonly assetRepository: Repository<Asset>,
+    @InjectRepository(Transaction)
+    private readonly transactionRepository: Repository<Transaction>,
+  ) {}
+
+  // Método público da interface
+  async calculatePortfolioBalance(userId: number): Promise<BalanceResult> {
+    const assets = await this.getUserAssets(userId);
+    const transactions = await this.getUserTransactions(userId);
+
+    const totalInvested = this.calculateTotalInvested(transactions);
+    const currentValue = this.calculateCurrentValue(assets);
+    const profit = this.calculateProfit(currentValue, totalInvested);
+
+    return {
+      totalInvested,
+      currentValue,
+      profit,
+      profitPercentage: (profit / totalInvested) * 100,
+    };
+  }
+
+  // Métodos privados auxiliares
+  private async getUserAssets(userId: number): Promise<Asset[]> {
+    return this.assetRepository.find({ where: { userId } });
+  }
+
+  private async getUserTransactions(userId: number): Promise<Transaction[]> {
+    return this.transactionRepository.find({ where: { userId } });
+  }
+
+  private calculateTotalInvested(transactions: Transaction[]): number {
+    return transactions
+      .filter(t => t.type === 'buy')
+      .reduce((sum, t) => sum + t.amount, 0);
+  }
+
+  private calculateCurrentValue(assets: Asset[]): number {
+    return assets.reduce((sum, a) => sum + (a.quantity * a.currentPrice), 0);
+  }
+
+  private calculateProfit(currentValue: number, totalInvested: number): number {
+    return currentValue - totalInvested;
+  }
+}
+```
+
+Observe que:
+- A classe é **pequena** e focada em uma única responsabilidade
+- Tem apenas **um método público** (da interface)
+- Usa **métodos privados** para organizar a lógica interna
+- É fácil de testar cada método isoladamente
+
+## [Quando Usar Use-Cases?]()
 
 Use Use-Cases quando há:
 
@@ -35,37 +139,61 @@ Quando você precisa testar cada responsabilidade isoladamente ou trocar impleme
 - **Operações diretas**: Leitura/escrita simples sem regras complexas
 - **Endpoints triviais**: Consultas básicas sem processamento
 
-## Estrutura de Arquivos
+## Estrutura de Arquivos: Use-Cases Magros em Arquivos Separados
 
-Padrão de organização de arquivos para Use-Cases dentro de um módulo:
+Padrão de organização de arquivos para Use-Cases dentro de um módulo.
+
+**IMPORTANTE**: Prefira criar **muitos arquivos pequenos** (1 use-case = 1 arquivo = 1 interface) ao invés de poucos arquivos grandes.
+
+### Exemplo: Estrutura com Use-Cases Magros (Recomendado)
+
+```
+src/modules/financial/
+├── financial.module.ts
+├── financial.controller.ts
+├── financial.service.ts
+├── entities/
+│   └── transaction.entity.ts
+├── dto/
+│   ├── create-transaction.dto.ts
+│   └── calculate-balance.dto.ts
+├── use-cases/
+│   ├── interfaces.ts                           # Todas interfaces
+│   ├── calculate-balance.usecase.ts            # Use-case 1: Calcular saldo
+│   ├── process-investment.usecase.ts           # Use-case 2: Processar investimento
+│   ├── generate-report.usecase.ts              # Use-case 3: Gerar relatório
+│   ├── validate-credit.usecase.ts              # Use-case 4: Validar crédito
+│   ├── calculate-interest.usecase.ts           # Use-case 5: Calcular juros
+│   ├── process-transfer.usecase.ts             # Use-case 6: Processar transferência
+│   └── apply-discount.usecase.ts               # Use-case 7: Aplicar desconto
+```
+
+**Observe**: Cada use-case em um arquivo separado, implementando uma única interface/regra de negócio.
+
+### Estrutura Antiga (Não Recomendada)
 
 ```
 src/modules/financeiro/
-├── financeiro.module.ts
-├── financeiro.controller.ts
-├── financeiro.service.ts
-├── entities/
-│   └── transacao.entity.ts
-├── dto/
-│   ├── create-transacao.dto.ts
-│   └── calcular-saldo.dto.ts
 ├── use-cases/
-│   ├── interfaces.ts                    # Todas as interfaces do módulo
-│   ├── regras-financeiras.usecase.ts    # Implementação do use-case
-│   └── investimentos.usecase.ts          # Outro use-case se necessário
+│   ├── interfaces.ts
+│   └── regras-financeiras.usecase.ts    # ❌ Um único arquivo grande com várias regras
 ```
+
+**Problema**: Um arquivo grande implementando múltiplas interfaces, difícil de manter e testar.
 
 ### Convenção de Nomenclatura
 
-| Item | Padrão | Exemplo |
-|------|--------|---------|
-| Pasta | `use-cases/` | Sempre no singular |
-| Arquivo de interfaces | `interfaces.ts` | Um único arquivo por módulo |
-| Arquivo de use-case | `nome-descritivo.usecase.ts` | kebab-case com sufixo `.usecase` |
-| Classe do use-case | `NomeDescritivoUseCase` | PascalCase com sufixo `UseCase` |
-| Interface | `NomeResponsabilidade` | PascalCase sem prefixo I |
+**IMPORTANTE**: Todas as interfaces e classes devem ter nomes em **inglês**, seguindo as convenções de nomenclatura do TypeScript e boas práticas internacionais de desenvolvimento.
 
-## Implementação Passo a Passo
+| Item | Padrão | Exemplo | Idioma |
+|------|--------|---------|--------|
+| Pasta | `use-cases/` | Sempre no singular | inglês |
+| Arquivo de interfaces | `interfaces.ts` | Um único arquivo por módulo | inglês |
+| Arquivo de use-case | `descriptive-name.usecase.ts` | kebab-case com sufixo `.usecase` | inglês |
+| Classe do use-case | `DescriptiveNameUseCase` | PascalCase com sufixo `UseCase` | inglês |
+| Interface | `ResponsibilityName` | PascalCase sem prefixo I | inglês |
+
+## [Implementação Passo a Passo de Use-Cases]()
 
 ### Passo 1: Definir as Interfaces
 
@@ -108,10 +236,11 @@ export interface GerarRelatorioFinanceiro {
 ```
 
 **Regras das Interfaces:**
-- Nome descritivo que indica a ação (verbo no infinitivo)
+- Nome descritivo que indica a ação (verbo no infinitivo) **em inglês**
 - Um único método público por interface
 - Parâmetros explícitos e tipados
 - Retorno sempre tipado (pode ser Promise)
+- **Sempre nomear interfaces e classes em inglês** (ex: `CalculateBalance`, `ProcessPayment`, `GenerateReport`)
 
 ### Passo 2: Criar o Use-Case
 
@@ -386,7 +515,7 @@ export class FinanceiroController {
 }
 ```
 
-## Princípios SOLID Aplicados
+## [Princípios SOLID Aplicados em Use-Cases]()
 
 ### S - Single Responsibility Principle
 Cada interface representa uma única responsabilidade. Se uma responsabilidade mudar, apenas um método é afetado.
@@ -487,7 +616,7 @@ export class FinanceiroService {
 }
 ```
 
-## Testando Use-Cases
+## [Testando Use-Cases com Mocks e Segregação de Interfaces]()
 
 Use-Cases são altamente testáveis devido à segregação de interfaces:
 
@@ -577,7 +706,7 @@ describe('RegrasFinanceirasUseCase', () => {
 });
 ```
 
-## Diferenças: Service vs Use-Case
+## [Comparação: Service Tradicional vs Use-Case]()
 
 Comparação entre abordagem tradicional com Services e abordagem com Use-Cases:
 
@@ -623,7 +752,7 @@ export class SaldoController {
 }
 ```
 
-## Boas Práticas
+## [Boas Práticas para Use-Cases Magros e Focados]()
 
 ### 1. Uma Interface = Um Método
 ```typescript
@@ -643,16 +772,25 @@ export interface ProcessarOperacao {
 }
 ```
 
-### 2. Nomenclatura Clara e Descritiva
+### 2. Nomenclatura Clara e Descritiva em Inglês
 ```typescript
-// ❌ Errado: Nomes genéricos
+// ❌ Errado: Nomes genéricos ou em português
 export interface Processar { }
 export interface Executar { }
-
-// ✅ Correto: Nomes descritivos
 export interface ProcessarInvestimento { }
-export interface ExecutarTransferenciaEntreContas { }
+
+// ✅ Correto: Nomes descritivos em inglês
+export interface ProcessInvestment { }
+export interface ExecuteTransferBetweenAccounts { }
+export interface CalculatePortfolioBalance { }
+export interface GenerateFinancialReport { }
 ```
+
+**Regra**: Todas as interfaces, classes e métodos devem ser nomeados em **inglês** para manter consistência com:
+- Convenções do TypeScript/JavaScript
+- Boas práticas internacionais
+- Facilitar colaboração em projetos globais
+- Manter compatibilidade com bibliotecas e frameworks
 
 ### 3. Use Type Aliases para Combinações
 ```typescript
@@ -666,16 +804,79 @@ export class FinanceiroService {
 }
 ```
 
-### 4. Mantenha Use-Cases Coesos
-```typescript
-// ✅ Use-Case coeso: Apenas operações financeiras
-export class RegrasFinanceirasUseCase
-  implements CalcularSaldo, ProcessarInvestimento { }
+### 4. Mantenha Use-Cases Magros e Coesos
 
-// ❌ Use-Case não coeso: Mistura domínios
-export class VariasRegrasUseCase
-  implements CalcularSaldo, EnviarEmail, ProcessarPedido { }
+**REGRA DE OURO**: Prefira **UMA classe use-case implementando UMA interface**.
+
+Isso resulta em **muitos arquivos pequenos**, e isso é exatamente o que queremos! É melhor ter 20 arquivos de 50 linhas cada do que 2 arquivos de 500 linhas.
+
+```typescript
+// ✅ EXCELENTE: Use-Case magro com uma única interface (PREFERENCIAL)
+export class CalculateBalanceUseCase implements CalculateBalance {
+  async calculateBalance(userId: number): Promise<number> {
+    // Implementação focada em UMA única responsabilidade
+    // Métodos privados auxiliares permitidos
+  }
+}
+
+// ✅ EXCELENTE: Outro use-case magro focado
+export class ProcessInvestmentUseCase implements ProcessInvestment {
+  async processInvestment(data: InvestmentData): Promise<Result> {
+    // Outra responsabilidade única em arquivo separado
+  }
+}
+
+// ✅ EXCELENTE: Mais um use-case magro
+export class GenerateReportUseCase implements GenerateReport {
+  async generateReport(params: ReportParams): Promise<Report> {
+    // Foco em uma única regra de negócio
+  }
+}
+
+// ⚠️ ACEITÁVEL: Apenas se as interfaces forem MUITO relacionadas (máximo 2-3)
+export class AccountOperationsUseCase
+  implements CalculateBalance, ProcessTransfer { }
+
+// ❌ EVITE: Use-Case com múltiplas interfaces
+export class FinancialOperationsUseCase
+  implements CalculateBalance, ProcessInvestment, GenerateReport { }
+
+// ❌ RUIM: Use-Case gordo com muitas interfaces
+export class AllFinancialRulesUseCase
+  implements Interface1, Interface2, Interface3, Interface4,
+             Interface5, Interface6, Interface7 { }
 ```
+
+**Hierarquia de Preferência**:
+1. **🥇 IDEAL**: 1 interface = 1 use-case (classe magra, regra única)
+2. **🥈 ACEITÁVEL**: 2-3 interfaces muito relacionadas em 1 use-case
+3. **🥉 EVITE**: Mais de 3 interfaces em 1 use-case
+4. **🚫 NUNCA**: Misturar domínios ou mais de 5 interfaces
+
+**Por que ter muitos arquivos pequenos é melhor?**
+- ✅ Cada arquivo representa UMA regra de negócio clara
+- ✅ Extremamente fácil de testar isoladamente
+- ✅ Fácil de encontrar e modificar código específico
+- ✅ Reduz conflitos em merges (arquivos menores)
+- ✅ Facilita code review (mudanças pequenas e focadas)
+- ✅ Permite composição flexível de funcionalidades
+- ✅ Segue religiosamente o Single Responsibility Principle
+
+**Exemplo real de organização:**
+```
+use-cases/
+├── calculate-portfolio-balance.usecase.ts       # 45 linhas
+├── calculate-asset-allocation.usecase.ts        # 38 linhas
+├── process-buy-order.usecase.ts                 # 52 linhas
+├── process-sell-order.usecase.ts                # 48 linhas
+├── calculate-profit-loss.usecase.ts             # 41 linhas
+├── generate-tax-report.usecase.ts               # 67 linhas
+├── validate-investment-limit.usecase.ts         # 33 linhas
+├── calculate-dividend-yield.usecase.ts          # 29 linhas
+└── sync-market-prices.usecase.ts                # 55 linhas
+```
+
+**Total**: 9 arquivos pequenos e focados ao invés de 1-2 arquivos grandes e confusos.
 
 ### 5. Documente as Interfaces
 ```typescript
@@ -691,14 +892,15 @@ export interface CalcularSaldoAtual {
 }
 ```
 
-## Checklist de Implementação
+## [Checklist de Implementação de Use-Cases]()
 
 Use esta lista para verificar se seu Use-Case está correto:
 
 - [ ] Arquivo `interfaces.ts` criado em `use-cases/`
 - [ ] Cada interface tem apenas um método
-- [ ] Nomes de interfaces são descritivos (verbo no infinitivo)
-- [ ] Use-Case implementa uma ou mais interfaces relacionadas
+- [ ] Nomes de interfaces são descritivos (verbo no infinitivo) **em inglês**
+- [ ] **Use-Case implementa preferencialmente 1 interface (ideal) ou no máximo 2-3 interfaces relacionadas**
+- [ ] Use-Case está "magro" - não implementa mais de 5 interfaces
 - [ ] Use-Case está registrado no `providers` do module
 - [ ] Use-Case é injetado via interface, não classe concreta
 - [ ] Métodos do Use-Case tratam regras de negócio complexas
@@ -707,7 +909,7 @@ Use esta lista para verificar se seu Use-Case está correto:
 - [ ] Testes unitários cobrem cada método isoladamente
 - [ ] Documentação das interfaces está completa
 
-## Troubleshooting
+## [Troubleshooting: Problemas Comuns em Use-Cases]()
 
 ### Erro: "Cannot resolve dependency"
 
@@ -747,27 +949,37 @@ constructor(
 
 ### Use-Case muito grande
 
-**Problema**: Use-Case implementa mais de 5 interfaces.
+**Problema**: Use-Case implementa mais de 5 interfaces, tornando a classe "gorda" e difícil de manter.
 
-**Solução**: Divida em múltiplos Use-Cases coesos:
+**Solução**: Divida em múltiplos Use-Cases magros e coesos. **Prefira sempre 1 interface por use-case**.
 
 ```typescript
-// Em vez de um Use-Case gigante
-export class TodasRegrasFinanceirasUseCase
+// ❌ RUIM: Use-Case gigante e gordo
+export class AllFinancialRulesUseCase
   implements Interface1, Interface2, Interface3, Interface4, Interface5, Interface6 { }
 
-// Divida em Use-Cases específicos
-export class RegrasContaCorrenteUseCase
-  implements Interface1, Interface2 { }
+// ✅ IDEAL: Use-Cases magros com uma interface cada
+export class CalculateBalanceUseCase implements CalculateBalance { }
+export class ProcessInvestmentUseCase implements ProcessInvestment { }
+export class GenerateReportUseCase implements GenerateReport { }
+export class ValidateCreditUseCase implements ValidateCredit { }
+export class CalculateInterestUseCase implements CalculateInterest { }
+export class ProcessTransferUseCase implements ProcessTransfer { }
 
-export class RegrasInvestimentoUseCase
-  implements Interface3, Interface4 { }
+// ✅ ALTERNATIVA: Use-Cases com interfaces muito relacionadas (máx 2-3)
+export class CheckingAccountRulesUseCase
+  implements CalculateBalance, ProcessTransfer { }
 
-export class RegrasRelatorioUseCase
-  implements Interface5, Interface6 { }
+export class InvestmentRulesUseCase
+  implements ProcessInvestment, CalculateInterest { }
+
+export class ReportRulesUseCase
+  implements GenerateReport, ValidateCredit { }
 ```
 
-## Exemplo Completo: Módulo de Pedidos
+**Recomendação**: Sempre que possível, crie use-cases com **uma única interface** para manter as classes magras, focadas e fáceis de testar.
+
+## [Exemplo Completo: Módulo de Pedidos com Use-Cases]()
 
 Exemplo completo de um módulo real usando Use-Cases:
 
@@ -908,7 +1120,7 @@ export class PedidoController {
 }
 ```
 
-## Referências
+## [Referências sobre Use-Cases e SOLID]()
 
 - [NestJS Providers](https://docs.nestjs.com/providers)
 - [SOLID Principles](https://en.wikipedia.org/wiki/SOLID)

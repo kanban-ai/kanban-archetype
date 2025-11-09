@@ -2,7 +2,7 @@
 
 > Padrão de organização de arquivos e pastas para módulos NestJS no projeto.
 
-## [Estrutura Padrão]()
+## [Estrutura Padrão de Módulo NestJS]()
 
 Organização padrão de arquivos e pastas para módulos NestJS, seguindo convenções e boas práticas do framework.
 
@@ -23,7 +23,7 @@ src/modules/nome-do-modulo/
     > nome-do-modulo-status.enum.ts
 ```
 
-## [Descrição dos Arquivos]()
+## [Descrição e Responsabilidade de Cada Arquivo do Módulo]()
 
 Explicação detalhada da responsabilidade e conteúdo de cada tipo de arquivo na estrutura de um módulo.
 
@@ -146,7 +146,7 @@ import { PartialType } from '@nestjs/swagger';
 export class UpdateNomeDoModuloDto extends PartialType(CreateNomeDoModuloDto) {}
 ```
 
-## [Quando Criar Use-Cases]()
+## [Quando Criar Pasta Use-Cases no Módulo]()
 
 Use pasta `use-cases/` quando:
 - Regras de negócio complexas com múltiplas transações
@@ -192,7 +192,7 @@ export class RegrasFinanceirasUseCase
 
 **Veja mais**: [Como criar Use-Cases](./como-criar-use-case-backend.md)
 
-## [Quando Usar Enums]()
+## [Quando Criar Enums no Módulo Backend]()
 
 Use pasta `enums/` para valores fixos:
 
@@ -209,7 +209,7 @@ export enum AlertType {
 type: AlertType;
 ```
 
-## [Exemplo Real do Projeto]()
+## [Exemplos Reais: Módulos Simples e Complexos]()
 
 Exemplos concretos de estruturas de módulos simples e complexos utilizados no projeto real.
 
@@ -247,22 +247,28 @@ src/modules/financeiro/
     > tipo-transacao.enum.ts
 ```
 
-## [Convenções de Nomenclatura]()
+## [Convenções de Nomenclatura em Inglês para Classes e Interfaces]()
 
 Tabela de referência com padrões de nomenclatura para cada tipo de arquivo e classe no módulo.
 
-| Item | Padrão | Exemplo |
-|------|--------|---------|
-| Pasta do módulo | kebab-case | `asset-group` |
-| Arquivo | kebab-case | `asset-group.service.ts` |
-| Classe | PascalCase | `AssetGroupService` |
-| Entity | PascalCase | `AssetGroup` |
-| DTO | PascalCase | `CreateAssetGroupDto` |
-| Interface (Use-Case) | PascalCase sem I | `CalcularSaldo` |
-| Use-Case | PascalCase com UseCase | `RegrasFinanceirasUseCase` |
-| Enum | PascalCase | `AssetStatus` |
+**IMPORTANTE**: Todas as classes, interfaces, entities, DTOs, enums e use-cases devem ser nomeados em **inglês**, seguindo as convenções internacionais de desenvolvimento TypeScript.
 
-## [Organização por Tamanho]()
+| Item | Padrão | Exemplo | Idioma |
+|------|--------|---------|--------|
+| Pasta do módulo | kebab-case | `asset-group` | inglês |
+| Arquivo | kebab-case | `asset-group.service.ts` | inglês |
+| Classe | PascalCase | `AssetGroupService` | inglês |
+| Entity | PascalCase | `AssetGroup` | inglês |
+| DTO | PascalCase | `CreateAssetGroupDto` | inglês |
+| Interface (Use-Case) | PascalCase sem I | `CalculateBalance` | inglês |
+| Use-Case | PascalCase com UseCase | `FinancialRulesUseCase` | inglês |
+| Enum | PascalCase | `AssetStatus` | inglês |
+
+**Exemplos de nomenclatura correta**:
+- ✅ `ProcessInvestment`, `CalculateBalance`, `GenerateReport`
+- ❌ `ProcessarInvestimento`, `CalcularSaldo`, `GerarRelatorio`
+
+## [Organização de Módulo por Tamanho e Complexidade]()
 
 Recomendações de organização de código baseadas no tamanho e complexidade do módulo.
 
@@ -315,7 +321,7 @@ modulo/
     > modulo-permission.guard.ts
 ```
 
-## [Localização dos Módulos]()
+## [Localização dos Módulos na Estrutura do Projeto]()
 
 Estrutura hierárquica de diretórios do projeto indicando onde os módulos de domínio devem ser criados.
 
@@ -333,7 +339,7 @@ back/src/
     > ...
 ```
 
-## [Dicas]()
+## [Dicas Práticas para Organização de Módulos]()
 
 1. **Um módulo = Uma responsabilidade**: Não misture domínios
 2. **Comece simples**: Não crie pastas desnecessárias
