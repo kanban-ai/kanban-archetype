@@ -317,6 +317,8 @@ Arquitetura, organização de código e padrões de design para módulos escalá
 - **Princípios Fundamentais** - Single Responsibility, DI, Inversão
 - **1. Single Responsibility** - Uma classe, uma responsabilidade
 - **2. Dependency Injection** - Injetar dependências
+- **Padrões de Implementação** - Use-Case (PRINCIPAL), Repository, DTO, Strategy, Factory
+- **1. Use-Case Pattern** - ⭐ Padrão PRINCIPAL para regras de negócio complexas (consulte ./como-criar-use-case-backend.md)
 - **3. Inversão de Dependência** - Depender de abstrações
 - **Repository Pattern** - TypeORM repository
 - **DTO Pattern** - Validação e transferência

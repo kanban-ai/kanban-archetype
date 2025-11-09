@@ -103,7 +103,77 @@ export class ProductService {
 
 Padrões de design comprovados para estruturar código escalável e manutenível em aplicações NestJS.
 
-### [1. Repository Pattern (TypeORM)]()
+### [1. Use-Case Pattern (Padrão Principal para Regras de Negócio)]()
+
+**Para regras de negócio complexas, SEMPRE use Use-Cases.**
+
+Use-Cases são o padrão recomendado para implementar lógica de negócio complexa no backend. Eles seguem o princípio de segregação de interfaces (ISP) e promovem código testável e manutenível.
+
+**Quando usar Use-Cases:**
+- Regras de negócio complexas com múltiplas transações
+- Operações que envolvem múltiplas entidades
+- Lógica que precisa ser testada isoladamente
+- Processos que podem ter múltiplas implementações
+
+**Quando NÃO usar Use-Cases:**
+- CRUD simples e operações diretas
+- Leitura/escrita básica sem processamento
+- Consultas triviais sem regras de negócio
+
+**Estrutura básica:**
+```typescript
+// 1. Definir interface com uma responsabilidade
+export interface CalculateBalance {
+  calculateBalance(userId: number): Promise<number>;
+}
+
+// 2. Implementar Use-Case magro (1 interface = 1 use-case)
+@Injectable()
+export class CalculateBalanceUseCase implements CalculateBalance {
+  constructor(
+    @InjectRepository(Transaction)
+    private readonly transactionRepository: Repository<Transaction>,
+  ) {}
+
+  async calculateBalance(userId: number): Promise<number> {
+    // Implementação com métodos privados auxiliares
+    const credits = await this.getCredits(userId);
+    const debits = await this.getDebits(userId);
+    return credits - debits;
+  }
+
+  private async getCredits(userId: number): Promise<number> {
+    // Lógica auxiliar privada
+  }
+
+  private async getDebits(userId: number): Promise<number> {
+    // Lógica auxiliar privada
+  }
+}
+
+// 3. Injetar no controller via interface
+@Controller('balance')
+export class BalanceController {
+  constructor(
+    private readonly calculateBalance: CalculateBalance,
+  ) {}
+
+  @Get()
+  async getBalance(@Request() req) {
+    return await this.calculateBalance.calculateBalance(req.user.userId);
+  }
+}
+```
+
+**IMPORTANTE**: Consulte a documentação completa em `./como-criar-use-case-backend.md` para:
+- Estrutura de arquivos e pastas
+- Convenções de nomenclatura (sempre em inglês)
+- Use-Cases magros (1 interface por use-case)
+- Exemplos completos e boas práticas
+- Testes unitários
+- Comparação com Services tradicionais
+
+### [2. Repository Pattern (TypeORM)]()
 
 Use repository do TypeORM para acesso a dados:
 
@@ -123,7 +193,7 @@ export class ProductService {
 }
 ```
 
-### [2. DTO Pattern]()
+### [3. DTO Pattern]()
 
 Use DTOs para validação e transferência de dados:
 
@@ -155,7 +225,7 @@ async create(dto: CreateProductDto, userId: number) {
 }
 ```
 
-### [3. Strategy Pattern]()
+### [4. Strategy Pattern]()
 
 Use quando há múltiplas implementações de um comportamento:
 
@@ -203,7 +273,7 @@ export class PaymentService {
 }
 ```
 
-### [4. Factory Pattern]()
+### [5. Factory Pattern]()
 
 Use para criação complexa de objetos:
 
@@ -240,6 +310,27 @@ modulo/
  dto/                    # Validação
  services/               # Sub-services
 ```
+
+**Estrutura Recomendada com Use-Cases:**
+
+```
+modulo/
+ modulo.controller.ts    # Camada HTTP
+ modulo.service.ts        # CRUD simples e operações diretas
+ use-cases/              # ⭐ Regras de negócio complexas (RECOMENDADO)
+   interfaces.ts         # Interfaces segregadas por responsabilidade
+   calculate-balance.usecase.ts
+   process-payment.usecase.ts
+   generate-report.usecase.ts
+ entities/               # Modelo de dados TypeORM
+ dto/                    # Validação de entrada/saída
+ services/               # Sub-services auxiliares
+```
+
+**IMPORTANTE**:
+- ✅ Use **Use-Cases** para regras de negócio complexas, múltiplas transações e lógica que precisa ser testada isoladamente
+- ✅ Use **Service** apenas para CRUD simples e operações diretas
+- ✅ Consulte `./como-criar-use-case-backend.md` para documentação completa sobre Use-Cases
 
 ### [Exemplo Real]()
 
@@ -446,7 +537,9 @@ export class ProductService {
 
 ## [Checklist de Escalabilidade]()
 
-- [ ] Um service = Uma responsabilidade
+- [ ] **Use-Cases para regras de negócio complexas** (consulte `./como-criar-use-case-backend.md`)
+- [ ] Um service = Uma responsabilidade (CRUD simples)
+- [ ] Segregação de interfaces (Use-Case Pattern)
 - [ ] Injeção de dependência em tudo
 - [ ] Validação com DTOs
 - [ ] Tratamento de erros com exceções apropriadas
@@ -455,20 +548,26 @@ export class ProductService {
 - [ ] Logging em pontos críticos
 - [ ] Documentação Swagger
 - [ ] Código type-safe (TypeScript)
+- [ ] Nomenclatura em inglês para classes, interfaces e métodos
 
 ## [Dicas Finais]()
 
-1. **Comece simples**: Não otimize prematuramente
-2. **Refatore quando necessário**: Quando passar de 300 linhas
-3. **Use interfaces**: Para desacoplar implementações
-4. **Evite lógica no controller**: Controller só roteia
-5. **Service só lógica de negócio**: Sem acesso a HTTP
-6. **Teste isoladamente**: Mock de dependências
-7. **Doc inline**: Comente código complexo
-8. **Consistência**: Siga os padrões do projeto
+1. **Use Use-Cases para regras complexas**: Sempre que houver múltiplas transações ou lógica de negócio complexa
+2. **Prefira Use-Cases magros**: 1 interface por use-case (consulte `./como-criar-use-case-backend.md`)
+3. **Comece simples**: Não otimize prematuramente
+4. **Refatore quando necessário**: Quando passar de 300 linhas ou houver complexidade
+5. **Use interfaces**: Para desacoplar implementações (Use-Case Pattern)
+6. **Evite lógica no controller**: Controller só roteia, Use-Case processa
+7. **Service apenas para CRUD simples**: Regras complexas vão em Use-Cases
+8. **Teste isoladamente**: Mock de interfaces, não de classes concretas
+9. **Doc inline**: Comente código complexo
+10. **Consistência**: Siga os padrões do projeto
+11. **Nomenclatura em inglês**: Classes, interfaces e métodos sempre em inglês
 
 ## [Referências]()
 
+- **[Use-Cases no Backend](./como-criar-use-case-backend.md)** - Documentação completa sobre Use-Case Pattern
 - [NestJS Best Practices](https://docs.nestjs.com/techniques/performance)
 - [Clean Architecture](https://blog.cleancoder.com/uncle-bob/2012/08/13/the-clean-architecture.html)
 - [SOLID Principles](https://en.wikipedia.org/wiki/SOLID)
+- [Interface Segregation Principle](https://en.wikipedia.org/wiki/Interface_segregation_principle)
