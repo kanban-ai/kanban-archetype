@@ -25,6 +25,7 @@ show_menu() {
     echo -e "${GREEN}4)${NC} Indexar Documentos"
     echo -e "${GREEN}5)${NC} Executar Aplicação (run-dev.sh)"
     echo -e "${GREEN}6)${NC} Executar Testes do Backend"
+    echo -e "${GREEN}7)${NC} Aplicar Migrations"
     echo -e "${GREEN}0)${NC} Sair"
     echo ""
     echo -ne "${YELLOW}Escolha uma opção:${NC} "
@@ -213,6 +214,37 @@ run_backend_tests() {
     read -n 1
 }
 
+# Função para aplicar migrations
+run_migration() {
+    local BACKEND_DIR="$PROJECT_ROOT/backend"
+
+    echo -e "\n${YELLOW}Verificando diretório do backend...${NC}"
+
+    if [ ! -d "$BACKEND_DIR" ]; then
+        echo -e "\n${RED}Erro: Diretório backend não encontrado em $BACKEND_DIR${NC}"
+        echo -e "\nPressione qualquer tecla para continuar..."
+        read -n 1
+        return 1
+    fi
+
+    echo -e "\n${GREEN}Aplicando migrations...${NC}\n"
+
+    cd "$BACKEND_DIR"
+    npm run migration:run
+
+    local EXIT_CODE=$?
+    if [ $EXIT_CODE -eq 0 ]; then
+        echo -e "\n${GREEN}Migrations aplicadas com sucesso!${NC}"
+    else
+        echo -e "\n${RED}Erro ao aplicar migrations (código: $EXIT_CODE)${NC}"
+    fi
+
+    cd "$PROJECT_ROOT"
+
+    echo -e "\nPressione qualquer tecla para continuar..."
+    read -n 1
+}
+
 # Loop principal do menu
 main() {
     # Verificar se está no diretório correto
@@ -246,6 +278,9 @@ main() {
                 ;;
             6)
                 run_backend_tests
+                ;;
+            7)
+                run_migration
                 ;;
             0)
                 echo -e "\n\n${GREEN}Saindo...${NC}"
