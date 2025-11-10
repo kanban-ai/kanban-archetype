@@ -24,6 +24,7 @@ show_menu() {
     echo -e "${GREEN}3)${NC} Logs Frontend (tail -f)"
     echo -e "${GREEN}4)${NC} Indexar Documentos"
     echo -e "${GREEN}5)${NC} Executar Aplicação (run-dev.sh)"
+    echo -e "${GREEN}6)${NC} Executar Testes do Backend"
     echo -e "${GREEN}0)${NC} Sair"
     echo ""
     echo -ne "${YELLOW}Escolha uma opção:${NC} "
@@ -181,6 +182,37 @@ run_app() {
     read -n 1
 }
 
+# Função para executar testes do backend
+run_backend_tests() {
+    local BACKEND_DIR="$PROJECT_ROOT/backend"
+
+    echo -e "\n${YELLOW}Verificando diretório do backend...${NC}"
+
+    if [ ! -d "$BACKEND_DIR" ]; then
+        echo -e "\n${RED}Erro: Diretório backend não encontrado em $BACKEND_DIR${NC}"
+        echo -e "\nPressione qualquer tecla para continuar..."
+        read -n 1
+        return 1
+    fi
+
+    echo -e "\n${GREEN}Executando testes do backend...${NC}\n"
+
+    cd "$BACKEND_DIR"
+    npm run test
+
+    local EXIT_CODE=$?
+    if [ $EXIT_CODE -eq 0 ]; then
+        echo -e "\n${GREEN}Testes executados com sucesso!${NC}"
+    else
+        echo -e "\n${RED}Erro ao executar testes (código: $EXIT_CODE)${NC}"
+    fi
+
+    cd "$PROJECT_ROOT"
+
+    echo -e "\nPressione qualquer tecla para continuar..."
+    read -n 1
+}
+
 # Loop principal do menu
 main() {
     # Verificar se está no diretório correto
@@ -211,6 +243,9 @@ main() {
                 ;;
             5)
                 run_app
+                ;;
+            6)
+                run_backend_tests
                 ;;
             0)
                 echo -e "\n\n${GREEN}Saindo...${NC}"
