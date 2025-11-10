@@ -2,20 +2,20 @@
 
 > Guia completo para configurar um projeto React + TypeScript + Vite + Tailwind CSS do zero.
 
-## [Vis�o Geral]()
+## [Visão Geral]()
 
 Este guia mostra como criar um projeto frontend moderno usando:
 - React v19+ para UI
 - TypeScript para type safety
-- Vite para build r�pido
-- Tailwind CSS para estiliza��o
+- Vite para build rápido
+- Tailwind CSS para estilização
 - React Router para roteamento
 
-## [Pr�-requisitos]()
+## [Pré-requisitos]()
 
-- **Node.js**: Vers�o 18 ou superior
+- **Node.js**: Versão 18 ou superior
 - **npm**, **yarn** ou **pnpm**: Gerenciador de pacotes
-- Editor de c�digo (VS Code recomendado)
+- Editor de código (VS Code recomendado)
 
 ## [Passo 1: Criar Projeto com Vite]()
 
@@ -28,14 +28,14 @@ npm create vite@latest frontend -- --template react-swc-ts
 # Acessar pasta
 cd frontend
 
-# Instalar depend�ncias
+# Instalar dependências
 npm install
 ```
 
 **O que foi criado:**
 - Estrutura base do React
-- Configura��o TypeScript
-- Vite configurado com SWC (transpilador r�pido)
+- Configuração TypeScript
+- Vite configurado com SWC (transpilador rápido)
 - Scripts de dev e build
 
 ## [Passo 2: Instalar Tailwind CSS v4]()
@@ -205,19 +205,19 @@ Criar a seguinte estrutura:
 ```
 frontend/
  src/
-    components/        # Componentes reutiliz�veis
+    components/        # Componentes reutilizáveis
        common/        # Componentes comuns (Button, Input, etc)
-    pages/             # P�ginas da aplica��o
+    pages/             # Páginas da aplicação
     services/          # Services para API
-    config/            # Configura��es (routes, api)
+    config/            # Configurações (routes, api)
     contexts/          # React Contexts
     hooks/             # Custom hooks
     types/             # TypeScript types/interfaces
-    utils/             # Fun��es utilit�rias
+    utils/             # Funções utilitárias
     App.tsx            # Componente principal
     main.tsx           # Entry point
     index.css          # Estilos globais
- public/                # Arquivos est�ticos
+ public/                # Arquivos estáticos
  index.html             # HTML base
  package.json
  tsconfig.json
@@ -242,7 +242,7 @@ mkdir -p src/utils
 
 **Documentação completa**: Ver `.rules/qual-padrao-de-nomenclatura-de-componentes-react-frontend.md` seção "Estrutura de Pastas: Mínima vs Completa".
 
-## [Passo 7: Configurar Vari�veis de Ambiente]()
+## [Passo 7: Configurar Variáveis de Ambiente]()
 
 Setup de arquivos .env para armazenar URLs da API e outras configurações sensíveis.
 
@@ -347,7 +347,7 @@ const api = axios.create({
   },
 });
 
-// Interceptor para adicionar token em todas requisi��es
+// Interceptor para adicionar token em todas requisições
 api.interceptors.request.use((config) => {
   const token = localStorage.getItem('token');
 
@@ -363,7 +363,7 @@ api.interceptors.response.use(
   (response) => response,
   (error) => {
     if (error.response?.status === 401) {
-      // Token inv�lido/expirado - limpar dados locais
+      // Token inválido/expirado - limpar dados locais
       localStorage.removeItem('token');
       localStorage.removeItem('user');
       // Permitir que o componente lide com o redirecionamento
@@ -418,7 +418,7 @@ function App() {
 export default App;
 ```
 
-## [Passo 11: Criar P�gina Inicial]()
+## [Passo 11: Criar Página Inicial]()
 
 **Arquivo**: `src/pages/HomePage.tsx`
 
@@ -449,7 +449,7 @@ Comandos para executar o projeto em modo desenvolvimento, produção e verificar
 # Rodar em desenvolvimento
 npm run dev
 
-# Build de produ��o
+# Build de produção
 npm run build
 
 # Preview do build
@@ -464,7 +464,7 @@ npm run lint
 
 Acesse: `http://localhost:5173`
 
-## [Configura��es Adicionais (Opcional)]()
+## [Configurações Adicionais (Opcional)]()
 
 Ferramentas opcionais de qualidade de código e extensões VS Code para melhorar produtividade.
 
@@ -594,17 +594,17 @@ export default defineConfig({
 })
 ```
 
-## [Pr�ximos Passos]()
+## [Próximos Passos]()
 
-Ap�s concluir o setup inicial:
+Após concluir o setup inicial:
 
-1. **Autentica��o**: Implementar sistema de login/logout
+1. **Autenticação**: Implementar sistema de login/logout
    - Ver: `./como-consumir-api-frontend.md`
 
-2. **Componentes Comuns**: Criar biblioteca de componentes reutiliz�veis
+2. **Componentes Comuns**: Criar biblioteca de componentes reutilizáveis
    - Ver: `./como-criar-componentes-comum-frontend.md`
 
-3. **Rotas Protegidas**: Implementar guards de autentica��o
+3. **Rotas Protegidas**: Implementar guards de autenticação
    - Ver: `./como-funciona-as-rotas-no-frontend.md`
 
 4. **Consumir API**: Criar services e integrar com backend
@@ -616,7 +616,7 @@ Soluções para problemas comuns durante a instalação e configuração do proj
 
 ### [Erro: Cannot find module '@/*']()
 
-**Solu��o**: Verifique se configurou path aliases no `tsconfig.json` e `vite.config.ts`
+**Solução**: Verifique se configurou path aliases no `tsconfig.json` e `vite.config.ts`
 
 ### [Tailwind não está funcionando]()
 
@@ -681,7 +681,7 @@ export default defineConfig({
 
 ### [Erro de CORS ao fazer requests]()
 
-**Solu��o**: Configure CORS no backend ou use proxy do Vite:
+**Solução**: Configure CORS no backend ou use proxy do Vite:
 
 ```typescript
 // vite.config.ts
@@ -697,7 +697,7 @@ export default defineConfig({
 })
 ```
 
-## [Refer�ncias]()
+## [Referências]()
 
 - [Vite Documentation](https://vite.dev/)
 - [React Documentation](https://react.dev/)
