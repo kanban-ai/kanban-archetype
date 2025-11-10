@@ -225,7 +225,7 @@ Documentação sobre TypeORM, entities, migrations e gerenciamento de schema do 
 - **migration:revert** - Reverter última
 - **migration:show** - Listar status
 - **db:drop** - Resetar banco
-- **Fluxo de Trabalho** - Criar entity â gerar â executar
+- **Fluxo de Trabalho** - Criar entity - gerar - executar
 - **Configuração DataSource** - database.config.ts
 - **Dependências Necessárias** - ts-node, tsconfig-paths
 - **Scripts Adicionais** - seed, check, backup
@@ -239,7 +239,7 @@ Guias de implementação de autenticação JWT, API Key e estratégias de segura
 ### [Autenticação JWT - `./como-deve-funcionar-autenticacao.md`]()
 
 - **Visão Geral** - Sistema JWT completo
-- **Fluxo de Autenticação** - Signup â Login â Requisições
+- **Fluxo de Autenticação** - Signup - Login - Requisições
 - **User Entity** - Modelo de usuário
 - **JWT Strategy** - Validação de token
 - **Local Strategy** - Login com credenciais
@@ -324,7 +324,7 @@ Arquitetura, organização de código e padrões de design para módulos escalá
 - **DTO Pattern** - Validação e transferência
 - **Strategy Pattern** - Múltiplas implementações
 - **Factory Pattern** - Criação complexa
-- **Separação por Camadas** - Controller â Service â Repository
+- **Separação por Camadas** - Controller - Service - Repository
 - **Error Handling** - Exceções do NestJS
 - **Validação de Ownership** - Filtrar por userId
 - **Transações** - Operações atômicas

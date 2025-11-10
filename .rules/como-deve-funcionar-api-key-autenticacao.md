@@ -12,7 +12,7 @@ API Key é uma chave de autenticação alternativa ao JWT, usada para:
 
 ## [Quando Usar]()
 
--  **Use API Key**: Integração backend-to-backend, cron jobs, webhooks
+-  **Use API Key**: Integração backend-to-backend, cron jobs, webhooks
 - L **Use JWT**: Autenticação de usuários, frontend, apps mobile
 
 ## [Implementação]()

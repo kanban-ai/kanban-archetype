@@ -354,7 +354,7 @@ Funcionalidades e decisões de design implementadas no projeto frontend.
 - Componentes adaptáveis
 
 ### [Acessibilidade]()
-- Semântica HTML adequada
+- Sem-ntica HTML adequada
 - ARIA labels quando necessário
 - Contraste adequado (dark mode)
 

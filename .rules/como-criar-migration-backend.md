@@ -412,9 +412,9 @@ npm run typeorm -- migration:run
 ### [4. Nomeie adequadamente]()
 
 Use nomes descritivos:
--  `CreateProductsTable`
--  `AddActiveToUsers`
--  `CreateIndexOnQuotesDate`
+-  `CreateProductsTable`
+-  `AddActiveToUsers`
+-  `CreateIndexOnQuotesDate`
 - L `Migration1`
 - L `UpdateTable`
 
@@ -428,7 +428,7 @@ L **Ruim**:
 // Cria 3 tabelas diferentes em uma migration
 ```
 
- **Bom**:
+ **Bom**:
 ```typescript
 // CreateProductsTable.ts
 // CreateCategoriesTable.ts

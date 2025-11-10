@@ -17,22 +17,22 @@ Esta seção apresenta a organização dos arquivos relacionados ao sistema de r
 
 ```
 src/
- App.tsx                      # Configura rotas
- config/
-    routes.config.tsx        # Definição centralizada de rotas
- components/
-    Layout.tsx               # Layout com navegação
-    PrivateRoute.tsx         # Guard de autenticação
- pages/                       # Componentes de página
-     auth/
-        Login.tsx
-        Signup.tsx
-     views/
-        OverviewPage.tsx
-        ...
-     assets/
-         AssetListPage.tsx
-         ...
+ App.tsx                      # Configura rotas
+ config/
+    routes.config.tsx        # Definição centralizada de rotas
+ components/
+    Layout.tsx               # Layout com navegação
+    PrivateRoute.tsx         # Guard de autenticação
+ pages/                       # Componentes de página
+     auth/
+        Login.tsx
+        Signup.tsx
+     views/
+        OverviewPage.tsx
+        ...
+     assets/
+         AssetListPage.tsx
+         ...
 ```
 
 ## [Configuração Centralizada]()
@@ -455,7 +455,7 @@ function ProductForm() {
 }
 ```
 
-## [Menu Dinâmico]()
+## [Menu Din-mico]()
 
 Esta seção apresenta como gerar um menu de navegação automaticamente a partir da configuração de rotas.
 

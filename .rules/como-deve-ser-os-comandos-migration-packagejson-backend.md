@@ -132,7 +132,7 @@ npm run db:drop
 - Desenvolvimento local
 - Testes
 
-**  CUIDADO**: Apaga todos os dados!
+**CUIDADO**: Apaga todos os dados!
 
 ## [Fluxo de Trabalho para criar e aplicar Migrations]()
 

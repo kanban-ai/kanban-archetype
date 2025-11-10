@@ -17,11 +17,11 @@ Esta seção define onde os componentes comuns devem ser armazenados na estrutur
 
 ```
 src/components/common/
- Button.tsx
- Modal.tsx
- Card.tsx
- Input.tsx
- ...
+ Button.tsx
+ Modal.tsx
+ Card.tsx
+ Input.tsx
+ ...
 ```
 
 ## [Exemplos Práticos]()
@@ -112,7 +112,7 @@ export function Modal({ isOpen, onClose, title, children, footer }: ModalProps) 
             onClick={onClose}
             className="text-gray-500 hover:text-gray-700"
           >
-            
+            
           </button>
         </div>
 
@@ -333,7 +333,7 @@ export function Alert({ type, message, onClose }: AlertProps) {
       <span>{message}</span>
       {onClose && (
         <button onClick={onClose} className="ml-4 font-bold">
-          
+          
         </button>
       )}
     </div>
@@ -460,7 +460,7 @@ interface ButtonProps {
   variant?: string;
 }
 
-//  Bom
+//  Bom
 interface ButtonProps {
   variant?: 'primary' | 'secondary' | 'danger';
 }
@@ -489,15 +489,15 @@ Esta seção explica como organizar os arquivos de componentes comuns e criar um
 
 ```
 src/components/common/
- Button.tsx
- Input.tsx
- Modal.tsx
- Card.tsx
- Alert.tsx
- Badge.tsx
- Spinner.tsx
- Select.tsx
- index.ts  # Re-export tudo
+ Button.tsx
+ Input.tsx
+ Modal.tsx
+ Card.tsx
+ Alert.tsx
+ Badge.tsx
+ Spinner.tsx
+ Select.tsx
+ index.ts  # Re-export tudo
 ```
 
 **index.ts**:

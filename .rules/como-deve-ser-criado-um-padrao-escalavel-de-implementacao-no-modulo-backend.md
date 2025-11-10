@@ -303,12 +303,12 @@ Estruturação de código em camadas bem definidas para facilitar manutenção e
 
 ```
 modulo/
- modulo.controller.ts    # Camada HTTP
- modulo.service.ts        # Camada de negócio
- modulo.repository.ts     # Camada de dados (opcional)
- entities/               # Modelo de dados
- dto/                    # Validação
- services/               # Sub-services
+ modulo.controller.ts    # Camada HTTP
+ modulo.service.ts        # Camada de negócio
+ modulo.repository.ts     # Camada de dados (opcional)
+ entities/               # Modelo de dados
+ dto/                    # Validação
+ services/               # Sub-services
 ```
 
 **Estrutura Recomendada com Use-Cases:**

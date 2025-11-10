@@ -40,14 +40,14 @@ Durante a execução do comando CLI, você será questionado sobre configuraçõ
 Isso criará:
 ```
 src/modules/nome-do-modulo/
- nome-do-modulo.module.ts
- nome-do-modulo.controller.ts
- nome-do-modulo.service.ts
- entities/
-    nome-do-modulo.entity.ts
- dto/
-     create-nome-do-modulo.dto.ts
-     update-nome-do-modulo.dto.ts
+ nome-do-modulo.module.ts
+ nome-do-modulo.controller.ts
+ nome-do-modulo.service.ts
+ entities/
+    nome-do-modulo.entity.ts
+ dto/
+     create-nome-do-modulo.dto.ts
+     update-nome-do-modulo.dto.ts
 ```
 
 ## [Passo 2: Criar Entity TypeORM como modelo de dados]()
