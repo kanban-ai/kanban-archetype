@@ -41,7 +41,42 @@ Componente **reutilizável genérico** usado em múltiplos lugares:
 - Configurável via props
 - Exemplos: `Button`, `Card`, `Modal`, `Input`
 
-## [Estrutura de Pastas com Nomenclatura]()
+## [Estrutura de Pastas: Mínima vs Completa]()
+
+A estrutura de pastas do projeto pode começar simples e evoluir conforme a complexidade aumenta.
+
+### [Estrutura Mínima (Setup Inicial)]()
+
+Para projetos novos ou pequenos, comece com estrutura simplificada:
+
+```
+src/
+├── components/
+│   └── common/              # Todos os componentes reutilizáveis
+│       ├── Button.tsx
+│       ├── Input.tsx
+│       ├── Modal.tsx
+│       └── MetricCard.tsx
+├── pages/                   # Páginas da aplicação
+│   ├── LoginPage.tsx
+│   ├── SignupPage.tsx
+│   └── HomePage.tsx
+├── services/                # Services de API
+│   ├── api.ts              # Instância Axios
+│   └── auth.service.ts
+├── contexts/                # Context providers
+│   └── AuthProvider.tsx
+├── hooks/                   # Custom hooks
+│   └── useAuth.ts
+├── types/                   # TypeScript types
+└── utils/                   # Funções utilitárias
+```
+
+**Quando usar:** Setup inicial, projetos pequenos (<10 componentes), MVPs
+
+### [Estrutura Completa (Projeto em Produção)]()
+
+Conforme o projeto cresce, organize componentes em subpastas especializadas:
 
 ```
 src/
@@ -85,14 +120,54 @@ src/
 │   └── dashboard/
 │       ├── OverviewPage.tsx
 │       └── PerformancePage.tsx
+├── services/                # Services de API
+│   ├── api.ts              # Instância Axios
+│   ├── auth.service.ts
+│   ├── asset.service.ts
+│   └── user.service.ts
 ├── contexts/                # Context providers
 │   ├── AuthProvider.tsx
 │   ├── ToastProvider.tsx
 │   └── ThemeProvider.tsx
-└── hooks/                   # Custom hooks
-    ├── useAuth.ts
-    ├── useNotifications.ts
-    └── useDebounce.ts
+├── hooks/                   # Custom hooks
+│   ├── useAuth.ts
+│   ├── useNotifications.ts
+│   └── useDebounce.ts
+├── types/                   # TypeScript types/interfaces
+│   ├── auth.ts
+│   └── models/
+│       ├── user.ts
+│       └── asset.ts
+├── utils/                   # Funções utilitárias
+│   ├── currency.utils.ts
+│   └── date.utils.ts
+└── config/                  # Configurações
+    └── routes.config.tsx
+```
+
+**Quando usar:** Projeto em produção, >20 componentes, múltiplos módulos
+
+### [Migração: Mínima → Completa]()
+
+**Quando migrar subpastas:**
+
+1. **`forms/`**: Quando tiver 3+ formulários específicos
+2. **`layouts/`**: Quando tiver 2+ layouts diferentes (ex: auth + dashboard)
+3. **`sections/`**: Quando tiver seções grandes reutilizáveis em múltiplas páginas
+4. **`guards/`**: Quando implementar controle de acesso (ex: PrivateRoute, AdminRoute)
+5. **`containers/`**: Quando tiver componentes com lógica de estado complexa
+
+**Como migrar:**
+```bash
+# Criar novas pastas
+mkdir -p src/components/{forms,layouts,sections,guards,containers}
+
+# Mover arquivos
+mv src/components/common/LoginForm.tsx src/components/forms/
+mv src/components/common/MainLayout.tsx src/components/layouts/
+mv src/components/common/HeaderSection.tsx src/components/sections/
+
+# Atualizar imports nos componentes
 ```
 
 ## [Regras de Nomenclatura]()

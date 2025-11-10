@@ -238,6 +238,10 @@ mkdir -p src/types
 mkdir -p src/utils
 ```
 
+**Nota sobre estrutura**: Esta é a **estrutura mínima** recomendada para setup inicial. Conforme o projeto cresce (>20 componentes), organize componentes em subpastas especializadas como `forms/`, `layouts/`, `sections/`, `guards/`, `containers/`.
+
+**Documentação completa**: Ver `.rules/qual-padrao-de-nomenclatura-de-componentes-react-frontend.md` seção "Estrutura de Pastas: Mínima vs Completa".
+
 ## [Passo 7: Configurar Vari�veis de Ambiente]()
 
 Setup de arquivos .env para armazenar URLs da API e outras configurações sensíveis.

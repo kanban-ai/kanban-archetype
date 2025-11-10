@@ -317,10 +317,24 @@ import.meta.env.VITE_API_URL
 
 Convenções de nomenclatura, organização de código e boas práticas adotadas no projeto.
 
+### [Nomenclatura de Componentes]()
+
+O projeto utiliza sufixos para identificação rápida de categorias de componentes.
+
+**Documentação completa de nomenclatura**: Ver `.rules/qual-padrao-de-nomenclatura-de-componentes-react-frontend.md`
+
+**Exemplos principais:**
+- Páginas: sufixo `Page` (ex: `AssetListPage.tsx`)
+- Formulários: sufixo `Form` (ex: `LoginForm.tsx`)
+- Modais: sufixo `Modal` (ex: `ConfirmModal.tsx`)
+- Providers: sufixo `Provider` (ex: `AuthProvider.tsx`)
+- Hooks: prefixo `use` (ex: `useAuth.ts`)
+- Componentes base: sem sufixo (ex: `Button.tsx`, `Input.tsx`)
+
 ### [Estrutura de Arquivos]()
 - Componentes: PascalCase (ex: MetricCard.tsx)
 - Utilitários: kebab-case (ex: currency.utils.ts)
-- Serviços: kebab-case (ex: auth.service.ts)
+- Serviços: kebab-case com sufixo `.service.ts` (ex: auth.service.ts)
 
 ### [Organização de Imports]()
 1. React e bibliotecas externas
@@ -334,9 +348,12 @@ Convenções de nomenclatura, organização de código e boas práticas adotadas
 - Localizados em `src/hooks/`
 
 ### [Context API]()
-- Sufixo `Context` (ex: AuthContext)
+- Arquivo/Componente: Sufixo `Provider` (ex: AuthProvider.tsx)
+- Context interno: Sufixo `Context` (ex: AuthContext)
 - Hook correspondente: `use[Nome]` (ex: useAuth)
 - Localizados em `src/contexts/`
+
+**Documentação completa**: Ver `.rules/qual-padrao-de-nomenclatura-de-componentes-react-frontend.md`
 
 ## [Características do Projeto]()
 

@@ -2,6 +2,8 @@
 
 > Guia completo sobre roteamento com React Router DOM no projeto.
 
+**Nomenclatura de Páginas**: Todas as páginas devem seguir o sufixo `Page` (ex: `LoginPage.tsx`, `AssetListPage.tsx`). Para convenções completas de nomenclatura, consulte: `.rules/qual-padrao-de-nomenclatura-de-componentes-react-frontend.md`
+
 ## [Visão Geral]()
 
 O projeto usa **React Router DOM v7** com:
