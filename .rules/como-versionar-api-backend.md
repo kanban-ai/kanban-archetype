@@ -561,33 +561,6 @@ export const api = axios.create({
 api.get('/users'); // chama /api/v2/users
 ```
 
-## [Testes automatizados para múltiplas versões de API]()
-
-Como testar cada versão da API isoladamente garantindo compatibilidade:
-
-```typescript
-// users.controller.spec.ts
-describe('UsersV1Controller', () => {
-  it('GET /api/v1/users - retorna array', async () => {
-    const response = await request(app.getHttpServer())
-      .get('/api/v1/users')
-      .expect(200);
-
-    expect(Array.isArray(response.body)).toBe(true);
-  });
-});
-
-describe('UsersV2Controller', () => {
-  it('GET /api/v2/users - retorna paginação', async () => {
-    const response = await request(app.getHttpServer())
-      .get('/api/v2/users')
-      .expect(200);
-
-    expect(response.body).toHaveProperty('data');
-    expect(response.body).toHaveProperty('pagination');
-  });
-});
-```
 
 ## [Checklist de Versionamento de API no NestJS]()
 

@@ -345,12 +345,30 @@ Arquitetura, organização de código e padrões de design para módulos escalá
 - **Passo 3: Registrar no Module** - Adicionar em providers e exports
 - **Passo 4: Injetar** - Via DI no Service ou Controller
 - **Princípios SOLID** - S (Single Responsibility), O (Open/Closed), L (Liskov), I (Interface Segregation), D (Dependency Inversion)
-- **Testando Use-Cases** - Testes unitários isolados com mock de interfaces
+- **Testando Use-Cases** - Referência para guia completo de testes
 - **Diferenças Service vs Use-Case** - Comparação detalhada e quando usar cada um
 - **Boas Práticas** - Uma interface = um método, nomenclatura descritiva, type aliases
 - **Checklist** - Verificação completa de implementação
 - **Troubleshooting** - Cannot resolve dependency, circular dependency, use-case muito grande
 - **Exemplo Completo** - Módulo de pedidos com interfaces e use-cases
+
+### [Testes de Use-Cases - `./como-testar-use-cases-com-jest-backend.md`]()
+
+- **Princípios de Testes** - Testar apenas Use-Cases, mockar dependências, execução isolada
+- **Configuração Jest** - jest.config.js, scripts package.json, dependências
+- **Estrutura de Arquivos** - Localização e nomenclatura de .spec.ts
+- **Template Básico** - Estrutura padrão de teste de Use-Case
+- **Exemplo Completo** - RegrasFinanceirasUseCase com mocks
+- **Mock de Múltiplas Dependências** - Repository + HttpService + ConfigService
+- **Mock de ConfigService** - Simular variáveis de ambiente
+- **Testar Exceções** - BadRequestException, NotFoundException
+- **Jest.spyOn** - Mockar métodos do próprio Use-Case
+- **Testes com Datas** - useFakeTimers e setSystemTime
+- **Padrão Arrange-Act-Assert** - Organização de testes
+- **Cobertura de Código** - Meta de 100% para Use-Cases
+- **Comandos Jest** - test, watch, coverage, debug
+- **Checklist** - Verificação completa de testes
+- **Erros Comuns** - Soluções para problemas frequentes
 
 ## [🎨 Frontend - Desenvolvimento]()
 
@@ -515,6 +533,11 @@ Atalhos para tarefas comuns com links diretos para as seções específicas dos 
 | Escala Horizontal | [Redis](./como-usar-redis-backend.md#quando-usar-redis), [RabbitMQ](./como-usar-rabbitmq-backend.md) |
 | Sessões | [Redis - Sessões Compartilhadas](./como-usar-redis-backend.md#4-sessões-compartilhadas) |
 | Contador | [Redis - Contador Atômico](./como-usar-redis-backend.md#1-contador-compartilhado-incremento-atômico) |
+| Testes Unitários | [Testes de Use-Cases](./como-testar-use-cases-com-jest-backend.md) |
+| Jest | [Testes de Use-Cases](./como-testar-use-cases-com-jest-backend.md) |
+| Mocks | [Testes de Use-Cases](./como-testar-use-cases-com-jest-backend.md#mockando-múltiplas-dependências) |
+| Test Coverage | [Testes de Use-Cases](./como-testar-use-cases-com-jest-backend.md#cobertura-de-código) |
+| Use-Case | [Criar Use-Case](./como-criar-use-case-backend.md), [Testes](./como-testar-use-cases-com-jest-backend.md) |
 
 ## [🗺️ Navegação por Nível]()
 
@@ -586,7 +609,9 @@ Guias organizados por nível de complexidade: iniciante, intermediário e avanç
 │   ├── como-iniciar-fazer-0-setup-do-backend.md            (9 passos)
 │   ├── como-deve-funcionar-arquivo-main-backend.md         (8 configurações)
 │   ├── como-deve-ser-a-estrutura-de-pastas-do-modulo-backend.md  (6 seções)
-│   └── como-deve-ser-criado-um-padrao-escalavel-de-implementacao-no-modulo-backend.md  (10 padrões)
+│   ├── como-deve-ser-criado-um-padrao-escalavel-de-implementacao-no-modulo-backend.md  (10 padrões)
+│   ├── como-criar-use-case-backend.md                      (15 seções)
+│   └── como-testar-use-cases-com-jest-backend.md           (14 seções)
 │
 └── Frontend
     ├── como-iniciar-fazer-0-setup-do-frontend.md           (17 passos)
@@ -597,11 +622,11 @@ Guias organizados por nível de complexidade: iniciante, intermediário e avanç
 
 ## [📊 Estatísticas]()
 
-- **Total de documentos**: 23
-- **Backend**: 16 documentos (201 seções)
+- **Total de documentos**: 24
+- **Backend**: 17 documentos (230 seções)
 - **Frontend**: 4 documentos (53 seções)
 - **Stack**: 2 documentos (21 seções)
-- **Total de seções**: 275 seções documentadas
+- **Total de seções**: 304 seções documentadas
 
 
 ---

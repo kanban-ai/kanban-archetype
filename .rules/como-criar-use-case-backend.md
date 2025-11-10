@@ -623,95 +623,19 @@ export class FinanceiroService {
 }
 ```
 
-## [Testando Use-Cases com Mocks e Segregação de Interfaces]()
+## [Testando Use-Cases]()
 
-Use-Cases são altamente testáveis devido à segregação de interfaces:
+Use-Cases devem ter testes unitários completos mockando todas as dependências externas.
 
-```typescript
-import { Test, TestingModule } from '@nestjs/testing';
-import { getRepositoryToken } from '@nestjs/typeorm';
-import { RegrasFinanceirasUseCase } from './regras-financeiras.usecase';
-import { Transacao } from '../entities/transacao.entity';
+**📖 Para guia completo de testes de Use-Cases, consulte**: `./como-testar-use-cases-com-jest-backend.md`
 
-describe('RegrasFinanceirasUseCase', () => {
-  let useCase: RegrasFinanceirasUseCase;
-  let mockRepository: any;
-
-  beforeEach(async () => {
-    // Mock do repository
-    mockRepository = {
-      createQueryBuilder: jest.fn().mockReturnValue({
-        select: jest.fn().mockReturnThis(),
-        where: jest.fn().mockReturnThis(),
-        andWhere: jest.fn().mockReturnThis(),
-        getRawOne: jest.fn(),
-      }),
-      create: jest.fn(),
-      save: jest.fn(),
-    };
-
-    const module: TestingModule = await Test.createTestingModule({
-      providers: [
-        RegrasFinanceirasUseCase,
-        {
-          provide: getRepositoryToken(Transacao),
-          useValue: mockRepository,
-        },
-      ],
-    }).compile();
-
-    useCase = module.get<RegrasFinanceirasUseCase>(RegrasFinanceirasUseCase);
-  });
-
-  describe('calcularSaldoAtual', () => {
-    it('deve calcular saldo corretamente', async () => {
-      // Arrange
-      mockRepository.createQueryBuilder().getRawOne
-        .mockResolvedValueOnce({ total: 1000 }) // Créditos
-        .mockResolvedValueOnce({ total: 300 });  // Débitos
-
-      // Act
-      const resultado = await useCase.calcularSaldoAtual(1);
-
-      // Assert
-      expect(resultado).toBe(700);
-    });
-
-    it('deve retornar 0 quando não há transações', async () => {
-      mockRepository.createQueryBuilder().getRawOne
-        .mockResolvedValue(null);
-
-      const resultado = await useCase.calcularSaldoAtual(1);
-
-      expect(resultado).toBe(0);
-    });
-  });
-
-  describe('processarInvestimento', () => {
-    it('deve processar investimento com saldo suficiente', async () => {
-      // Mock calcularSaldoAtual
-      jest.spyOn(useCase, 'calcularSaldoAtual').mockResolvedValue(1000);
-
-      mockRepository.create.mockReturnValue({ id: 1 });
-      mockRepository.save.mockResolvedValue({ id: 1 });
-
-      const resultado = await useCase.processarInvestimento(1, 500, 'CDB');
-
-      expect(resultado.sucesso).toBe(true);
-      expect(resultado.transacaoId).toBe(1);
-    });
-
-    it('deve falhar quando saldo insuficiente', async () => {
-      jest.spyOn(useCase, 'calcularSaldoAtual').mockResolvedValue(100);
-
-      const resultado = await useCase.processarInvestimento(1, 500, 'CDB');
-
-      expect(resultado.sucesso).toBe(false);
-      expect(resultado.transacaoId).toBe(0);
-    });
-  });
-});
-```
+O guia contém:
+- Configuração completa do Jest
+- Templates de teste
+- Exemplos práticos de mock de repositories, HttpService e ConfigService
+- Padrões Arrange-Act-Assert
+- Teste de exceções e casos de erro
+- Cobertura de código 100%
 
 ## [Comparação: Service Tradicional vs Use-Case]()
 
