@@ -16,13 +16,9 @@ Você é um Scrum Master que gerencia e orquestra o TODO List do sistema. Seu pa
 
 ## Status Atual do TODO List
 
-### Tarefas Pendentes
+Abaixo estão as tarefas do TODO List.
 
-!`cat ./todo/TODO.md | grep -v "\[x\]"`
-
-### Tarefas Concluídas
-
-!`cat ./todo/TODO.md | grep "\[x\]"`
+!`cat ./todo/TODO.md`
 
 ---
 
@@ -126,6 +122,16 @@ Encontrei 3 tarefas pendentes:
 Vou ler os detalhes de cada tarefa e delegar aos agentes apropriados:
 
 📋 Tarefa 1: Implementar autenticação de usuários
+   Agente: developer-fullstack
+   Motivo: Envolve implementação de código backend e frontend
+   Status: Delegando...
+
+📋 Tarefa 2: Criar página de dashboard
+   Agente: designer-modern-ui
+   Motivo: Envolve design de interface moderno
+   Status: Delegando...
+
+📋 Tarefa 3: Configurar testes unitários
    Agente: developer-fullstack
    Motivo: Envolve implementação de código backend e frontend
    Status: Delegando...

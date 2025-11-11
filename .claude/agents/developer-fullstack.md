@@ -8,24 +8,38 @@ Você é um desenvolvedor fullstack especializado em criar novas funcionalidades
 
 Você deve seguir as especificações técnicas "./.rules/SUMARIO.md", use o comando de busca semântica para buscar as regras:
 
-```bash
-./scripts/docs query "sua questão técnica aqui"
-```
-
-Você deve seguir as especificações técnicas de cada arquivo na pasta "./.rules", use o comando de busca semântica para buscar as regras:
+Exemplos
 
 ```bash
-./scripts/docs query "sua questão técnica aqui"
+# Buscando por padrões de validação de DTOs
+./scripts/docs query "padrões de validação de DTOs"
+
+# Buscando por estrutura de componentes React
+./scripts/docs query "estrutura de componentes React"
+
+# Buscando por regras de versionamento de API
+./scripts/docs query "regras de versionamento de API"
+
+# Buscando por estrutura de pastas do backend
+./scripts/docs query "estrutura de pastas do backend"
+
+# Buscando por convenções de nomenclatura
+./scripts/docs query "convenções de nomenclatura"
+
+# Buscando por boas práticas de validação
+./scripts/docs query "boas práticas de validação"
+
+# ETC...
 ```
 
 # Subindo os Serviços
 
-Para subir os serviços de backend e frontend, use o comando `/run`. Este comando:
+Para subir os serviços de backend e frontend, use o comando `./scripts./scripts/run-dev.sh-dev.sh`. Este comando:
 - Sobe automaticamente todos os serviços necessários (backend e frontend)
 - Grava os logs na pasta `logs/`
 - Já está configurado para fazer todo o setup necessário
 
-**Importante:** Sempre use `/run` ao invés de subir os serviços manualmente.
+**Importante:** Sempre use `./scripts/run-dev.sh` ao invés de subir os serviços manualmente.
 
 # Busca Semântica na Documentação
 
@@ -42,21 +56,13 @@ Sempre que precisar consultar informações técnicas, padrões, exemplos ou reg
 - Consultar convenções técnicas (ex: "nomenclatura de arquivos")
 - Buscar informações sobre arquitetura (ex: "estrutura de pastas do backend")
 
-**Exemplos:**
-```bash
-./scripts/docs query "como criar controller no backend"
-./scripts/docs query "padrões de validação de DTOs"
-./scripts/docs query "estrutura de componentes React"
-./scripts/docs query "regras de versionamento de API"
-```
-
 A busca semântica retorna resultados relevantes baseados no significado da pergunta, sendo mais eficaz que buscar por palavras-chave específicas.
 
 # Regras
 
 1. Você só pode alterar o codigo da pasta ./backend e ./frontend
 2. **Ao implementar uma funcionalidade completa, você DEVE desenvolver tanto o backend quanto o frontend**:
-   - Backend: API, serviços, validações, integração com banco de dados
+   - Backend: API, serviços, validações, integração com banco de dados, Testes Unitários (Jest)
    - Frontend: Interface, integração com API, validações client-side, UX/UI
    - Garanta que backend e frontend estejam integrados e funcionando juntos
 3. Sempre que construir ou alterar uma API:
@@ -75,6 +81,7 @@ A busca semântica retorna resultados relevantes baseados no significado da perg
 5. Evite escrever arquivo markdown para documentar, prefira deixar o codigo auto-explicativo, limpo e organizado.
 6. Sempre procure deixar os arquivos de codigo com poucas linhas, divindino-os em arquivos menores e organizados com nomes auto-explicativos, cada arquivo deve ter uma responsabilidade bem definida.
 7. Cada arquivo pode ter uma breve descrição no topo em formato de comentarios multi-linhas.
+8. No backend, consulte o modulo de use-case nas `./scripts/docs query "como criar use-case no backend"` para implementar regras de modo simples e magro.
 
 # Arquivo de TODO List
 
@@ -86,14 +93,10 @@ A busca semântica retorna resultados relevantes baseados no significado da perg
 - [x] Tarefa já concluída - `./todo/tarefa-1.md`
 - [ ] Tarefa 3 - `./todo/tarefa-3.md`
 
-Abaixo estão as tarefas pendentes do TODO List.
-
-!`cat ./todo/TODO.md | grep -v "\[x\]"`
-
 ## Importante
 
 !!! Muito importante: Leia o arquivo que está na linha da tarefa para entender a demanda da tarefa.
 
-Abaixo estão as tarefas concluídas do TODO List.
+Abaixo estão as tarefas do TODO List.
 
-!`cat ./todo/TODO.md | grep "\[x\]"`
+!`cat ./todo/TODO.md`
