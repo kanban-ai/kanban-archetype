@@ -134,9 +134,9 @@ index_docs() {
     fi
 
     echo -e "\n${GREEN}Indexando documentos...${NC}\n"
-    "$DOCS_SCRIPT" index > "$LOGS_DIR/index-docs.log" 2>&1
+    "$DOCS_SCRIPT" index 2>&1 | tee "$LOGS_DIR/index-docs.log"
 
-    local EXIT_CODE=$?
+    local EXIT_CODE=${PIPESTATUS[0]}
     if [ $EXIT_CODE -eq 0 ]; then
         echo -e "\n${GREEN}Documentos indexados com sucesso!${NC}"
     else
@@ -284,9 +284,9 @@ run_backend_tests() {
     echo -e "\n${GREEN}Executando testes do backend...${NC}\n"
 
     cd "$BACKEND_DIR"
-    npm run test > "$LOGS_DIR/backend-tests.log" 2>&1
+    npm run test 2>&1 | tee "$LOGS_DIR/backend-tests.log"
 
-    local EXIT_CODE=$?
+    local EXIT_CODE=${PIPESTATUS[0]}
     if [ $EXIT_CODE -eq 0 ]; then
         echo -e "\n${GREEN}Testes executados com sucesso!${NC}"
     else
@@ -315,9 +315,9 @@ run_migration() {
     echo -e "\n${GREEN}Aplicando migrations...${NC}\n"
 
     cd "$BACKEND_DIR"
-    npm run migration:run > "$LOGS_DIR/migrations.log" 2>&1
+    npm run migration:run 2>&1 | tee "$LOGS_DIR/migrations.log"
 
-    local EXIT_CODE=$?
+    local EXIT_CODE=${PIPESTATUS[0]}
     if [ $EXIT_CODE -eq 0 ]; then
         echo -e "\n${GREEN}Migrations aplicadas com sucesso!${NC}"
     else

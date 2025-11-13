@@ -25,7 +25,7 @@ Julgar detalhadamente se o código segue os padrões técnicos documentados na p
 2. Classifique os arquivos por tipo:
    - ✅ Backend (APIs, Services, Controllers, DTOs, Entities, etc)
    - ✅ Frontend (Componentes, Pages, Hooks, Utils, etc)
-   - ✅ Infraestrutura (Migrations, Config, etc)
+   - ✅ Infraestrutura (Config, etc)
 3. Identifique a funcionalidade implementada (ex: autenticação, CRUD de produtos, dashboard)
 4. Determine o contexto para nomear o relatório (ex: `autenticacao`, `products-api`, `dashboard`)
 
@@ -79,7 +79,6 @@ Julgar detalhadamente se o código segue os padrões técnicos documentados na p
 - `search_project_docs("validação de dados de entrada")`
 
 ### Para Banco de Dados
-- `search_project_docs("regras de migrations")`
 - `search_project_docs("uso de TypeORM")`
 - `search_project_docs("proteção contra SQL injection")`
 - `search_project_docs("uso de UTC em datas")`
@@ -128,7 +127,6 @@ Julgar detalhadamente se o código segue os padrões técnicos documentados na p
 - API sem validação de `userId` (quando necessário)
 - SQL injection (queries sem sanitização)
 - Secrets hardcoded no código
-- Triggers em migrations (proibido)
 - Datas sem UTC (devem usar `Date.toISOString()`)
 - Falta de validação de autenticação em rotas protegidas
 - Exposição de dados sensíveis
@@ -165,7 +163,6 @@ Julgar detalhadamente se o código segue os padrões técnicos documentados na p
 
 **Quando validar:**
 - Código cria/atualiza/deleta registros no banco
-- Migrations foram criadas
 - Relações entre tabelas foram definidas
 
 **Como validar:**
@@ -179,7 +176,6 @@ mcp__postgres__query("SELECT * FROM tabela WHERE ...")
 - ✅ Foreign keys estão configuradas?
 - ✅ Campos obrigatórios estão validados?
 - ✅ Datas estão em UTC?
-- ✅ Migrations estão corretas (sem triggers)?
 
 ### 5.2 - Validação no Cache/Redis (se o código usa cache)
 
@@ -361,30 +357,12 @@ Use estes critérios para definir o veredito final:
 
 # COMANDOS MCP ÚTEIS
 
-## Gerenciar Aplicação
-
-```javascript
-// Iniciar serviços Docker
-mcp__mcp-app__manage_application({ action: "docker-compose-up" })
-
-// Iniciar aplicação
-mcp__mcp-app__manage_application({ action: "start" })
-
-// Ver status
-ReadMcpResourceTool({ server: "mcp-app", uri: "app://status" })
-
-// Ver logs
-ReadMcpResourceTool({ server: "mcp-app", uri: "app://logs/backend" })
-```
-
 ## Validar Banco de Dados
 
 ```javascript
 // Consultar dados
 mcp__postgres__query({ sql: "SELECT * FROM tabela WHERE ..." })
 
-// Verificar migrations
-mcp__postgres__query({ sql: "SELECT * FROM migrations ORDER BY timestamp DESC LIMIT 5" })
 ```
 
 ## Validar Redis/Cache
@@ -419,7 +397,6 @@ mcp__redis__get_key_info({ key: "chave" })
 - "boas práticas de validação"
 
 **Banco de Dados:**
-- "regras de migrations"
 - "uso de TypeORM"
 - "proteção contra SQL injection"
 - "uso de UTC em datas"

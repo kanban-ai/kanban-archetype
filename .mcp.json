@@ -27,18 +27,6 @@
       "env": {
         "CHROMA_HOST": "http://localhost:8000"
       }
-    },
-    "mcp-app": {
-      "type": "stdio",
-      "command": "node",
-      "args": ["./scripts/mcp", "app"],
-      "env": {}
-    },
-    "mcp-migration": {
-      "type": "stdio",
-      "command": "node",
-      "args": ["./scripts/mcp", "migration"],
-      "env": {}
     }
   }
 }
