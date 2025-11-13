@@ -28,16 +28,10 @@
         "CHROMA_HOST": "http://localhost:8000"
       }
     },
-    "mcp-start": {
+    "mcp-app": {
       "type": "stdio",
       "command": "node",
-      "args": ["./scripts/mcp", "start"],
-      "env": {}
-    },
-    "mcp-stop": {
-      "type": "stdio",
-      "command": "node",
-      "args": ["./scripts/mcp", "stop"],
+      "args": ["./scripts/mcp", "app"],
       "env": {}
     },
     "mcp-migration": {

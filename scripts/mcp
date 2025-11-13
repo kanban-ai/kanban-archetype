@@ -4,9 +4,8 @@
  * MCP App Manager - Gerenciador de aplicação via MCP
  *
  * Subcomandos:
- * - start: Inicia backend/frontend e redireciona logs
- * - stop: Para todos os processos da aplicação
- * - migration: Executa migrations do backend (run/revert/show)
+ * - app: Gerencia aplicação (action: start/stop)
+ * - migration: Executa migrations do backend (action: run/revert/show)
  */
 
 const { spawn, exec } = require('child_process');
@@ -38,6 +37,38 @@ function safeExecAsync(command, options = {}) {
 }
 
 /**
+ * Aguarda uma porta ficar disponível (servidor iniciado)
+ */
+async function waitForPort(port, maxAttempts = 60, interval = 1000) {
+  for (let attempt = 1; attempt <= maxAttempts; attempt++) {
+    try {
+      // Tentar fazer uma requisição HTTP simples
+      const http = require('http');
+      await new Promise((resolve, reject) => {
+        const req = http.get(`http://localhost:${port}`, (res) => {
+          resolve(true);
+        });
+        req.on('error', (err) => {
+          reject(err);
+        });
+        req.setTimeout(500);
+        req.end();
+      });
+
+      // Se chegou aqui, a porta está respondendo
+      return true;
+    } catch (error) {
+      // Porta ainda não está disponível, aguardar
+      if (attempt < maxAttempts) {
+        await new Promise(resolve => setTimeout(resolve, interval));
+      }
+    }
+  }
+
+  throw new Error(`Timeout: Servidor não iniciou na porta ${port} após ${maxAttempts} tentativas`);
+}
+
+/**
  * Inicia a aplicação (backend e frontend)
  */
 async function startApp() {
@@ -45,83 +76,42 @@ async function startApp() {
     // Criar diretório de logs se não existir
     await fs.mkdir(LOGS_DIR, { recursive: true });
 
-    // Limpar logs anteriores
     const backLogPath = path.join(LOGS_DIR, 'back.log');
     const frontLogPath = path.join(LOGS_DIR, 'front.log');
 
-    await fs.writeFile(backLogPath, '');
-    await fs.writeFile(frontLogPath, '');
-
-    // Verificar e iniciar Docker Compose
-    try {
-      const { stdout } = await safeExecAsync('docker compose ps', { cwd: BACK_DIR });
-      if (!stdout.includes('postgres-development')) {
-        await safeExecAsync('docker compose -f ../scripts/docker-compose.yml up -d', {
-          cwd: BACK_DIR
-        });
-        // Aguardar PostgreSQL iniciar
-        await new Promise(resolve => setTimeout(resolve, 5000));
-      }
-    } catch (error) {
-      return {
-        success: false,
-        error: 'Erro ao verificar/iniciar Docker Compose: ' + error.message
-      };
-    }
-
-    // Limpar processos anteriores
-    try {
-      await safeExecAsync("pkill -9 -f 'micro-saas.*node_modules'");
-    } catch (error) {
-      // Ignorar erro se não houver processos
-    }
-
-    // Matar processos nas portas 3000 e 5173
-    for (const port of [3000, 5173]) {
-      try {
-        const { stdout } = await safeExecAsync(`lsof -ti:${port}`);
-        if (stdout.trim()) {
-          await safeExecAsync(`kill -9 ${stdout.trim()}`);
-        }
-      } catch (error) {
-        // Ignorar erro se porta não estiver em uso
-      }
-    }
-
     // Iniciar backend
-    const backLog = await fs.open(backLogPath, 'a');
-    const backProcess = spawn('npm', ['run', 'start:dev'], {
-      cwd: BACK_DIR,
-      detached: true,
-      stdio: ['ignore', backLog.fd, backLog.fd],
-      env: { ...process.env, NO_COLOR: '1' }
-    });
+    const { stdout: backPid } = await safeExecAsync(
+      `NO_COLOR=1 nohup npm run start:dev > "${backLogPath}" 2>&1 & echo $!`,
+      { cwd: BACK_DIR }
+    );
 
-    backProcess.unref();
-    await fs.writeFile(path.join(LOGS_DIR, 'back.pid'), String(backProcess.pid));
+    const backPidClean = backPid.trim();
+    await fs.writeFile(path.join(LOGS_DIR, 'back.pid'), backPidClean);
+
+    // Aguardar backend subir na porta 3000
+    await waitForPort(3000);
 
     // Iniciar frontend
-    const frontLog = await fs.open(frontLogPath, 'a');
-    const frontProcess = spawn('npm', ['run', 'dev'], {
-      cwd: FRONT_DIR,
-      detached: true,
-      stdio: ['ignore', frontLog.fd, frontLog.fd]
-    });
+    const { stdout: frontPid } = await safeExecAsync(
+      `nohup npm run dev > "${frontLogPath}" 2>&1 & echo $!`,
+      { cwd: FRONT_DIR }
+    );
 
-    frontProcess.unref();
-    await fs.writeFile(path.join(LOGS_DIR, 'front.pid'), String(frontProcess.pid));
+    const frontPidClean = frontPid.trim();
+    await fs.writeFile(path.join(LOGS_DIR, 'front.pid'), frontPidClean);
 
     return {
       success: true,
       message: 'Aplicação iniciada com sucesso',
       details: {
         backend: {
-          pid: backProcess.pid,
+          pid: parseInt(backPidClean),
           port: 3000,
-          log: backLogPath
+          log: backLogPath,
+          status: 'running'
         },
         frontend: {
-          pid: frontProcess.pid,
+          pid: parseInt(frontPidClean),
           port: 5173,
           log: frontLogPath
         }
@@ -131,6 +121,33 @@ async function startApp() {
     return {
       success: false,
       error: error.message
+    };
+  }
+}
+
+/**
+ * Inicia os serviços Docker (PostgreSQL, Redis, etc)
+ */
+async function startServices() {
+  try {
+    const dockerComposePath = path.join(ROOT_DIR, 'scripts', 'docker-compose.yml');
+
+    const { stdout, stderr } = await safeExecAsync(
+      `docker compose -f "${dockerComposePath}" up -d`
+    );
+
+    return {
+      success: true,
+      message: 'Serviços Docker iniciados com sucesso',
+      output: stdout,
+      errors: stderr
+    };
+  } catch (error) {
+    return {
+      success: false,
+      error: error.message,
+      output: error.stdout || '',
+      errors: error.stderr || ''
     };
   }
 }
@@ -311,22 +328,19 @@ async function readLogTail(logFile, bytes = 5000) {
  */
 async function startMCPServer(subcommand) {
   const tools = {
-    'start': [{
-      name: 'start_application',
-      description: 'Inicia a aplicação SDD (backend NestJS na porta 3000 e frontend Vite/React na porta 5173) com logs redirecionados para logs/back.log e logs/front.log. Verifica e inicia Docker Compose/PostgreSQL automaticamente.',
+    'app': [{
+      name: 'manage_application',
+      description: 'Gerencia a aplicação SDD (backend NestJS na porta 3000 e frontend Vite/React na porta 5173). Use action="start" para iniciar em background, action="stop" para parar todos os processos, ou action="services" para iniciar apenas os serviços Docker.',
       inputSchema: {
         type: 'object',
-        properties: {},
-        required: []
-      }
-    }],
-    'stop': [{
-      name: 'stop_application',
-      description: 'Para todos os processos da aplicação SDD (backend, frontend e processos relacionados). Usa os PIDs salvos e também limpa processos pelo pattern e libera as portas 3000 e 5173.',
-      inputSchema: {
-        type: 'object',
-        properties: {},
-        required: []
+        properties: {
+          action: {
+            type: 'string',
+            enum: ['start', 'stop', 'services'],
+            description: 'Ação a executar: "start" para iniciar a aplicação, "stop" para parar todos os processos, "services" para iniciar serviços Docker (PostgreSQL, Redis, etc)'
+          }
+        },
+        required: ['action']
       }
     }],
     'migration': [{
@@ -347,7 +361,7 @@ async function startMCPServer(subcommand) {
   };
 
   const resources = {
-    'start': [
+    'app': [
       {
         uri: 'app://status',
         name: 'Application Status',
@@ -367,14 +381,6 @@ async function startMCPServer(subcommand) {
         mimeType: 'text/plain'
       }
     ],
-    'stop': [
-      {
-        uri: 'app://status',
-        name: 'Application Status',
-        description: 'Status atual da aplicação (backend, frontend, docker)',
-        mimeType: 'application/json'
-      }
-    ],
     'migration': [
       {
         uri: 'app://status',
@@ -387,10 +393,16 @@ async function startMCPServer(subcommand) {
 
   async function handleToolCall(name, args) {
     switch (name) {
-      case 'start_application':
-        return await startApp();
-      case 'stop_application':
-        return await stopApp();
+      case 'manage_application':
+        if (args.action === 'start') {
+          return await startApp();
+        } else if (args.action === 'stop') {
+          return await stopApp();
+        } else if (args.action === 'services') {
+          return await startServices();
+        } else {
+          throw new Error(`Ação inválida: ${args.action}`);
+        }
       case 'run_migration':
         return await runMigration(args.action);
       default:
@@ -559,8 +571,8 @@ async function startMCPServer(subcommand) {
 async function main() {
   const subcommand = process.argv[2];
 
-  if (!subcommand || !['start', 'stop', 'migration'].includes(subcommand)) {
-    console.error('Uso: scripts/mcp <start|stop|migration>');
+  if (!subcommand || !['app', 'migration'].includes(subcommand)) {
+    console.error('Uso: scripts/mcp <app|migration>');
     process.exit(1);
   }
 
