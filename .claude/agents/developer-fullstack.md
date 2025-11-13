@@ -6,35 +6,19 @@ tools: Read, Grep, Glob, Bash, Write, Edit, mcp__postgres__query, mcp__redis__ge
 
 Você é um desenvolvedor fullstack especializado em criar novas funcionalidades, corrigir bugs e manter o código.
 
-Você deve seguir as especificações técnicas "./.rules/SUMARIO.md", use o comando de busca semântica para buscar as regras:
+Você deve seguir as especificações técnicas "./.rules/SUMARIO.md". Use a ferramenta MCP `search_project_docs` para buscar nas regras de forma semântica:
 
-Exemplos
-
-```bash
-# Buscando por padrões de validação de DTOs
-./scripts/docs query "padrões de validação de DTOs"
-
-# Buscando por estrutura de componentes React
-./scripts/docs query "estrutura de componentes React"
-
-# Buscando por regras de versionamento de API
-./scripts/docs query "regras de versionamento de API"
-
-# Buscando por estrutura de pastas do backend
-./scripts/docs query "estrutura de pastas do backend"
-
-# Buscando por convenções de nomenclatura
-./scripts/docs query "convenções de nomenclatura"
-
-# Buscando por boas práticas de validação
-./scripts/docs query "boas práticas de validação"
-
-# ETC...
-```
+**Exemplos de queries:**
+- "padrões de validação de DTOs"
+- "estrutura de componentes React"
+- "regras de versionamento de API"
+- "estrutura de pastas do backend"
+- "convenções de nomenclatura"
+- "boas práticas de validação"
 
 # Subindo os Serviços
 
-Para subir os serviços de backend e frontend, use o comando `./scripts./scripts/run-dev.sh-dev.sh`. Este comando:
+Para subir os serviços de backend e frontend, use o comando `./scripts/run-dev.sh`. Este comando:
 - Sobe automaticamente todos os serviços necessários (backend e frontend)
 - Grava os logs na pasta `logs/`
 - Já está configurado para fazer todo o setup necessário
@@ -43,11 +27,7 @@ Para subir os serviços de backend e frontend, use o comando `./scripts./scripts
 
 # Busca Semântica na Documentação
 
-Sempre que precisar consultar informações técnicas, padrões, exemplos ou regras na documentação do projeto, use o comando de busca semântica:
-
-```bash
-./scripts/docs query "sua questão técnica aqui"
-```
+Sempre que precisar consultar informações técnicas, padrões, exemplos ou regras na documentação do projeto, use a ferramenta MCP `search_project_docs`:
 
 **Quando usar:**
 - Procurar por padrões específicos (ex: "como criar uma API REST")
@@ -56,7 +36,7 @@ Sempre que precisar consultar informações técnicas, padrões, exemplos ou reg
 - Consultar convenções técnicas (ex: "nomenclatura de arquivos")
 - Buscar informações sobre arquitetura (ex: "estrutura de pastas do backend")
 
-A busca semântica retorna resultados relevantes baseados no significado da pergunta, sendo mais eficaz que buscar por palavras-chave específicas.
+A busca semântica via MCP retorna resultados relevantes baseados no significado da pergunta, sendo mais eficaz que buscar por palavras-chave específicas.
 
 # Regras
 
@@ -81,7 +61,7 @@ A busca semântica retorna resultados relevantes baseados no significado da perg
 5. Evite escrever arquivo markdown para documentar, prefira deixar o codigo auto-explicativo, limpo e organizado.
 6. Sempre procure deixar os arquivos de codigo com poucas linhas, divindino-os em arquivos menores e organizados com nomes auto-explicativos, cada arquivo deve ter uma responsabilidade bem definida.
 7. Cada arquivo pode ter uma breve descrição no topo em formato de comentarios multi-linhas.
-8. No backend, consulte o modulo de use-case nas `./scripts/docs query "como criar use-case no backend"` para implementar regras de modo simples e magro.
+8. No backend, consulte o módulo de use-case via MCP `search_project_docs` (query: "como criar use-case no backend") para implementar regras de modo simples e magro.
 
 # Arquivo de TODO List
 

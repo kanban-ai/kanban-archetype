@@ -25,19 +25,7 @@ Para subir os serviços de backend e frontend, use o comando `./scripts/run-dev.
 
 Sempre consulte as especificações técnicas antes de investigar:
 
-Use o comando de busca semântica para buscar as regras:
-
-```bash
-./scripts/docs query "sua questão técnica aqui"
-```
-
-### Busca Semântica na Documentação
-
-Durante a investigação, use o comando de busca semântica para encontrar informações relevantes rapidamente:
-
-```bash
-./scripts/docs query "sua questão técnica aqui"
-```
+Use a ferramenta MCP `search_project_docs` para buscar nas regras de forma semântica:
 
 **Quando usar durante a investigação:**
 - Entender padrões esperados (ex: "estrutura esperada de services")
@@ -46,13 +34,11 @@ Durante a investigação, use o comando de busca semântica para encontrar infor
 - Consultar exemplos de implementação (ex: "exemplo de error handling")
 - Verificar convenções técnicas (ex: "formato de log de erros")
 
-**Exemplos úteis para debugging:**
-```bash
-./scripts/docs query "como debugar erros de API"
-./scripts/docs query "estrutura de logs do projeto"
-./scripts/docs query "troubleshooting de conexão com banco"
-./scripts/docs query "validação de dados em controllers"
-```
+**Exemplos de uso da tool `search_project_docs`:**
+- Query: "como debugar erros de API"
+- Query: "estrutura de logs do projeto"
+- Query: "troubleshooting de conexão com banco"
+- Query: "validação de dados em controllers"
 
 A busca semântica ajuda a identificar rapidamente se o código está seguindo os padrões documentados ou se o erro vem de um desvio das especificações.
 
@@ -165,7 +151,7 @@ Após coletar evidências, analise:
 - [ ] Dados do banco investigados via MCP do postgres
 - [ ] Dados do cache investigados via MCP do Redis
 - [ ] Código relevante lido e analisado
-- [ ] Especificações técnicas use o comando de busca semântica para buscar as regras: `./scripts/docs query "sua questão técnica aqui"`
+- [ ] Especificações técnicas consultadas via MCP `search_project_docs`
 - [ ] Causa raiz identificada com evidências
 - [ ] Correção implementada
 - [ ] Correção testada e validada
@@ -312,7 +298,7 @@ Sintomas: API externa falhando, timeout, erro de autenticação
 - Dados reais do banco via MCP do postgres
 - Dados reais do cache via MCP do Redis
 - Código fonte relacionado
-- Use o comando de busca semântica para buscar as regras: `./scripts/docs query "sua questão técnica aqui"`
+- Consulte documentação técnica via MCP `search_project_docs`
 
 🔍 **Investigue até TER CERTEZA**
 - Não faça suposições sem evidências
@@ -331,7 +317,7 @@ Sintomas: API externa falhando, timeout, erro de autenticação
 **Você DEVE**:
 - ✅ Seguir o fluxo de investigação sistemática acima
 - ✅ Usar logs (./logs/), MCP do postgres, MCP do Redis e análise de código
-- ✅ Consultar especificações técnicas use o comando de busca semântica para buscar as regras: `./scripts/docs query "sua questão técnica aqui"`
+- ✅ Consultar especificações técnicas via MCP `search_project_docs`
 - ✅ Identificar causa raiz com evidências antes de corrigir
 - ✅ Implementar e testar correções
 - ✅ Documentar suas descobertas para o usuário

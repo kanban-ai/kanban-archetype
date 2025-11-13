@@ -12,11 +12,20 @@
       }
     },
     "redis": {
+      "type": "stdio",
       "command": "npx",
       "args": ["@liangshanli/mcp-server-redis"],
       "env": {
         "HOST": "localhost",
         "PORT": "6379"
+      }
+    },
+    "docs-search": {
+      "type": "stdio",
+      "command": "node",
+      "args": ["/home/will/git/SDD/scripts/docs", "mcp"],
+      "env": {
+        "CHROMA_HOST": "http://localhost:8000"
       }
     }
   }

@@ -17,31 +17,15 @@ Para subir os serviços de backend e frontend, use o comando `./scripts/run-dev.
 
 # Busca Semântica na Documentação
 
-Você deve seguir as especificações técnicas "./.rules/SUMARIO.md", use o comando de busca semântica para buscar as regras:
+Você deve seguir as especificações técnicas "./.rules/SUMARIO.md". Use a ferramenta MCP `search_project_docs` para buscar nas regras de forma semântica:
 
-Exemplos
-
-```bash
-# Buscando por padrões de validação de DTOs
-./scripts/docs query "padrões de validação de DTOs"
-
-# Buscando por estrutura de componentes React
-./scripts/docs query "estrutura de componentes React"
-
-# Buscando por regras de versionamento de API
-./scripts/docs query "regras de versionamento de API"
-
-# Buscando por estrutura de pastas do backend
-./scripts/docs query "estrutura de pastas do backend"
-
-# Buscando por convenções de nomenclatura
-./scripts/docs query "convenções de nomenclatura"
-
-# Buscando por boas práticas de validação
-./scripts/docs query "boas práticas de validação"
-
-# ETC...
-```
+**Exemplos de queries:**
+- "padrões de validação de DTOs"
+- "estrutura de componentes React"
+- "regras de versionamento de API"
+- "estrutura de pastas do backend"
+- "convenções de nomenclatura"
+- "boas práticas de validação"
 
 **Quando usar:**
 - Confirmar padrões e convenções (ex: "padrão de nomenclatura de controllers")
@@ -50,21 +34,19 @@ Exemplos
 - Verificar arquitetura e estrutura (ex: "organização de pastas no backend")
 - Consultar requisitos de segurança (ex: "validação de userId em APIs")
 
-**Exemplos:**
-```bash
-./scripts/docs query "regras de validação de DTOs"
-./scripts/docs query "padrões de error handling"
-./scripts/docs query "estrutura de controllers REST"
-./scripts/docs query "uso de UTC em datas"
-```
+**Exemplos adicionais:**
+- "regras de validação de DTOs"
+- "padrões de error handling"
+- "estrutura de controllers REST"
+- "uso de UTC em datas"
 
-A busca semântica ajuda a encontrar as regras exatas na documentação para fundamentar suas análises de conformidade.
+A busca semântica via MCP ajuda a encontrar as regras exatas na documentação para fundamentar suas análises de conformidade.
 
 # Objetivo
 
 Julgar detalhadamente se o código segue os padrões técnicos documentados na pasta `./.rules` e **ESCREVER** um relatório markdown completo.
 
-Para buscar as regras, use o comando de busca semântica: `./scripts/docs query "sua questão técnica aqui"`
+Para buscar as regras, use a ferramenta MCP `search_project_docs` com queries semânticas.
 
 # Escopo
 
@@ -75,7 +57,7 @@ Revisar código SOMENTE das pastas:
 # Processo de Revisão
 
 1. **Leia os arquivos** do código a revisar
-2. **Consulte as regras** use o comando de busca semântica para buscar as regras: `./scripts/docs query "sua questão técnica aqui"`
+2. **Consulte as regras** via MCP `search_project_docs` com queries semânticas
 3. **Compare** o código com os padrões documentados
 4. **Verifique dados** no banco/redis se o código manipula dados (API, CRUD)
 5. **Identifique violações** e classifique por severidade

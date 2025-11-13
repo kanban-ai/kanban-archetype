@@ -25,9 +25,9 @@ echo -e "${GREEN}=== Verificando ambiente ===${NC}"
 echo -e "${YELLOW}Verificando Docker Compose...${NC}"
 cd "$BACK_DIR"
 
-if ! docker compose ps | grep -q "postgres-development"; then
+if ! docker compose ps 2>/dev/null | grep -q "postgres-development"; then
     echo -e "${YELLOW}Docker Compose não está rodando. Iniciando...${NC}"
-    docker compose -f "$ROOT_DIR/scripts/docker-compose.yml" up -d
+    docker compose -f "$ROOT_DIR/scripts/docker-compose.yml" up -d > "$LOGS_DIR/docker-compose.log" 2>&1
     echo -e "${GREEN}Aguardando PostgreSQL iniciar...${NC}"
     sleep 5
 else
@@ -50,7 +50,14 @@ if ! nc -z localhost 5432 2>/dev/null; then
 fi
 echo -e "${GREEN}PostgreSQL OK na porta 5432${NC}"
 
-# 2. Matar processos nas portas 3000 e 5173
+# 2. Limpar execuções anteriores do projeto
+echo -e "${YELLOW}Limpando processos anteriores do projeto...${NC}"
+# Excluir o próprio script usando o PID atual
+CURRENT_PID=$$
+pkill -9 -f 'micro-saas.*node_modules' 2>/dev/null && echo -e "${GREEN}Processos anteriores finalizados${NC}" || echo -e "${GREEN}Nenhum processo anterior encontrado${NC}"
+sleep 1
+
+# 3. Matar processos nas portas 3000 e 5173
 echo -e "${YELLOW}Verificando processos nas portas 3000 e 5173...${NC}"
 
 # Função para matar processos em uma porta
@@ -71,12 +78,12 @@ kill_port() {
 kill_port 3000
 kill_port 5173
 
-# 3. Criar diretório de logs se não existir
+# 4. Criar diretório de logs se não existir
 echo -e "${YELLOW}Preparando diretório de logs...${NC}"
 mkdir -p "$LOGS_DIR"
 echo -e "${GREEN}Diretório de logs pronto: $LOGS_DIR${NC}"
 
-# 4. Iniciar backend em background
+# 5. Iniciar backend em background
 echo -e "${YELLOW}Iniciando backend...${NC}"
 cd "$BACK_DIR"
 
@@ -90,7 +97,7 @@ echo $BACK_PID > "$LOGS_DIR/back.pid"
 echo -e "${GREEN}Backend iniciado (PID: $BACK_PID)${NC}"
 echo -e "${GREEN}Logs: $LOGS_DIR/back.log${NC}"
 
-# 5. Iniciar frontend em background
+# 6. Iniciar frontend em background
 echo -e "${YELLOW}Iniciando frontend...${NC}"
 cd "$FRONT_DIR"
 
@@ -104,7 +111,7 @@ echo $FRONT_PID > "$LOGS_DIR/front.pid"
 echo -e "${GREEN}Frontend iniciado (PID: $FRONT_PID)${NC}"
 echo -e "${GREEN}Logs: $LOGS_DIR/front.log${NC}"
 
-# 6. Resumo
+# 7. Resumo
 echo ""
 echo -e "${GREEN}=== Serviços iniciados com sucesso ===${NC}"
 echo -e "${GREEN}Backend PID: $BACK_PID (porta 3000)${NC}"

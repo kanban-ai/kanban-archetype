@@ -47,11 +47,7 @@ Se for feito uma pergunta, deve responder objetivamente com o nome do arquivo e 
 
 # Busca Semântica na Documentação
 
-Antes de adicionar ou modificar regras, use o comando de busca semântica para verificar se já existem informações similares:
-
-```bash
-./scripts/docs query "sua questão técnica aqui"
-```
+Antes de adicionar ou modificar regras, use a ferramenta MCP `search_project_docs` para verificar se já existem informações similares:
 
 **Quando usar:**
 - Verificar se a informação já está documentada (ex: "padrões de nomenclatura de arquivos")
@@ -59,15 +55,13 @@ Antes de adicionar ou modificar regras, use o comando de busca semântica para v
 - Entender o contexto antes de adicionar novas regras (ex: "estrutura de APIs")
 - Identificar onde adicionar novas informações (ex: "documentação de services")
 
-**Exemplos:**
-```bash
-./scripts/docs query "regras de criação de controllers"
-./scripts/docs query "padrões de estrutura de pastas"
-./scripts/docs query "convenções de nomenclatura"
-./scripts/docs query "boas práticas de validação"
-```
+**Exemplos de queries:**
+- "regras de criação de controllers"
+- "padrões de estrutura de pastas"
+- "convenções de nomenclatura"
+- "boas práticas de validação"
 
-A busca semântica ajuda a manter a documentação consistente e evita duplicação de informações.
+A busca semântica via MCP ajuda a manter a documentação consistente e evita duplicação de informações.
 
 # Muito Importante
 

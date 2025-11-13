@@ -26,7 +26,6 @@ show_menu() {
     echo -e "${GREEN}5)${NC} Executar Aplicação (run-dev.sh)"
     echo -e "${GREEN}6)${NC} Executar Testes do Backend"
     echo -e "${GREEN}7)${NC} Aplicar Migrations"
-    echo -e "${GREEN}8)${NC} Matar Processos (Backend e Frontend)"
     echo -e "${GREEN}0)${NC} Sair"
     echo ""
     echo -ne "${YELLOW}Escolha uma opção:${NC} "
@@ -135,7 +134,7 @@ index_docs() {
     fi
 
     echo -e "\n${GREEN}Indexando documentos...${NC}\n"
-    "$DOCS_SCRIPT" index
+    "$DOCS_SCRIPT" index > "$LOGS_DIR/index-docs.log" 2>&1
 
     local EXIT_CODE=$?
     if [ $EXIT_CODE -eq 0 ]; then
@@ -159,9 +158,9 @@ run_app() {
     echo -e "${YELLOW}Verificando Docker Compose...${NC}"
     cd "$PROJECT_ROOT/scripts"
 
-    if ! docker compose ps | grep -q "postgres-development"; then
+    if ! docker compose ps 2>/dev/null | grep -q "postgres-development"; then
         echo -e "${YELLOW}Docker Compose não está rodando. Iniciando...${NC}"
-        docker compose up -d
+        docker compose up -d > "$LOGS_DIR/docker-compose.log" 2>&1
         echo -e "${GREEN}Aguardando PostgreSQL iniciar...${NC}"
         sleep 5
     else
@@ -189,7 +188,7 @@ run_app() {
     echo -e "${GREEN}PostgreSQL OK na porta 5432${NC}"
 
     # 2. Matar processos nas portas 3000 e 5173
-    echo -e "${YELLOW}Verificando processos nas portas 3000 e 5173...${NC}"
+    echo -e "${YELLOW}Verificando e finalizando processos nas portas 3000 e 5173...${NC}"
 
     # Função para matar processos em uma porta
     kill_port() {
@@ -197,32 +196,42 @@ run_app() {
         local pids=$(lsof -ti:$port 2>/dev/null)
 
         if [ -n "$pids" ]; then
-            echo -e "${YELLOW}Matando processos na porta $port: $pids${NC}"
-            echo "$pids" | xargs kill -9 2>/dev/null || true
+            echo -e "${YELLOW}Encontrados processos na porta $port: $pids${NC}"
+            for pid in $pids; do
+                kill -9 $pid 2>/dev/null && echo -e "${GREEN}  → Processo $pid finalizado${NC}" || echo -e "${RED}  → Erro ao finalizar processo $pid${NC}"
+            done
             sleep 1
-            echo -e "${GREEN}Processos na porta $port finalizados${NC}"
+
+            # Verificar se ainda existem processos na porta
+            local remaining=$(lsof -ti:$port 2>/dev/null)
+            if [ -n "$remaining" ]; then
+                echo -e "${RED}Aviso: Ainda existem processos na porta $port${NC}"
+            else
+                echo -e "${GREEN}Porta $port liberada com sucesso${NC}"
+            fi
         else
-            echo -e "${GREEN}Nenhum processo rodando na porta $port${NC}"
+            echo -e "${GREEN}Porta $port disponível${NC}"
         fi
     }
 
     kill_port 3000
     kill_port 5173
 
-    # 3. Criar diretório de logs se não existir
+    # 3. Criar diretório de logs se não existir e limpar logs antigos
     echo -e "${YELLOW}Preparando diretório de logs...${NC}"
     mkdir -p "$LOGS_DIR"
-    echo -e "${GREEN}Diretório de logs pronto: $LOGS_DIR${NC}"
+
+    echo -e "${YELLOW}Limpando logs antigos...${NC}"
+    > "$LOGS_DIR/back.log"
+    > "$LOGS_DIR/front.log"
+    echo -e "${GREEN}Logs limpos e diretório pronto: $LOGS_DIR${NC}"
 
     # 4. Iniciar backend em background
     echo -e "${YELLOW}Iniciando backend...${NC}"
     cd "$BACK_DIR"
 
-    # Limpar log anterior
-    > "$LOGS_DIR/back.log"
-
     # Iniciar backend (NO_COLOR=1 remove cores dos logs)
-    NO_COLOR=1 nohup npm run start:dev > "$LOGS_DIR/back.log" 2>&1 &
+    setsid bash -c "NO_COLOR=1 npm run start:dev >> '$LOGS_DIR/back.log' 2>&1" </dev/null >/dev/null 2>&1 &
     BACK_PID=$!
     echo $BACK_PID > "$LOGS_DIR/back.pid"
     echo -e "${GREEN}Backend iniciado (PID: $BACK_PID)${NC}"
@@ -232,11 +241,8 @@ run_app() {
     echo -e "${YELLOW}Iniciando frontend...${NC}"
     cd "$FRONT_DIR"
 
-    # Limpar log anterior
-    > "$LOGS_DIR/front.log"
-
     # Iniciar frontend
-    nohup npm run dev > "$LOGS_DIR/front.log" 2>&1 &
+    setsid bash -c "npm run dev >> '$LOGS_DIR/front.log' 2>&1" </dev/null >/dev/null 2>&1 &
     FRONT_PID=$!
     echo $FRONT_PID > "$LOGS_DIR/front.pid"
     echo -e "${GREEN}Frontend iniciado (PID: $FRONT_PID)${NC}"
@@ -278,7 +284,7 @@ run_backend_tests() {
     echo -e "\n${GREEN}Executando testes do backend...${NC}\n"
 
     cd "$BACKEND_DIR"
-    npm run test
+    npm run test > "$LOGS_DIR/backend-tests.log" 2>&1
 
     local EXIT_CODE=$?
     if [ $EXIT_CODE -eq 0 ]; then
@@ -309,7 +315,7 @@ run_migration() {
     echo -e "\n${GREEN}Aplicando migrations...${NC}\n"
 
     cd "$BACKEND_DIR"
-    npm run migration:run
+    npm run migration:run > "$LOGS_DIR/migrations.log" 2>&1
 
     local EXIT_CODE=$?
     if [ $EXIT_CODE -eq 0 ]; then
@@ -319,6 +325,38 @@ run_migration() {
     fi
 
     cd "$PROJECT_ROOT"
+
+    echo -e "\nPressione qualquer tecla para continuar..."
+    read -n 1
+}
+
+# Função para executar o script run-dev.sh
+run_dev_script() {
+    local RUN_DEV_SCRIPT="$PROJECT_ROOT/scripts/run-dev.sh"
+
+    echo -e "\n${YELLOW}Verificando script run-dev.sh...${NC}"
+
+    if [ ! -f "$RUN_DEV_SCRIPT" ]; then
+        echo -e "\n${RED}Erro: Script não encontrado em $RUN_DEV_SCRIPT${NC}"
+        echo -e "\nPressione qualquer tecla para continuar..."
+        read -n 1
+        return 1
+    fi
+
+    if [ ! -x "$RUN_DEV_SCRIPT" ]; then
+        echo -e "${YELLOW}Tornando o script executável...${NC}"
+        chmod +x "$RUN_DEV_SCRIPT"
+    fi
+
+    echo -e "\n${GREEN}Executando aplicação...${NC}\n"
+    "$RUN_DEV_SCRIPT"
+
+    local EXIT_CODE=$?
+    if [ $EXIT_CODE -eq 0 ]; then
+        echo -e "\n${GREEN}Aplicação iniciada com sucesso!${NC}"
+    else
+        echo -e "\n${RED}Erro ao iniciar aplicação (código: $EXIT_CODE)${NC}"
+    fi
 
     echo -e "\nPressione qualquer tecla para continuar..."
     read -n 1
@@ -382,16 +420,13 @@ main() {
                 index_docs
                 ;;
             5)
-                run_app
+                run_dev_script
                 ;;
             6)
                 run_backend_tests
                 ;;
             7)
                 run_migration
-                ;;
-            8)
-                kill_processes
                 ;;
             0)
                 echo -e "\n\n${GREEN}Saindo...${NC}"

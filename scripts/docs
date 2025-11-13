@@ -3,6 +3,18 @@
 const fs = require('fs');
 const path = require('path');
 
+// Carregar configurações de .env.local se existir
+const envLocalPath = path.join(__dirname, '..', '.env.local');
+if (fs.existsSync(envLocalPath)) {
+  const envContent = fs.readFileSync(envLocalPath, 'utf-8');
+  envContent.split('\n').forEach(line => {
+    const match = line.match(/^([^=]+)=(.*)$/);
+    if (match && !process.env[match[1]]) {
+      process.env[match[1]] = match[2];
+    }
+  });
+}
+
 // Configurações
 const CHROMA_HOST = process.env.CHROMA_HOST || 'http://localhost:8000';
 const OPENAI_API_KEY = process.env.OPENAI_API_KEY;
@@ -556,6 +568,232 @@ async function queryDocuments(queryText, nResults = 5) {
   }
 }
 
+// Função para buscar e retornar dados estruturados (para MCP)
+async function queryDocumentsStructured(queryText, nResults = 5) {
+  if (!queryText) {
+    throw new Error('Texto de busca não fornecido');
+  }
+
+  if (!OPENAI_API_KEY) {
+    throw new Error('OPENAI_API_KEY não configurada. Configure a variável de ambiente OPENAI_API_KEY.');
+  }
+
+  // Obter coleção
+  const collectionId = await getCollectionId();
+
+  if (!collectionId) {
+    throw new Error('Coleção "rules_documentation" não encontrada. Execute primeiro: scripts/docs index');
+  }
+
+  // Gerar embedding para o query
+  const queryEmbedding = await generateEmbedding(queryText);
+
+  // Fazer busca
+  const { ok, data } = await chromaFetch(`${API_BASE}/collections/${collectionId}/query`, {
+    method: 'POST',
+    body: JSON.stringify({
+      query_embeddings: [queryEmbedding],
+      n_results: nResults,
+      include: ['documents', 'metadatas', 'distances']
+    })
+  });
+
+  if (!ok) {
+    throw new Error(`Erro ao buscar no ChromaDB: ${JSON.stringify(data)}`);
+  }
+
+  const results = data.documents[0];
+  const metadatas = data.metadatas[0];
+  const distances = data.distances[0];
+
+  if (results.length === 0) {
+    return {
+      success: true,
+      message: 'Nenhum resultado encontrado.',
+      results: []
+    };
+  }
+
+  // Formatar resultados
+  const formattedResults = results.map((doc, i) => {
+    const metadata = metadatas[i];
+    const distance = distances[i];
+    const score = (1 - distance);
+    const scorePercent = (score * 100);
+
+    return {
+      rank: i + 1,
+      score: score.toFixed(3),
+      scorePercent: scorePercent.toFixed(1) + '%',
+      filename: metadata.filename,
+      filepath: metadata.filepath,
+      title: metadata.title || null,
+      section: metadata.header,
+      lines: `${metadata.start_line}-${metadata.end_line}`,
+      content: doc
+    };
+  });
+
+  return {
+    success: true,
+    message: `Encontrados ${results.length} resultados`,
+    query: queryText,
+    totalResults: results.length,
+    results: formattedResults
+  };
+}
+
+// ============================================================================
+// MCP SERVER IMPLEMENTATION
+// ============================================================================
+
+async function startMCPServer() {
+  const readline = require('readline');
+
+  const tools = [
+    {
+      name: 'search_project_docs',
+      description: 'Busca semântica na documentação do projeto SDD (pasta .rules). Usa embeddings OpenAI para encontrar conteúdo relevante baseado em similaridade semântica.',
+      inputSchema: {
+        type: 'object',
+        properties: {
+          query: {
+            type: 'string',
+            description: 'Texto para busca semântica na documentação (ex: "como criar uma API", "padrões de use-case", "testes unitários")'
+          },
+          limit: {
+            type: 'number',
+            description: 'Número máximo de resultados a retornar (padrão: 5, máximo: 20)',
+            default: 5
+          }
+        },
+        required: ['query']
+      }
+    }
+  ];
+
+  async function handleToolCall(name, args) {
+    if (name === 'search_project_docs') {
+      const limit = Math.min(args.limit || 5, 20);
+      return await queryDocumentsStructured(args.query, limit);
+    }
+    throw new Error(`Ferramenta desconhecida: ${name}`);
+  }
+
+  async function handleMessage(message) {
+    const { method, params, id } = message;
+
+    try {
+      if (method === 'initialize') {
+        return {
+          jsonrpc: '2.0',
+          id,
+          result: {
+            protocolVersion: '2024-11-05',
+            serverInfo: {
+              name: 'docs-search-server',
+              version: '1.0.0'
+            },
+            capabilities: {
+              tools: {}
+            }
+          }
+        };
+      }
+
+      if (method === 'notifications/initialized') {
+        // Notification - não precisa de resposta
+        console.error('✓ Cliente confirmou inicialização');
+        return null;
+      }
+
+      if (method === 'tools/list') {
+        return {
+          jsonrpc: '2.0',
+          id,
+          result: {
+            tools: tools
+          }
+        };
+      }
+
+      if (method === 'tools/call') {
+        const { name, arguments: args } = params;
+        const result = await handleToolCall(name, args);
+
+        return {
+          jsonrpc: '2.0',
+          id,
+          result: {
+            content: [
+              {
+                type: 'text',
+                text: JSON.stringify(result, null, 2)
+              }
+            ]
+          }
+        };
+      }
+
+      throw new Error(`Método não suportado: ${method}`);
+    } catch (error) {
+      return {
+        jsonrpc: '2.0',
+        id,
+        error: {
+          code: -32603,
+          message: error.message
+        }
+      };
+    }
+  }
+
+  // Log inicial para stderr (não interfere com o protocolo MCP)
+  console.error('MCP Docs Search Server iniciado');
+  console.error(`ChromaDB Host: ${CHROMA_HOST}`);
+  console.error(`OpenAI API Key: ${OPENAI_API_KEY ? 'Configurada' : 'NÃO CONFIGURADA'}`);
+
+  // Testar conexão com ChromaDB
+  try {
+    await chromaFetch(`${API_BASE}/collections`);
+    console.error('✓ ChromaDB conectado com sucesso');
+  } catch (error) {
+    console.error(`✗ ERRO: Falha ao conectar com ChromaDB: ${error.message}`);
+    process.exit(1);
+  }
+
+  const rl = readline.createInterface({
+    input: process.stdin,
+    output: process.stdout,
+    terminal: false
+  });
+
+  rl.on('line', async (line) => {
+    try {
+      const message = JSON.parse(line);
+      const response = await handleMessage(message);
+      // Só envia resposta se não for null (notifications não têm resposta)
+      if (response !== null) {
+        console.log(JSON.stringify(response));
+      }
+    } catch (error) {
+      console.error(JSON.stringify({
+        jsonrpc: '2.0',
+        id: null,
+        error: {
+          code: -32700,
+          message: `Parse error: ${error.message}`
+        }
+      }));
+    }
+  });
+
+  rl.on('close', () => {
+    console.error('MCP Server encerrado');
+    process.exit(0);
+  });
+}
+
 // Função principal
 async function main() {
   const args = process.argv.slice(2);
@@ -568,17 +806,22 @@ async function main() {
     } else if (command === 'query') {
       const queryText = args.slice(1).join(' ');
       await queryDocuments(queryText);
+    } else if (command === 'mcp') {
+      await startMCPServer();
     } else {
       console.log('Uso:');
       console.log('  docs index                          # Indexa todos os documentos da pasta .rules');
       console.log('  docs query "texto de busca"         # Busca semântica nos documentos');
+      console.log('  docs mcp                            # Inicia servidor MCP para integração com Claude Code');
       console.log('');
       console.log('Exemplos:');
       console.log('  docs index                          # Divide por títulos ## [texto]()');
       console.log('  docs query "como criar api"         # Busca semanticamente');
+      console.log('  docs mcp                            # Modo servidor MCP');
       console.log('');
       console.log('Variáveis de ambiente:');
       console.log('  OPENAI_API_KEY                      # Chave da API OpenAI (OBRIGATÓRIA)');
+      console.log('  CHROMA_HOST                         # Host do ChromaDB (padrão: http://localhost:8000)');
       console.log('');
       console.log('Nota: Este script requer a OPENAI_API_KEY configurada para gerar embeddings semânticos.');
       process.exit(1);
