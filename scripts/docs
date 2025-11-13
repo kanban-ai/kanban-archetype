@@ -647,6 +647,145 @@ async function queryDocumentsStructured(queryText, nResults = 5) {
 // MCP SERVER IMPLEMENTATION
 // ============================================================================
 
+/**
+ * Obtém informações da coleção do ChromaDB
+ */
+async function getCollectionInfo() {
+  const collectionId = await getCollectionId();
+
+  if (!collectionId) {
+    return {
+      exists: false,
+      message: 'Coleção "rules_documentation" não encontrada. Execute: scripts/docs index'
+    };
+  }
+
+  const { ok, data } = await chromaFetch(`${API_BASE}/collections/${collectionId}/get`, {
+    method: 'POST',
+    body: JSON.stringify({
+      include: ['metadatas']
+    })
+  });
+
+  if (!ok || !data.metadatas) {
+    return {
+      exists: true,
+      error: 'Erro ao obter dados da coleção'
+    };
+  }
+
+  const totalDocs = data.metadatas.length;
+  const fileStats = {};
+
+  data.metadatas.forEach(meta => {
+    const filename = meta.filename;
+    if (!fileStats[filename]) {
+      fileStats[filename] = {
+        count: 0,
+        filepath: meta.filepath,
+        sections: []
+      };
+    }
+    fileStats[filename].count++;
+    fileStats[filename].sections.push({
+      header: meta.header,
+      title: meta.title || null,
+      lines: `${meta.start_line}-${meta.end_line}`
+    });
+  });
+
+  return {
+    exists: true,
+    collectionId,
+    collectionName: COLLECTION_NAME,
+    totalDocuments: totalDocs,
+    totalFiles: Object.keys(fileStats).length,
+    files: fileStats,
+    chromaHost: CHROMA_HOST,
+    tenant: TENANT,
+    database: DATABASE,
+    embeddingModel: OPENAI_API_KEY ? 'text-embedding-ada-002 (OpenAI)' : 'Not configured'
+  };
+}
+
+/**
+ * Lista todos os arquivos de documentação disponíveis
+ */
+async function listDocsFiles() {
+  if (!fs.existsSync(RULES_DIR)) {
+    return [];
+  }
+
+  const files = fs.readdirSync(RULES_DIR)
+    .filter(f => f.endsWith('.md'))
+    .map(filename => {
+      const filepath = path.join(RULES_DIR, filename);
+      const stats = fs.statSync(filepath);
+      return {
+        filename,
+        filepath,
+        uri: `docs://files/${filename}`,
+        size: stats.size,
+        modified: stats.mtime.toISOString()
+      };
+    });
+
+  return files;
+}
+
+/**
+ * Lê o conteúdo completo de um arquivo de documentação
+ */
+function readDocsFile(filename) {
+  const filepath = path.join(RULES_DIR, filename);
+
+  if (!fs.existsSync(filepath)) {
+    throw new Error(`Arquivo não encontrado: ${filename}`);
+  }
+
+  const content = fs.readFileSync(filepath, 'utf-8');
+  return content;
+}
+
+/**
+ * Gera um índice/sumário de todas as documentações
+ */
+function generateDocsIndex() {
+  if (!fs.existsSync(RULES_DIR)) {
+    return 'Pasta .rules não encontrada';
+  }
+
+  const files = fs.readdirSync(RULES_DIR).filter(f => f.endsWith('.md'));
+
+  let index = '# Índice de Documentações e Regras Técnicas\n\n';
+
+  files.forEach(filename => {
+    const filepath = path.join(RULES_DIR, filename);
+    const content = fs.readFileSync(filepath, 'utf-8');
+
+    // Extrair título principal (primeiro # do arquivo)
+    const titleMatch = content.match(/^#\s+\[(.+?)\]\(\)/m);
+    const title = titleMatch ? titleMatch[1] : filename.replace('.md', '');
+
+    index += `## ${title}\n`;
+    index += `**Arquivo:** ${filename}\n`;
+    index += `**URI:** docs://files/${filename}\n\n`;
+
+    // Extrair seções ## do arquivo
+    const sections = content.match(/^##\s+\[(.+?)\]\(\)/gm);
+    if (sections && sections.length > 0) {
+      index += '**Seções:**\n';
+      sections.forEach(section => {
+        const sectionTitle = section.match(/##\s+\[(.+?)\]\(\)/)[1];
+        index += `- ${sectionTitle}\n`;
+      });
+      index += '\n';
+    }
+  });
+
+  return index;
+}
+
 async function startMCPServer() {
   const readline = require('readline');
 
@@ -672,12 +811,59 @@ async function startMCPServer() {
     }
   ];
 
+  // Gerar resources dinamicamente baseado nos arquivos .md disponíveis
+  const docsFiles = await listDocsFiles();
+
+  const resources = [
+    {
+      uri: 'docs://index',
+      name: 'Índice de Documentações',
+      description: 'Índice completo de todas as documentações e regras técnicas do projeto com sumário de seções',
+      mimeType: 'text/markdown'
+    }
+  ];
+
+  // Adicionar cada arquivo de documentação como um resource
+  docsFiles.forEach(file => {
+    resources.push({
+      uri: file.uri,
+      name: `Documentação: ${file.filename}`,
+      description: `Conteúdo completo do arquivo ${file.filename} com regras técnicas e padrões do projeto`,
+      mimeType: 'text/markdown'
+    });
+  });
+
   async function handleToolCall(name, args) {
     if (name === 'search_project_docs') {
       const limit = Math.min(args.limit || 5, 20);
       return await queryDocumentsStructured(args.query, limit);
     }
     throw new Error(`Ferramenta desconhecida: ${name}`);
+  }
+
+  async function handleResourceRead(uri) {
+    // Índice de documentações
+    if (uri === 'docs://index') {
+      const index = generateDocsIndex();
+      return {
+        uri,
+        mimeType: 'text/markdown',
+        text: index
+      };
+    }
+
+    // Arquivos individuais de documentação
+    if (uri.startsWith('docs://files/')) {
+      const filename = uri.replace('docs://files/', '');
+      const content = readDocsFile(filename);
+      return {
+        uri,
+        mimeType: 'text/markdown',
+        text: content
+      };
+    }
+
+    throw new Error(`Resource não encontrado: ${uri}`);
   }
 
   async function handleMessage(message) {
@@ -695,7 +881,8 @@ async function startMCPServer() {
               version: '1.0.0'
             },
             capabilities: {
-              tools: {}
+              tools: {},
+              resources: {}
             }
           }
         };
@@ -731,6 +918,29 @@ async function startMCPServer() {
                 text: JSON.stringify(result, null, 2)
               }
             ]
+          }
+        };
+      }
+
+      if (method === 'resources/list') {
+        return {
+          jsonrpc: '2.0',
+          id,
+          result: {
+            resources: resources
+          }
+        };
+      }
+
+      if (method === 'resources/read') {
+        const { uri } = params;
+        const resource = await handleResourceRead(uri);
+
+        return {
+          jsonrpc: '2.0',
+          id,
+          result: {
+            contents: [resource]
           }
         };
       }
