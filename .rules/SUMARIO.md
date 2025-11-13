@@ -87,6 +87,27 @@ Guias completos para desenvolvimento de APIs, integração de serviços e implem
 - **Checklist** - Verificação de implementação
 - **Troubleshooting** - Problemas comuns
 
+### [Scheduler Bull - `./como-usar-scheduler-bull-redis-backend.md`]()
+
+- **Quando Usar** - Tarefas agendadas distribuídas, escalabilidade horizontal, retry automático
+- **Diferença node-cron vs Bull** - Comparação de recursos e quando usar cada um
+- **Instalação** - Pacotes Bull
+- **Estrutura de Pastas** - Organização jobs/, processors/, services/
+- **Configuração Global** - BullConfigModule comum e reutilizável
+- **Decorator @Cron** - Criar decorator customizado com metadados
+- **Como Funciona** - Fluxo: Decorator → Metadados → Jobs Registry → Bull
+- **Criar Jobs** - Classes com métodos marcados por @Cron
+- **Criar Processor** - @Processor e @Process para executar jobs
+- **Registry Service** - OnModuleInit para ler metadados e registrar jobs
+- **Expressões Cron** - Referência rápida de agendamentos comuns
+- **Bull Board Dashboard** - UI web para monitoramento de filas
+- **Testes** - Testar jobs e processors isoladamente
+- **Disparar Manual** - Endpoint para trigger de jobs sob demanda
+- **Boas Práticas** - Retry, logging, jobId único, timezone explícito
+- **Troubleshooting** - Job duplicado, não executa, erros de DI
+- **Checklist** - Verificação completa de implementação
+- **Exemplo Completo** - Módulo Notifications com scheduler
+
 ### [Tratamento de Datas - `./como-tratar-datas-backend-frontend.md`]()
 
 - **Regra de Ouro** - Banco UTC, Backend UTC, Frontend converte na exibição
@@ -553,6 +574,13 @@ Atalhos para tarefas comuns com links diretos para as seções específicas dos 
 | Escala Horizontal | [Redis](./como-usar-redis-backend.md#quando-usar-redis), [RabbitMQ](./como-usar-rabbitmq-backend.md) |
 | Sessões | [Redis - Sessões Compartilhadas](./como-usar-redis-backend.md#4-sessões-compartilhadas) |
 | Contador | [Redis - Contador Atômico](./como-usar-redis-backend.md#1-contador-compartilhado-incremento-atômico) |
+| Scheduler | [Bull Scheduler](./como-usar-scheduler-bull-redis-backend.md) |
+| Cron | [Bull Scheduler - Expressões Cron](./como-usar-scheduler-bull-redis-backend.md#exemplo-expressões-cron-comuns) |
+| Bull | [Bull Scheduler](./como-usar-scheduler-bull-redis-backend.md) |
+| Tarefas Agendadas | [Bull Scheduler](./como-usar-scheduler-bull-redis-backend.md#quando-usar-scheduler-com-bull) |
+| Background Jobs Agendados | [Bull Scheduler](./como-usar-scheduler-bull-redis-backend.md) |
+| Bull Board | [Bull Scheduler - Dashboard](./como-usar-scheduler-bull-redis-backend.md#como-adicionar-bull-board-dashboard) |
+| Decorator Cron | [Bull Scheduler - @Cron](./como-usar-scheduler-bull-redis-backend.md#criar-decorator-cron-customizado) |
 | Testes Unitários | [Testes de Use-Cases](./como-testar-use-cases-com-jest-backend.md) |
 | Jest | [Testes de Use-Cases](./como-testar-use-cases-com-jest-backend.md) |
 | Mocks | [Testes de Use-Cases](./como-testar-use-cases-com-jest-backend.md#mockando-múltiplas-dependências) |
@@ -581,10 +609,11 @@ Guias organizados por nível de complexidade: iniciante, intermediário e avanç
 5. [Documentar Swagger](./como-documentar-swagger-backend.md#documentar-controllers)
 6. [Redis - Cache e Escala Horizontal](./como-usar-redis-backend.md#configuração-global-common-module)
 7. [RabbitMQ - Filas e Background Jobs](./como-usar-rabbitmq-backend.md#configuração-global-common-module)
-8. [Integrar API Externa](./como-integrar-com-api-externa-backend.md#configuração-do-cliente-http)
-9. [Tratamento de Datas](./como-tratar-datas-backend-frontend.md#princípios-fundamentais)
-10. [Criar Componentes](./como-criar-componentes-comum-frontend.md#exemplos-práticos)
-11. [Rotas Frontend](./como-funciona-as-rotas-no-frontend.md#configuração-centralizada)
+8. [Bull Scheduler - Tarefas Agendadas](./como-usar-scheduler-bull-redis-backend.md#quando-usar-scheduler-com-bull)
+9. [Integrar API Externa](./como-integrar-com-api-externa-backend.md#configuração-do-cliente-http)
+10. [Tratamento de Datas](./como-tratar-datas-backend-frontend.md#princípios-fundamentais)
+11. [Criar Componentes](./como-criar-componentes-comum-frontend.md#exemplos-práticos)
+12. [Rotas Frontend](./como-funciona-as-rotas-no-frontend.md#configuração-centralizada)
 
 ### [🌳 Avançado]()
 
@@ -615,7 +644,8 @@ Guias organizados por nível de complexidade: iniciante, intermediário e avanç
 │   ├── como-usar-validacao-de-dados-api-backend.md         (15 tópicos)
 │   ├── como-tratar-datas-backend-frontend.md               (12 seções + exemplos)
 │   ├── como-usar-redis-backend.md                          (15 seções + exemplos)
-│   └── como-usar-rabbitmq-backend.md                       (17 seções + exemplos)
+│   ├── como-usar-rabbitmq-backend.md                       (17 seções + exemplos)
+│   └── como-usar-scheduler-bull-redis-backend.md           (17 seções + exemplos)
 │
 ├── Backend - Banco de Dados
 │   ├── como-criar-uma-entity-typeorm-backend.md            (14 tópicos)
@@ -643,11 +673,11 @@ Guias organizados por nível de complexidade: iniciante, intermediário e avanç
 
 ## [📊 Estatísticas]()
 
-- **Total de documentos**: 25
-- **Backend**: 17 documentos (230 seções)
+- **Total de documentos**: 26
+- **Backend**: 18 documentos (247 seções)
 - **Frontend**: 4 documentos (53 seções)
 - **Stack**: 3 documentos (31 seções)
-- **Total de seções**: 314 seções documentadas
+- **Total de seções**: 331 seções documentadas
 
 
 ---
