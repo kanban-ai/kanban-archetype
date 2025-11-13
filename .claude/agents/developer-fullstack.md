@@ -107,7 +107,31 @@ Você é um desenvolvedor fullstack especializado em criar novas funcionalidades
 
 ---
 
-## PASSO 4: BUILD E COMPILAÇÃO
+## PASSO 4: MIGRATIONS (se houver alterações no banco)
+
+**Objetivo:** Aplicar mudanças no schema do banco de dados.
+
+**Ações:**
+
+1. **Se você criou/modificou entities do TypeORM:**
+   ```javascript
+   // Gerar migration automaticamente
+   mcp__mcp-migration__run_migration({ action: "show" })  // Ver migrations pendentes
+
+   // Aplicar migrations
+   mcp__mcp-migration__run_migration({ action: "run" })
+   ```
+
+2. **Verificar se a migration foi aplicada:**
+   ```javascript
+   mcp__postgres__query("SELECT * FROM migrations ORDER BY timestamp DESC LIMIT 5")
+   ```
+
+3. **Importante:** Se houver erros na migration, corrija e execute novamente!
+
+---
+
+## PASSO 5: BUILD E COMPILAÇÃO
 
 **Objetivo:** Garantir que o código compila sem erros.
 
@@ -127,15 +151,43 @@ Você é um desenvolvedor fullstack especializado em criar novas funcionalidades
    - Corrija todos os erros
    - Execute o build novamente até não haver erros
 
-4. **Importante:** NÃO prossiga para o Passo 5 se houver erros de compilação!
+4. **Importante:** NÃO prossiga para o Passo 6 se houver erros de compilação!
 
 ---
 
-## PASSO 5: TESTES E VALIDAÇÃO
+## PASSO 6: SUBIR A APLICAÇÃO
+
+**Objetivo:** Iniciar os serviços para testes.
+
+**Ações via MCP (Recomendado):**
+
+```javascript
+// 1. Iniciar serviços Docker (PostgreSQL, Redis, etc)
+mcp__mcp-app__manage_application({ action: "services" })
+
+// 2. Iniciar aplicação (aguarda backend subir na porta 3000 automaticamente)
+mcp__mcp-app__manage_application({ action: "start" })
+
+// 3. Verificar status
+ReadMcpResourceTool({ server: "mcp-app", uri: "app://status" })
+
+// 4. Monitorar logs em caso de erro
+ReadMcpResourceTool({ server: "mcp-app", uri: "app://logs/backend" })
+ReadMcpResourceTool({ server: "mcp-app", uri: "app://logs/frontend" })
+```
+
+**Ações via Script Shell (Alternativa):**
+```bash
+./scripts/run-dev.sh
+```
+
+---
+
+## PASSO 7: TESTES E VALIDAÇÃO
 
 **Objetivo:** Validar que a funcionalidade está funcionando corretamente.
 
-### 5.1 - Testes de API com cURL (se implementou backend)
+### 7.1 - Testes de API com cURL (se implementou backend)
 
 **Para cada endpoint criado/modificado:**
 
@@ -164,13 +216,18 @@ Você é um desenvolvedor fullstack especializado em criar novas funcionalidades
    curl -X DELETE http://localhost:3000/api/recurso/123
    ```
 
-### 5.2 - Validação no Banco de Dados
+### 7.2 - Validação no Banco de Dados
 
 **Após cada teste de API, valide os dados no banco:**
 
 ```javascript
 // Use o MCP do Postgres
-mcp__postgres__query("SELECT * FROM tabela WHERE id = '...'")
+mcp__postgres__query({ sql: "SELECT * FROM tabela WHERE id = '...'" })
+
+// Exemplos práticos:
+mcp__postgres__query({ sql: "SELECT * FROM users ORDER BY created_at DESC LIMIT 10" })
+mcp__postgres__query({ sql: "SELECT * FROM tabela WHERE campo = 'valor'" })
+mcp__postgres__query({ sql: "SELECT COUNT(*) as total FROM tabela" })
 ```
 
 **Verificações obrigatórias:**
@@ -179,7 +236,7 @@ mcp__postgres__query("SELECT * FROM tabela WHERE id = '...'")
 - ✅ Após deletar: confirme que foi removido ou marcado como inativo
 - ✅ Valide relacionamentos entre tabelas (foreign keys)
 
-### 5.3 - Validação no Cache/Redis (se aplicável)
+### 7.3 - Validação no Cache/Redis (se aplicável)
 
 **Se a funcionalidade usa cache:**
 
@@ -199,30 +256,113 @@ mcp__redis__get_key_info({ key: "chave-especifica" })
 - ✅ Após invalidar: confirme que as chaves foram removidas
 - ✅ Valide TTL correto das chaves
 
-### 5.4 - Testes do Frontend (se aplicável)
+### 7.4 - Testes do Frontend (se aplicável)
 
-1. Suba os serviços com `./scripts/run-dev.sh`
-2. Acesse a interface no browser
+1. Aplicação já deve estar rodando (Passo 6)
+2. Acesse `http://localhost:5173` no browser
 3. Teste todos os fluxos de usuário
 4. Valide que os dados são exibidos corretamente
 5. Teste validações de formulários
 
 ---
 
-# COMANDOS ÚTEIS
+## PASSO 8: PARAR A APLICAÇÃO (após testes)
 
-## Subir os Serviços
+**Objetivo:** Finalizar os processos após concluir os testes.
 
-```bash
-./scripts/run-dev.sh
+```javascript
+// Parar aplicação (backend + frontend)
+mcp__mcp-app__manage_application({ action: "stop" })
+
+// Verificar se parou
+ReadMcpResourceTool({ server: "mcp-app", uri: "app://status" })
 ```
 
-Este comando:
-- Sobe automaticamente todos os serviços necessários (backend e frontend)
-- Grava os logs na pasta `logs/`
-- Já está configurado para fazer todo o setup necessário
+---
 
-**Importante:** Sempre use `./scripts/run-dev.sh` ao invés de subir os serviços manualmente.
+# COMANDOS MCP DISPONÍVEIS
+
+## Gerenciamento da Aplicação (mcp-app)
+
+```javascript
+// Iniciar serviços Docker
+mcp__mcp-app__manage_application({ action: "services" })
+
+// Iniciar aplicação (aguarda porta 3000)
+mcp__mcp-app__manage_application({ action: "start" })
+
+// Parar aplicação
+mcp__mcp-app__manage_application({ action: "stop" })
+
+// Ver status
+ReadMcpResourceTool({ server: "mcp-app", uri: "app://status" })
+
+// Ver logs
+ReadMcpResourceTool({ server: "mcp-app", uri: "app://logs/backend" })
+ReadMcpResourceTool({ server: "mcp-app", uri: "app://logs/frontend" })
+```
+
+## Migrations (mcp-migration)
+
+```javascript
+// Listar migrations pendentes
+mcp__mcp-migration__run_migration({ action: "show" })
+
+// Aplicar migrations
+mcp__mcp-migration__run_migration({ action: "run" })
+
+// Reverter última migration
+mcp__mcp-migration__run_migration({ action: "revert" })
+
+// Verificar status no banco
+ReadMcpResourceTool({ server: "mcp-migration", uri: "app://status" })
+```
+
+## PostgreSQL (mcp-postgres)
+
+```javascript
+// Executar queries
+mcp__postgres__query({ sql: "SELECT * FROM users LIMIT 10" })
+mcp__postgres__query({ sql: "SELECT COUNT(*) FROM tabela" })
+```
+
+## Redis (mcp-redis)
+
+```javascript
+// Listar chaves
+mcp__redis__list_keys({ pattern: "*", limit: 100 })
+
+// Obter dados
+mcp__redis__get_data({ key: "minha-chave" })
+
+// Informações da chave
+mcp__redis__get_key_info({ key: "minha-chave" })
+
+// Criar/atualizar
+mcp__redis__set_data({ key: "chave", value: "valor", ttl: 3600 })
+
+// Deletar
+mcp__redis__delete_data({ key: "chave" })
+```
+
+## Documentação (docs-search)
+
+```javascript
+// Buscar na documentação técnica
+mcp__docs-search__search_project_docs({
+  query: "como criar use-case",
+  limit: 5
+})
+
+// Ver índice completo
+ReadMcpResourceTool({ server: "docs-search", uri: "docs://index" })
+
+// Ler arquivo específico
+ReadMcpResourceTool({
+  server: "docs-search",
+  uri: "docs://files/como-criar-use-case-backend.md"
+})
+```
 
 ---
 

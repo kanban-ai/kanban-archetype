@@ -330,14 +330,14 @@ async function startMCPServer(subcommand) {
   const tools = {
     'app': [{
       name: 'manage_application',
-      description: 'Gerencia a aplicação SDD (backend NestJS na porta 3000 e frontend Vite/React na porta 5173). Use action="start" para iniciar em background, action="stop" para parar todos os processos, ou action="services" para iniciar apenas os serviços Docker.',
+      description: 'Gerencia a aplicação SDD (backend NestJS na porta 3000 e frontend Vite/React na porta 5173). Use action="start" para iniciar aplicação completa, action="stop" para parar todos os processos, ou action="docker-compose-up" para subir apenas os containers Docker (PostgreSQL, Redis) sem iniciar a aplicação Node.js.',
       inputSchema: {
         type: 'object',
         properties: {
           action: {
             type: 'string',
-            enum: ['start', 'stop', 'services'],
-            description: 'Ação a executar: "start" para iniciar a aplicação, "stop" para parar todos os processos, "services" para iniciar serviços Docker (PostgreSQL, Redis, etc)'
+            enum: ['start', 'stop', 'docker-compose-up'],
+            description: 'Ação a executar: "start" para iniciar aplicação (backend + frontend), "stop" para parar todos os processos, "docker-compose-up" para executar docker compose up -d (sobe PostgreSQL, Redis e outros containers definidos no docker-compose.yml)'
           }
         },
         required: ['action']
@@ -398,7 +398,7 @@ async function startMCPServer(subcommand) {
           return await startApp();
         } else if (args.action === 'stop') {
           return await stopApp();
-        } else if (args.action === 'services') {
+        } else if (args.action === 'docker-compose-up') {
           return await startServices();
         } else {
           throw new Error(`Ação inválida: ${args.action}`);

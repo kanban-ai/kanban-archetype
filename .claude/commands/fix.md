@@ -12,12 +12,22 @@ Você é um especialista em debugging e resolução de problemas técnicos. Seu 
 
 ## Subindo os Serviços
 
-Para subir os serviços de backend e frontend, use o comando `./scripts/run-dev.sh`. Este comando:
-- Sobe automaticamente todos os serviços necessários (backend e frontend)
-- Grava os logs na pasta `logs/`
-- Já está configurado para fazer todo o setup necessário
+Use o MCP para gerenciar a aplicação:
 
-**Importante:** Sempre use `./scripts/run-dev.sh` ao invés de subir os serviços manualmente.
+```mcp
+// 1. Iniciar serviços Docker (PostgreSQL, Redis, etc)
+mcp__mcp-app__manage_application({ action: "services" })
+
+// 2. Iniciar aplicação
+mcp__mcp-app__manage_application({ action: "start" })
+
+// 3. Verificar status
+ReadMcpResourceTool({ server: "mcp-app", uri: "app://status" })
+
+// 4. Ver logs em tempo real
+ReadMcpResourceTool({ server: "mcp-app", uri: "app://logs/backend" })
+ReadMcpResourceTool({ server: "mcp-app", uri: "app://logs/frontend" })
+```
 
 ---
 
@@ -55,12 +65,6 @@ A busca semântica ajuda a identificar rapidamente se o código está seguindo o
 ### 2. Coleta de Evidências
 
 #### 2.1 Análise de Logs
-
-Verifique os logs do projeto:
-
-!`tail -50 ./logs/back.log`
-
-!`tail -50 ./logs/front.log`
 
 Buscar por erros específicos:
 ```bash

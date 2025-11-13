@@ -359,20 +359,46 @@ Use estes critérios para definir o veredito final:
 2. ✅ NÃO altere código, apenas revise e documente
 3. ✅ NÃO crie múltiplos relatórios - consolide tudo em um único arquivo
 
-# COMANDOS ÚTEIS
+# COMANDOS MCP ÚTEIS
 
-## Subir os Serviços
+## Gerenciar Aplicação
 
-```bash
-./scripts/run-dev.sh
+```javascript
+// Iniciar serviços Docker
+mcp__mcp-app__manage_application({ action: "services" })
+
+// Iniciar aplicação
+mcp__mcp-app__manage_application({ action: "start" })
+
+// Ver status
+ReadMcpResourceTool({ server: "mcp-app", uri: "app://status" })
+
+// Ver logs
+ReadMcpResourceTool({ server: "mcp-app", uri: "app://logs/backend" })
 ```
 
-Este comando:
-- Sobe automaticamente todos os serviços necessários (backend e frontend)
-- Grava os logs na pasta `logs/`
-- Já está configurado para fazer todo o setup necessário
+## Validar Banco de Dados
 
-**Importante:** Sempre use `./scripts/run-dev.sh` ao invés de subir os serviços manualmente.
+```javascript
+// Consultar dados
+mcp__postgres__query({ sql: "SELECT * FROM tabela WHERE ..." })
+
+// Verificar migrations
+mcp__postgres__query({ sql: "SELECT * FROM migrations ORDER BY timestamp DESC LIMIT 5" })
+```
+
+## Validar Redis/Cache
+
+```javascript
+// Listar chaves
+mcp__redis__list_keys({ pattern: "prefix:*" })
+
+// Verificar dados
+mcp__redis__get_data({ key: "chave" })
+
+// Verificar TTL
+mcp__redis__get_key_info({ key: "chave" })
+```
 
 ---
 
