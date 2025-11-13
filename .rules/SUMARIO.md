@@ -6,6 +6,19 @@
 
 Documentação sobre todas as tecnologias, frameworks e bibliotecas utilizadas no backend e frontend.
 
+### [Padrões TypeScript - `./quais-padroes-typescript-devem-ser-seguidos.md`]()
+
+- **Regra #1: NUNCA use `any`** - Proibição total do tipo any
+- **Regra #2: strict: true** - Modo strict obrigatório
+- **Regra #3: Tipagem explícita** - Interfaces e types com tipos claros
+- **Regra #4: use `unknown`** - Alternativa segura para tipos desconhecidos
+- **Type Guards** - Validação de tipos em runtime
+- **Generics** - Código reutilizável com tipos seguros
+- **Readonly** - Imutabilidade e prevenção de mutações
+- **Nomenclatura** - Convenções PascalCase para tipos
+- **ESLint Rules** - Regras obrigatórias do typescript-eslint
+- **Checklist** - Verificação de qualidade TypeScript
+
 ### [Backend - `./qual-tecnologia-usa-backend.md`]()
 
 - **Stack Principal** - Framework NestJS, TypeScript, Node.js, Express
@@ -487,6 +500,13 @@ Atalhos para tarefas comuns com links diretos para as seções específicas dos 
 
 | Palavra-Chave | Documento Principal |
 |---------------|---------------------|
+| TypeScript | [Padrões TypeScript](./quais-padroes-typescript-devem-ser-seguidos.md) |
+| any | [Padrões TypeScript - Regra #1](./quais-padroes-typescript-devem-ser-seguidos.md#regra-1-nunca-use-o-tipo-any) |
+| unknown | [Padrões TypeScript - Regra #4](./quais-padroes-typescript-devem-ser-seguidos.md#regra-4-use-unknown-ao-invés-de-any-para-tipos-desconhecidos) |
+| Generics | [Padrões TypeScript - Regra #7](./quais-padroes-typescript-devem-ser-seguidos.md#regra-7-generics-para-código-reutilizável) |
+| Type Guards | [Padrões TypeScript](./quais-padroes-typescript-devem-ser-seguidos.md#type-guards-comuns) |
+| strict mode | [Padrões TypeScript - Regra #2](./quais-padroes-typescript-devem-ser-seguidos.md#regra-2-sempre-use-strict-true-no-tsconfigjson) |
+| Tipagem | [Padrões TypeScript](./quais-padroes-typescript-devem-ser-seguidos.md) |
 | Setup Backend | [Setup Inicial](./como-iniciar-fazer-0-setup-do-backend.md) |
 | Setup Frontend | [Setup Inicial](./como-iniciar-fazer-0-setup-do-frontend.md) |
 | NestJS Setup | [Setup Inicial](./como-iniciar-fazer-0-setup-do-backend.md) |
@@ -583,6 +603,7 @@ Guias organizados por nível de complexidade: iniciante, intermediário e avanç
 ├── SUMARIO.md                                              (este arquivo)
 │
 ├── Stack e Tecnologias
+│   ├── quais-padroes-typescript-devem-ser-seguidos.md      (10 regras + exemplos)
 │   ├── qual-tecnologia-usa-backend.md                      (11 seções)
 │   └── qual-tecnologia-usa-frontend.md                     (10 seções)
 │
@@ -622,14 +643,14 @@ Guias organizados por nível de complexidade: iniciante, intermediário e avanç
 
 ## [📊 Estatísticas]()
 
-- **Total de documentos**: 24
+- **Total de documentos**: 25
 - **Backend**: 17 documentos (230 seções)
 - **Frontend**: 4 documentos (53 seções)
-- **Stack**: 2 documentos (21 seções)
-- **Total de seções**: 304 seções documentadas
+- **Stack**: 3 documentos (31 seções)
+- **Total de seções**: 314 seções documentadas
 
 
 ---
 
-**Última atualização**: 2 de novembro de 2025
+**Última atualização**: 13 de novembro de 2025
 **Documentação gerada por**: Claude Code

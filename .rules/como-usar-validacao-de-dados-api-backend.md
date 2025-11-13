@@ -553,7 +553,7 @@ async function validateData() {
 
 Recomendações essenciais para validação robusta e segura:
 
-1. **Sempre use DTOs**: Nunca aceite `any` no controller
+1. **Sempre use DTOs**: Nunca aceite `any` em nenhum lugar do código (consulte [quais-padroes-typescript-devem-ser-seguidos.md](./quais-padroes-typescript-devem-ser-seguidos.md) para regras completas de tipagem)
 2. **Validação no backend**: Nunca confie apenas no frontend
 3. **Mensagens claras**: Ajude o frontend a exibir erros
 4. **@IsOptional para campos opcionais**: Seja explícito
