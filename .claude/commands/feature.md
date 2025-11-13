@@ -1,5 +1,5 @@
 ---
-allowed-tools: Bash(cat:*), Bash(ls:*)
+allowed-tools: Bash(cat:*), Bash(ls:*), MCP
 description: Adicione demandas de negócio ao TODO List do sistema
 tags: [documentation, business, todo]
 ---

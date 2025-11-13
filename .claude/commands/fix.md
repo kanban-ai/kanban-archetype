@@ -1,5 +1,5 @@
 ---
-allowed-tools: Bash, Read, Grep, Glob, Edit, Task
+allowed-tools: Bash, Read, Grep, Glob, Edit, Task, MCP
 description: Resolve problemas tecnicos do projeto
 tags: [debugging, troubleshooting, technical, investigation, fix]
 ---
@@ -16,7 +16,7 @@ Use o MCP para gerenciar a aplicação:
 
 ```mcp
 // 1. Iniciar serviços Docker (PostgreSQL, Redis, etc)
-mcp__mcp-app__manage_application({ action: "services" })
+mcp__mcp-app__manage_application({ action: "docker-compose-up" })
 
 // 2. Iniciar aplicação
 mcp__mcp-app__manage_application({ action: "start" })

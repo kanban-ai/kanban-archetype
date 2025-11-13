@@ -365,7 +365,7 @@ Use estes critérios para definir o veredito final:
 
 ```javascript
 // Iniciar serviços Docker
-mcp__mcp-app__manage_application({ action: "services" })
+mcp__mcp-app__manage_application({ action: "docker-compose-up" })
 
 // Iniciar aplicação
 mcp__mcp-app__manage_application({ action: "start" })

@@ -16,8 +16,9 @@ const readline = require('readline');
 
 const execAsync = promisify(exec);
 
-// Diretórios
-const ROOT_DIR = path.resolve(__dirname, '..');
+// Diretórios (resolve a partir do diretório do script, não do CWD)
+const SCRIPT_DIR = path.dirname(__filename);
+const ROOT_DIR = path.resolve(SCRIPT_DIR, '..');
 const BACK_DIR = path.join(ROOT_DIR, 'backend');
 const FRONT_DIR = path.join(ROOT_DIR, 'frontend');
 const LOGS_DIR = path.join(ROOT_DIR, 'logs');
@@ -262,7 +263,7 @@ async function getAppStatus() {
   const status = {
     backend: { running: false, pid: null, port: 3000 },
     frontend: { running: false, pid: null, port: 5173 },
-    docker: { running: false }
+    docker: { running: false, containers: [] }
   };
 
   // Verificar backend
@@ -289,10 +290,44 @@ async function getAppStatus() {
 
   // Verificar Docker
   try {
-    const { stdout } = await safeExecAsync('docker compose ps', { cwd: BACK_DIR });
-    status.docker.running = stdout.includes('postgres-development');
+    const dockerComposePath = path.join(ROOT_DIR, 'scripts', 'docker-compose.yml');
+    const { stdout } = await safeExecAsync(`docker compose -f "${dockerComposePath}" ps --format json`);
+
+    if (stdout.trim()) {
+      const containers = stdout.trim().split('\n').map(line => {
+        try {
+          return JSON.parse(line);
+        } catch {
+          return null;
+        }
+      }).filter(Boolean);
+
+      status.docker.containers = containers.map(c => ({
+        name: c.Name,
+        service: c.Service,
+        state: c.State,
+        status: c.Status
+      }));
+
+      status.docker.running = containers.some(c => c.State === 'running');
+    } else {
+      // Nenhum container encontrado
+      status.docker.running = false;
+      status.docker.containers = [];
+    }
   } catch (error) {
-    // Docker não está rodando
+    // Docker não está rodando, docker compose não disponível, ou erro ao executar comando
+    status.docker.running = false;
+    status.docker.containers = [];
+    status.docker.error = error.message;
+
+    // Verificar se é problema de Docker não instalado ou daemon não rodando
+    try {
+      await safeExecAsync('docker --version');
+      status.docker.errorHint = 'Docker está instalado mas o daemon pode não estar rodando ou os containers não foram iniciados';
+    } catch {
+      status.docker.errorHint = 'Docker não está instalado ou não está no PATH';
+    }
   }
 
   return status;
@@ -414,25 +449,86 @@ async function startMCPServer(subcommand) {
     switch (uri) {
       case 'app://status':
         const status = await getAppStatus();
+
+        // Gerar mensagem explicativa se nada estiver rodando
+        let message = '';
+        const notRunning = [];
+
+        if (!status.docker.running) {
+          notRunning.push('containers Docker (PostgreSQL, Redis)');
+        }
+        if (!status.backend.running) {
+          notRunning.push('backend (NestJS na porta 3000)');
+        }
+        if (!status.frontend.running) {
+          notRunning.push('frontend (Vite/React na porta 5173)');
+        }
+
+        if (notRunning.length > 0) {
+          message = `⚠️  SERVIÇOS NÃO ESTÃO RODANDO\n\n`;
+          message += `Os seguintes serviços não estão em execução:\n`;
+          notRunning.forEach(service => {
+            message += `  • ${service}\n`;
+          });
+          message += `\n`;
+          message += `Como resolver:\n\n`;
+
+          if (!status.docker.running) {
+            message += `1. Subir containers Docker (PostgreSQL, Redis):\n`;
+            message += `   Use o tool: manage_application com action="docker-compose-up"\n`;
+            message += `   Ou execute: docker compose -f scripts/docker-compose.yml up -d\n\n`;
+          }
+
+          if (!status.backend.running || !status.frontend.running) {
+            message += `${!status.docker.running ? '2' : '1'}. Subir aplicação completa (backend + frontend):\n`;
+            message += `   Use o tool: manage_application com action="start"\n`;
+            message += `   Ou execute: npm run start:dev (no diretório backend) e npm run dev (no diretório frontend)\n\n`;
+          }
+
+          message += `Status detalhado:\n`;
+          message += JSON.stringify(status, null, 2);
+        } else {
+          message = `✓ Todos os serviços estão rodando\n\n`;
+          message += JSON.stringify(status, null, 2);
+        }
+
         return {
           uri,
-          mimeType: 'application/json',
-          text: JSON.stringify(status, null, 2)
+          mimeType: 'text/plain',
+          text: message
         };
+
       case 'app://logs/backend':
+        const backStatus = await getAppStatus();
+        if (!backStatus.backend.running) {
+          throw new Error(
+            'Backend não está rodando. ' +
+            'Use o tool manage_application com action="start" para iniciar a aplicação, ' +
+            'ou action="docker-compose-up" para subir apenas os containers Docker.'
+          );
+        }
         const backLog = await readLogTail('back.log');
         return {
           uri,
           mimeType: 'text/plain',
           text: backLog
         };
+
       case 'app://logs/frontend':
+        const frontStatus = await getAppStatus();
+        if (!frontStatus.frontend.running) {
+          throw new Error(
+            'Frontend não está rodando. ' +
+            'Use o tool manage_application com action="start" para iniciar a aplicação.'
+          );
+        }
         const frontLog = await readLogTail('front.log');
         return {
           uri,
           mimeType: 'text/plain',
           text: frontLog
         };
+
       default:
         throw new Error(`Resource não encontrado: ${uri}`);
     }

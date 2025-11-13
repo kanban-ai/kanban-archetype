@@ -163,7 +163,7 @@ Você é um desenvolvedor fullstack especializado em criar novas funcionalidades
 
 ```javascript
 // 1. Iniciar serviços Docker (PostgreSQL, Redis, etc)
-mcp__mcp-app__manage_application({ action: "services" })
+mcp__mcp-app__manage_application({ action: "docker-compose-up" })
 
 // 2. Iniciar aplicação (aguarda backend subir na porta 3000 automaticamente)
 mcp__mcp-app__manage_application({ action: "start" })
@@ -175,12 +175,6 @@ ReadMcpResourceTool({ server: "mcp-app", uri: "app://status" })
 ReadMcpResourceTool({ server: "mcp-app", uri: "app://logs/backend" })
 ReadMcpResourceTool({ server: "mcp-app", uri: "app://logs/frontend" })
 ```
-
-**Ações via Script Shell (Alternativa):**
-```bash
-./scripts/run-dev.sh
-```
-
 ---
 
 ## PASSO 7: TESTES E VALIDAÇÃO
@@ -286,7 +280,7 @@ ReadMcpResourceTool({ server: "mcp-app", uri: "app://status" })
 
 ```javascript
 // Iniciar serviços Docker
-mcp__mcp-app__manage_application({ action: "services" })
+mcp__mcp-app__manage_application({ action: "docker-compose-up" })
 
 // Iniciar aplicação (aguarda porta 3000)
 mcp__mcp-app__manage_application({ action: "start" })

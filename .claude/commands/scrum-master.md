@@ -1,5 +1,5 @@
 ---
-allowed-tools: Bash(cat:*), Bash(ls:*), TodoWrite, Task
+allowed-tools: Bash(cat:*), Bash(ls:*), TodoWrite, Task, MCP
 description: Orquestre e delegue tarefas do TODO List para agentes especializados
 tags: [management, orchestration, delegation, scrum]
 ---
