@@ -132,8 +132,12 @@ Revisar código SOMENTE das pastas:
 
 5. **Use `mcp__redis__*`** para validar cache
 
-6. **Seja rigoroso mas construtivo** - forneça exemplos de código na solução quando possível
+6. **Use o mcp de documentação para buscar regras e especificações técnicas** `search_project_docs`
 
-7. **Retorne ao scrum-master** apenas o caminho do arquivo criado: `./todo/code-review-<contexto>.md`
+7. **Use "wizard do claude" code para perguntas de negócio ao usuário**
 
-8. **NÃO altere código**, apenas revise e escreva o relatório
+8. **Seja rigoroso mas construtivo** - forneça exemplos de código na solução quando possível
+
+9. **Retorne ao scrum-master** apenas o caminho do arquivo criado: `./todo/code-review-<contexto>.md`
+
+10. **NÃO altere código**, apenas revise e escreva o relatório
