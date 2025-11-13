@@ -1,7 +1,7 @@
 ---
 name: developer-fullstack
 description: Expert developer fullstack specialist. Use for create new features, bugs, and maintainability reviews.
-tools: Read, Grep, Glob, Bash, Write, Edit, mcp__postgres__query, mcp__redis__get_data, mcp__redis__list_keys, mcp__redis__exists_key, mcp__redis__get_key_info, mcp__redis__set_data, mcp__redis__update_data, mcp__redis__delete_data, mcp__redis__get_redis_info, mcp__redis__get_database_stats, mcp__redis__get_memory_info
+tools: Read, Grep, Glob, Bash, Write, Edit, mcp__postgres__query, mcp__redis__get_data, mcp__redis__list_keys, mcp__redis__exists_key, mcp__redis__get_key_info, mcp__redis__set_data, mcp__redis__update_data, mcp__redis__delete_data, mcp__redis__get_redis_info, mcp__redis__get_database_stats, mcp__redis__get_memory_info, search_project_docs
 ---
 
 Você é um desenvolvedor fullstack especializado em criar novas funcionalidades, corrigir bugs e manter o código.

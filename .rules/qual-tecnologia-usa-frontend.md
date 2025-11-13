@@ -371,7 +371,7 @@ Funcionalidades e decisões de design implementadas no projeto frontend.
 - Componentes adaptáveis
 
 ### [Acessibilidade]()
-- Sem-ntica HTML adequada
+- Semântica HTML adequada
 - ARIA labels quando necessário
 - Contraste adequado (dark mode)
 
@@ -380,6 +380,252 @@ Funcionalidades e decisões de design implementadas no projeto frontend.
 - Lazy loading de rotas
 - Memoização de componentes pesados
 - Chart.js com Canvas (performance)
+
+## [Layout Responsivo e Fluido]()
+
+Padrões e práticas para criar layouts que se adaptam a diferentes tamanhos de tela e dispositivos.
+
+### [Breakpoints Tailwind]()
+
+O projeto utiliza os breakpoints padrão do Tailwind CSS:
+
+| Breakpoint | Largura Mínima | Dispositivo |
+|------------|---------------|-------------|
+| `sm` | 640px | Celular grande (landscape) |
+| `md` | 768px | Tablet |
+| `lg` | 1024px | Desktop pequeno |
+| `xl` | 1280px | Desktop |
+| `2xl` | 1536px | Desktop grande |
+
+### [Mobile-First Approach]()
+
+Todas as classes Tailwind são aplicadas mobile-first, ou seja, o estilo base é para mobile e breakpoints adicionam estilos para telas maiores.
+
+```tsx
+// ❌ Desktop-first (ERRADO)
+<div className="grid-cols-3 md:grid-cols-1">
+
+// ✅ Mobile-first (CORRETO)
+<div className="grid-cols-1 md:grid-cols-3">
+```
+
+**Ordem correta:**
+1. Estilo base (mobile)
+2. `sm:` - celular landscape
+3. `md:` - tablet
+4. `lg:` - desktop
+5. `xl:` - desktop grande
+
+### [Layouts Fluidos com Grid e Flexbox]()
+
+Use Grid e Flexbox para layouts que se adaptam automaticamente:
+
+```tsx
+// Grid responsivo que ajusta número de colunas
+<div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+  <Card />
+  <Card />
+  <Card />
+</div>
+
+// Flexbox com wrap automático
+<div className="flex flex-wrap gap-4">
+  <div className="flex-1 min-w-[300px]">Conteúdo 1</div>
+  <div className="flex-1 min-w-[300px]">Conteúdo 2</div>
+</div>
+
+// Container centralizado com max-width
+<div className="container mx-auto px-4 max-w-7xl">
+  {/* Conteúdo centralizado e responsivo */}
+</div>
+```
+
+### [Espaçamento Responsivo]()
+
+Ajuste padding, margin e gaps para diferentes telas:
+
+```tsx
+// Padding que aumenta em telas maiores
+<div className="p-4 md:p-6 lg:p-8">
+
+// Gap que ajusta conforme breakpoint
+<div className="flex gap-2 md:gap-4 lg:gap-6">
+
+// Margin responsiva
+<div className="my-4 md:my-6 lg:my-8">
+```
+
+### [Tipografia Responsiva]()
+
+Use classes de texto que escalam com o viewport:
+
+```tsx
+// Títulos responsivos
+<h1 className="text-2xl md:text-3xl lg:text-4xl">
+  Título Principal
+</h1>
+
+// Texto de corpo
+<p className="text-sm md:text-base lg:text-lg">
+  Conteúdo
+</p>
+```
+
+### [Visibilidade Condicional]()
+
+Oculte ou mostre elementos baseado no tamanho da tela:
+
+```tsx
+// Menu hamburguer apenas mobile
+<button className="md:hidden">
+  <MenuIcon />
+</button>
+
+// Menu desktop
+<nav className="hidden md:flex">
+  <Link to="/">Home</Link>
+</nav>
+
+// Diferentes layouts para mobile e desktop
+<div>
+  {/* Mobile: lista vertical */}
+  <div className="md:hidden">
+    <VerticalList />
+  </div>
+
+  {/* Desktop: grid horizontal */}
+  <div className="hidden md:grid md:grid-cols-3">
+    <GridLayout />
+  </div>
+</div>
+```
+
+### [Sidebar Responsiva]()
+
+Padrão para sidebar que se transforma em menu mobile:
+
+```tsx
+export function Layout() {
+  const [sidebarOpen, setSidebarOpen] = useState(false);
+
+  return (
+    <div className="flex h-screen">
+      {/* Sidebar mobile: overlay */}
+      <aside className={`
+        fixed inset-y-0 left-0 z-50 w-64 bg-gray-900
+        transform transition-transform
+        ${sidebarOpen ? 'translate-x-0' : '-translate-x-full'}
+        md:relative md:translate-x-0
+      `}>
+        <Sidebar />
+      </aside>
+
+      {/* Conteúdo principal */}
+      <main className="flex-1 overflow-auto">
+        {/* Botão menu mobile */}
+        <button
+          className="md:hidden p-4"
+          onClick={() => setSidebarOpen(!sidebarOpen)}
+        >
+          <MenuIcon />
+        </button>
+
+        <div className="p-4 md:p-6 lg:p-8">
+          <Outlet />
+        </div>
+      </main>
+    </div>
+  );
+}
+```
+
+### [Cards Responsivos]()
+
+Cards que se adaptam ao espaço disponível:
+
+```tsx
+// Card que ocupa largura total mobile e metade desktop
+<div className="w-full md:w-1/2 lg:w-1/3 p-4">
+  <Card>
+    {/* Conteúdo interno também responsivo */}
+    <div className="flex flex-col md:flex-row gap-4">
+      <img className="w-full md:w-32 h-32 object-cover" />
+      <div className="flex-1">
+        <h3 className="text-lg md:text-xl">Título</h3>
+        <p className="text-sm md:text-base">Descrição</p>
+      </div>
+    </div>
+  </Card>
+</div>
+```
+
+### [Formulários Responsivos]()
+
+Forms que se reorganizam em diferentes telas:
+
+```tsx
+// Grid de 1 coluna mobile, 2 colunas desktop
+<form className="space-y-4">
+  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+    <Input label="Nome" />
+    <Input label="Email" />
+  </div>
+
+  {/* Campo full-width em todas telas */}
+  <Input label="Endereço" className="col-span-full" />
+
+  {/* Botões: empilhados mobile, lado a lado desktop */}
+  <div className="flex flex-col md:flex-row gap-2 md:gap-4">
+    <Button variant="primary" className="w-full md:w-auto">
+      Salvar
+    </Button>
+    <Button variant="secondary" className="w-full md:w-auto">
+      Cancelar
+    </Button>
+  </div>
+</form>
+```
+
+### [Tabelas Responsivas]()
+
+Estratégias para tabelas em telas pequenas:
+
+```tsx
+// Opção 1: Scroll horizontal
+<div className="overflow-x-auto">
+  <table className="min-w-full">
+    {/* Tabela normal */}
+  </table>
+</div>
+
+// Opção 2: Cards em mobile
+<div className="hidden md:block">
+  <Table /> {/* Tabela normal desktop */}
+</div>
+
+<div className="md:hidden space-y-4">
+  {items.map(item => (
+    <Card key={item.id}>
+      {/* Cada linha vira um card mobile */}
+      <div><strong>Nome:</strong> {item.name}</div>
+      <div><strong>Email:</strong> {item.email}</div>
+    </Card>
+  ))}
+</div>
+```
+
+### [Checklist de Responsividade]()
+
+- [ ] Mobile-first: estilo base é para mobile
+- [ ] Breakpoints aplicados na ordem: `sm`, `md`, `lg`, `xl`
+- [ ] Layouts fluidos com Grid ou Flexbox
+- [ ] Espaçamento responsivo (padding, margin, gap)
+- [ ] Tipografia que escala com viewport
+- [ ] Imagens com `object-fit` e largura responsiva
+- [ ] Navegação adapta entre menu mobile e desktop
+- [ ] Forms reorganizam campos em telas pequenas
+- [ ] Tabelas com scroll ou transformadas em cards mobile
+- [ ] Testado em diferentes tamanhos: 320px, 768px, 1024px, 1920px
 
 ## [Tecnologias Principais]()
 
