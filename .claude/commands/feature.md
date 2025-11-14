@@ -352,6 +352,11 @@ Após a fase de descoberta, crie um arquivo detalhado em `./todo/{slug-da-featur
 
 O arquivo `./todo/TODO.md` deve seguir este formato:
 
+**⚠️ REGRA IMPORTANTE:** Cada tarefa deve ocupar **UMA ÚNICA LINHA** contendo:
+- Checkbox (- [ ] ou - [x])
+- Nome curto da feature
+- Caminho da documentação na mesma linha: `` `./todo/{slug}.md` ``
+
 ```markdown
 # TODO List - Features e Demandas de Negócio
 

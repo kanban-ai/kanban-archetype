@@ -1,5 +1,5 @@
 ---
-allowed-tools: Bash(cat:*), Bash(ls:*), TodoWrite, Task, MCP
+allowed-tools: Bash(cat:*), Bash(ls:*), TodoWrite, Task
 description: Orquestre e delegue tarefas do TODO List para agentes especializados
 tags: [management, orchestration, delegation, scrum]
 ---
@@ -72,8 +72,7 @@ Para entender as capacidades de cada agente, leia o arquivo de descrição do ag
   2. Leia o arquivo de detalhes da tarefa
   3. Use a ferramenta Task para delegar ao agente
   4. Inclua todas as informações necessárias do arquivo de detalhes
-  5. **IMPORTANTE**: Instrua o agente especialista a usar o MCP `search_project_docs` para consultar regras e documentação técnica do projeto (.rules) antes de implementar
-  6. Informe ao usuário sobre a delegação
+  5. Informe ao usuário sobre a delegação
 
 ## 4. Acompanhamento
 - Após conclusão de uma tarefa delegada:
@@ -126,15 +125,18 @@ Vou ler os detalhes de cada tarefa e delegar aos agentes apropriados:
    Agente: developer-fullstack
    Motivo: Envolve implementação de código backend e frontend
    Status: Delegando...
-   Instruções ao agente: Use o MCP search_project_docs para consultar regras e documentação técnica (.rules) antes de implementar
+
+📋 Tarefa 2: Criar página de dashboard
+   Agente: designer-modern-ui
+   Motivo: Envolve design de interface moderno
+   Status: Delegando...
 
 📋 Tarefa 3: Configurar testes unitários
    Agente: developer-fullstack
    Motivo: Envolve implementação de código backend e frontend
    Status: Delegando...
-   Instruções ao agente: Use o MCP search_project_docs para consultar regras e documentação técnica (.rules) antes de implementar
 
-[Usa Task tool para delegar ao developer-fullstack com instrução explícita de usar search_project_docs]
+[Usa Task tool para delegar ao developer-fullstack]
 
 ✅ Tarefa delegada e concluída pelo developer-fullstack!
 
