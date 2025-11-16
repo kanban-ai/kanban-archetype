@@ -306,6 +306,25 @@ Guias de implementação de autenticação JWT, API Key e estratégias de segura
 - **Diferenças JWT vs API Key** - Tabela comparativa
 - **Troubleshooting** - Erros comuns
 
+## [🤖 Sistema de Agentes e Pipeline de Revisão]()
+
+Sistema de agentes especializados e pipeline de revisão para garantir qualidade e conformidade com as regras técnicas do projeto.
+
+### [Pipeline de Revisão - `./como-funciona-pipeline-revisao-agentes.md`]()
+
+- **Visão Geral** - Pipeline de revisão em duas etapas
+- **Fluxo Completo** - developer → feature-review → code-review
+- **Agentes Envolvidos** - developer-fullstack, feature-review, code-reviewer
+- **developer-fullstack** - Implementar seguindo regras técnicas (`.rules`)
+- **feature-review** - Validar completude vs requisitos da tarefa
+- **code-reviewer** - Validar conformidade vs regras técnicas (`.rules`)
+- **Pipeline Detalhado** - Etapa 1 (Completude) e Etapa 2 (Qualidade)
+- **Loop de Correção** - Fluxo quando há incompatibilidades ou violações
+- **Exemplo Completo** - Implementar CRUD de Produtos com 4 rodadas
+- **Boas Práticas** - Para Scrum Master, Desenvolvedores e Revisores
+- **Arquivos de Saída** - Relatórios em ./todo/
+- **Resumo** - Garantir código completo e conforme às regras
+
 ## [🏗️ Estrutura e Padrões Backend]()
 
 Arquitetura, organização de código e padrões de design para módulos escaláveis no backend.
@@ -521,6 +540,12 @@ Atalhos para tarefas comuns com links diretos para as seções específicas dos 
 
 | Palavra-Chave | Documento Principal |
 |---------------|---------------------|
+| Agentes | [Pipeline de Revisão](./como-funciona-pipeline-revisao-agentes.md) |
+| Pipeline | [Pipeline de Revisão](./como-funciona-pipeline-revisao-agentes.md) |
+| feature-review | [Pipeline de Revisão](./como-funciona-pipeline-revisao-agentes.md#2-feature-review) |
+| code-reviewer | [Pipeline de Revisão](./como-funciona-pipeline-revisao-agentes.md#3-code-reviewer) |
+| developer-fullstack | [Pipeline de Revisão](./como-funciona-pipeline-revisao-agentes.md#1-developer-fullstack) |
+| Revisão de Código | [Pipeline de Revisão](./como-funciona-pipeline-revisao-agentes.md) |
 | TypeScript | [Padrões TypeScript](./quais-padroes-typescript-devem-ser-seguidos.md) |
 | any | [Padrões TypeScript - Regra #1](./quais-padroes-typescript-devem-ser-seguidos.md#regra-1-nunca-use-o-tipo-any) |
 | unknown | [Padrões TypeScript - Regra #4](./quais-padroes-typescript-devem-ser-seguidos.md#regra-4-use-unknown-ao-invés-de-any-para-tipos-desconhecidos) |
@@ -631,6 +656,9 @@ Guias organizados por nível de complexidade: iniciante, intermediário e avanç
 .rules/
 ├── SUMARIO.md                                              (este arquivo)
 │
+├── Sistema de Agentes
+│   └── como-funciona-pipeline-revisao-agentes.md           (12 seções + exemplo completo)
+│
 ├── Stack e Tecnologias
 │   ├── quais-padroes-typescript-devem-ser-seguidos.md      (10 regras + exemplos)
 │   ├── qual-tecnologia-usa-backend.md                      (11 seções)
@@ -673,14 +701,16 @@ Guias organizados por nível de complexidade: iniciante, intermediário e avanç
 
 ## [📊 Estatísticas]()
 
-- **Total de documentos**: 26
+- **Total de documentos**: 27
+- **Sistema de Agentes**: 1 documento (12 seções)
 - **Backend**: 18 documentos (247 seções)
 - **Frontend**: 4 documentos (53 seções)
 - **Stack**: 3 documentos (31 seções)
-- **Total de seções**: 331 seções documentadas
+- **Total de seções**: 343 seções documentadas
 
 
 ---
 
-**Última atualização**: 13 de novembro de 2025
-**Documentação gerada por**: Claude Code
+**Última atualização**: 16 de novembro de 2025
+**Documentação mantida por**: Claude Code
+**Versão**: 1.1.0

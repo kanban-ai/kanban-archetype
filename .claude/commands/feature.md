@@ -313,7 +313,7 @@ Após a fase de descoberta, crie um arquivo detalhado em `./todo/{slug-da-featur
 - [ ] Todos os critérios de aceitação atendidos
 - [ ] Código revisado
 - [ ] Testes automatizados criados
-- [ ] Documentação técnica atualizada
+- [ ] Regras técnicas atualizadas (se necessário)
 - [ ] Homologação realizada com sucesso
 - [ ] Deploy em produção
 

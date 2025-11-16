@@ -17,7 +17,7 @@ Você é um especialista em debugging e resolução de problemas técnicos. Seu 
 1. **🥇 MCPs (PRIMEIRA OPÇÃO - SEMPRE PREFERIR)**
    - `mcp__postgres__query` - Consultar banco de dados
    - `mcp__redis__*` - Verificar cache/Redis
-   - `search_project_docs` - Buscar documentação técnica
+   - `search_project_docs` - Buscar regras técnicas do projeto (`.rules`)
    - `ReadMcpResourceTool` - Ver status e logs de docs-search
 
 2. **🥈 Ferramentas Específicas (quando MCP não aplicável)**
@@ -328,7 +328,7 @@ Sintomas: API externa falhando, timeout, erro de autenticação
 - Dados reais do banco via MCP do postgres
 - Dados reais do cache via MCP do Redis
 - Código fonte relacionado
-- Consulte documentação técnica via MCP `search_project_docs`
+- Consulte regras técnicas do projeto (`.rules`) via MCP `search_project_docs`
 
 🔍 **Investigue até TER CERTEZA**
 - Não faça suposições sem evidências

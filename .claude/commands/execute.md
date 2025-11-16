@@ -81,8 +81,36 @@ Para entender as capacidades de cada agente, leia o arquivo de descrição do ag
   3. Informe ao usuário sobre a conclusão
   4. Identifique próximas tarefas a serem delegadas
 
-## 5. Code Review (Obrigatório após desenvolvimento)
+## 5. Pipeline de Revisão (Obrigatório após desenvolvimento)
+
+**FLUXO COMPLETO:** developer-fullstack → feature-review → code-review
+
+### 5.1 Feature Review (Primeira Revisão - Completude)
+
 - **Após CADA tarefa concluída pelo developer-fullstack**:
+  1. **Imediatamente** delegue para o agente `feature-review`
+  2. Informe ao feature-review:
+     - Contexto da implementação (ex: "autenticacao", "products-api", "dashboard")
+     - Arquivo da tarefa original (ex: `./todo/task-products.md`)
+     - Quais arquivos foram criados/modificados
+  3. **O feature-review criará** um arquivo: `./todo/feature-review-<contexto>.md`
+  4. **Aguarde o retorno** com o caminho do arquivo criado
+  5. **Leia o arquivo** `./todo/feature-review-<contexto>.md` criado
+  6. **Analise o veredito** no relatório:
+
+     - **Se INCOMPLETO (❌ ou ⚠️)**:
+       * Adicione ao TODO List: `- [ ] Completar implementação - ./todo/feature-review-<contexto>.md`
+       * **Delegue IMEDIATAMENTE** de volta ao `developer-fullstack` para completar
+       * Informe ao usuário sobre o que está faltando
+       * **RETORNE ao início do passo 5.1** após developer completar
+
+     - **Se COMPLETO (✅)**:
+       * Informe ao usuário que a implementação está completa
+       * **PROSSIGA para o passo 5.2** (Code Review)
+
+### 5.2 Code Review (Segunda Revisão - Qualidade Técnica)
+
+- **Após feature-review aprovar (✅ COMPLETO)**:
   1. **Imediatamente** delegue para o agente `code-reviewer`
   2. Informe ao code-reviewer:
      - Contexto da revisão (ex: "autenticacao", "dashboard", "products-api")
@@ -91,13 +119,50 @@ Para entender as capacidades de cada agente, leia o arquivo de descrição do ag
   4. **Aguarde o retorno** com o caminho do arquivo criado
   5. **Leia o arquivo** `./todo/code-review-<contexto>.md` criado pelo code-reviewer
   6. **Analise o veredito** no relatório:
-     - **Se REPROVADO ou APROVADO COM RESSALVAS**:
+
+     - **Se REPROVADO (❌) ou APROVADO COM RESSALVAS (⚠️)**:
        * Adicione ao TODO List: `- [ ] Corrigir code review - ./todo/code-review-<contexto>.md`
-       * **NÃO delegue imediatamente** - adicione ao backlog para priorização
+       * **Delegue IMEDIATAMENTE** de volta ao `developer-fullstack` para corrigir
        * Informe ao usuário sobre as violações encontradas
-     - **Se APROVADO**:
+       * **RETORNE ao início do passo 5.1** após developer corrigir (precisa validar completude novamente)
+
+     - **Se APROVADO (✅)**:
+       * Marque a tarefa original como concluída no TODO List
        * Informe ao usuário que o código foi aprovado
        * Prossiga com próximas tarefas do TODO List
+
+### 5.3 Diagrama do Fluxo
+
+```
+┌─────────────────────┐
+│ developer-fullstack │
+│  (implementação)    │
+└──────────┬──────────┘
+           │
+           ↓
+    ┌──────────────┐
+    │feature-review│ ← Valida COMPLETUDE (requisitos da tarefa)
+    └──────┬───────┘
+           │
+    ┌──────┴──────┐
+    │             │
+    ↓             ↓
+INCOMPLETO    COMPLETO
+    │             │
+    │             ↓
+    │      ┌────────────┐
+    │      │code-review │ ← Valida QUALIDADE (regras técnicas .rules)
+    │      └─────┬──────┘
+    │            │
+    │      ┌─────┴─────┐
+    │      │           │
+    ↓      ↓           ↓
+┌─────────────┐   APROVADO
+│ VOLTA PARA  │       │
+│  developer  │       ↓
+│  CORRIGIR   │   ✅ DONE
+└─────────────┘
+```
 
 ## 6. Comunicação
 - Mantenha o usuário informado sobre:
@@ -109,70 +174,126 @@ Para entender as capacidades de cada agente, leia o arquivo de descrição do ag
 
 ---
 
-# Exemplo de Delegação Completa (com Code Review)
+# Exemplo de Delegação Completa (com Pipeline de Revisão)
 
 ```
 Analisando TODO List...
 
-Encontrei 3 tarefas pendentes:
-1. Implementar autenticação de usuários - ./todo/auth.md
+Encontrei 2 tarefas pendentes:
+1. Implementar CRUD de produtos - ./todo/task-products.md
 2. Criar página de dashboard - ./todo/dashboard.md
-3. Configurar testes unitários - ./todo/tests.md
 
 Vou ler os detalhes de cada tarefa e delegar aos agentes apropriados:
 
-📋 Tarefa 1: Implementar autenticação de usuários
+📋 Tarefa 1: Implementar CRUD de produtos
    Agente: developer-fullstack
-   Motivo: Envolve implementação de código backend e frontend
-   Status: Delegando...
-
-📋 Tarefa 2: Criar página de dashboard
-   Agente: designer-modern-ui
-   Motivo: Envolve design de interface moderno
-   Status: Delegando...
-
-📋 Tarefa 3: Configurar testes unitários
-   Agente: developer-fullstack
-   Motivo: Envolve implementação de código backend e frontend
+   Motivo: Envolve implementação de código backend (API + DB) e frontend
    Status: Delegando...
 
 [Usa Task tool para delegar ao developer-fullstack]
 
-✅ Tarefa delegada e concluída pelo developer-fullstack!
+✅ Developer-fullstack concluiu a implementação!
 
-🔍 Iniciando Code Review obrigatório...
+🔍 PIPELINE DE REVISÃO - ETAPA 1/2: Feature Review (Completude)
+   Agente: feature-review
+   Contexto: products-api
+   Tarefa original: ./todo/task-products.md
+   Arquivos: backend/src/products/*, frontend/src/pages/Products/*
+   Status: Delegando para revisão de completude...
+
+[Usa Task tool para delegar ao feature-review]
+
+📝 Feature-reviewer criou: ./todo/feature-review-products-api.md
+
+📖 Lendo relatório de feature review...
+
+[Usa Bash tool para ler ./todo/feature-review-products-api.md]
+
+📊 Análise do Relatório de Completude:
+   - Veredito: ❌ INCOMPLETO - FALTA IMPLEMENTAÇÃO CRÍTICA
+   - Incompatibilidades críticas: 2
+   - Taxa de completude: 70%
+   - Faltando: Endpoint DELETE e validação de stock
+
+⚠️ Adicionando ao TODO List para completar implementação...
+
+[Usa Bash tool para adicionar ao TODO List]
+
+📢 Voltando para developer-fullstack corrigir incompatibilidades...
+
+[Usa Task tool para delegar novamente ao developer-fullstack com o relatório]
+
+✅ Developer-fullstack completou a implementação!
+
+🔍 PIPELINE DE REVISÃO - ETAPA 1/2: Feature Review (Completude) - SEGUNDA RODADA
+   Status: Delegando novamente para validar completude...
+
+[Usa Task tool para delegar ao feature-review]
+
+📝 Feature-reviewer atualizou: ./todo/feature-review-products-api.md
+
+📖 Lendo relatório atualizado...
+
+📊 Análise do Relatório de Completude:
+   - Veredito: ✅ COMPLETO
+   - Taxa de completude: 100%
+   - Todos requisitos implementados
+
+✅ Implementação completa! Prosseguindo para code review...
+
+🔍 PIPELINE DE REVISÃO - ETAPA 2/2: Code Review (Qualidade Técnica)
    Agente: code-reviewer
-   Contexto: autenticacao
-   Arquivos: backend/src/auth/*, frontend/src/pages/Login.tsx
-   Status: Delegando para revisão...
+   Contexto: products-api
+   Arquivos: backend/src/products/*, frontend/src/pages/Products/*
+   Status: Delegando para revisão de qualidade...
 
-[Usa Task tool para delegar ao code-reviewer com contexto "autenticacao"]
+[Usa Task tool para delegar ao code-reviewer]
 
-📝 Code-reviewer criou: ./todo/code-review-autenticacao.md
+📝 Code-reviewer criou: ./todo/code-review-products-api.md
 
 📖 Lendo relatório de code review...
 
-[Usa Bash tool para ler ./todo/code-review-autenticacao.md]
+[Usa Bash tool para ler ./todo/code-review-products-api.md]
 
-📊 Análise do Relatório:
-   - Veredito: REPROVADO
-   - Violações críticas: 2
+📊 Análise do Relatório de Qualidade:
+   - Veredito: ⚠️ APROVADO COM RESSALVAS
+   - Violações críticas: 0
    - Violações altas: 3
 
 ⚠️ Adicionando ao TODO List para correção...
 
+[Usa Bash tool para adicionar ao TODO List]
+
+📢 Voltando para developer-fullstack corrigir violações...
+
+[Usa Task tool para delegar ao developer-fullstack com o relatório]
+
+✅ Developer-fullstack corrigiu as violações!
+
+🔍 PIPELINE DE REVISÃO - REINICIANDO DA ETAPA 1/2
+   (Precisa validar completude novamente após correções)
+
+[Repete feature-review → code-review]
+
+📊 Análise Final:
+   - Feature Review: ✅ COMPLETO
+   - Code Review: ✅ APROVADO
+
+🎉 PIPELINE COMPLETO! Marcando tarefa como concluída...
+
 TODO atualizado:
-- [x] Implementar autenticação de usuários - ./todo/auth.md
-- [ ] Corrigir code review - ./todo/code-review-autenticacao.md
+- [x] Implementar CRUD de produtos - ./todo/task-products.md
 - [ ] Criar página de dashboard - ./todo/dashboard.md
-- [ ] Configurar testes unitários - ./todo/tests.md
 
 📢 Informando usuário:
-"Code review concluído. Encontradas 2 violações críticas e 3 altas.
-Detalhes em: ./todo/code-review-autenticacao.md
-Tarefa de correção adicionada ao TODO List."
+"Tarefa 'Implementar CRUD de produtos' concluída com sucesso!
+- Feature Review: Aprovado (100% completo)
+- Code Review: Aprovado
+Prosseguindo para próxima tarefa..."
 
-⏸️ Aguardando priorização do usuário antes de continuar...
+📋 Próxima tarefa: Criar página de dashboard
+   Agente: developer-fullstack
+   Status: Delegando...
 ```
 
 ---
