@@ -110,7 +110,7 @@ async function bootstrap() {
 
   // 5. Serve static frontend files
   // Production: /app/dist/src -> /app/public (2 levels up)
-  // Development: /app/back/dist/src -> /app/back/public (2 levels up)
+  // Development: /app/backend/dist/src -> /app/backend/public (2 levels up)
   const publicPath = join(__dirname, '..', '..', 'public');
   app.useStaticAssets(publicPath, {
     index: 'index.html',
@@ -463,7 +463,7 @@ app.useStaticAssets(publicPath, {
 **Expected folder structure**:
 ```
 project/
-├── back/
+├── backend/
 │   ├── dist/
 │   │   └── src/
 │   │       └── main.js  (here is __dirname)
@@ -476,9 +476,9 @@ project/
 ```
 
 **Levels explanation**:
-- `__dirname` points to `/project/back/dist/src`
-- `'..'` goes up to `/project/back/dist`
-- `'..'` goes up to `/project/back`
+- `__dirname` points to `/project/backend/dist/src`
+- `'..'` goes up to `/project/backend/dist`
+- `'..'` goes up to `/project/backend`
 - Final: `/project/public`
 
 ### Checklist

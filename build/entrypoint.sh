@@ -43,7 +43,7 @@ fi
 if [ "$MIGRATION_SUCCESS" = true ]; then
   echo "Starting application..."
   find public/ -exec touch {} \;
-  cd /app && node dist/src/main
+  cd /app && node src/main
 else
   echo "FATAL: Not starting application due to migration failure"
   exit 1

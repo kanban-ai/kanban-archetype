@@ -329,6 +329,16 @@ Specialized agent system and review pipeline to ensure quality and compliance wi
 
 Architecture, code organization and design patterns for scalable backend modules.
 
+### [Project Root Structure - `./project-root-structure.md`]()
+
+- **Root Directory Organization** - Standard folder structure for monorepo
+- **Allowed Files and Folders** - Complete whitelist/blacklist at root level
+- **Backend Folder Naming** - Official `backend/` convention vs `back/`
+- **Prohibited Items** - package.json, node_modules, configs at root
+- **Keeping Root Clean** - Scripts and automation for verification
+- **Migration Guide** - Step-by-step cleanup for existing projects
+- **Best Practices** - Root directory management and maintenance
+
 ### [Main File - `./how-main-file-works-backend.md`]()
 
 - **What is main.ts** - Entry point
@@ -540,6 +550,12 @@ Alphabetical index of technical terms with direct links to corresponding guides.
 
 | Keyword | Main Document |
 |---------|---------------|
+| Project Structure | [Project Root Structure](./project-root-structure.md) |
+| Root Structure | [Project Root Structure](./project-root-structure.md) |
+| Folder Organization | [Project Root Structure](./project-root-structure.md), [Backend Modules](./backend-module-folder-structure.md) |
+| Monorepo | [Project Root Structure](./project-root-structure.md) |
+| backend/ folder | [Project Root Structure](./project-root-structure.md#backend-folder-naming-convention) |
+| Directory Structure | [Project Root Structure](./project-root-structure.md) |
 | Agents | [Review Pipeline](./agent-review-pipeline.md) |
 | Pipeline | [Review Pipeline](./agent-review-pipeline.md) |
 | feature-review | [Review Pipeline](./agent-review-pipeline.md#2-feature-review) |
@@ -618,12 +634,13 @@ Guides organized by complexity level: beginner, intermediate and advanced.
 
 ### [🌱 Beginner]()
 
-1. [Backend Stack](./backend-technology-stack.md#stack-principal)
-2. [Frontend Stack](./frontend-technology-stack.md#stack-principal)
-3. [Backend Setup](./how-to-setup-backend.md#visão-geral)
-4. [Frontend Setup](./how-to-setup-frontend.md#visão-geral)
-5. [JWT Authentication](./how-authentication-works.md#visão-geral)
-6. [Consume API](./how-to-consume-api-frontend.md#configuração-do-axios)
+1. [Project Root Structure](./project-root-structure.md) - **Start here for new projects**
+2. [Backend Stack](./backend-technology-stack.md#stack-principal)
+3. [Frontend Stack](./frontend-technology-stack.md#stack-principal)
+4. [Backend Setup](./how-to-setup-backend.md#visão-geral)
+5. [Frontend Setup](./how-to-setup-frontend.md#visão-geral)
+6. [JWT Authentication](./how-authentication-works.md#visão-geral)
+7. [Consume API](./how-to-consume-api-frontend.md#configuração-do-axios)
 
 ### [🌿 Intermediate]()
 

@@ -147,6 +147,8 @@ backend/
 - **SuperEntity**: `src/database/entities/super.entity.ts` (centralized base entity)
 - **Module Entities**: `src/modules/[name]/entities/` (feature-specific entities)
 
+**Note**: This structure shows the backend folder organization. For complete project root structure including where backend/, frontend/, and build/ folders should be located, see [Project Root Structure](./project-root-structure.md).
+
 ### Checklist
 
 - [ ] Execute `nest new backend` command successfully
@@ -796,7 +798,7 @@ Follow recommended development workflow progression from basic setup through fea
 
 ### Checklist
 
-- [ ] Complete basic backend setup with this guide
+- [ ] Complete basic setup with this guide
 - [ ] Proceed to main.ts configuration guide
 - [ ] Implement user module with CRUD operations
 - [ ] Set up authentication system with JWT

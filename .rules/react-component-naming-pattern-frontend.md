@@ -297,6 +297,8 @@ import { authService } from '@/services/auth.service';
 - Monitor component count and restructure when approaching 15-20 components
 - Document when to migrate to complete structure in project README
 
+**Note**: This shows the internal frontend/src/ folder structure. For the complete project root organization including where frontend/, backend/, and build/ folders should be located, see [Project Root Structure](./project-root-structure.md).
+
 ## [Complete Structure - Production-Ready Modular Architecture]()
 
 Comprehensive folder structure with specialized subfolders for different component categories, organized for production applications with 20+ components, multiple feature modules, and teams requiring clear organization and maintainability.

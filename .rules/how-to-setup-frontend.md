@@ -354,6 +354,8 @@ mkdir -p src/types
 mkdir -p src/utils
 ```
 
+**Note**: This structure shows the frontend folder organization. For complete project root structure including where frontend/, backend/, and build/ folders should be located, see [Project Root Structure](./project-root-structure.md).
+
 ### Checklist
 
 - [ ] `components/common` folder created
