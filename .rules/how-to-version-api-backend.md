@@ -37,7 +37,6 @@ async function bootstrap() {
 
 - [ ] Versioning enabled in main.ts with VersioningType.URI
 - [ ] All controllers have explicit version decorators
-- [ ] Folder structure organized by version (v1/, v2/)
 - [ ] Swagger documentation separated by version
 - [ ] CHANGELOG documenting API changes between versions
 
@@ -168,7 +167,7 @@ GET /api/users?version=1
 
 ## [URL Versioning Implementation - Complete NestJS Setup]()
 
-Complete step-by-step guide to implement URL versioning in NestJS using VersioningType.URI, including global configuration, controller setup, folder structure organization, and module registration for multiple versions.
+Complete step-by-step guide to implement URL versioning in NestJS using VersioningType.URI, including global configuration, controller setup, and module registration for multiple versions.
 
 ### When to use?
 
@@ -200,7 +199,7 @@ async function bootstrap() {
 
 **Step 2: Create versioned controllers**
 ```typescript
-// controllers/v1/users.controller.ts
+// users-v1.controller.ts
 @ApiTags('users-v1')
 @Controller({ path: 'users', version: '1' })
 export class UsersV1Controller {
@@ -210,7 +209,7 @@ export class UsersV1Controller {
   }
 }
 
-// controllers/v2/users.controller.ts
+// users-v2.controller.ts
 @ApiTags('users-v2')
 @Controller({ path: 'users', version: '2' })
 export class UsersV2Controller {
@@ -221,23 +220,7 @@ export class UsersV2Controller {
 }
 ```
 
-**Step 3: Organize folder structure**
-```
-src/modules/users/
-├── users.module.ts
-├── entities/
-│   └── user.entity.ts
-├── v1/
-│   ├── users.controller.ts
-│   ├── users.service.ts
-│   └── dto/
-└── v2/
-    ├── users.controller.ts
-    ├── users.service.ts
-    └── dto/
-```
-
-**Step 4: Register in module**
+**Step 3: Register in module**
 ```typescript
 @Module({
   imports: [TypeOrmModule.forFeature([User])],
@@ -251,7 +234,6 @@ export class UsersModule {}
 
 - [ ] Global versioning enabled in main.ts with VersioningType.URI
 - [ ] Separate controller files for each version
-- [ ] Folder structure follows v1/, v2/ organization
 - [ ] Each version has dedicated DTOs and services
 - [ ] All versions registered in module
 - [ ] Routes tested with version prefix (e.g., /api/v1/users)
@@ -264,14 +246,10 @@ export class UsersModule {}
 **Issue**: Multiple versions sharing same route conflict
 **Solution**: Create separate controller classes for each version with identical path but different version decorator values.
 
-**Issue**: Folder structure becomes messy with many versions
-**Solution**: Keep maximum 2-3 active versions. Archive old versions in separate directory before removal.
-
 ### Best Practices
 
 - Use separate controller files per version for clean separation
 - Share entities across versions but duplicate DTOs when contracts differ
-- Keep version folders flat - avoid deep nesting
 - Use descriptive ApiTags for each version in Swagger
 
 ## [API Evolution Example - V1 to V2 Migration]()
@@ -290,7 +268,7 @@ Don't create new version when changes are backward compatible like adding option
 
 **V1: Initial structure**
 ```typescript
-// v1/dto/create-user.dto.ts
+// create-user-v1.dto.ts
 export class CreateUserDtoV1 {
   @IsString()
   name: string;
@@ -299,7 +277,7 @@ export class CreateUserDtoV1 {
   email: string;
 }
 
-// v1/users.controller.ts
+// users-v1.controller.ts
 @Controller({ path: 'users', version: '1' })
 export class UsersV1Controller {
   @Get()
@@ -319,7 +297,7 @@ export class UsersV1Controller {
 
 **V2: Evolved structure**
 ```typescript
-// v2/dto/create-user.dto.ts
+// create-user-v2.dto.ts
 export class CreateUserDtoV2 {
   @IsString()
   firstName: string; // Split name
@@ -335,7 +313,7 @@ export class CreateUserDtoV2 {
   phone?: string; // New field
 }
 
-// v2/users.controller.ts
+// users-v2.controller.ts
 @Controller({ path: 'users', version: '2' })
 export class UsersV2Controller {
   @Get()
@@ -406,7 +384,7 @@ Don't share code when business logic fundamentally differs between versions or w
 
 **Adapter Pattern for DTO conversion:**
 ```typescript
-// v2/users.service.ts
+// users-v2.service.ts
 @Injectable()
 export class UsersV2Service {
   constructor(
@@ -442,7 +420,7 @@ export class UsersBaseService {
   }
 }
 
-// v1/users.service.ts
+// users-v1.service.ts
 @Injectable()
 export class UsersV1Service extends UsersBaseService {
   async findAll() {
@@ -450,7 +428,7 @@ export class UsersV1Service extends UsersBaseService {
   }
 }
 
-// v2/users.service.ts
+// users-v2.service.ts
 @Injectable()
 export class UsersV2Service extends UsersBaseService {
   async findAll(page: number, limit: number) {
@@ -765,7 +743,6 @@ Skip detailed checklist for simple internal tools, prototype applications, or wh
 **Backend Checklist:**
 - [ ] Versioning enabled in main.ts with VersioningType.URI
 - [ ] Controllers always with explicit version (start with v1)
-- [ ] Folder structure organized (v1/, v2/)
 - [ ] All versions registered in module
 - [ ] Swagger separated by version
 - [ ] CHANGELOG-API.md documenting changes
