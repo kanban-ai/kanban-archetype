@@ -451,11 +451,11 @@ async function showCollectionSummary(collectionId) {
   log('════════════════════════════════════════════════════════════════', 'blue');
 
   try {
-    // Obter todos os metadados da coleção
+    // Obter todos os metadados e documentos da coleção
     const { ok: queryOk, data: queryData } = await chromaFetch(`${API_BASE}/collections/${collectionId}/get`, {
       method: 'POST',
       body: JSON.stringify({
-        include: ['metadatas']
+        include: ['metadatas', 'documents']
       })
     });
 
@@ -509,6 +509,50 @@ async function showCollectionSummary(collectionId) {
       log(`  • Média de blocos por arquivo: ${colors.green}${avgBlocksPerFile}${colors.reset}`);
       log(`  • Maior arquivo: ${colors.green}${sortedFiles[0][0]}${colors.reset} (${sortedFiles[0][1].count} blocos)`);
       log(`  • Menor arquivo: ${colors.green}${sortedFiles[sortedFiles.length - 1][0]}${colors.reset} (${sortedFiles[sortedFiles.length - 1][1].count} blocos)`);
+
+      // Top 30 blocos ## com mais caracteres
+      if (queryData.documents && queryData.documents.length > 0) {
+        const blocksWithSize = queryData.metadatas.map((meta, index) => ({
+          header: meta.header,
+          filename: meta.filename,
+          size: queryData.documents[index].length,
+          lines: `${meta.start_line}-${meta.end_line}`
+        }));
+
+        // Ordenar por tamanho (maior para menor)
+        const sortedBySize = blocksWithSize.sort((a, b) => b.size - a.size);
+        const top30 = sortedBySize.slice(0, 30);
+
+        log(`\n${colors.yellow}Top 30 Blocos ## com Mais Caracteres:${colors.reset}`);
+        log('\n┌─────┬──────────────────────────────────────────────────────────────────────────────────────┬────────────────────────────────────────┬────────────┐');
+        log('│ #   │ Seção (Header)                                                                       │ Arquivo                                │ Caracteres │');
+        log('├─────┼──────────────────────────────────────────────────────────────────────────────────────┼────────────────────────────────────────┼────────────┤');
+
+        for (let i = 0; i < top30.length; i++) {
+          const block = top30[i];
+          const rank = (i + 1).toString().padStart(3);
+
+          // Truncar header se for muito longo
+          let header = block.header;
+          if (header.length > 84) {
+            header = header.substring(0, 81) + '...';
+          }
+          const paddedHeader = header.padEnd(84);
+
+          // Truncar filename se for muito longo
+          let filename = block.filename;
+          if (filename.length > 38) {
+            filename = filename.substring(0, 35) + '...';
+          }
+          const paddedFilename = filename.padEnd(38);
+
+          const paddedSize = block.size.toLocaleString().padStart(10);
+
+          log(`│ ${rank} │ ${paddedHeader} │ ${paddedFilename} │ ${paddedSize} │`);
+        }
+
+        log('└─────┴──────────────────────────────────────────────────────────────────────────────────────┴────────────────────────────────────────┴────────────┘');
+      }
     }
 
     log(`\n${colors.yellow}ChromaDB Host:${colors.reset} ${CHROMA_HOST}`);
