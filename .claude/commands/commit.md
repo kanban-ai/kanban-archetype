@@ -1,57 +1,57 @@
 ---
 allowed-tools: Bash(git status:*), Bash(git diff:*), Bash(git diff --staged:*), Bash(git add:*), Bash(git commit:*), Bash(git push:*)
-description: Cria commit seguindo Conventional Commits em português
+description: Create commit following Conventional Commits in Portuguese
 ---
 
-Não pergunte se o usuário deseja prosseguir com o commit.  
-Apenas execute as etapas abaixo.
+Do not ask if the user wants to proceed with the commit.
+Just execute the steps below.
 
-# Verificações iniciais
+# Initial Checks
 
-- Se o projeto tiver scripts de build, execute-os (ex: `npm run build`, `pnpm run build`, `yarn build`).  
-- Corrija eventuais erros de build antes de continuar.  
-- Sempre inclua todas as alterações relevantes no commit.
+- If the project has build scripts, execute them (e.g., `npm run build`, `pnpm run build`, `yarn build`).
+- Fix any build errors before continuing.
+- Always include all relevant changes in the commit.
 
-# Analisar o estado do repositório
+# Analyze Repository State
 
-Estado atual do repositório:
+Current repository state:
 !`git status`
 
-# Avaliar mudanças
+# Evaluate Changes
 
 !`git diff`
 
-# Commit — gerar mensagem de commit no padrão Conventional Commits
+# Commit — Generate Commit Message Following Conventional Commits
 
-!!! Importante: não adicione metadados automáticos como “Co-Authored-By” ou menções a ferramentas de IA.
+!!! Important: do not add automatic metadata such as "Co-Authored-By" or mentions of AI tools.
 
-## Processo automático
+## Automatic Process
 
-1. Analise todas as mudanças exibidas no diff.
-2. Sempre adicione tudo no commit. Exemplo: `git add .`
-3. Identifique **tipo** e **escopo** adequados (feat, fix, docs, refactor, chore, test, perf, etc.).
-4. Gere a mensagem de commit conforme o padrão abaixo, em **português**:
+1. Analyze all changes displayed in the diff.
+2. Always add everything to the commit. Example: `git add .`
+3. Identify appropriate **type** and **scope** (feat, fix, docs, refactor, chore, test, perf, etc.).
+4. Generate the commit message according to the pattern below, in **Portuguese**:
 
 ```
-<tipo>(<escopo>): <descrição>
+<type>(<scope>): <description>
 ```
 
-* descrição em minúsculas
-* sem ponto final
-* até ~72 caracteres
-* descreva **o que** e **por que**, não **como**
-* breaking changes usam `` (ex: `feat(api)!: altera estrutura de resposta`)
-* se houver várias alterações sem relação, sugira dividir em commits separados
+* description in lowercase
+* no period at the end
+* up to ~72 characters
+* describe **what** and **why**, not **how**
+* breaking changes use `!` (e.g., `feat(api)!: altera estrutura de resposta`)
+* if there are several unrelated changes, suggest splitting into separate commits
 
-5. Não mostre a mensagem sugerida ao usuário para validação. Apenas execute as etapas acima.
-6. Após confirmação:
+5. Do not show the suggested message to the user for validation. Just execute the steps above.
+6. After confirmation:
 
 ```bash
-git add <arquivos necessários>
-git commit -m "mensagem gerada"
+git add <necessary files>
+git commit -m "generated message"
 ```
 
-7. Não pergunte se o usuário deseja prosseguir com o commit. Apenas execute as etapas acima.
+7. Do not ask if the user wants to proceed with the commit. Just execute the steps above.
 
 # Push
 
@@ -61,7 +61,7 @@ git push
 
 ---
 
-### Exemplos de commits
+### Commit Examples
 
 * `feat(auth): adiciona autenticação com token JWT`
 * `fix(routes): corrige redirecionamento após login`

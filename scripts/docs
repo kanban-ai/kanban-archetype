@@ -178,6 +178,46 @@ async function getOrCreateCollection() {
 }
 
 
+// Função para extrair o primeiro parágrafo de um bloco
+function extractFirstParagraph(blockContent) {
+  const lines = blockContent.split('\n');
+  let firstParagraph = '';
+  let foundFirstParagraph = false;
+
+  for (const line of lines) {
+    const trimmedLine = line.trim();
+
+    // Pular o header ##
+    if (trimmedLine.startsWith('##')) {
+      continue;
+    }
+
+    // Pular linhas vazias antes do primeiro parágrafo
+    if (!foundFirstParagraph && trimmedLine === '') {
+      continue;
+    }
+
+    // Começou o primeiro parágrafo
+    if (trimmedLine !== '' && !foundFirstParagraph) {
+      foundFirstParagraph = true;
+      firstParagraph = trimmedLine;
+      continue;
+    }
+
+    // Continue adicionando linhas do mesmo parágrafo
+    if (foundFirstParagraph && trimmedLine !== '') {
+      firstParagraph += ' ' + trimmedLine;
+    }
+
+    // Parágrafo terminou (linha vazia após o parágrafo)
+    if (foundFirstParagraph && trimmedLine === '') {
+      break;
+    }
+  }
+
+  return firstParagraph || 'Sem descrição disponível';
+}
+
 // Função para extrair blocos de um arquivo markdown
 function extractBlocks(content, filename, filepath) {
   const lines = content.split('\n');
@@ -209,6 +249,7 @@ function extractBlocks(content, filename, filepath) {
     if (headerMatch) {
       // Se já temos um bloco, salvar
       if (currentBlock) {
+        const shortDescription = extractFirstParagraph(currentBlock);
         blocks.push({
           id: `${filename}:block:${blockCount}`.replace(/[^a-zA-Z0-9:._-]/g, '_'),
           document: currentBlock,
@@ -219,7 +260,8 @@ function extractBlocks(content, filename, filepath) {
             start_line: startLine,
             end_line: lineNum - 1,
             title: currentTitle,
-            header: currentHeader
+            header: currentHeader,
+            short_description: shortDescription
           }
         });
         blockCount++;
@@ -247,6 +289,7 @@ function extractBlocks(content, filename, filepath) {
 
   // Salvar último bloco
   if (currentBlock) {
+    const shortDescription = extractFirstParagraph(currentBlock);
     blocks.push({
       id: `${filename}:block:${blockCount}`.replace(/[^a-zA-Z0-9:._-]/g, '_'),
       document: currentBlock,
@@ -257,7 +300,8 @@ function extractBlocks(content, filename, filepath) {
         start_line: startLine,
         end_line: lines.length,
         title: currentTitle,
-        header: currentHeader
+        header: currentHeader,
+        short_description: shortDescription
       }
     });
   }
@@ -560,6 +604,15 @@ async function queryDocuments(queryText, nResults = 5) {
 
     log(`${colors.yellow}Seção:${colors.reset} ${metadata.header}`);
     log(`${colors.yellow}Linhas:${colors.reset} ${metadata.start_line}-${metadata.end_line}`);
+
+    const totalLines = metadata.end_line - metadata.start_line + 1;
+    log(`${colors.yellow}Total de Linhas:${colors.reset} ${totalLines}`);
+
+    // Exibir descrição curta se existir
+    if (metadata.short_description) {
+      log(`\n${colors.yellow}Descrição:${colors.reset} ${metadata.short_description}`);
+    }
+
     log(`\n${colors.cyan}📍 O conteúdo completo pode ser encontrado em:${colors.reset}`);
     log(`   ${colors.green}${metadata.filepath}:${metadata.start_line}-${metadata.end_line}${colors.reset}\n`);
   }
@@ -617,6 +670,7 @@ async function queryDocumentsStructured(queryText, nResults = 5) {
     const distance = distances[i];
     const score = (1 - distance);
     const scorePercent = (score * 100);
+    const totalLines = metadata.end_line - metadata.start_line + 1;
 
     return {
       rank: i + 1,
@@ -627,6 +681,8 @@ async function queryDocumentsStructured(queryText, nResults = 5) {
       title: metadata.title || null,
       section: metadata.header,
       lines: `${metadata.start_line}-${metadata.end_line}`,
+      totalLines: totalLines,
+      shortDescription: metadata.short_description || null,
       location: `${metadata.filepath}:${metadata.start_line}-${metadata.end_line}`
     };
   });
