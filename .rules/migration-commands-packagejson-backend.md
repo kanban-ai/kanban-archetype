@@ -1,14 +1,14 @@
-# [Como devem ser os comandos de migration no package.json do Backend?]()
+# [What should be the migration commands in Backend package.json?]()
 
-> Configuração dos scripts npm para gerenciar migrations do TypeORM.
+> Configuration of npm scripts to manage TypeORM migrations.
 
-## [Scripts Necessários no package.json para Migrations]()
+## [Necessary Scripts in package.json for Migrations]()
 
-Esta seção apresenta os scripts npm essenciais para gerenciar migrations do TypeORM. Cada script é um atalho que facilita a execução de comandos como gerar, criar e executar migrations no projeto.
+This section presents the essential npm scripts to manage TypeORM migrations. Each script is a shortcut that facilitates executing commands like generating, creating and running migrations in the project.
 
-Lista de scripts npm essenciais para gerenciar migrations TypeORM:
+List of essential npm scripts to manage TypeORM migrations:
 
-Adicione no `package.json`:
+Add to `package.json`:
 
 ```json
 {
@@ -24,36 +24,36 @@ Adicione no `package.json`:
 }
 ```
 
-## [Descrição Detalhada de cada Comando de Migration]()
+## [Detailed Description of each Migration Command]()
 
-Esta seção detalha cada comando de migration, explicando quando usar, o que faz e exemplos práticos de uso no dia a dia.
+This section details each migration command, explaining when to use it, what it does and practical usage examples in daily work.
 
-Explicação completa de cada script npm e seus parâmetros:
+Complete explanation of each npm script and its parameters:
 
 ### [typeorm (Base)]()
 
 ```bash
-npm run typeorm -- <comando>
+npm run typeorm -- <command>
 ```
 
-Script base que executa o CLI do TypeORM com suporte a:
+Base script that executes TypeORM CLI with support for:
 - TypeScript (ts-node)
 - Path aliases (@/*) via tsconfig-paths
 
 ### [migration:generate]()
 
 ```bash
-npm run migration:generate src/database/migrations/NomeDaMigration
+npm run migration:generate src/database/migrations/MigrationName
 ```
 
-**O que faz**: Gera migration automática comparando entities com banco de dados
+**What it does**: Generates automatic migration by comparing entities with database
 
-**Quando usar**:
-- Após alterar entities
-- Adicionar/remover colunas
-- Modificar relacionamentos
+**When to use**:
+- After modifying entities
+- Add/remove columns
+- Modify relationships
 
-**Exemplo**:
+**Example**:
 ```bash
 npm run migration:generate src/database/migrations/AddActiveToProducts
 ```
@@ -61,18 +61,18 @@ npm run migration:generate src/database/migrations/AddActiveToProducts
 ### [migration:create]()
 
 ```bash
-npm run migration:create src/database/migrations/NomeDaMigration
+npm run migration:create src/database/migrations/MigrationName
 ```
 
-**O que faz**: Cria migration vazia para implementação manual
+**What it does**: Creates empty migration for manual implementation
 
-**Quando usar**:
-- Seeds de dados
-- Alterações complexas
-- Índices customizados
-- Queries SQL específicas
+**When to use**:
+- Data seeds
+- Complex alterations
+- Custom indexes
+- Specific SQL queries
 
-**Exemplo**:
+**Example**:
 ```bash
 npm run migration:create src/database/migrations/SeedSectors
 ```
@@ -83,12 +83,12 @@ npm run migration:create src/database/migrations/SeedSectors
 npm run migration:run
 ```
 
-**O que faz**: Executa todas as migrations pendentes em ordem
+**What it does**: Executes all pending migrations in order
 
-**Quando usar**:
-- Após criar/gerar migrations
-- Setup de ambiente novo
-- Deploy em produção
+**When to use**:
+- After creating/generating migrations
+- New environment setup
+- Production deployment
 
 ### [migration:revert]()
 
@@ -96,13 +96,13 @@ npm run migration:run
 npm run migration:revert
 ```
 
-**O que faz**: Reverte a última migration executada
+**What it does**: Reverts the last executed migration
 
-**Quando usar**:
-- Corrigir migration com erro
-- Rollback de alteração
+**When to use**:
+- Fix migration with error
+- Rollback a change
 
-**Nota**: Executa o método `down()` da migration
+**Note**: Executes the migration's `down()` method
 
 ### [migration:show]()
 
@@ -110,9 +110,9 @@ npm run migration:revert
 npm run migration:show
 ```
 
-**O que faz**: Lista migrations executadas e pendentes
+**What it does**: Lists executed and pending migrations
 
-**Saída**:
+**Output**:
 ```
 [X] Migration1728000000000-genesis
 [X] Migration1735466400000-add-quote-optimized-index
@@ -125,20 +125,20 @@ npm run migration:show
 npm run db:drop
 ```
 
-**O que faz**: Dropa todo o schema e recria executando migrations
+**What it does**: Drops entire schema and recreates by running migrations
 
-**Quando usar**:
-- Reset completo do banco
-- Desenvolvimento local
-- Testes
+**When to use**:
+- Complete database reset
+- Local development
+- Testing
 
-**CUIDADO**: Apaga todos os dados!
+**WARNING**: Deletes all data!
 
-## [Fluxo de Trabalho para criar e aplicar Migrations]()
+## [Workflow to create and apply Migrations]()
 
-Sequência de comandos para workflow completo de migrations:
+Command sequence for complete migrations workflow:
 
-### [1. Criar nova entity]()
+### [1. Create new entity]()
 
 ```typescript
 // src/modules/product/entities/product.entity.ts
@@ -149,13 +149,13 @@ export class Product extends SuperEntity {
 }
 ```
 
-### [2. Gerar migration]()
+### [2. Generate migration]()
 
 ```bash
 npm run migration:generate src/database/migrations/CreateProductsTable
 ```
 
-### [3. Revisar migration gerada]()
+### [3. Review generated migration]()
 
 ```typescript
 // src/database/migrations/1234567890000-CreateProductsTable.ts
@@ -170,28 +170,28 @@ export class CreateProductsTable1234567890000 implements MigrationInterface {
 }
 ```
 
-### [4. Executar migration]()
+### [4. Execute migration]()
 
 ```bash
 npm run migration:run
 ```
 
-### [5. Se houver erro]()
+### [5. If there's an error]()
 
 ```bash
-# Reverter
+# Revert
 npm run migration:revert
 
-# Corrigir arquivo
-# Executar novamente
+# Fix file
+# Execute again
 npm run migration:run
 ```
 
-## [Configuração do DataSource para TypeORM CLI]()
+## [DataSource Configuration for TypeORM CLI]()
 
-Arquivo database.config.ts necessário para comandos de migration:
+database.config.ts file necessary for migration commands:
 
-Para os comandos funcionarem, configure `database.config.ts`:
+For commands to work, configure `database.config.ts`:
 
 ```typescript
 import { DataSource } from 'typeorm';
@@ -215,9 +215,9 @@ export default new DataSource({
 });
 ```
 
-## [Dependências Necessárias para executar Migrations]()
+## [Necessary Dependencies to run Migrations]()
 
-Pacotes npm requeridos para TypeORM CLI funcionar:
+Required npm packages for TypeORM CLI to work:
 
 ```json
 {
@@ -233,11 +233,11 @@ Pacotes npm requeridos para TypeORM CLI funcionar:
 }
 ```
 
-## [Scripts Adicionais Úteis para desenvolvimento]()
+## [Additional Useful Scripts for development]()
 
-Comandos extras para seed, backup e verificação de migrations:
+Extra commands for seeding, backup and migration verification:
 
-### [Seed de Dados]()
+### [Data Seed]()
 
 ```json
 {
@@ -247,7 +247,7 @@ Comandos extras para seed, backup e verificação de migrations:
 }
 ```
 
-### [Verificar Conexão]()
+### [Check Connection]()
 
 ```json
 {
@@ -257,7 +257,7 @@ Comandos extras para seed, backup e verificação de migrations:
 }
 ```
 
-### [Backup/Restore (Produção)]()
+### [Backup/Restore (Production)]()
 
 ```json
 {
@@ -268,9 +268,9 @@ Comandos extras para seed, backup e verificação de migrations:
 }
 ```
 
-## [Integração com CI/CD para Migrations automáticas]()
+## [CI/CD Integration for automatic Migrations]()
 
-Como executar migrations em pipelines GitHub Actions e Docker:
+How to run migrations in GitHub Actions pipelines and Docker:
 
 ### [GitHub Actions]()
 
@@ -291,38 +291,38 @@ Como executar migrations em pipelines GitHub Actions e Docker:
 CMD ["sh", "-c", "npm run migration:run && npm run start:prod"]
 ```
 
-## [Troubleshooting - Erros comuns com comandos de Migration]()
+## [Troubleshooting - Common Migration command errors]()
 
-Soluções para problemas frequentes ao executar migrations:
+Solutions for frequent problems when running migrations:
 
-### [Erro: "Cannot find module"]()
+### [Error: "Cannot find module"]()
 
-**Solução**: Instale `ts-node` e `tsconfig-paths`
+**Solution**: Install `ts-node` and `tsconfig-paths`
 
 ```bash
 npm install -D ts-node tsconfig-paths
 ```
 
-### [Erro: "No migrations found"]()
+### [Error: "No migrations found"]()
 
-**Solução**: Verifique o caminho em `database.config.ts`:
+**Solution**: Check path in `database.config.ts`:
 
 ```typescript
 migrations: [__dirname + '/migrations/*{.ts,.js}']
 ```
 
-### [Migrations não executam]()
+### [Migrations don't execute]()
 
-**Solução**: Verifique variáveis de ambiente:
+**Solution**: Check environment variables:
 
 ```bash
 echo $DB_HOST
 echo $DB_USERNAME
 ```
 
-## [Exemplo Completo de package.json com todos scripts]()
+## [Complete package.json Example with all scripts]()
 
-Package.json completo com todos comandos de migration configurados:
+Complete package.json with all migration commands configured:
 
 ```json
 {
@@ -347,9 +347,9 @@ Package.json completo com todos comandos de migration configurados:
 }
 ```
 
-## [Referências e documentação TypeORM CLI]()
+## [References and TypeORM CLI documentation]()
 
-Links para documentação oficial do TypeORM CLI:
+Links to official TypeORM CLI documentation:
 
 - [TypeORM Migrations CLI](https://typeorm.io/migrations#creating-a-new-migration)
 - [NestJS TypeORM](https://docs.nestjs.com/recipes/sql-typeorm)

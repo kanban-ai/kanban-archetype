@@ -1,37 +1,37 @@
-# [Como deve funcionar a autenticação com API Key?]()
+# [How does API Key authentication work?]()
 
-> Guia sobre autenticação alternativa usando API Key para integrações e serviços externos.
+> Guide on alternative authentication using API Key for integrations and external services.
 
-## [O que é API Key?]()
+## [What is API Key?]()
 
-API Key é uma chave de autenticação alternativa ao JWT, usada para:
-- Integrações entre serviços
-- Scripts automatizados
+API Key is an alternative authentication key to JWT, used for:
+- Service-to-service integrations
+- Automated scripts
 - Webhooks
-- Serviços internos que não usam login de usuário
+- Internal services that don't use user login
 
-## [Quando Usar]()
+## [When to Use]()
 
--  **Use API Key**: Integração backend-to-backend, cron jobs, webhooks
-- L **Use JWT**: Autenticação de usuários, frontend, apps mobile
+- ✅ **Use API Key**: Backend-to-backend integration, cron jobs, webhooks
+- ❌ **Use JWT**: User authentication, frontend, mobile apps
 
-## [Implementação]()
+## [Implementation]()
 
-Esta seção apresenta o processo completo de implementação de autenticação via API Key, incluindo configuração de variáveis de ambiente, criação de guards e decorators.
+This section presents the complete API Key authentication implementation process, including environment variable configuration, guards and decorators creation.
 
-### [1. Configurar Variável de Ambiente]()
+### [1. Configure Environment Variable]()
 
 **.env**:
 ```env
-X_API_KEY=sua-chave-secreta-aqui-longa-e-aleatoria
+X_API_KEY=your-long-random-secret-key-here
 ```
 
-Gere uma chave segura:
+Generate a secure key:
 ```bash
 openssl rand -hex 32
 ```
 
-### [2. Criar API Key Guard]()
+### [2. Create API Key Guard]()
 
 **`auth/guards/api-key-auth.guard.ts`**:
 
@@ -50,14 +50,14 @@ export class ApiKeyAuthGuard implements CanActivate {
   ) {}
 
   canActivate(context: ExecutionContext): boolean {
-    // Verificar se rota requer API Key
+    // Check if route requires API Key
     const requiresApiKey = this.reflector.get<boolean>(
       API_KEY_AUTH,
       context.getHandler(),
     );
 
     if (!requiresApiKey) {
-      return true; // Rota não requer API Key
+      return true; // Route doesn't require API Key
     }
 
     const request = context.switchToHttp().getRequest();
@@ -65,7 +65,7 @@ export class ApiKeyAuthGuard implements CanActivate {
     const validApiKey = this.configService.get<string>('X_API_KEY');
 
     if (!apiKey || apiKey !== validApiKey) {
-      throw new UnauthorizedException('API Key inválida');
+      throw new UnauthorizedException('Invalid API Key');
     }
 
     return true;
@@ -73,7 +73,7 @@ export class ApiKeyAuthGuard implements CanActivate {
 }
 ```
 
-### [3. Criar Decorator]()
+### [3. Create Decorator]()
 
 **`auth/decorators/api-key-auth.decorator.ts`**:
 
@@ -84,7 +84,7 @@ export const API_KEY_AUTH = 'api-key-auth';
 export const ApiKeyAuth = () => SetMetadata(API_KEY_AUTH, true);
 ```
 
-### [4. Registrar Guard Globalmente]()
+### [4. Register Guard Globally]()
 
 **`main.ts`**:
 
@@ -106,11 +106,11 @@ async function bootstrap() {
 }
 ```
 
-## [Como Usar]()
+## [How to Use]()
 
-Exemplos práticos de como aplicar autenticação API Key em endpoints do backend NestJS.
+Practical examples of how to apply API Key authentication to NestJS backend endpoints.
 
-### [Endpoint que Aceita API Key]()
+### [Endpoint that Accepts API Key]()
 
 ```typescript
 import { Controller, Post, Body } from '@nestjs/common';
@@ -120,17 +120,17 @@ import { Public } from '@/auth/decorators/public.decorator';
 @Controller('webhooks')
 export class WebhookController {
 
-  @Public() // Não requer JWT
-  @ApiKeyAuth() // Requer API Key
+  @Public() // Doesn't require JWT
+  @ApiKeyAuth() // Requires API Key
   @Post('process')
   async processWebhook(@Body() data: any) {
-    // Processar webhook
+    // Process webhook
     return { success: true };
   }
 }
 ```
 
-### [Endpoint que Aceita JWT OU API Key]()
+### [Endpoint that Accepts JWT OR API Key]()
 
 ```typescript
 @Controller('data')
@@ -138,35 +138,35 @@ export class DataController {
 
   @Get('sync')
   async syncData(@Request() req) {
-    // Este endpoint aceita tanto JWT quanto API Key
-    // Se vier com JWT, req.user estará disponível
-    // Se vier com API Key, req.user será undefined
+    // This endpoint accepts both JWT and API Key
+    // If JWT, req.user will be available
+    // If API Key, req.user will be undefined
 
     if (req.user) {
-      // Autenticado com JWT
+      // Authenticated with JWT
       return this.service.syncForUser(req.user.userId);
     } else {
-      // Autenticado com API Key (sem usuário específico)
+      // Authenticated with API Key (no specific user)
       return this.service.syncAll();
     }
   }
 }
 ```
 
-## [Como Chamar o Endpoint]()
+## [How to Call the Endpoint]()
 
-Exemplos de requisições HTTP utilizando API Key em diferentes ferramentas e linguagens.
+Examples of HTTP requests using API Key in different tools and languages.
 
-### [Com cURL]()
+### [With cURL]()
 
 ```bash
 curl -X POST http://localhost:3000/api/webhooks/process \
-  -H "X-API-KEY: sua-chave-aqui" \
+  -H "X-API-KEY: your-key-here" \
   -H "Content-Type: application/json" \
   -d '{"event": "test"}'
 ```
 
-### [Com Axios (Node.js)]()
+### [With Axios (Node.js)]()
 
 ```typescript
 import axios from 'axios';
@@ -183,28 +183,28 @@ const response = await axios.post(
 );
 ```
 
-### [Com fetch]()
+### [With fetch]()
 
 ```typescript
 const response = await fetch('http://localhost:3000/api/webhooks/process', {
   method: 'POST',
   headers: {
-    'X-API-KEY': 'sua-chave-aqui',
+    'X-API-KEY': 'your-key-here',
     'Content-Type': 'application/json',
   },
   body: JSON.stringify({ event: 'test' }),
 });
 ```
 
-## [Implementação Avançada]()
+## [Advanced Implementation]()
 
-Cenários avançados incluindo múltiplas API Keys por cliente, controle de acesso granular e rate limiting.
+Advanced scenarios including multiple API Keys per client, granular access control and rate limiting.
 
-### [API Key por Cliente]()
+### [API Key per Client]()
 
-Se precisar de múltiplas API Keys (uma por cliente):
+If you need multiple API Keys (one per client):
 
-**1. Criar Tabela de API Keys**:
+**1. Create API Keys Table**:
 
 ```typescript
 @Entity('api_keys')
@@ -230,7 +230,7 @@ export class ApiKey extends SuperEntity {
 }
 ```
 
-**2. Validar no Guard**:
+**2. Validate in Guard**:
 
 ```typescript
 @Injectable()
@@ -245,7 +245,7 @@ export class ApiKeyAuthGuard implements CanActivate {
     const apiKey = request.headers['x-api-key'];
 
     if (!apiKey) {
-      throw new UnauthorizedException('API Key ausente');
+      throw new UnauthorizedException('API Key missing');
     }
 
     const keyRecord = await this.apiKeyRepository.findOne({
@@ -254,15 +254,15 @@ export class ApiKeyAuthGuard implements CanActivate {
     });
 
     if (!keyRecord) {
-      throw new UnauthorizedException('API Key inválida');
+      throw new UnauthorizedException('Invalid API Key');
     }
 
-    // Atualizar último uso
+    // Update last usage
     await this.apiKeyRepository.update(keyRecord.id, {
       lastUsedAt: new Date(),
     });
 
-    // Injetar usuário no request
+    // Inject user into request
     request.user = {
       userId: keyRecord.userId,
       apiKeyId: keyRecord.id,
@@ -275,7 +275,7 @@ export class ApiKeyAuthGuard implements CanActivate {
 
 ### [Rate Limiting]()
 
-Limitar requisições por API Key:
+Limit requests per API Key:
 
 ```bash
 npm install @nestjs/throttler
@@ -289,18 +289,18 @@ import { ThrottlerGuard } from '@nestjs/throttler';
 @ApiKeyAuth()
 @Post('webhook')
 async webhook() {
-  // Máximo de requisições configurado no módulo
+  // Maximum requests configured in module
 }
 ```
 
-## [Documentar no Swagger]()
+## [Document in Swagger]()
 
-Configuração do Swagger para exibir e testar endpoints protegidos por API Key na documentação interativa.
+Swagger configuration to display and test API Key protected endpoints in interactive documentation.
 
 ```typescript
 import { ApiHeader, ApiSecurity } from '@nestjs/swagger';
 
-// Configurar no main.ts
+// Configure in main.ts
 const config = new DocumentBuilder()
   .addApiKey(
     { type: 'apiKey', name: 'X-API-KEY', in: 'header' },
@@ -308,28 +308,28 @@ const config = new DocumentBuilder()
   )
   .build();
 
-// Usar no controller
+// Use in controller
 @ApiSecurity('api-key')
 @ApiKeyAuth()
 @Post('webhook')
 async webhook() {}
 ```
 
-## [Segurança]()
+## [Security]()
 
-Práticas recomendadas para geração, armazenamento e gerenciamento seguro de API Keys em produção.
+Recommended practices for secure generation, storage and management of API Keys in production.
 
-### [Boas Práticas]()
+### [Best Practices]()
 
-1. **Use chaves longas e aleatórias**: Mínimo 32 caracteres
-2. **Nunca commite chaves no git**: Use .env
-3. **Rotacione chaves periodicamente**: Especialmente se vazar
-4. **Use HTTPS em produção**: Evita interceptação
-5. **Log de uso**: Registre quem usou e quando
-6. **Revogação**: Permita desativar chaves comprometidas
-7. **Rate limiting**: Previna abuso
+1. **Use long random keys**: Minimum 32 characters
+2. **Never commit keys to git**: Use .env
+3. **Rotate keys periodically**: Especially if leaked
+4. **Use HTTPS in production**: Prevents interception
+5. **Usage logging**: Record who used and when
+6. **Revocation**: Allow disabling compromised keys
+7. **Rate limiting**: Prevent abuse
 
-### [Gerar Chaves Seguras]()
+### [Generate Secure Keys]()
 
 ```bash
 # Linux/Mac
@@ -339,48 +339,48 @@ openssl rand -hex 32
 node -e "console.log(require('crypto').randomBytes(32).toString('hex'))"
 ```
 
-## [Diferenças: JWT vs API Key]()
+## [Differences: JWT vs API Key]()
 
-Comparação detalhada entre JWT e API Key para auxiliar na escolha do método de autenticação apropriado.
+Detailed comparison between JWT and API Key to help choose the appropriate authentication method.
 
-| Aspecto | JWT | API Key |
+| Aspect | JWT | API Key |
 |---------|-----|---------|
-| **Uso** | Usuários finais | Integrações |
-| **Expiração** | Sim (ex: 24h) | Não |
-| **Rotação** | Automática (relogin) | Manual |
-| **Payload** | Dados do usuário | Apenas chave |
-| **Revogação** | Difícil | Fácil |
-| **Performance** | Valida assinatura | Busca em BD |
+| **Usage** | End users | Integrations |
+| **Expiration** | Yes (e.g., 24h) | No |
+| **Rotation** | Automatic (relogin) | Manual |
+| **Payload** | User data | Just key |
+| **Revocation** | Difficult | Easy |
+| **Performance** | Validates signature | DB lookup |
 
 ## [Troubleshooting]()
 
-Soluções para problemas comuns ao implementar e utilizar autenticação por API Key.
+Solutions for common problems when implementing and using API Key authentication.
 
-### [Erro: "API Key ausente"]()
+### [Error: "API Key missing"]()
 
-**Causa**: Header `X-API-KEY` não enviado
+**Cause**: Header `X-API-KEY` not sent
 
-**Solução**: Adicione o header na requisição
+**Solution**: Add header to request
 
-### [Erro: "API Key inválida"]()
+### [Error: "Invalid API Key"]()
 
-**Causa**: Chave incorreta ou não configurada
+**Cause**: Incorrect key or not configured
 
-**Solução**: Verifique `.env` e valor enviado
+**Solution**: Check `.env` and sent value
 
-### [Conflito com JWT]()
+### [Conflict with JWT]()
 
-Se endpoint aceita ambos, configure a ordem dos guards:
+If endpoint accepts both, configure guard order:
 
 ```typescript
-// Primeiro tenta JWT, depois API Key
+// Try JWT first, then API Key
 app.useGlobalGuards(
   new JwtAuthGuard(reflector),
   new ApiKeyAuthGuard(configService, reflector),
 );
 ```
 
-## [Referências]()
+## [References]()
 
 - [API Key Best Practices](https://cloud.google.com/endpoints/docs/openapi/when-why-api-key)
 - [NestJS Guards](https://docs.nestjs.com/guards)

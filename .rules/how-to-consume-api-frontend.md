@@ -1,19 +1,19 @@
-# [Como consumir a API no Frontend?]()
+# [How to consume the API in Frontend?]()
 
-> Guia completo sobre como fazer requisições HTTP para a API usando Axios no React.
+> Complete guide on how to make HTTP requests to the API using Axios in React.
 
-## [Configuração do Axios]()
+## [Axios Configuration]()
 
-Configure uma instância centralizada do Axios com interceptors para autenticação JWT e tratamento de erros. Esta configuração será reutilizada em todos os services da aplicação.
+Configure a centralized Axios instance with interceptors for JWT authentication and error handling. This configuration will be reused in all application services.
 
-### [1. Criar instância configurada]()
+### [1. Create configured instance]()
 
-**Arquivo**: `src/services/api.ts`
+**File**: `src/services/api.ts`
 
 ```typescript
 import axios from 'axios';
 
-// Versão da API (centralize aqui)
+// API version (centralize here)
 const API_VERSION = 'v1';
 
 const api = axios.create({
@@ -23,7 +23,7 @@ const api = axios.create({
   },
 });
 
-// Interceptor para adicionar token em todas requisições
+// Interceptor to add token to all requests
 api.interceptors.request.use((config) => {
   const token = localStorage.getItem('token');
 
@@ -34,16 +34,16 @@ api.interceptors.request.use((config) => {
   return config;
 });
 
-// Interceptor para tratar erros
+// Interceptor to handle errors
 api.interceptors.response.use(
   (response) => response,
   (error) => {
     if (error.response?.status === 401) {
-      // Token inválido/expirado - limpar dados locais
+      // Invalid/expired token - clear local data
       localStorage.removeItem('token');
       localStorage.removeItem('user');
-      // Permitir que o componente lide com o redirecionamento
-      // Não usar window.location.href aqui
+      // Allow component to handle redirection
+      // Don't use window.location.href here
     }
 
     return Promise.reject(error);
@@ -53,22 +53,22 @@ api.interceptors.response.use(
 export default api;
 ```
 
-### [2. Variável de ambiente]()
+### [2. Environment variable]()
 
 **.env**:
 ```env
 VITE_API_URL=http://localhost:3000/api
 ```
 
-> **IMPORTANTE**: A versão da API (`v1`) é configurada no `api.ts` e aplicada automaticamente em todas as requisições. Se o backend criar uma v2, basta alterar `API_VERSION = 'v2'` em um único lugar. Veja [Como versionar API](./como-versionar-api-backend.md) para mais detalhes.
+> **IMPORTANT**: The API version (`v1`) is configured in `api.ts` and automatically applied to all requests. If the backend creates a v2, just change `API_VERSION = 'v2'` in one place. See [How to version API](./how-to-version-api-backend.md) for more details.
 
-## [Criar Services]()
+## [Create Services]()
 
-Organize chamadas de API em services separados por domínio. Cada service encapsula a lógica de comunicação com endpoints específicos, incluindo tipagem TypeScript completa para requests e responses.
+Organize API calls in separate services by domain. Each service encapsulates communication logic with specific endpoints, including complete TypeScript typing for requests and responses.
 
-### [Estrutura de Service]()
+### [Service Structure]()
 
-**Arquivo**: `src/services/product.service.ts`
+**File**: `src/services/product.service.ts`
 
 ```typescript
 import api from './api';
@@ -90,48 +90,48 @@ export interface CreateProductDto {
 }
 
 export const ProductService = {
-  // Listar todos
+  // List all
   async findAll(): Promise<Product[]> {
     const response = await api.get<Product[]>('/products');
     return response.data;
   },
 
-  // Buscar por ID
+  // Find by ID
   async findOne(id: number): Promise<Product> {
     const response = await api.get<Product>(`/products/${id}`);
     return response.data;
   },
 
-  // Criar
+  // Create
   async create(data: CreateProductDto): Promise<Product> {
     const response = await api.post<Product>('/products', data);
     return response.data;
   },
 
-  // Atualizar
+  // Update
   async update(id: number, data: Partial<CreateProductDto>): Promise<Product> {
     const response = await api.patch<Product>(`/products/${id}`, data);
     return response.data;
   },
 
-  // Deletar
+  // Delete
   async remove(id: number): Promise<void> {
     await api.delete(`/products/${id}`);
   },
 };
 
-// NOTA: Este é apenas um exemplo de estrutura.
-// Adapte conforme as necessidades específicas do seu projeto.
+// NOTE: This is just a structure example.
+// Adapt according to your project's specific needs.
 ```
 
-## [Usar Services em Componentes]()
+## [Use Services in Components]()
 
-Consuma os services em componentes React usando hooks como useState e useEffect para gerenciar estados de carregamento, dados e erros. Implemente feedback visual adequado para cada estado da requisição.
+Consume services in React components using hooks like useState and useEffect to manage loading states, data and errors. Implement appropriate visual feedback for each request state.
 
-> **IMPORTANTE**: Todos os exemplos abaixo são apenas demonstrações de estrutura e padrões.
-> Não contêm lógica de negócio específica. Adapte-os conforme as necessidades do seu projeto.
+> **IMPORTANT**: All examples below are only structure and pattern demonstrations.
+> They don't contain specific business logic. Adapt them according to your project needs.
 
-### [Com useState e useEffect]()
+### [With useState and useEffect]()
 
 ```typescript
 import { useState, useEffect } from 'react';
@@ -152,21 +152,21 @@ function ProductList() {
       const data = await ProductService.findAll();
       setProducts(data);
     } catch (err: any) {
-      setError(err.response?.data?.message || 'Erro ao carregar produtos');
+      setError(err.response?.data?.message || 'Error loading products');
     } finally {
       setLoading(false);
     }
   };
 
-  if (loading) return <div>Carregando...</div>;
-  if (error) return <div>Erro: {error}</div>;
+  if (loading) return <div>Loading...</div>;
+  if (error) return <div>Error: {error}</div>;
 
   return (
     <div>
       {products.map(product => (
         <div key={product.id}>
           <h3>{product.name}</h3>
-          <p>R$ {product.price}</p>
+          <p>$ {product.price}</p>
         </div>
       ))}
     </div>
@@ -174,9 +174,9 @@ function ProductList() {
 }
 ```
 
-### [Criar Item]()
+### [Create Item]()
 
-> **Exemplo**: Demonstra apenas a estrutura. Adapte a validação e lógica conforme seu contexto.
+> **Example**: Demonstrates only the structure. Adapt validation and logic according to your context.
 
 ```typescript
 function ProductForm() {
@@ -198,12 +198,12 @@ function ProductForm() {
         stock: 0,
       });
 
-      // Sucesso
-      alert('Produto criado!');
+      // Success
+      alert('Product created!');
       setName('');
       setPrice(0);
     } catch (err: any) {
-      setError(err.response?.data?.message || 'Erro ao criar produto');
+      setError(err.response?.data?.message || 'Error creating product');
     } finally {
       setLoading(false);
     }
@@ -217,7 +217,7 @@ function ProductForm() {
         type="text"
         value={name}
         onChange={(e) => setName(e.target.value)}
-        placeholder="Nome"
+        placeholder="Name"
         required
       />
 
@@ -225,21 +225,21 @@ function ProductForm() {
         type="number"
         value={price}
         onChange={(e) => setPrice(+e.target.value)}
-        placeholder="Preço"
+        placeholder="Price"
         required
       />
 
       <button type="submit" disabled={loading}>
-        {loading ? 'Criando...' : 'Criar'}
+        {loading ? 'Creating...' : 'Create'}
       </button>
     </form>
   );
 }
 ```
 
-### [Atualizar Item]()
+### [Update Item]()
 
-> **Exemplo**: Estrutura básica de edição. Adapte conforme necessário.
+> **Example**: Basic edit structure. Adapt as needed.
 
 ```typescript
 function EditProduct({ id }: { id: number }) {
@@ -263,13 +263,13 @@ function EditProduct({ id }: { id: number }) {
 
     try {
       await ProductService.update(id, { name, price });
-      alert('Produto atualizado!');
+      alert('Product updated!');
     } catch (err: any) {
-      alert(err.response?.data?.message || 'Erro ao atualizar');
+      alert(err.response?.data?.message || 'Error updating');
     }
   };
 
-  if (!product) return <div>Carregando...</div>;
+  if (!product) return <div>Loading...</div>;
 
   return (
     <form onSubmit={handleUpdate}>
@@ -285,35 +285,35 @@ function EditProduct({ id }: { id: number }) {
         onChange={(e) => setPrice(+e.target.value)}
       />
 
-      <button type="submit">Atualizar</button>
+      <button type="submit">Update</button>
     </form>
   );
 }
 ```
 
-### [Deletar Item]()
+### [Delete Item]()
 
-> **Exemplo**: Padrão básico de exclusão. Adapte a confirmação conforme UX do projeto.
+> **Example**: Basic deletion pattern. Adapt confirmation according to project UX.
 
 ```typescript
 const handleDelete = async (id: number) => {
-  if (!confirm('Tem certeza?')) return;
+  if (!confirm('Are you sure?')) return;
 
   try {
     await ProductService.remove(id);
-    // Recarregar lista
+    // Reload list
     await loadProducts();
   } catch (err: any) {
-    alert(err.response?.data?.message || 'Erro ao deletar');
+    alert(err.response?.data?.message || 'Error deleting');
   }
 };
 ```
 
-## [Tratamento de Erros]()
+## [Error Handling]()
 
-Implemente tratamento consistente de erros da API. Extraia mensagens de erro do backend e apresente feedback claro ao usuário, considerando que erros de validação podem retornar arrays de mensagens.
+Implement consistent API error handling. Extract error messages from backend and present clear feedback to user, considering that validation errors may return arrays of messages.
 
-### [Estrutura de Erro da API]()
+### [API Error Structure]()
 
 ```typescript
 interface ApiError {
@@ -323,14 +323,14 @@ interface ApiError {
 }
 ```
 
-### [Função Helper]()
+### [Helper Function]()
 
 ```typescript
 export function getErrorMessage(error: any): string {
   if (error.response?.data?.message) {
     const message = error.response.data.message;
 
-    // Pode ser array de erros (validação)
+    // May be array of errors (validation)
     if (Array.isArray(message)) {
       return message.join(', ');
     }
@@ -338,10 +338,10 @@ export function getErrorMessage(error: any): string {
     return message;
   }
 
-  return 'Erro ao processar requisição';
+  return 'Error processing request';
 }
 
-// Uso
+// Usage
 try {
   await ProductService.create(data);
 } catch (err) {
@@ -350,9 +350,9 @@ try {
 }
 ```
 
-## [Custom Hook para API]()
+## [Custom Hook for API]()
 
-Crie hooks customizados para reutilizar lógica de requisições HTTP. Um hook genérico centraliza estados de loading, dados e erros, simplificando o código dos componentes.
+Create custom hooks to reuse HTTP request logic. A generic hook centralizes loading, data and error states, simplifying component code.
 
 ### [useApi Hook]()
 
@@ -372,7 +372,7 @@ export function useApi<T>(apiFunction: () => Promise<T>) {
       setData(result);
       return result;
     } catch (err: any) {
-      const message = err.response?.data?.message || 'Erro na requisição';
+      const message = err.response?.data?.message || 'Request error';
       setError(message);
       throw err;
     } finally {
@@ -383,7 +383,7 @@ export function useApi<T>(apiFunction: () => Promise<T>) {
   return { data, loading, error, execute };
 }
 
-// Uso
+// Usage
 function ProductList() {
   const { data: products, loading, error, execute } = useApi(
     ProductService.findAll
@@ -393,8 +393,8 @@ function ProductList() {
     execute();
   }, []);
 
-  if (loading) return <div>Carregando...</div>;
-  if (error) return <div>Erro: {error}</div>;
+  if (loading) return <div>Loading...</div>;
+  if (error) return <div>Error: {error}</div>;
 
   return (
     <div>
@@ -406,9 +406,9 @@ function ProductList() {
 }
 ```
 
-## [Paginação]()
+## [Pagination]()
 
-Implemente paginação de resultados passando parâmetros de página e tamanho nas queries. Gerencie o estado da página atual no componente para navegar entre páginas.
+Implement result pagination by passing page and size parameters in queries. Manage current page state in component to navigate between pages.
 
 ```typescript
 export const ProductService = {
@@ -420,7 +420,7 @@ export const ProductService = {
   },
 };
 
-// Uso
+// Usage
 const [page, setPage] = useState(1);
 const [products, setProducts] = useState([]);
 
@@ -429,14 +429,14 @@ const loadProducts = async () => {
   setProducts(data.data);
 };
 
-// Paginação
-<button onClick={() => setPage(p => p - 1)}>Anterior</button>
-<button onClick={() => setPage(p => p + 1)}>Próxima</button>
+// Pagination
+<button onClick={() => setPage(p => p - 1)}>Previous</button>
+<button onClick={() => setPage(p => p + 1)}>Next</button>
 ```
 
-## [Upload de Arquivos]()
+## [File Upload]()
 
-Para upload de arquivos, use FormData e configure o header Content-Type como multipart/form-data. O Axios gerencia automaticamente o formato correto da requisição.
+For file uploads, use FormData and configure Content-Type header as multipart/form-data. Axios automatically manages the correct request format.
 
 ```typescript
 export const ProductService = {
@@ -454,23 +454,23 @@ export const ProductService = {
   },
 };
 
-// Uso
+// Usage
 const handleFileChange = async (e: ChangeEvent<HTMLInputElement>) => {
   const file = e.target.files?.[0];
   if (!file) return;
 
   try {
     await ProductService.uploadImage(productId, file);
-    alert('Imagem enviada!');
+    alert('Image uploaded!');
   } catch (err) {
-    alert('Erro ao enviar imagem');
+    alert('Error uploading image');
   }
 };
 ```
 
 ## [Query Params]()
 
-Passe query parameters usando a propriedade params do Axios. Os parâmetros são automaticamente serializados e anexados à URL.
+Pass query parameters using Axios params property. Parameters are automatically serialized and appended to URL.
 
 ```typescript
 export const ProductService = {
@@ -485,19 +485,19 @@ export const ProductService = {
   },
 };
 
-// Gera: /products?search=notebook&active=true
+// Generates: /products?search=notebook&active=true
 ```
 
-## [React Suspense para Data Fetching]()
+## [React Suspense for Data Fetching]()
 
-Use React Suspense para carregamento declarativo de dados. Este padrão permite separar a lógica de loading do componente, criando uma interface mais limpa e componível.
+Use React Suspense for declarative data loading. This pattern allows separating loading logic from component, creating a cleaner and more composable interface.
 
-### [Estrutura Básica com Suspense]()
+### [Basic Structure with Suspense]()
 
 ```typescript
 import { Suspense } from 'react';
 
-// Resource pattern para Suspense
+// Resource pattern for Suspense
 function wrapPromise<T>(promise: Promise<T>) {
   let status = 'pending';
   let result: T;
@@ -525,36 +525,36 @@ function wrapPromise<T>(promise: Promise<T>) {
   };
 }
 
-// Criar resource
+// Create resource
 function fetchProductResource(id: number) {
   return wrapPromise(ProductService.findOne(id));
 }
 
-// Componente que lê o resource
+// Component that reads resource
 function ProductDetail({ resource }: { resource: ReturnType<typeof fetchProductResource> }) {
   const product = resource.read();
 
   return (
     <div>
       <h1>{product.name}</h1>
-      <p>Preço: R$ {product.price}</p>
+      <p>Price: $ {product.price}</p>
     </div>
   );
 }
 
-// Componente pai com Suspense
+// Parent component with Suspense
 function ProductPage({ productId }: { productId: number }) {
   const resource = fetchProductResource(productId);
 
   return (
-    <Suspense fallback={<div>Carregando produto...</div>}>
+    <Suspense fallback={<div>Loading product...</div>}>
       <ProductDetail resource={resource} />
     </Suspense>
   );
 }
 ```
 
-### [Exemplo com ErrorBoundary]()
+### [Example with ErrorBoundary]()
 
 ```typescript
 import { Component, ReactNode, Suspense } from 'react';
@@ -582,11 +582,11 @@ class ErrorBoundary extends Component<
   }
 }
 
-// Uso combinado
+// Combined usage
 function App() {
   return (
-    <ErrorBoundary fallback={<div>Erro ao carregar dados</div>}>
-      <Suspense fallback={<div>Carregando...</div>}>
+    <ErrorBoundary fallback={<div>Error loading data</div>}>
+      <Suspense fallback={<div>Loading...</div>}>
         <ProductPage productId={1} />
       </Suspense>
     </ErrorBoundary>
@@ -594,11 +594,11 @@ function App() {
 }
 ```
 
-**NOTA**: Este é um exemplo educacional do padrão Suspense. Para produção, considere usar bibliotecas como React Query ou SWR que implementam este padrão de forma mais robusta.
+**NOTE**: This is an educational example of the Suspense pattern. For production, consider using libraries like React Query or SWR that implement this pattern more robustly.
 
-## [Cancelar Requisições]()
+## [Cancel Requests]()
 
-Cancele requisições em andamento quando o componente desmontar para evitar memory leaks e atualizações de estado em componentes desmontados. Use CancelToken do Axios no cleanup do useEffect.
+Cancel ongoing requests when component unmounts to avoid memory leaks and state updates on unmounted components. Use Axios CancelToken in useEffect cleanup.
 
 ```typescript
 import { useEffect, useState } from 'react';
@@ -623,7 +623,7 @@ function ProductList() {
 
     loadProducts();
 
-    // Cleanup: cancela se componente desmontar
+    // Cleanup: cancel if component unmounts
     return () => {
       source.cancel('Component unmounted');
     };
@@ -633,20 +633,20 @@ function ProductList() {
 
 ## [Checklist]()
 
-Checklist de implementação para garantir que todos os aspectos de consumo de API estejam configurados corretamente.
+Implementation checklist to ensure all API consumption aspects are configured correctly.
 
-- [ ] Instância Axios configurada em `api.ts`
-- [ ] Interceptor para token JWT
-- [ ] Interceptor para erros 401
-- [ ] Services organizados por domínio
-- [ ] Tipos TypeScript para respostas
-- [ ] Tratamento de erros em todos requests
+- [ ] Axios instance configured in `api.ts`
+- [ ] Interceptor for JWT token
+- [ ] Interceptor for 401 errors
+- [ ] Services organized by domain
+- [ ] TypeScript types for responses
+- [ ] Error handling in all requests
 - [ ] Loading states
-- [ ] Feedback visual para usuário
+- [ ] Visual feedback for user
 
-## [Referências]()
+## [References]()
 
-Links para documentação oficial das tecnologias utilizadas.
+Links to official documentation of used technologies.
 
 - [Axios Documentation](https://axios-http.com/docs/intro)
 - [React + Axios Best Practices](https://blog.logrocket.com/how-to-make-http-requests-like-a-pro-with-axios/)

@@ -1,20 +1,20 @@
-# [Como usar validação de dados na API?]()
+# [How to use data validation in the API?]()
 
-> Guia completo sobre validação de dados usando class-validator no NestJS.
+> Complete guide on data validation using class-validator in NestJS.
 
-## [Visão Geral - Validação de dados com class-validator no NestJS]()
+## [Overview - Data validation with class-validator in NestJS]()
 
-Esta seção introduz o sistema de validação automática do projeto usando class-validator e class-transformer, explicando como DTOs garantem integridade dos dados.
+This section introduces the project's automatic validation system using class-validator and class-transformer, explaining how DTOs ensure data integrity.
 
-O projeto usa class-validator para validar automaticamente dados de requisições HTTP através de DTOs:
+The project uses class-validator to automatically validate data from HTTP requests through DTOs:
 
-O projeto usa **class-validator** para validar automaticamente todos os dados recebidos nas requisições HTTP através de DTOs (Data Transfer Objects).
+The project uses **class-validator** to automatically validate all data received in HTTP requests through DTOs (Data Transfer Objects).
 
-## [Configuração Global do ValidationPipe no NestJS]()
+## [Global ValidationPipe Configuration in NestJS]()
 
-Configuração do ValidationPipe no main.ts para validação automática em toda aplicação:
+ValidationPipe configuration in main.ts for automatic validation throughout the application:
 
-### [ValidationPipe no main.ts]()
+### [ValidationPipe in main.ts]()
 
 ```typescript
 import { ValidationPipe } from '@nestjs/common';
@@ -24,11 +24,11 @@ async function bootstrap() {
 
   app.useGlobalPipes(
     new ValidationPipe({
-      whitelist: true,                    // Remove props não declaradas
-      forbidNonWhitelisted: true,         // Erro se props extras
-      transform: true,                    // Transforma tipos automaticamente
+      whitelist: true,                    // Remove undeclared properties
+      forbidNonWhitelisted: true,         // Error if extra properties
+      transform: true,                    // Transform types automatically
       transformOptions: {
-        enableImplicitConversion: false,  // Não converte tipos implicitamente
+        enableImplicitConversion: false,  // Don't convert types implicitly
       },
     }),
   );
@@ -37,18 +37,18 @@ async function bootstrap() {
 }
 ```
 
-### [O que cada opção faz:]()
+### [What each option does:]()
 
-- **whitelist**: Remove campos não definidos no DTO
-- **forbidNonWhitelisted**: Retorna erro 400 se enviar campos extras
-- **transform**: Converte query params e params para o tipo correto
-- **enableImplicitConversion**: false para evitar conversões estranhas
+- **whitelist**: Removes fields not defined in the DTO
+- **forbidNonWhitelisted**: Returns 400 error if extra fields are sent
+- **transform**: Converts query params and params to the correct type
+- **enableImplicitConversion**: false to avoid unexpected conversions
 
-## [Validadores Disponíveis no class-validator para DTOs]()
+## [Available class-validator Validators for DTOs]()
 
-Lista completa de decorators de validação do class-validator:
+Complete list of class-validator validation decorators:
 
-### [Validadores de String]()
+### [String Validators]()
 
 ```typescript
 import {
@@ -72,7 +72,7 @@ export class ExampleDto {
   @MaxLength(255)
   username: string;
 
-  @Length(11, 11) // Exatamente 11 caracteres
+  @Length(11, 11) // Exactly 11 characters
   cpf: string;
 
   @IsEmail()
@@ -81,12 +81,12 @@ export class ExampleDto {
   @IsUrl()
   website: string;
 
-  @Matches(/^[0-9]+$/, { message: 'Apenas números' })
+  @Matches(/^[0-9]+$/, { message: 'Numbers only' })
   phone: string;
 }
 ```
 
-### [Validadores Numéricos]()
+### [Numeric Validators]()
 
 ```typescript
 import {
@@ -118,7 +118,7 @@ export class ExampleDto {
 }
 ```
 
-### [Validadores Booleanos]()
+### [Boolean Validators]()
 
 ```typescript
 import { IsBoolean } from 'class-validator';
@@ -132,7 +132,7 @@ export class ExampleDto {
 }
 ```
 
-### [Validadores de Data]()
+### [Date Validators]()
 
 ```typescript
 import { IsDate, MinDate, MaxDate } from 'class-validator';
@@ -149,7 +149,7 @@ export class ExampleDto {
 }
 ```
 
-### [Validadores de Array]()
+### [Array Validators]()
 
 ```typescript
 import { IsArray, ArrayMinSize, ArrayMaxSize } from 'class-validator';
@@ -161,12 +161,12 @@ export class ExampleDto {
   tags: string[];
 
   @IsArray()
-  @IsString({ each: true }) // Cada item deve ser string
+  @IsString({ each: true }) // Each item must be a string
   categories: string[];
 }
 ```
 
-### [Validadores de Enum]()
+### [Enum Validators]()
 
 ```typescript
 import { IsEnum } from 'class-validator';
@@ -183,7 +183,7 @@ export class ExampleDto {
 }
 ```
 
-### [Campos Opcionais]()
+### [Optional Fields]()
 
 ```typescript
 import { IsOptional, IsString } from 'class-validator';
@@ -191,22 +191,22 @@ import { IsOptional, IsString } from 'class-validator';
 export class ExampleDto {
   @IsString()
   @IsNotEmpty()
-  name: string; // Obrigatório
+  name: string; // Required
 
   @IsString()
-  @IsOptional() // Pode ser undefined
+  @IsOptional() // Can be undefined
   description?: string;
 
   @IsString()
   @IsOptional()
-  @IsNotEmpty() // Se fornecido, não pode ser vazio
+  @IsNotEmpty() // If provided, cannot be empty
   notes?: string;
 }
 ```
 
-## [Exemplo Completo de Create DTO com validação]()
+## [Complete Create DTO Example with validation]()
 
-DTO completo com todas validações e documentação Swagger:
+Complete DTO with all validations and Swagger documentation:
 
 ```typescript
 import {
@@ -224,8 +224,8 @@ import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 
 export class CreateProductDto {
   @ApiProperty({
-    description: 'Nome do produto',
-    example: 'Notebook Dell',
+    description: 'Product name',
+    example: 'Dell Notebook',
   })
   @IsString()
   @IsNotEmpty()
@@ -233,15 +233,15 @@ export class CreateProductDto {
   name: string;
 
   @ApiPropertyOptional({
-    description: 'Descrição detalhada',
-    example: 'Notebook Dell Inspiron 15',
+    description: 'Detailed description',
+    example: 'Dell Inspiron 15 Notebook',
   })
   @IsString()
   @IsOptional()
   description?: string;
 
   @ApiProperty({
-    description: 'Preço em reais',
+    description: 'Price in reais',
     example: 2500.00,
     minimum: 0,
   })
@@ -250,7 +250,7 @@ export class CreateProductDto {
   price: number;
 
   @ApiProperty({
-    description: 'Quantidade em estoque',
+    description: 'Stock quantity',
     example: 10,
     minimum: 0,
   })
@@ -260,7 +260,7 @@ export class CreateProductDto {
   stock: number;
 
   @ApiProperty({
-    description: 'Se o produto está ativo',
+    description: 'Whether the product is active',
     example: true,
     default: true,
   })
@@ -270,13 +270,13 @@ export class CreateProductDto {
 }
 ```
 
-## [Validação em Objetos Aninhados com @ValidateNested]()
+## [Nested Object Validation with @ValidateNested]()
 
-Para validar DTOs aninhados, utilize o decorator `@ValidateNested()` combinado com `@Type()` do class-transformer para garantir que objetos complexos sejam validados recursivamente.
+To validate nested DTOs, use the `@ValidateNested()` decorator combined with `@Type()` from class-transformer to ensure complex objects are validated recursively.
 
-Como validar DTOs aninhados usando class-validator:
+How to validate nested DTOs using class-validator:
 
-### [DTO Aninhado]()
+### [Nested DTO]()
 
 ```typescript
 import { ValidateNested, IsString, IsNotEmpty } from 'class-validator';
@@ -301,17 +301,17 @@ export class CreateUserDto {
   @IsNotEmpty()
   name: string;
 
-  @ValidateNested() // Valida objeto aninhado
-  @Type(() => AddressDto) // Transforma para classe
+  @ValidateNested() // Validates nested object
+  @Type(() => AddressDto) // Transforms to class
   address: AddressDto;
 }
 ```
 
-## [Validação Customizada com decorators próprios]()
+## [Custom Validation with custom decorators]()
 
-Criar validadores personalizados para regras de negócio específicas:
+Create custom validators for specific business rules:
 
-### [Decorator Customizado]()
+### [Custom Decorator]()
 
 ```typescript
 import {
@@ -325,12 +325,12 @@ import {
 @ValidatorConstraint({ name: 'isCPF', async: false })
 export class IsCPFConstraint implements ValidatorConstraintInterface {
   validate(cpf: string, args: ValidationArguments) {
-    // Lógica de validação de CPF
+    // CPF validation logic
     return /^[0-9]{11}$/.test(cpf);
   }
 
   defaultMessage(args: ValidationArguments) {
-    return 'CPF inválido';
+    return 'Invalid CPF';
   }
 }
 
@@ -346,35 +346,35 @@ export function IsCPF(validationOptions?: ValidationOptions) {
   };
 }
 
-// Uso
+// Usage
 export class CreateUserDto {
-  @IsCPF({ message: 'CPF informado é inválido' })
+  @IsCPF({ message: 'The CPF provided is invalid' })
   cpf: string;
 }
 ```
 
-## [Mensagens de Erro Customizadas nos validadores]()
+## [Custom Error Messages in validators]()
 
-Personalizar mensagens de erro para melhor UX no frontend:
+Customize error messages for better frontend UX:
 
 ```typescript
 export class CreateProductDto {
-  @IsString({ message: 'Nome deve ser uma string' })
-  @IsNotEmpty({ message: 'Nome é obrigatório' })
-  @MaxLength(255, { message: 'Nome deve ter no máximo 255 caracteres' })
+  @IsString({ message: 'Name must be a string' })
+  @IsNotEmpty({ message: 'Name is required' })
+  @MaxLength(255, { message: 'Name must be at most 255 characters' })
   name: string;
 
-  @IsNumber({}, { message: 'Preço deve ser um número' })
-  @Min(0, { message: 'Preço não pode ser negativo' })
+  @IsNumber({}, { message: 'Price must be a number' })
+  @Min(0, { message: 'Price cannot be negative' })
   price: number;
 }
 ```
 
-## [Validação Condicional com @ValidateIf]()
+## [Conditional Validation with @ValidateIf]()
 
-O decorator `@ValidateIf()` permite aplicar validações condicionalmente baseado em valores de outros campos do DTO, útil para cenários onde a obrigatoriedade de um campo depende de outro.
+The `@ValidateIf()` decorator allows applying validations conditionally based on other DTO field values, useful for scenarios where field requirement depends on another field.
 
-Validar campos condicionalmente baseado em outros campos:
+Validate fields conditionally based on other fields:
 
 ```typescript
 import { ValidateIf } from 'class-validator';
@@ -383,7 +383,7 @@ export class CreateOrderDto {
   @IsString()
   paymentMethod: string;
 
-  // Só valida se paymentMethod === 'credit_card'
+  // Only validates if paymentMethod === 'credit_card'
   @ValidateIf(o => o.paymentMethod === 'credit_card')
   @IsString()
   @IsNotEmpty()
@@ -396,13 +396,13 @@ export class CreateOrderDto {
 }
 ```
 
-## [Transformação de Tipos com @Type e @Transform]()
+## [Type Transformation with @Type and @Transform]()
 
-Utilize `@Type()` e `@Transform()` do class-transformer para converter automaticamente tipos de dados (ex: string para number, string para Date), essencial quando recebendo dados de query params ou formulários.
+Use `@Type()` and `@Transform()` from class-transformer to automatically convert data types (e.g., string to number, string to Date), essential when receiving data from query params or forms.
 
-Converter automaticamente tipos de dados (string para number, etc):
+Automatically convert data types (string to number, etc):
 
-### [Com @Type()]()
+### [With @Type()]()
 
 ```typescript
 import { Type } from 'class-transformer';
@@ -425,7 +425,7 @@ export class QueryDto {
 }
 ```
 
-### [Com @Transform()]()
+### [With @Transform()]()
 
 ```typescript
 import { Transform } from 'class-transformer';
@@ -445,22 +445,22 @@ export class QueryDto {
 }
 ```
 
-## [Validação de Arrays e cada elemento]()
+## [Array and Element Validation]()
 
-Validar arrays e seus elementos com class-validator:
+Validate arrays and their elements with class-validator:
 
-### [Array de Strings]()
+### [Array of Strings]()
 
 ```typescript
 export class CreateProductDto {
   @IsArray()
-  @IsString({ each: true }) // Valida cada item
-  @ArrayMinSize(1, { message: 'Pelo menos uma tag é necessária' })
+  @IsString({ each: true }) // Validates each item
+  @ArrayMinSize(1, { message: 'At least one tag is required' })
   tags: string[];
 }
 ```
 
-### [Array de Objetos]()
+### [Array of Objects]()
 
 ```typescript
 import { ValidateNested } from 'class-validator';
@@ -482,13 +482,13 @@ export class CreateOrderDto {
 }
 ```
 
-## [Tratamento de Erros de validação no NestJS]()
+## [Validation Error Handling in NestJS]()
 
-Como o NestJS retorna erros de validação e como customizar:
+How NestJS returns validation errors and how to customize them:
 
-### [Estrutura da Resposta de Erro]()
+### [Error Response Structure]()
 
-Quando a validação falha, o NestJS retorna automaticamente:
+When validation fails, NestJS automatically returns:
 
 ```json
 {
@@ -502,7 +502,7 @@ Quando a validação falha, o NestJS retorna automaticamente:
 }
 ```
 
-### [Capturar Erros de Validação]()
+### [Catch Validation Errors]()
 
 ```typescript
 import { ExceptionFilter, Catch, ArgumentsHost, BadRequestException } from '@nestjs/common';
@@ -515,7 +515,7 @@ export class ValidationExceptionFilter implements ExceptionFilter {
     const status = exception.getStatus();
     const exceptionResponse: any = exception.getResponse();
 
-    // Customizar resposta
+    // Customize response
     response.status(status).json({
       statusCode: status,
       timestamp: new Date().toISOString(),
@@ -525,11 +525,11 @@ export class ValidationExceptionFilter implements ExceptionFilter {
 }
 ```
 
-## [Validação Manual sem DTO usando class-validator]()
+## [Manual Validation without DTO using class-validator]()
 
-Validar objetos manualmente sem usar ValidationPipe:
+Validate objects manually without using ValidationPipe:
 
-Se precisar validar manualmente:
+If you need to validate manually:
 
 ```typescript
 import { validate } from 'class-validator';
@@ -537,46 +537,46 @@ import { plainToClass } from 'class-transformer';
 
 async function validateData() {
   const dto = plainToClass(CreateProductDto, {
-    name: 'Produto',
-    price: -10, // Inválido
+    name: 'Product',
+    price: -10, // Invalid
   });
 
   const errors = await validate(dto);
 
   if (errors.length > 0) {
-    console.log('Erros de validação:', errors);
+    console.log('Validation errors:', errors);
   }
 }
 ```
 
-## [Boas Práticas ao usar validação no NestJS]()
+## [Best Practices when using validation in NestJS]()
 
-Recomendações essenciais para validação robusta e segura:
+Essential recommendations for robust and secure validation:
 
-1. **Sempre use DTOs**: Nunca aceite `any` em nenhum lugar do código (consulte [quais-padroes-typescript-devem-ser-seguidos.md](./quais-padroes-typescript-devem-ser-seguidos.md) para regras completas de tipagem)
-2. **Validação no backend**: Nunca confie apenas no frontend
-3. **Mensagens claras**: Ajude o frontend a exibir erros
-4. **@IsOptional para campos opcionais**: Seja explícito
-5. **Valide antes de processar**: Deixe o ValidationPipe fazer o trabalho
-6. **Use @Type() para conversão**: Garanta tipos corretos
-7. **Documente com @ApiProperty**: Integre com Swagger
+1. **Always use DTOs**: Never accept `any` anywhere in the code (see [typescript-patterns-standards.md](./typescript-patterns-standards.md) for complete typing rules)
+2. **Backend validation**: Never trust frontend-only validation
+3. **Clear messages**: Help the frontend display errors
+4. **@IsOptional for optional fields**: Be explicit
+5. **Validate before processing**: Let ValidationPipe do the work
+6. **Use @Type() for conversion**: Ensure correct types
+7. **Document with @ApiProperty**: Integrate with Swagger
 
-## [Checklist de Validação de DTOs]()
+## [DTO Validation Checklist]()
 
-Lista de verificação para cada DTO criado:
+Verification checklist for each created DTO:
 
-Para cada DTO:
-- [ ] Validadores em todos os campos obrigatórios
-- [ ] @IsOptional nos campos opcionais
-- [ ] Min/Max para números e strings
-- [ ] Validação de formato (email, URL, etc)
-- [ ] @ApiProperty para documentação Swagger
-- [ ] Mensagens de erro customizadas (se necessário)
-- [ ] Transformação de tipos (se necessário)
+For each DTO:
+- [ ] Validators on all required fields
+- [ ] @IsOptional on optional fields
+- [ ] Min/Max for numbers and strings
+- [ ] Format validation (email, URL, etc)
+- [ ] @ApiProperty for Swagger documentation
+- [ ] Custom error messages (if needed)
+- [ ] Type transformation (if needed)
 
-## [Referências e documentação oficial sobre validação]()
+## [References and official documentation on validation]()
 
-Links para class-validator, class-transformer e NestJS validation:
+Links to class-validator, class-transformer and NestJS validation:
 
 - [class-validator Documentation](https://github.com/typestack/class-validator)
 - [class-transformer Documentation](https://github.com/typestack/class-transformer)

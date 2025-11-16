@@ -1,26 +1,26 @@
-# [Como deve funcionar a Autenticação?]()
+# [How does Authentication work?]()
 
-> Guia completo sobre o sistema de autenticação JWT implementado no projeto.
+> Complete guide on the JWT authentication system implemented in the project.
 
-## [Visão Geral]()
+## [Overview]()
 
-O projeto usa autenticação baseada em **JWT (JSON Web Tokens)** com as seguintes características:
-- Login com email/senha
-- Token JWT para requisições autenticadas
-- Refresh automático do token
-- Proteção global de rotas (opt-out com @Public())
-- Isolamento de dados por usuário
+The project uses **JWT (JSON Web Tokens)** based authentication with the following characteristics:
+- Login with email/password
+- JWT token for authenticated requests
+- Automatic token refresh
+- Global route protection (opt-out with @Public())
+- Data isolation per user
 
-## [Fluxo de Autenticação]()
+## [Authentication Flow]()
 
 ```
-1. Usuário faz signup  Hash senha  Salva no BD
-2. Usuário faz login  Valida credenciais  Gera JWT
-3. Cliente guarda token  Envia em todas requisições
-4. Backend valida token  Extrai userId  Autoriza acesso
+1. User signs up → Hash password → Save in DB
+2. User logs in → Validate credentials → Generate JWT
+3. Client stores token → Send in all requests
+4. Backend validates token → Extract userId → Authorize access
 ```
 
-## [Componentes do Sistema]()
+## [System Components]()
 
 ### [1. User Entity]()
 
@@ -31,7 +31,7 @@ export class User extends SuperEntity {
   email: string;
 
   @Column({ type: 'varchar', name: 'password_hash' })
-  @Exclude() // Nunca retorna ao cliente
+  @Exclude() // Never return to client
   passwordHash: string;
 
   @Column({ type: 'boolean', default: true })
@@ -44,7 +44,7 @@ export class User extends SuperEntity {
 
 ### [2. JWT Strategy]()
 
-Valida o token JWT em cada requisição:
+Validates the JWT token on each request:
 
 ```typescript
 @Injectable()
@@ -61,7 +61,7 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
   }
 
   async validate(payload: any) {
-    // Valida se usuário ainda existe e está ativo
+    // Validate if user still exists and is active
     const user = await this.userRepository.findOne({
       where: { id: payload.sub, active: true },
     });
@@ -70,7 +70,7 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
       throw new UnauthorizedException();
     }
 
-    // Retorna dados que serão injetados em req.user
+    // Return data that will be injected into req.user
     return {
       userId: user.id,
       email: user.email
@@ -81,7 +81,7 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
 
 ### [3. Local Strategy (Login)]()
 
-Valida credenciais de login:
+Validates login credentials:
 
 ```typescript
 @Injectable()
@@ -97,7 +97,7 @@ export class LocalStrategy extends PassportStrategy(Strategy) {
     const user = await this.authService.validateUser(email, password);
 
     if (!user) {
-      throw new UnauthorizedException('Credenciais inválidas');
+      throw new UnauthorizedException('Invalid credentials');
     }
 
     return user;
@@ -107,7 +107,7 @@ export class LocalStrategy extends PassportStrategy(Strategy) {
 
 ### [4. Auth Service]()
 
-Lógica de autenticação:
+Authentication logic:
 
 ```typescript
 @Injectable()
@@ -118,7 +118,7 @@ export class AuthService {
     private jwtService: JwtService,
   ) {}
 
-  // Validar credenciais
+  // Validate credentials
   async validateUser(email: string, password: string) {
     const user = await this.userRepository.findOne({ where: { email } });
 
@@ -136,7 +136,7 @@ export class AuthService {
     return result;
   }
 
-  // Gerar token JWT
+  // Generate JWT token
   async login(user: any) {
     const payload = {
       email: user.email,
@@ -153,9 +153,9 @@ export class AuthService {
     };
   }
 
-  // Registrar novo usuário
+  // Register new user
   async signup(signupDto: SignupDto) {
-    // Hash da senha
+    // Hash password
     const passwordHash = await bcrypt.hash(signupDto.password, 10);
 
     const user = this.userRepository.create({
@@ -174,14 +174,14 @@ export class AuthService {
 
 ### [5. Auth Controller]()
 
-Endpoints públicos de autenticação:
+Public authentication endpoints:
 
 ```typescript
 @Controller('auth')
 export class AuthController {
   constructor(private authService: AuthService) {}
 
-  @Public() // Rota pública
+  @Public() // Public route
   @UseGuards(LocalAuthGuard)
   @Post('login')
   async login(@Request() req) {
@@ -196,16 +196,16 @@ export class AuthController {
 
   @Post('me')
   async getProfile(@Request() req) {
-    return req.user; // Dados do usuário logado
+    return req.user; // Logged user data
   }
 }
 ```
 
-## [Guards (Proteção de Rotas)]()
+## [Guards (Route Protection)]()
 
 ### [JWT Auth Guard (Global)]()
 
-Aplicado globalmente, protege todas as rotas por padrão:
+Applied globally, protects all routes by default:
 
 ```typescript
 @Injectable()
@@ -215,23 +215,23 @@ export class JwtAuthGuard extends AuthGuard('jwt') {
   }
 
   canActivate(context: ExecutionContext) {
-    // Verificar se rota é pública
+    // Check if route is public
     const isPublic = this.reflector.getAllAndOverride<boolean>(
       IS_PUBLIC_KEY,
       [context.getHandler(), context.getClass()],
     );
 
     if (isPublic) {
-      return true; // Permitir acesso
+      return true; // Allow access
     }
 
-    // Validar JWT
+    // Validate JWT
     return super.canActivate(context);
   }
 }
 ```
 
-Registro global no `main.ts`:
+Global registration in `main.ts`:
 
 ```typescript
 const reflector = app.get(Reflector);
@@ -240,33 +240,33 @@ app.useGlobalGuards(new JwtAuthGuard(reflector));
 
 ### [Public Decorator]()
 
-Marca rotas como públicas:
+Marks routes as public:
 
 ```typescript
 export const IS_PUBLIC_KEY = 'isPublic';
 export const Public = () => SetMetadata(IS_PUBLIC_KEY, true);
 ```
 
-Uso:
+Usage:
 
 ```typescript
 @Public()
 @Post('login')
 async login(@Body() loginDto: LoginDto) {
-  // Rota pública, não requer JWT
+  // Public route, doesn't require JWT
 }
 ```
 
-## [Como Usar no Controller]()
+## [How to Use in Controller]()
 
-### [Acessar Usuário Logado]()
+### [Access Logged User]()
 
 ```typescript
 @Controller('products')
 export class ProductController {
   @Get()
   findAll(@Request() req) {
-    const userId = req.user.userId; // ID do usuário logado
+    const userId = req.user.userId; // Logged user ID
     return this.productService.findAll(userId);
   }
 
@@ -277,9 +277,9 @@ export class ProductController {
 }
 ```
 
-### [Objeto req.user]()
+### [req.user Object]()
 
-Injetado automaticamente após validação JWT:
+Automatically injected after JWT validation:
 
 ```typescript
 {
@@ -288,24 +288,24 @@ Injetado automaticamente após validação JWT:
 }
 ```
 
-## [Isolamento de Dados por Usuário]()
+## [Data Isolation per User]()
 
-**Regra**: Todos os dados devem ser filtrados por `userId`
+**Rule**: All data must be filtered by `userId`
 
-### [Service Exemplo]()
+### [Service Example]()
 
 ```typescript
 @Injectable()
 export class ProductService {
   async findAll(userId: number) {
     return await this.repository.find({
-      where: { userId }, // Filtra por usuário
+      where: { userId }, // Filter by user
     });
   }
 
   async findOne(id: number, userId: number) {
     const product = await this.repository.findOne({
-      where: { id, userId }, // Garante que pertence ao usuário
+      where: { id, userId }, // Ensure it belongs to user
     });
 
     if (!product) {
@@ -316,7 +316,7 @@ export class ProductService {
   }
 
   async update(id: number, dto: any, userId: number) {
-    // Validar ownership primeiro
+    // Validate ownership first
     const product = await this.findOne(id, userId);
 
     Object.assign(product, dto);
@@ -325,9 +325,9 @@ export class ProductService {
 }
 ```
 
-## [Fluxo Completo de Requisição]()
+## [Complete Request Flow]()
 
-### [1. Signup (Criar conta)]()
+### [1. Signup (Create account)]()
 
 **Request**:
 ```http
@@ -336,8 +336,8 @@ Content-Type: application/json
 
 {
   "email": "user@example.com",
-  "password": "senha123",
-  "fullName": "João Silva"
+  "password": "password123",
+  "fullName": "John Silva"
 }
 ```
 
@@ -346,7 +346,7 @@ Content-Type: application/json
 {
   "id": 1,
   "email": "user@example.com",
-  "name": "João Silva"
+  "name": "John Silva"
 }
 ```
 
@@ -359,7 +359,7 @@ Content-Type: application/json
 
 {
   "email": "user@example.com",
-  "password": "senha123"
+  "password": "password123"
 }
 ```
 
@@ -370,12 +370,12 @@ Content-Type: application/json
   "user": {
     "id": 1,
     "email": "user@example.com",
-    "name": "João Silva"
+    "name": "John Silva"
   }
 }
 ```
 
-### [3. Requisição Autenticada]()
+### [3. Authenticated Request]()
 
 **Request**:
 ```http
@@ -388,27 +388,27 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
 [
   {
     "id": 1,
-    "name": "Produto 1",
+    "name": "Product 1",
     "userId": 1
   }
 ]
 ```
 
-## [Frontend: Como Implementar]()
+## [Frontend: How to Implement]()
 
-### [1. Armazenar Token]()
+### [1. Store Token]()
 
-Após login bem-sucedido:
+After successful login:
 
 ```typescript
-// Salvar no localStorage
+// Save to localStorage
 localStorage.setItem('token', response.access_token);
 localStorage.setItem('user', JSON.stringify(response.user));
 ```
 
-### [2. Enviar em Todas Requisições]()
+### [2. Send in All Requests]()
 
-Configurar Axios interceptor:
+Configure Axios interceptor:
 
 ```typescript
 import axios from 'axios';
@@ -417,7 +417,7 @@ const api = axios.create({
   baseURL: import.meta.env.VITE_API_URL,
 });
 
-// Interceptor para adicionar token
+// Interceptor to add token
 api.interceptors.request.use((config) => {
   const token = localStorage.getItem('token');
 
@@ -428,12 +428,12 @@ api.interceptors.request.use((config) => {
   return config;
 });
 
-// Interceptor para tratar erros de autenticação
+// Interceptor to handle authentication errors
 api.interceptors.response.use(
   (response) => response,
   (error) => {
     if (error.response?.status === 401) {
-      // Token inválido/expirado
+      // Invalid/expired token
       localStorage.removeItem('token');
       localStorage.removeItem('user');
       window.location.href = '/login';
@@ -445,7 +445,7 @@ api.interceptors.response.use(
 export default api;
 ```
 
-### [3. Proteger Rotas (React Router)]()
+### [3. Protect Routes (React Router)]()
 
 ```typescript
 const PrivateRoute = ({ children }) => {
@@ -458,7 +458,7 @@ const PrivateRoute = ({ children }) => {
   return children;
 };
 
-// Uso
+// Usage
 <Route
   path="/dashboard"
   element={
@@ -469,60 +469,60 @@ const PrivateRoute = ({ children }) => {
 />
 ```
 
-## [Variáveis de Ambiente]()
+## [Environment Variables]()
 
 **.env**:
 ```env
-JWT_SECRET=sua-chave-secreta-aqui-minimo-32-caracteres
+JWT_SECRET=your-secret-key-here-minimum-32-characters
 JWT_EXPIRATION=24h
 ```
 
-**Importante**:
-- Use chave longa e aleatória em produção
-- Nunca commite o `.env` no git
+**Important**:
+- Use long and random key in production
+- Never commit `.env` to git
 
-## [Segurança]()
+## [Security]()
 
-### [Boas Práticas Implementadas]()
+### [Implemented Best Practices]()
 
-1. **Senha hasheada com bcrypt**: Nunca salva senha em texto plano
-2. **Token com expiração**: 24h por padrão
-3. **Validação de usuário ativo**: Verifica em cada requisição
-4. **Isolamento de dados**: Filtragem por userId
-5. **@Exclude em passwordHash**: Nunca retorna senha ao cliente
-6. **Global guard**: Todas rotas protegidas por padrão
+1. **Password hashed with bcrypt**: Never save plain text password
+2. **Token with expiration**: 24h by default
+3. **Active user validation**: Check on each request
+4. **Data isolation**: Filtering by userId
+5. **@Exclude on passwordHash**: Never return password to client
+6. **Global guard**: All routes protected by default
 
-### [Melhorias Possíveis]()
+### [Possible Improvements]()
 
-- [ ] Refresh tokens para renovação automática
-- [ ] Rate limiting em /login
-- [ ] Blacklist de tokens (logout real)
-- [ ] 2FA (autenticação de dois fatores)
+- [ ] Refresh tokens for automatic renewal
+- [ ] Rate limiting on /login
+- [ ] Token blacklist (real logout)
+- [ ] 2FA (two-factor authentication)
 - [ ] OAuth (Google, GitHub, etc)
 
 ## [Troubleshooting]()
 
-### [Token inválido/expirado]()
+### [Invalid/expired token]()
 
-**Erro**: `401 Unauthorized`
+**Error**: `401 Unauthorized`
 
-**Solução**: Fazer login novamente
+**Solution**: Login again
 
-### [Usuário desativado]()
+### [Disabled user]()
 
-**Erro**: `401 Unauthorized`
+**Error**: `401 Unauthorized`
 
-**Causa**: Campo `active = false` no banco
+**Cause**: Field `active = false` in database
 
-### [Token não enviado]()
+### [Token not sent]()
 
-**Erro**: `401 Unauthorized`
+**Error**: `401 Unauthorized`
 
-**Causa**: Header Authorization ausente ou mal formatado
+**Cause**: Authorization header missing or malformed
 
-**Correto**: `Authorization: Bearer <token>`
+**Correct**: `Authorization: Bearer <token>`
 
-## [Referências]()
+## [References]()
 
 - [JWT.io](https://jwt.io)
 - [Passport.js Documentation](https://www.passportjs.org)

@@ -1,53 +1,53 @@
-# [Como criar uma Entity TypeORM?]()
+# [How to create a TypeORM Entity?]()
 
-> Guia prático para criar entidades (modelos de dados) com TypeORM no projeto.
+> Practical guide to creating entities (data models) with TypeORM in the project.
 
-## [O que é uma Entity TypeORM e para que serve]()
+## [What is a TypeORM Entity and what is it for]()
 
-Esta seção explica o conceito fundamental de entities no TypeORM e sua função como mapeamento objeto-relacional entre TypeScript e PostgreSQL.
+This section explains the fundamental concept of entities in TypeORM and their function as object-relational mapping between TypeScript and PostgreSQL.
 
-Entities são classes TypeScript que representam tabelas do PostgreSQL:
+Entities are TypeScript classes that represent PostgreSQL tables:
 
-Uma Entity representa uma tabela no banco de dados. Cada instância da classe é uma linha na tabela.
+An Entity represents a table in the database. Each instance of the class is a row in the table.
 
-## [Localização das Entities no projeto NestJS]()
+## [Entity Location in the NestJS project]()
 
-Esta seção define a organização recomendada de entities no projeto, seguindo padrão modular ao invés de centralizado.
+This section defines the recommended organization of entities in the project, following a modular pattern instead of centralized.
 
-Entities devem ficar dentro da pasta do módulo, não centralizadas:
+Entities should be inside the module folder, not centralized:
 
-- **SuperEntity**: Centralizada em `src/database/entities/super.entity.ts` (compartilhada por todos os módulos)
-- **Demais Entities**: Dentro de cada módulo em `src/modules/[nome-modulo]/entities/[nome].entity.ts`
+- **SuperEntity**: Centralized in `src/database/entities/super.entity.ts` (shared by all modules)
+- **Other Entities**: Inside each module in `src/modules/[module-name]/entities/[name].entity.ts`
 
-### [Exemplo de estrutura:]()
+### [Structure example:]()
 ```
 src/
 ├── database/
 │   └── entities/
-│       └── super.entity.ts          # ← Única entity centralizada
+│       └── super.entity.ts          # ← Only centralized entity
 └── modules/
     ├── products/
     │   └── entities/
-    │       └── product.entity.ts    # ← Entity do módulo products
+    │       └── product.entity.ts    # ← Products module entity
     └── categories/
         └── entities/
-            └── category.entity.ts   # ← Entity do módulo categories
+            └── category.entity.ts   # ← Categories module entity
 ```
 
-## [Estrutura Básica de Entity TypeORM no NestJS]()
+## [Basic TypeORM Entity Structure in NestJS]()
 
-Esta seção apresenta a estrutura padrão de entities no projeto, incluindo uso de SuperEntity e SoftDeletableEntity para funcionalidades comuns.
+This section presents the standard entity structure in the project, including use of SuperEntity and SoftDeletableEntity for common functionalities.
 
-Como criar entities que estendem SuperEntity ou SoftDeletableEntity:
+How to create entities that extend SuperEntity or SoftDeletableEntity:
 
-### [Entity Simples]()
+### [Simple Entity]()
 
 ```typescript
 import { Entity, Column } from 'typeorm';
 import { SuperEntity } from '@database/entities/super.entity';
 
-@Entity('products') // Tabela: snake_case, minúscula, plural
-export class Product extends SuperEntity { // Classe: PascalCase, singular
+@Entity('products') // Table: snake_case, lowercase, plural
+export class Product extends SuperEntity { // Class: PascalCase, singular
   @Column({ type: 'varchar', length: 255 })
   name: string;
 
@@ -59,11 +59,11 @@ export class Product extends SuperEntity { // Classe: PascalCase, singular
 }
 ```
 
-**Observação**: Note que a classe é `Product` (singular, PascalCase) mas a tabela é `'products'` (plural, snake_case, minúscula).
+**Note**: Notice that the class is `Product` (singular, PascalCase) but the table is `'products'` (plural, snake_case, lowercase).
 
-### [SuperEntity (Classe Base)]()
+### [SuperEntity (Base Class)]()
 
-Todas as entities devem estender `SuperEntity`:
+All entities must extend `SuperEntity`:
 
 ```typescript
 export abstract class SuperEntity extends BaseEntity {
@@ -78,16 +78,16 @@ export abstract class SuperEntity extends BaseEntity {
 }
 ```
 
-**IMPORTANTE**: Use sempre `timestamptz` (e não `timestamp with time zone`) nas entities TypeORM.
+**IMPORTANT**: Always use `timestamptz` (not `timestamp with time zone`) in TypeORM entities.
 
-**Vantagens**:
-- ID automático
-- Timestamps automáticos (created_at, updated_at)
-- Padrão consistente em todo projeto
+**Advantages**:
+- Automatic ID
+- Automatic timestamps (created_at, updated_at)
+- Consistent pattern across entire project
 
 ### [SoftDeletableEntity (Soft Delete)]()
 
-Para entities que precisam de soft delete, use `SoftDeletableEntity` que estende `SuperEntity`:
+For entities that need soft delete, use `SoftDeletableEntity` which extends `SuperEntity`:
 
 ```typescript
 export abstract class SoftDeletableEntity extends SuperEntity {
@@ -96,14 +96,14 @@ export abstract class SoftDeletableEntity extends SuperEntity {
 }
 ```
 
-**IMPORTANTE**: Use sempre `timestamptz` (e não `timestamp with time zone`) nas entities TypeORM.
+**IMPORTANT**: Always use `timestamptz` (not `timestamp with time zone`) in TypeORM entities.
 
-**Quando usar**:
-- Quando você precisa manter histórico de registros deletados
-- Quando a deleção deve ser reversível
-- Para auditoria e compliance
+**When to use**:
+- When you need to keep history of deleted records
+- When deletion should be reversible
+- For auditing and compliance
 
-**Como usar**:
+**How to use**:
 ```typescript
 import { Entity, Column } from 'typeorm';
 import { SoftDeletableEntity } from '@database/entities/soft-deletable.entity';
@@ -115,32 +115,32 @@ export class Product extends SoftDeletableEntity {
 }
 ```
 
-## [Tipos de Colunas disponíveis no TypeORM]()
+## [Column Types available in TypeORM]()
 
-Esta seção cataloga todos os tipos de dados suportados pelo TypeORM para colunas PostgreSQL, com exemplos práticos de uso.
+This section catalogs all data types supported by TypeORM for PostgreSQL columns, with practical usage examples.
 
-Lista completa de tipos de dados para colunas PostgreSQL:
+Complete list of data types for PostgreSQL columns:
 
-### [Texto]()
+### [Text]()
 
 ```typescript
-// String curta
+// Short string
 @Column({ type: 'varchar', length: 255 })
 name: string;
 
-// Texto longo
+// Long text
 @Column({ type: 'text', nullable: true })
 description: string;
 ```
 
-### [Números]()
+### [Numbers]()
 
 ```typescript
-// Inteiro
+// Integer
 @Column({ type: 'int' })
 quantity: number;
 
-// Decimal (para preços, valores monetários)
+// Decimal (for prices, monetary values)
 @Column({ type: 'decimal', precision: 10, scale: 2 })
 price: number;
 
@@ -149,14 +149,14 @@ price: number;
 percentage: number;
 ```
 
-### [Booleano]()
+### [Boolean]()
 
 ```typescript
 @Column({ type: 'boolean', default: true })
 active: boolean;
 ```
 
-### [Data/Hora]()
+### [Date/Time]()
 
 ```typescript
 @Column({ type: 'timestamptz', nullable: true })
@@ -173,15 +173,15 @@ birthDate: Date;
 metadata: any;
 ```
 
-## [Relacionamentos entre Entities no TypeORM]()
+## [Relationships between TypeORM Entities]()
 
-Esta seção ensina como implementar relacionamentos entre tabelas usando decorators TypeORM, permitindo consultas com joins e eager loading.
+This section teaches how to implement relationships between tables using TypeORM decorators, enabling queries with joins and eager loading.
 
-Como criar relacionamentos Many-to-One, One-to-Many e Many-to-Many:
+How to create Many-to-One, One-to-Many and Many-to-Many relationships:
 
 ### [Many-to-One (N:1)]()
 
-Exemplo: Vários produtos pertencem a um usuário
+Example: Multiple products belong to one user
 
 ```typescript
 import { Entity, Column, ManyToOne, JoinColumn } from 'typeorm';
@@ -193,12 +193,12 @@ export class Product extends SuperEntity {
   @Column()
   name: string;
 
-  // Relacionamento
+  // Relationship
   @ManyToOne(() => User)
   @JoinColumn({ name: 'user_id' })
   user: User;
 
-  // Coluna FK (facilita queries)
+  // FK column (facilitates queries)
   @Column({ type: 'int', name: 'user_id' })
   userId: number;
 }
@@ -206,7 +206,7 @@ export class Product extends SuperEntity {
 
 ### [One-to-Many (1:N)]()
 
-Exemplo: Um usuário tem vários produtos
+Example: One user has multiple products
 
 ```typescript
 import { OneToMany } from 'typeorm';
@@ -224,7 +224,7 @@ export class User extends SuperEntity {
 
 ### [Many-to-Many (N:N)]()
 
-Exemplo: Produtos têm várias categorias, categorias têm vários produtos
+Example: Products have multiple categories, categories have multiple products
 
 ```typescript
 import { ManyToMany, JoinTable } from 'typeorm';
@@ -245,22 +245,22 @@ export class Product extends SuperEntity {
 }
 ```
 
-## [Recursos Avançados de Entities TypeORM]()
+## [Advanced TypeORM Entity Features]()
 
-Esta seção apresenta recursos avançados para otimizar consultas e garantir integridade de dados com índices, constraints e tipos especiais.
+This section presents advanced features to optimize queries and ensure data integrity with indexes, constraints and special types.
 
-Índices, unique constraints, valores padrão e enums:
+Indexes, unique constraints, default values and enums:
 
-### [Índices]()
+### [Indexes]()
 
 ```typescript
 import { Entity, Column, Index } from 'typeorm';
 
 @Entity('products')
-@Index(['name', 'userId']) // Índice composto
+@Index(['name', 'userId']) // Composite index
 export class Product extends SuperEntity {
   @Column()
-  @Index() // Índice simples
+  @Index() // Simple index
   name: string;
 
   @Column()
@@ -274,7 +274,7 @@ export class Product extends SuperEntity {
 @Column({ type: 'varchar', length: 255, unique: true })
 email: string;
 
-// Ou unique composto
+// Or composite unique
 @Entity('products')
 @Index(['code', 'userId'], { unique: true })
 export class Product extends SuperEntity {
@@ -286,7 +286,7 @@ export class Product extends SuperEntity {
 }
 ```
 
-### [Valores Padrão]()
+### [Default Values]()
 
 ```typescript
 @Column({ type: 'boolean', default: true })
@@ -299,7 +299,7 @@ viewCount: number;
 status: string;
 ```
 
-### [Colunas Opcionais]()
+### [Optional Columns]()
 
 ```typescript
 @Column({ nullable: true })
@@ -322,7 +322,7 @@ export enum UserRole {
 role: UserRole;
 ```
 
-### [Exclusão de Campos (Sensitive Data)]()
+### [Field Exclusion (Sensitive Data)]()
 
 ```typescript
 import { Exclude } from 'class-transformer';
@@ -333,14 +333,14 @@ export class User extends SuperEntity {
   email: string;
 
   @Column({ name: 'password_hash' })
-  @Exclude() // Nunca retorna ao cliente
+  @Exclude() // Never return to client
   passwordHash: string;
 }
 ```
 
 ### [Soft Delete]()
 
-Para implementar soft delete, sua entity deve estender `SoftDeletableEntity` ao invés de `SuperEntity`:
+To implement soft delete, your entity must extend `SoftDeletableEntity` instead of `SuperEntity`:
 
 ```typescript
 import { Entity, Column } from 'typeorm';
@@ -356,7 +356,7 @@ export class Product extends SoftDeletableEntity {
 }
 ```
 
-**No service**, use os métodos nativos do TypeORM para soft delete:
+**In the service**, use TypeORM's native methods for soft delete:
 
 ```typescript
 import { Injectable } from '@nestjs/common';
@@ -371,24 +371,24 @@ export class ProductService {
     private repository: Repository<Product>,
   ) {}
 
-  // Soft delete usando método nativo
+  // Soft delete using native method
   async softDelete(id: number) {
     return await this.repository.softDelete(id);
   }
 
-  // Restaurar registro deletado
+  // Restore deleted record
   async restore(id: number) {
     return await this.repository.restore(id);
   }
 
-  // Listar apenas registros não deletados (padrão)
+  // List only non-deleted records (default)
   async findAll() {
     return await this.repository.find({
       order: { created_at: 'DESC' }
     });
   }
 
-  // Listar incluindo deletados
+  // List including deleted
   async findAllWithDeleted() {
     return await this.repository.find({
       withDeleted: true,
@@ -396,7 +396,7 @@ export class ProductService {
     });
   }
 
-  // Listar apenas deletados
+  // List only deleted
   async findOnlyDeleted() {
     return await this.repository
       .createQueryBuilder('product')
@@ -407,36 +407,36 @@ export class ProductService {
 }
 ```
 
-**Importante**: Quando você usa `SoftDeletableEntity`, o TypeORM automaticamente:
-- Exclui registros deletados das queries por padrão
-- Usa `softDelete()` e `softRemove()` ao invés de deletar permanentemente
-- Fornece opção `withDeleted: true` para incluir registros deletados
+**Important**: When you use `SoftDeletableEntity`, TypeORM automatically:
+- Excludes deleted records from queries by default
+- Uses `softDelete()` and `softRemove()` instead of permanently deleting
+- Provides `withDeleted: true` option to include deleted records
 
-## [Convenções de Nomenclatura de Entities no Projeto]()
+## [Entity Naming Conventions in the Project]()
 
-Padrões estabelecidos para classes, tabelas e colunas:
+Established patterns for classes, tables and columns:
 
-### [Nomeação]()
+### [Naming]()
 
-| Elemento | Convenção | Regras | Exemplo |
-|----------|-----------|--------|---------|
-| Classe Entity | PascalCase | Singular | `Product`, `UserProfile` |
-| Tabela no Banco | snake_case | Minúscula + Plural + **Inglês** | `products`, `user_profiles` |
-| Coluna | snake_case | Minúscula + **Inglês** | `user_id`, `created_at` |
-| Arquivo | kebab-case | Singular + `.entity.ts` | `product.entity.ts` |
+| Element | Convention | Rules | Example |
+|---------|-----------|-------|---------|
+| Entity Class | PascalCase | Singular | `Product`, `UserProfile` |
+| Database Table | snake_case | Lowercase + Plural + **English** | `products`, `user_profiles` |
+| Column | snake_case | Lowercase + **English** | `user_id`, `created_at` |
+| File | kebab-case | Singular + `.entity.ts` | `product.entity.ts` |
 
-**Regras de Nomenclatura:**
-- **Entity (classe)**: Sempre em **PascalCase** e no **singular** (ex: `Product`, `User`, `Category`)
-- **Tabela (banco)**: Sempre em **snake_case minúscula** e no **plural** e em **inglês** (ex: `products`, `users`, `categories`)
-- **Colunas**: Sempre em **snake_case minúscula** e em **inglês** (ex: `created_at`, `user_id`, `product_name`)
-- **Arquivo**: Sempre em **kebab-case** no **singular** com sufixo `.entity.ts` (ex: `product.entity.ts`)
+**Naming Rules:**
+- **Entity (class)**: Always in **PascalCase** and **singular** (e.g. `Product`, `User`, `Category`)
+- **Table (database)**: Always in **lowercase snake_case** and **plural** and in **English** (e.g. `products`, `users`, `categories`)
+- **Columns**: Always in **lowercase snake_case** and in **English** (e.g. `created_at`, `user_id`, `product_name`)
+- **File**: Always in **kebab-case** in **singular** with `.entity.ts` suffix (e.g. `product.entity.ts`)
 
-**⚠️ IMPORTANTE - Idioma:**
-- **Tabelas e colunas**: SEMPRE em **inglês** (ex: `products`, `user_id`, `created_at`)
-- **Evite**: Nomes em português como `produtos`, `id_usuario`, `data_criacao`
-- **Motivo**: Padronização internacional, compatibilidade com convenções da comunidade, melhor integração com ORMs e ferramentas
+**⚠️ IMPORTANT - Language:**
+- **Tables and columns**: ALWAYS in **English** (e.g. `products`, `user_id`, `created_at`)
+- **Avoid**: Names in Portuguese like `produtos`, `id_usuario`, `data_criacao`
+- **Reason**: International standardization, compatibility with community conventions, better integration with ORMs and tools
 
-### [Exemplo Completo]()
+### [Complete Example]()
 
 ```typescript
 import { Entity, Column, ManyToOne, JoinColumn, Index } from 'typeorm';
@@ -448,7 +448,7 @@ import { Category } from '@/modules/categories/entities/category.entity';
 @Entity('products')
 @Index(['code', 'userId'], { unique: true })
 export class Product extends SuperEntity {
-  // Campos básicos
+  // Basic fields
   @Column({ type: 'varchar', length: 255 })
   name: string;
 
@@ -459,7 +459,7 @@ export class Product extends SuperEntity {
   @Column({ type: 'text', nullable: true })
   description: string;
 
-  // Valores numéricos
+  // Numeric values
   @Column({ type: 'decimal', precision: 10, scale: 2 })
   price: number;
 
@@ -470,7 +470,7 @@ export class Product extends SuperEntity {
   @Column({ type: 'boolean', default: true })
   active: boolean;
 
-  // Relacionamento com User
+  // Relationship with User
   @ManyToOne(() => User)
   @JoinColumn({ name: 'user_id' })
   user: User;
@@ -478,7 +478,7 @@ export class Product extends SuperEntity {
   @Column({ type: 'int', name: 'user_id' })
   userId: number;
 
-  // Relacionamento com Category
+  // Relationship with Category
   @ManyToOne(() => Category, { nullable: true })
   @JoinColumn({ name: 'category_id' })
   category: Category;
@@ -486,16 +486,16 @@ export class Product extends SuperEntity {
   @Column({ type: 'int', nullable: true, name: 'category_id' })
   categoryId: number;
 
-  // Metadados
+  // Metadata
   @Column({ type: 'jsonb', nullable: true })
   @Exclude()
   internalData: any;
 }
 ```
 
-## [Registrar Entity no Module do NestJS]()
+## [Register Entity in NestJS Module]()
 
-Como importar entities com TypeOrmModule.forFeature:
+How to import entities with TypeOrmModule.forFeature:
 
 ```typescript
 import { Module } from '@nestjs/common';
@@ -506,7 +506,7 @@ import { ProductController } from './product.controller';
 
 @Module({
   imports: [
-    TypeOrmModule.forFeature([Product]), // Registrar aqui
+    TypeOrmModule.forFeature([Product]), // Register here
   ],
   controllers: [ProductController],
   providers: [ProductService],
@@ -515,9 +515,9 @@ import { ProductController } from './product.controller';
 export class ProductModule {}
 ```
 
-## [Usar Entity no Service com Repository Pattern]()
+## [Use Entity in Service with Repository Pattern]()
 
-Injetar repository para fazer operações no banco de dados:
+Inject repository to perform database operations:
 
 ```typescript
 import { Injectable } from '@nestjs/common';
@@ -547,25 +547,25 @@ export class ProductService {
 }
 ```
 
-## [Dicas Importantes ao trabalhar com Entities TypeORM]()
+## [Important Tips when working with TypeORM Entities]()
 
-Boas práticas essenciais para evitar problemas comuns:
+Essential best practices to avoid common problems:
 
-1. **Escolha a classe base correta**:
-   - `SuperEntity`: Para entities normais (sem soft delete)
-   - `SoftDeletableEntity`: Para entities que precisam de soft delete
-2. **Use sempre `timestamptz` para datas**: NUNCA use `timestamp with time zone` nas entities TypeORM
-3. **Use snake_case para nomes de colunas**: Convenção PostgreSQL
-4. **Especifique `name` em @JoinColumn**: Controle explícito de FK
-5. **Adicione campo ID separado da relação**: Facilita queries (`userId` além de `user`)
-6. **Use @Exclude para dados sensíveis**: Senhas, tokens, etc
-7. **Crie índices em colunas frequentemente consultadas**: Performance
-8. **Use `nullable: true` quando apropriado**: Evite constraints desnecessárias
-9. **Não adicione deleted_at manualmente**: Se precisa de soft delete, use `SoftDeletableEntity`
+1. **Choose the correct base class**:
+   - `SuperEntity`: For normal entities (without soft delete)
+   - `SoftDeletableEntity`: For entities that need soft delete
+2. **Always use `timestamptz` for dates**: NEVER use `timestamp with time zone` in TypeORM entities
+3. **Use snake_case for column names**: PostgreSQL convention
+4. **Specify `name` in @JoinColumn**: Explicit FK control
+5. **Add separate ID field from relation**: Facilitates queries (`userId` in addition to `user`)
+6. **Use @Exclude for sensitive data**: Passwords, tokens, etc
+7. **Create indexes on frequently queried columns**: Performance
+8. **Use `nullable: true` when appropriate**: Avoid unnecessary constraints
+9. **Don't add deleted_at manually**: If you need soft delete, use `SoftDeletableEntity`
 
-## [Referências e documentação oficial do TypeORM]()
+## [References and TypeORM official documentation]()
 
-Links para documentação oficial de entities e decorators:
+Links to official documentation of entities and decorators:
 
 - [TypeORM Entities Documentation](https://typeorm.io/entities)
 - [TypeORM Relations Documentation](https://typeorm.io/relations)

@@ -1,72 +1,72 @@
-# [Como usar RabbitMQ no Backend]()
+# [How to use RabbitMQ in Backend]()
 
-> Guia completo para usar RabbitMQ com Topic Exchange para processamento assíncrono e confiável
+> Complete guide for using RabbitMQ with Topic Exchange for asynchronous and reliable processing
 
-## [Quando usar RabbitMQ para filas e processamento assíncrono]()
+## [When to use RabbitMQ for queues and asynchronous processing]()
 
-Esta seção define os cenários ideais para utilizar RabbitMQ no projeto, diferenciando-o de outras tecnologias como Redis para casos de uso específicos.
+This section defines ideal scenarios for using RabbitMQ in the project, differentiating it from other technologies like Redis for specific use cases.
 
-- ✅ **Processamento assíncrono** - Tarefas que não bloqueiam a resposta da API
-- ✅ **Tarefas demoradas** - Processamentos longos (envio de emails, relatórios, etc)
-- ✅ **Retentativas automáticas** - Processos que podem falhar e precisam retry
-- ✅ **Desacoplamento** - Separar produtores de consumidores
-- ✅ **Garantia de entrega** - Mensagens persistentes e confirmação
-- ✅ **Processamento em lote** - Agrupar múltiplas tarefas
-- ✅ **Background jobs** - Tarefas executadas em segundo plano
-- ❌ **Cache de dados** - Use Redis para cache
-- ❌ **Comunicação síncrona** - Use HTTP/REST para respostas imediatas
-- ❌ **Dados temporários compartilhados** - Use Redis
+- ✅ **Asynchronous processing** - Tasks that don't block API response
+- ✅ **Long-running tasks** - Time-consuming processes (sending emails, reports, etc)
+- ✅ **Automatic retries** - Processes that may fail and need retry
+- ✅ **Decoupling** - Separate producers from consumers
+- ✅ **Delivery guarantee** - Persistent messages and acknowledgment
+- ✅ **Batch processing** - Group multiple tasks
+- ✅ **Background jobs** - Tasks executed in background
+- ❌ **Data caching** - Use Redis for cache
+- ❌ **Synchronous communication** - Use HTTP/REST for immediate responses
+- ❌ **Temporary shared data** - Use Redis
 
-## [Instalação de pacotes RabbitMQ no NestJS]()
+## [RabbitMQ package installation in NestJS]()
 
-Pacotes necessários para integrar RabbitMQ com NestJS usando o módulo de microservices.
+Required packages to integrate RabbitMQ with NestJS using the microservices module.
 
 ```bash
 npm install @nestjs/microservices amqplib amqp-connection-manager
 ```
 
-## [Arquitetura RabbitMQ com Topic Exchange única]()
+## [RabbitMQ Architecture with single Topic Exchange]()
 
-Este projeto usa **Topic Exchange** com **UMA ÚNICA EXCHANGE** chamada `app_exchange`.
+This project uses **Topic Exchange** with **A SINGLE EXCHANGE** named `app_exchange`.
 
-### [Conceitos fundamentais do RabbitMQ Topic Exchange]()
+### [RabbitMQ Topic Exchange fundamental concepts]()
 
-- **Exchange**: Recebe mensagens e roteia para filas (usamos apenas `app_exchange`)
-- **Topic (Routing Key)**: Padrão de roteamento no formato `<module>.<resource>.<action>`
-- **Queue**: Fila que recebe mensagens baseado no topic
-- **Binding**: Ligação entre Exchange e Queue com pattern de topic
+- **Exchange**: Receives messages and routes them to queues (we use only `app_exchange`)
+- **Topic (Routing Key)**: Routing pattern in format `<module>.<resource>.<action>`
+- **Queue**: Queue that receives messages based on topic
+- **Binding**: Link between Exchange and Queue with topic pattern
 
-### [Padrão de Nomenclatura de Tópicos RabbitMQ no projeto]()
+### [RabbitMQ Topic naming pattern in project]()
 
 ```
 <module_name>.<resource_name>.<action>
 ```
 
-**Exemplos:**
-- `order.order.created` - Pedido criado
-- `order.order.updated` - Pedido atualizado
-- `order.order.deleted` - Pedido deletado
-- `payment.payment.paid` - Pagamento realizado
-- `notification.email.sent` - Email enviado
-- `report.invoice.generated` - Relatório gerado
-- `product.stock.filled` - Estoque reabastecido
-- `user.user.registered` - Usuário registrado
-- `auction.bid.placed` - Lance realizado
+**Examples:**
+- `order.order.created` - Order created
+- `order.order.updated` - Order updated
+- `order.order.deleted` - Order deleted
+- `payment.payment.paid` - Payment completed
+- `notification.email.sent` - Email sent
+- `report.invoice.generated` - Report generated
+- `product.stock.filled` - Stock replenished
+- `user.user.registered` - User registered
+- `auction.bid.placed` - Bid placed
 
-**Ações comuns:**
+**Common actions:**
 - `created`, `updated`, `deleted` - CRUD
-- `paid`, `canceled`, `refunded` - Pagamentos
-- `sent`, `delivered`, `failed` - Notificações
-- `generated`, `processed`, `completed` - Processamentos
-- `filled`, `depleted` - Estoque
-- `registered`, `activated`, `suspended` - Usuários
-- `placed`, `accepted`, `rejected` - Ofertas/Lances
+- `paid`, `canceled`, `refunded` - Payments
+- `sent`, `delivered`, `failed` - Notifications
+- `generated`, `processed`, `completed` - Processing
+- `filled`, `depleted` - Stock
+- `registered`, `activated`, `suspended` - Users
+- `placed`, `accepted`, `rejected` - Offers/Bids
 
-## [Configuração Global do RabbitMQ usando Common Module reutilizável]()
+## [RabbitMQ Global Configuration using reusable Common Module]()
 
-Setup de um módulo RabbitMQ global e reutilizável para ser importado uma única vez no AppModule.
+Setup of a global and reusable RabbitMQ module to be imported once in AppModule.
 
-### [1. Criar RabbitMQModule comum com Topic Exchange no NestJS]()
+### [1. Create common RabbitMQModule with Topic Exchange in NestJS]()
 
 `src/common/rabbitmq/rabbitmq.module.ts`
 
@@ -86,15 +86,15 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
           transport: Transport.RMQ,
           options: {
             urls: [configService.get('RABBITMQ_URL', 'amqp://localhost:5672')],
-            // Não especificar queue aqui - cada consumer terá sua própria fila
-            // Exchange única do tipo Topic
-            queue: '', // Vazio para usar filas específicas nos consumers
+            // Don't specify queue here - each consumer will have its own queue
+            // Single Topic Exchange
+            queue: '', // Empty to use specific queues in consumers
             queueOptions: {
-              durable: true, // Fila persiste após restart
+              durable: true, // Queue persists after restart
             },
-            // Reconhecimento manual de mensagens
+            // Manual message acknowledgment
             noAck: false,
-            // Prefetch - quantas mensagens processar simultaneamente
+            // Prefetch - how many messages to process simultaneously
             prefetchCount: 1,
           },
         }),
@@ -107,7 +107,7 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
 export class RabbitMQModule {}
 ```
 
-### [2. Registrar RabbitMQModule no AppModule raiz]()
+### [2. Register RabbitMQModule in root AppModule]()
 
 `src/app.module.ts`
 
@@ -117,30 +117,30 @@ import { RabbitMQModule } from './common/rabbitmq/rabbitmq.module';
 
 @Module({
   imports: [
-    // ... outros módulos
-    RabbitMQModule, // Importar uma única vez
-    // ... módulos de domínio
+    // ... other modules
+    RabbitMQModule, // Import once
+    // ... domain modules
   ],
 })
 export class AppModule {}
 ```
 
-### [3. Configurar variáveis de ambiente do RabbitMQ]()
+### [3. Configure RabbitMQ environment variables]()
 
 `.env`
 
 ```bash
 RABBITMQ_URL=amqp://localhost:5672
 RABBITMQ_EXCHANGE=app_exchange
-RABBITMQ_USER=guest        # Opcional
-RABBITMQ_PASSWORD=guest    # Opcional
+RABBITMQ_USER=guest        # Optional
+RABBITMQ_PASSWORD=guest    # Optional
 ```
 
-## [Uso Básico do RabbitMQ - Publicar mensagens como Producer]()
+## [RabbitMQ Basic Usage - Publish messages as Producer]()
 
-Como publicar eventos no RabbitMQ com tópicos específicos a partir de Controllers e Services.
+How to publish events to RabbitMQ with specific topics from Controllers and Services.
 
-### [Publicar mensagens no RabbitMQ com tópicos em Controllers/Services]()
+### [Publish messages to RabbitMQ with topics in Controllers/Services]()
 
 ```typescript
 import { Controller, Post, Body, Inject } from '@nestjs/common';
@@ -156,7 +156,7 @@ export class OrderController {
   async createOrder(@Body() dto: CreateOrderDto) {
     const order = await this.orderService.create(dto);
 
-    // Publicar evento com tópico: order.order.created
+    // Publish event with topic: order.order.created
     await this.rabbitClient.emit('order.order.created', {
       orderId: order.id,
       userId: order.userId,
@@ -171,7 +171,7 @@ export class OrderController {
   async payOrder(@Param('id') id: string) {
     const order = await this.orderService.pay(id);
 
-    // Publicar evento: order.order.paid
+    // Publish event: order.order.paid
     await this.rabbitClient.emit('order.order.paid', {
       orderId: order.id,
       paidAt: order.paidAt,
@@ -183,11 +183,11 @@ export class OrderController {
 }
 ```
 
-## [Consumir mensagens do RabbitMQ com pattern de tópicos]()
+## [Consume RabbitMQ messages with topic patterns]()
 
-Criação de consumers que subscrevem a tópicos específicos ou padrões com wildcards para processar eventos assincronamente.
+Creating consumers that subscribe to specific topics or wildcard patterns to process events asynchronously.
 
-### [1. Criar serviço Consumer para processar mensagens do RabbitMQ]()
+### [1. Create Consumer service to process RabbitMQ messages]()
 
 `src/modules/notification/notification.consumer.ts`
 
@@ -199,72 +199,72 @@ import { EventPattern, Payload, Ctx, RmqContext } from '@nestjs/microservices';
 export class NotificationConsumer {
   private readonly logger = new Logger(NotificationConsumer.name);
 
-  // Subscrever ao tópico: order.order.created
+  // Subscribe to topic: order.order.created
   @EventPattern('order.order.created')
   async handleOrderCreated(@Payload() data: any, @Ctx() context: RmqContext) {
     const channel = context.getChannelRef();
     const originalMsg = context.getMessage();
 
     try {
-      this.logger.log(`Pedido criado: ${data.orderId}`);
+      this.logger.log(`Order created: ${data.orderId}`);
 
-      // Enviar email de confirmação
+      // Send confirmation email
       await this.sendOrderConfirmationEmail(data);
 
-      this.logger.log(`Email de confirmação enviado para pedido ${data.orderId}`);
+      this.logger.log(`Confirmation email sent for order ${data.orderId}`);
 
-      // Confirmar processamento (ACK)
+      // Confirm processing (ACK)
       channel.ack(originalMsg);
     } catch (error) {
-      this.logger.error(`Erro ao processar pedido criado: ${error.message}`);
+      this.logger.error(`Error processing order created: ${error.message}`);
 
-      // Rejeitar e reenviar para fila (NACK com requeue)
+      // Reject and requeue (NACK with requeue)
       channel.nack(originalMsg, false, true);
     }
   }
 
-  // Subscrever ao tópico: order.order.paid
+  // Subscribe to topic: order.order.paid
   @EventPattern('order.order.paid')
   async handleOrderPaid(@Payload() data: any, @Ctx() context: RmqContext) {
     const channel = context.getChannelRef();
     const originalMsg = context.getMessage();
 
     try {
-      this.logger.log(`Pedido pago: ${data.orderId}`);
+      this.logger.log(`Order paid: ${data.orderId}`);
 
-      // Enviar email de pagamento confirmado
+      // Send payment confirmation email
       await this.sendPaymentConfirmationEmail(data);
 
       channel.ack(originalMsg);
     } catch (error) {
-      this.logger.error(`Erro ao processar pedido pago: ${error.message}`);
+      this.logger.error(`Error processing order paid: ${error.message}`);
       channel.nack(originalMsg, false, true);
     }
   }
 
   private async sendOrderConfirmationEmail(data: any): Promise<void> {
-    // Implementar lógica de envio
+    // Implement sending logic
   }
 
   private async sendPaymentConfirmationEmail(data: any): Promise<void> {
-    // Implementar lógica de envio
+    // Implement sending logic
   }
 }
 ```
 
-### [2. Criar Consumer com pattern matching usando wildcards]()
+### [2. Create Consumer with pattern matching using wildcards]()
 
-Você pode usar wildcards para subscrever a múltiplos tópicos RabbitMQ:
+You can use wildcards to subscribe to multiple RabbitMQ topics:
 
-- `*` - Corresponde exatamente a uma palavra
-- `#` - Corresponde a zero ou mais palavras
+- `*` - Matches exactly one word
+- `#` - Matches zero or more words
 
 ```typescript
 @Injectable()
 export class AuditConsumer {
   private readonly logger = new Logger(AuditConsumer.name);
 
-  // Subscrever a TODOS os eventos de order (created, updated, deleted, paid, etc)
+  // Subscribe to ALL order events (created, updated, deleted, paid, etc)
   @EventPattern('order.order.*')
   async handleAllOrderEvents(@Payload() data: any, @Ctx() context: RmqContext) {
     const channel = context.getChannelRef();
@@ -272,9 +272,9 @@ export class AuditConsumer {
     const routingKey = originalMsg.fields.routingKey; // Ex: "order.order.created"
 
     try {
-      this.logger.log(`Evento de pedido: ${routingKey}`);
+      this.logger.log(`Order event: ${routingKey}`);
 
-      // Registrar no log de auditoria
+      // Register in audit log
       await this.auditService.log({
         topic: routingKey,
         data,
@@ -283,12 +283,12 @@ export class AuditConsumer {
 
       channel.ack(originalMsg);
     } catch (error) {
-      this.logger.error(`Erro no audit: ${error.message}`);
+      this.logger.error(`Error in audit: ${error.message}`);
       channel.nack(originalMsg, false, true);
     }
   }
 
-  // Subscrever a TODOS os eventos do módulo payment
+  // Subscribe to ALL payment module events
   @EventPattern('payment.#')
   async handleAllPaymentEvents(@Payload() data: any, @Ctx() context: RmqContext) {
     const channel = context.getChannelRef();
@@ -296,7 +296,7 @@ export class AuditConsumer {
     const routingKey = originalMsg.fields.routingKey;
 
     try {
-      this.logger.log(`Evento de pagamento: ${routingKey}`);
+      this.logger.log(`Payment event: ${routingKey}`);
 
       await this.auditService.log({
         topic: routingKey,
@@ -310,7 +310,7 @@ export class AuditConsumer {
     }
   }
 
-  // Subscrever a TODOS os eventos "created" de qualquer módulo
+  // Subscribe to ALL "created" events from any module
   @EventPattern('*.*.created')
   async handleAllCreatedEvents(@Payload() data: any, @Ctx() context: RmqContext) {
     const channel = context.getChannelRef();
@@ -318,9 +318,9 @@ export class AuditConsumer {
     const routingKey = originalMsg.fields.routingKey;
 
     try {
-      this.logger.log(`Novo registro criado: ${routingKey}`);
+      this.logger.log(`New record created: ${routingKey}`);
 
-      // Incrementar métrica
+      // Increment metric
       await this.metricsService.incrementCreated(routingKey);
 
       channel.ack(originalMsg);
@@ -331,7 +331,7 @@ export class AuditConsumer {
 }
 ```
 
-### [3. Registrar consumidor no módulo]()
+### [3. Register consumer in module]()
 
 `src/modules/notification/notification.module.ts`
 
@@ -345,7 +345,7 @@ import { NotificationConsumer } from './notification.consumer';
 export class NotificationModule {}
 ```
 
-### [4. Configurar bootstrap com Topic Exchange]()
+### [4. Configure bootstrap with Topic Exchange]()
 
 `src/main.ts`
 
@@ -360,36 +360,36 @@ async function bootstrap() {
 
   const configService = app.get(ConfigService);
 
-  // Adicionar microserviço RabbitMQ com Topic Exchange
+  // Add RabbitMQ microservice with Topic Exchange
   app.connectMicroservice<MicroserviceOptions>({
     transport: Transport.RMQ,
     options: {
       urls: [configService.get('RABBITMQ_URL', 'amqp://localhost:5672')],
-      // Não especificar queue - será criada automaticamente para cada consumer
+      // Don't specify queue - will be created automatically for each consumer
       noAck: false,
       prefetchCount: 1,
       queueOptions: {
         durable: true,
-        // Auto-delete quando não houver consumers
+        // Auto-delete when no consumers
         autoDelete: false,
       },
     },
   });
 
-  // Iniciar microserviço
+  // Start microservice
   await app.startAllMicroservices();
 
-  // Iniciar API HTTP
+  // Start HTTP API
   await app.listen(3000);
 }
 bootstrap();
 ```
 
-## [Exemplos Práticos de uso do RabbitMQ por Módulo do sistema]()
+## [Practical RabbitMQ usage examples by system Module]()
 
-Catálogo de tópicos e eventos reais utilizados em diferentes módulos do projeto.
+Catalog of real topics and events used in different project modules.
 
-### [Módulo Order]()
+### [Order Module]()
 
 ```typescript
 // Producer
@@ -406,7 +406,7 @@ await this.rabbitClient.emit('order.order.shipped', { orderId, trackingCode });
 @EventPattern('order.order.canceled')
 ```
 
-### [Módulo Payment]()
+### [Payment Module]()
 
 ```typescript
 // Producer
@@ -420,7 +420,7 @@ await this.rabbitClient.emit('payment.payment.failed', { paymentId, error });
 @EventPattern('payment.payment.failed')
 ```
 
-### [Módulo Notification]()
+### [Notification Module]()
 
 ```typescript
 // Producer
@@ -434,7 +434,7 @@ await this.rabbitClient.emit('notification.push.sent', { pushId, userId });
 @EventPattern('notification.email.failed')
 ```
 
-### [Módulo Product]()
+### [Product Module]()
 
 ```typescript
 // Producer
@@ -449,7 +449,7 @@ await this.rabbitClient.emit('product.price.changed', { productId, oldPrice, new
 @EventPattern('product.stock.depleted')
 ```
 
-### [Módulo User]()
+### [User Module]()
 
 ```typescript
 // Producer
@@ -463,7 +463,7 @@ await this.rabbitClient.emit('user.user.deleted', { userId });
 @EventPattern('user.user.activated')
 ```
 
-### [Módulo Report]()
+### [Report Module]()
 
 ```typescript
 // Producer
@@ -477,13 +477,13 @@ await this.rabbitClient.emit('report.export.failed', { reportId, error });
 @EventPattern('report.export.completed')
 ```
 
-## [Casos de Uso Avançados do RabbitMQ no Backend]()
+## [Advanced RabbitMQ Use Cases in Backend]()
 
-Implementações avançadas incluindo Dead Letter Queue, controle de retries, processamento em lote e escala horizontal.
+Advanced implementations including Dead Letter Queue, retry control, batch processing and horizontal scaling.
 
-### [1. Dead Letter Queue (DLQ) com Topic Exchange]()
+### [1. Dead Letter Queue (DLQ) with Topic Exchange]()
 
-Configurar DLQ para mensagens que falharam.
+Configure DLQ for failed messages.
 
 `src/main.ts`
 
@@ -496,17 +496,17 @@ app.connectMicroservice<MicroserviceOptions>({
     prefetchCount: 1,
     queueOptions: {
       durable: true,
-      // Dead Letter Exchange para mensagens que falharam
+      // Dead Letter Exchange for failed messages
       deadLetterExchange: 'app_exchange_dlx',
       deadLetterRoutingKey: 'failed',
-      // Mensagens expiram após 1 hora
+      // Messages expire after 1 hour
       messageTtl: 3600000,
     },
   },
 });
 ```
 
-### [2. Controle de Retries com contador]()
+### [2. Retry control with counter]()
 
 ```typescript
 @Injectable()
@@ -520,43 +520,43 @@ export class EmailConsumer {
     const originalMsg = context.getMessage();
     const routingKey = originalMsg.fields.routingKey;
 
-    // Obter número de tentativas do header
+    // Get retry count from header
     const retryCount = originalMsg.properties.headers['x-retry-count'] || 0;
 
     try {
-      this.logger.log(`[${routingKey}] Tentativa ${retryCount + 1} - Enviando email`);
+      this.logger.log(`[${routingKey}] Attempt ${retryCount + 1} - Sending email`);
 
       await this.sendEmail(data);
 
       channel.ack(originalMsg);
     } catch (error) {
-      this.logger.error(`[${routingKey}] Erro na tentativa ${retryCount + 1}: ${error.message}`);
+      this.logger.error(`[${routingKey}] Error on attempt ${retryCount + 1}: ${error.message}`);
 
       if (retryCount >= this.maxRetries) {
-        // Excedeu tentativas - enviar para DLQ
-        this.logger.error(`[${routingKey}] Máximo de tentativas atingido. Enviando para DLQ.`);
-        channel.nack(originalMsg, false, false); // Não requeue
+        // Exceeded attempts - send to DLQ
+        this.logger.error(`[${routingKey}] Max attempts reached. Sending to DLQ.`);
+        channel.nack(originalMsg, false, false); // Don't requeue
       } else {
-        // Incrementar contador e reenviar
-        this.logger.warn(`[${routingKey}] Reenviando para fila (tentativa ${retryCount + 2})`);
+        // Increment counter and resend
+        this.logger.warn(`[${routingKey}] Requeuing (attempt ${retryCount + 2})`);
 
-        // Aguardar antes de reenviar (backoff exponencial)
+        // Wait before resending (exponential backoff)
         const delay = Math.pow(2, retryCount) * 1000; // 1s, 2s, 4s...
         await new Promise((resolve) => setTimeout(resolve, delay));
 
-        // NACK com requeue
+        // NACK with requeue
         channel.nack(originalMsg, false, true);
       }
     }
   }
 
   private async sendEmail(data: any): Promise<void> {
-    // Implementação real
+    // Real implementation
   }
 }
 ```
 
-### [3. Processamento em lote por tópico]()
+### [3. Batch processing by topic]()
 
 ```typescript
 @Injectable()
@@ -571,19 +571,19 @@ export class BatchConsumer {
     const originalMsg = context.getMessage();
     const routingKey = originalMsg.fields.routingKey;
 
-    // Adicionar ao lote
+    // Add to batch
     if (!this.batches.has(routingKey)) {
       this.batches.set(routingKey, []);
     }
 
     this.batches.get(routingKey).push({ data, originalMsg });
 
-    // Quando atingir tamanho do lote, processar
+    // When batch size is reached, process
     if (this.batches.get(routingKey).length >= this.batchSize) {
       await this.processBatch(routingKey);
     }
 
-    // ACK imediato
+    // Immediate ACK
     channel.ack(originalMsg);
   }
 
@@ -592,39 +592,39 @@ export class BatchConsumer {
     this.batches.set(routingKey, []);
 
     try {
-      this.logger.log(`[${routingKey}] Processando lote de ${items.length} itens`);
+      this.logger.log(`[${routingKey}] Processing batch of ${items.length} items`);
 
-      // Processar todos de uma vez
+      // Process all at once
       await this.performBatchOperation(items.map((i) => i.data));
 
-      this.logger.log(`[${routingKey}] Lote processado com sucesso`);
+      this.logger.log(`[${routingKey}] Batch processed successfully`);
     } catch (error) {
-      this.logger.error(`[${routingKey}] Erro no lote: ${error.message}`);
+      this.logger.error(`[${routingKey}] Batch error: ${error.message}`);
     }
   }
 
   private async performBatchOperation(items: any[]): Promise<void> {
-    // Implementar operação em lote
-    // Ex: UPDATE em massa no banco de dados
+    // Implement batch operation
+    // Ex: Bulk UPDATE in database
   }
 }
 ```
 
-### [4. Múltiplos consumers para o mesmo tópico (escala)]()
+### [4. Multiple consumers for same topic (scaling)]()
 
-Você pode ter múltiplas instâncias do mesmo consumer processando mensagens do mesmo tópico em paralelo. RabbitMQ distribui as mensagens entre eles (round-robin).
+You can have multiple instances of the same consumer processing messages from the same topic in parallel. RabbitMQ distributes messages among them (round-robin).
 
 ```bash
-# Instância 1
+# Instance 1
 npm run start
 
-# Instância 2 (em outro terminal/servidor)
+# Instance 2 (in another terminal/server)
 npm run start
 
-# Ambas processarão mensagens de 'order.order.created' em paralelo
+# Both will process messages from 'order.order.created' in parallel
 ```
 
-## [Configurar RabbitMQ local com Docker Compose e Management UI]()
+## [Configure local RabbitMQ with Docker Compose and Management UI]()
 
 `docker-compose.yml`
 
@@ -651,54 +651,54 @@ volumes:
   rabbitmq-data:
 ```
 
-Subir o RabbitMQ:
+Start RabbitMQ:
 
 ```bash
 docker-compose up -d rabbitmq
 ```
 
-Acessar Management UI:
+Access Management UI:
 - URL: http://localhost:15672
-- Usuário: `guest`
-- Senha: `guest`
+- User: `guest`
+- Password: `guest`
 
-### [Verificar Exchange e Bindings no Management UI]()
+### [Verify Exchange and Bindings in Management UI]()
 
-1. Acesse **Exchanges** - Você verá `app_exchange` (type: topic)
-2. Clique em `app_exchange` > **Bindings** - Verá todas as filas vinculadas e seus patterns
-3. Acesse **Queues** - Verá todas as filas criadas automaticamente
-4. Em cada fila, veja **Bindings** para ver quais tópicos ela está ouvindo
+1. Access **Exchanges** - You'll see `app_exchange` (type: topic)
+2. Click on `app_exchange` > **Bindings** - You'll see all bound queues and their patterns
+3. Access **Queues** - You'll see all automatically created queues
+4. In each queue, see **Bindings** to view which topics it's listening to
 
-## [Boas Práticas ao usar RabbitMQ no NestJS]()
+## [Best Practices when using RabbitMQ in NestJS]()
 
-Recomendações essenciais para implementação robusta e manutenível de filas com RabbitMQ.
+Essential recommendations for robust and maintainable queue implementation with RabbitMQ.
 
-### [1. Sempre seguir padrão de nomenclatura]()
+### [1. Always follow naming pattern]()
 
 ```typescript
-// ✅ Bom - padrão <module>.<resource>.<action>
+// ✅ Good - pattern <module>.<resource>.<action>
 'order.order.created'
 'payment.payment.paid'
 'notification.email.sent'
 
-// ❌ Ruim - sem padrão
+// ❌ Bad - no pattern
 'orderCreated'
 'payment_paid'
 'email-sent'
 ```
 
-### [2. Usar uma única exchange]()
+### [2. Use single exchange]()
 
 ```typescript
-// ✅ Bom - todos eventos vão para app_exchange
+// ✅ Good - all events go to app_exchange
 await this.rabbitClient.emit('order.order.created', data);
 
-// ❌ Ruim - múltiplas exchanges
+// ❌ Bad - multiple exchanges
 await this.orderExchange.emit('created', data);
 await this.paymentExchange.emit('paid', data);
 ```
 
-### [3. Validar payload antes de processar]()
+### [3. Validate payload before processing]()
 
 ```typescript
 @EventPattern('order.order.created')
@@ -706,61 +706,61 @@ async handleOrderCreated(@Payload() data: any, @Ctx() context: RmqContext) {
   const channel = context.getChannelRef();
   const originalMsg = context.getMessage();
 
-  // Validar estrutura
+  // Validate structure
   if (!data.orderId || !data.userId) {
-    this.logger.error('Payload inválido');
-    channel.ack(originalMsg); // ACK para não reprocessar
+    this.logger.error('Invalid payload');
+    channel.ack(originalMsg); // ACK to avoid reprocessing
     return;
   }
 
-  // Processar...
+  // Process...
 }
 ```
 
-### [4. Sempre usar ACK/NACK manual]()
+### [4. Always use manual ACK/NACK]()
 
 ```typescript
-// ✅ Bom - controle explícito
+// ✅ Good - explicit control
 channel.ack(originalMsg);
 
-// ❌ Ruim - auto-ack pode perder mensagens
+// ❌ Bad - auto-ack can lose messages
 noAck: true
 ```
 
-### [5. Logging com routing key]()
+### [5. Logging with routing key]()
 
 ```typescript
 const routingKey = originalMsg.fields.routingKey;
-this.logger.log(`[${routingKey}] Processando mensagem`);
-this.logger.error(`[${routingKey}] Erro: ${error.message}`);
+this.logger.log(`[${routingKey}] Processing message`);
+this.logger.error(`[${routingKey}] Error: ${error.message}`);
 ```
 
-### [6. Usar wildcards com cuidado]()
+### [6. Use wildcards carefully]()
 
 ```typescript
-// ✅ Bom - específico
+// ✅ Good - specific
 @EventPattern('order.order.created')
 
-// ⚠️ Cuidado - pode receber muitas mensagens
+// ⚠️ Careful - may receive many messages
 @EventPattern('order.#')
 
-// ⚠️ Muito abrangente
+// ⚠️ Too broad
 @EventPattern('#')
 ```
 
-### [7. Separar consumers por responsabilidade]()
+### [7. Separate consumers by responsibility]()
 
 ```typescript
-// ✅ Bom - consumers especializados
-notification.consumer.ts    // Notificações
-audit.consumer.ts          // Auditoria
+// ✅ Good - specialized consumers
+notification.consumer.ts    // Notifications
+audit.consumer.ts          // Audit
 analytics.consumer.ts      // Analytics
 
-// ❌ Ruim - tudo num consumer
+// ❌ Bad - everything in one consumer
 app.consumer.ts
 ```
 
-### [8. Timeout para processamento longo]()
+### [8. Timeout for long processing]()
 
 ```typescript
 async handleLongTask(@Payload() data: any, @Ctx() context: RmqContext) {
@@ -768,7 +768,7 @@ async handleLongTask(@Payload() data: any, @Ctx() context: RmqContext) {
   const originalMsg = context.getMessage();
 
   try {
-    // Timeout de 30 segundos
+    // 30 second timeout
     await Promise.race([
       this.processLongTask(data),
       this.timeout(30000),
@@ -787,135 +787,135 @@ private timeout(ms: number): Promise<never> {
 }
 ```
 
-## [Diferenças entre RabbitMQ e Redis - Quando usar cada um]()
+## [Differences between RabbitMQ and Redis - When to use each]()
 
-Tabela comparativa para auxiliar na escolha entre RabbitMQ e Redis baseado nas necessidades do projeto.
+Comparative table to help choose between RabbitMQ and Redis based on project needs.
 
-| Recurso | RabbitMQ | Redis |
+| Feature | RabbitMQ | Redis |
 |---------|----------|-------|
-| **Uso principal** | Filas de mensagens com tópicos | Cache e dados compartilhados |
-| **Garantia de entrega** | ✅ Sim (ACK/NACK) | ❌ Não |
-| **Persistência** | ✅ Mensagens duráveis | ⚠️ Opcional (pode perder dados) |
-| **Retentativas** | ✅ Automático com DLQ | ❌ Manual |
-| **Roteamento por tópico** | ✅ Topic Exchange com wildcards | ❌ Não possui |
-| **Processamento assíncrono** | ✅ Ideal | ❌ Não recomendado |
-| **Ordenação** | ✅ FIFO garantido | ⚠️ Não garantido |
-| **Velocidade** | ⚠️ Moderada | ✅ Muito rápida |
-| **Escala horizontal** | ✅ Múltiplos consumers | ✅ Compartilhamento de dados |
-| **Quando usar** | Background jobs, eventos, retry | Cache, sessões, contadores |
+| **Primary use** | Message queues with topics | Cache and shared data |
+| **Delivery guarantee** | ✅ Yes (ACK/NACK) | ❌ No |
+| **Persistence** | ✅ Durable messages | ⚠️ Optional (may lose data) |
+| **Retries** | ✅ Automatic with DLQ | ❌ Manual |
+| **Topic routing** | ✅ Topic Exchange with wildcards | ❌ Not available |
+| **Asynchronous processing** | ✅ Ideal | ❌ Not recommended |
+| **Ordering** | ✅ FIFO guaranteed | ⚠️ Not guaranteed |
+| **Speed** | ⚠️ Moderate | ✅ Very fast |
+| **Horizontal scaling** | ✅ Multiple consumers | ✅ Data sharing |
+| **When to use** | Background jobs, events, retry | Cache, sessions, counters |
 
-## [Checklist de Implementação do RabbitMQ no NestJS]()
+## [RabbitMQ Implementation Checklist in NestJS]()
 
-- [ ] RabbitMQ rodando (Docker ou servidor)
-- [ ] Pacotes instalados (`@nestjs/microservices`, `amqplib`, `amqp-connection-manager`)
-- [ ] `RabbitMQModule` criado em `src/common/rabbitmq/`
-- [ ] `@Global()` decorator aplicado
-- [ ] Variáveis de ambiente configuradas (`.env`)
-- [ ] Módulo importado no `AppModule`
-- [ ] Microserviço conectado no `main.ts` (`connectMicroservice`)
-- [ ] Microserviço iniciado (`startAllMicroservices`)
-- [ ] Exchange única `app_exchange` configurada
-- [ ] Filas configuradas como `durable: true`
-- [ ] ACK/NACK manual (`noAck: false`)
-- [ ] Dead Letter Queue configurada
-- [ ] Consumers criados com `@EventPattern` usando padrão `<module>.<resource>.<action>`
-- [ ] Logging com routing key implementado
-- [ ] Tratamento de erros com retry
-- [ ] Validação de payload
-- [ ] Monitoramento via Management UI
+- [ ] RabbitMQ running (Docker or server)
+- [ ] Packages installed (`@nestjs/microservices`, `amqplib`, `amqp-connection-manager`)
+- [ ] `RabbitMQModule` created in `src/common/rabbitmq/`
+- [ ] `@Global()` decorator applied
+- [ ] Environment variables configured (`.env`)
+- [ ] Module imported in `AppModule`
+- [ ] Microservice connected in `main.ts` (`connectMicroservice`)
+- [ ] Microservice started (`startAllMicroservices`)
+- [ ] Single exchange `app_exchange` configured
+- [ ] Queues configured as `durable: true`
+- [ ] Manual ACK/NACK (`noAck: false`)
+- [ ] Dead Letter Queue configured
+- [ ] Consumers created with `@EventPattern` using pattern `<module>.<resource>.<action>`
+- [ ] Logging with routing key implemented
+- [ ] Error handling with retry
+- [ ] Payload validation
+- [ ] Monitoring via Management UI
 
-## [Troubleshooting - Problemas comuns ao usar RabbitMQ]()
+## [Troubleshooting - Common RabbitMQ problems]()
 
-Diagnóstico e solução de problemas frequentes ao configurar e usar RabbitMQ no NestJS.
+Diagnosis and solutions for frequent problems when configuring and using RabbitMQ in NestJS.
 
 ### [RabbitMQ connection refused]()
 
 ```bash
-# Verificar se RabbitMQ está rodando
+# Check if RabbitMQ is running
 docker ps | grep rabbitmq
 
-# Ver logs
+# View logs
 docker logs sdd-rabbitmq
 
-# Reiniciar
+# Restart
 docker-compose restart rabbitmq
 ```
 
-### [Mensagens não estão sendo consumidas]()
+### [Messages not being consumed]()
 
 ```typescript
-// 1. Verificar se microserviço foi iniciado
+// 1. Check if microservice was started
 await app.startAllMicroservices();
 
-// 2. Verificar pattern do consumer
-@EventPattern('order.order.created') // deve corresponder ao emit
+// 2. Check consumer pattern
+@EventPattern('order.order.created') // must match emit
 
-// 3. Ver logs com routing key
+// 3. See logs with routing key
 const routingKey = originalMsg.fields.routingKey;
-this.logger.log(`Recebido: ${routingKey}`);
+this.logger.log(`Received: ${routingKey}`);
 ```
 
-### [Exchange não aparece no Management UI]()
+### [Exchange not appearing in Management UI]()
 
 ```bash
-# A exchange é criada automaticamente pelo NestJS ao:
-# 1. Publicar primeira mensagem (producer)
-# 2. Conectar primeiro consumer
+# Exchange is created automatically by NestJS when:
+# 1. First message is published (producer)
+# 2. First consumer connects
 
-# Se não aparecer, verificar:
-# - Microserviço foi iniciado?
-# - Alguma mensagem foi publicada?
-# - Verificar logs de erro
+# If it doesn't appear, check:
+# - Was microservice started?
+# - Was any message published?
+# - Check error logs
 ```
 
-### [Mensagens indo para fila errada]()
+### [Messages going to wrong queue]()
 
 ```bash
-# Verificar no Management UI:
+# Check in Management UI:
 # 1. Exchanges > app_exchange > Bindings
-# 2. Ver routing patterns de cada fila
-# 3. Testar pattern com "Publish message"
+# 2. See routing patterns of each queue
+# 3. Test pattern with "Publish message"
 
-# Verificar no código:
-# - Routing key do emit corresponde ao @EventPattern?
-# - Wildcards estão corretos (* vs #)?
+# Check in code:
+# - Does emit routing key match @EventPattern?
+# - Are wildcards correct (* vs #)?
 ```
 
-### [Mensagens acumulando na fila]()
+### [Messages accumulating in queue]()
 
 ```bash
-# Acessar Management UI: http://localhost:15672
-# Verificar:
-# - Consumers ativos
-# - Taxa de consumo vs produção
-# - Erros nos logs
+# Access Management UI: http://localhost:15672
+# Check:
+# - Active consumers
+# - Consumption rate vs production
+# - Errors in logs
 
-# Soluções:
-# - Aumentar número de workers (instâncias)
-# - Otimizar código do consumer
-# - Aumentar prefetchCount (processar mais em paralelo)
+# Solutions:
+# - Increase number of workers (instances)
+# - Optimize consumer code
+# - Increase prefetchCount (process more in parallel)
 ```
 
-### [Mensagens duplicadas]()
+### [Duplicate messages]()
 
 ```typescript
-// Implementar idempotência no consumer
+// Implement idempotency in consumer
 const processedIds = new Set();
 
 @EventPattern('order.order.created')
 async handleOrderCreated(@Payload() data: any) {
   if (processedIds.has(data.orderId)) {
-    this.logger.warn(`Mensagem duplicada ignorada: ${data.orderId}`);
+    this.logger.warn(`Duplicate message ignored: ${data.orderId}`);
     channel.ack(originalMsg);
     return;
   }
 
   processedIds.add(data.orderId);
-  // Processar...
+  // Process...
 }
 ```
 
-## [Referências e documentação oficial sobre RabbitMQ e NestJS]()
+## [References and official documentation about RabbitMQ and NestJS]()
 
 - [NestJS Microservices](https://docs.nestjs.com/microservices/basics)
 - [RabbitMQ Topic Exchange](https://www.rabbitmq.com/tutorials/tutorial-five-javascript.html)

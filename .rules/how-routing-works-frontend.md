@@ -1,43 +1,43 @@
-# [Como funcionam as rotas no Frontend?]()
+# [How routing works in Frontend?]()
 
-> Guia completo sobre roteamento com React Router DOM no projeto.
+> Complete guide on routing with React Router DOM in the project.
 
-**Nomenclatura de Páginas**: Todas as páginas devem seguir o sufixo `Page` (ex: `LoginPage.tsx`, `AssetListPage.tsx`). Para convenções completas de nomenclatura, consulte: `.rules/qual-padrao-de-nomenclatura-de-componentes-react-frontend.md`
+**Page Naming**: All pages must follow the `Page` suffix (ex: `LoginPage.tsx`, `AssetListPage.tsx`). For complete naming conventions, see: `.rules/react-component-naming-pattern-frontend.md`
 
-## [Visão Geral]()
+## [Overview]()
 
-O projeto usa **React Router DOM v7** com:
-- Configuração centralizada de rotas
-- Rotas públicas (login, signup)
-- Rotas privadas (protegidas por autenticação)
-- Layout compartilhado
-- Parâmetros dinâmicos
+The project uses **React Router DOM v7** with:
+- Centralized route configuration
+- Public routes (login, signup)
+- Private routes (protected by authentication)
+- Shared layout
+- Dynamic parameters
 
-## [Estrutura de Arquivos]()
+## [File Structure]()
 
-Esta seção apresenta a organização dos arquivos relacionados ao sistema de rotas do projeto React.
+This section presents the organization of files related to the React project routing system.
 
 ```
 src/
- App.tsx                      # Configura rotas
- config/
-    routes.config.tsx        # Definição centralizada de rotas
- components/
-    Layout.tsx               # Layout com navegação
-    PrivateRoute.tsx         # Guard de autenticação
- pages/                       # Componentes de página
-     auth/
-        Login.tsx
-        Signup.tsx
-     views/
-        OverviewPage.tsx
-        ...
-     assets/
-         AssetListPage.tsx
-         ...
+  App.tsx                      # Configure routes
+  config/
+    routes.config.tsx        # Centralized route definition
+  components/
+    Layout.tsx               # Layout with navigation
+    PrivateRoute.tsx         # Authentication guard
+  pages/                       # Page components
+    auth/
+      Login.tsx
+      Signup.tsx
+    views/
+      OverviewPage.tsx
+      ...
+    assets/
+      AssetListPage.tsx
+      ...
 ```
 
-## [Configuração Centralizada]()
+## [Centralized Configuration]()
 
 **`src/config/routes.config.tsx`**:
 
@@ -59,7 +59,7 @@ export const publicRoutes: RouteConfig[] = [
   {
     path: '/signup',
     element: <Signup />,
-    name: 'Cadastro',
+    name: 'Sign Up',
   },
 ];
 
@@ -67,30 +67,30 @@ export const privateRoutes: RouteConfig[] = [
   {
     path: '/overview',
     element: <OverviewPage />,
-    name: 'Visão Geral',
+    name: 'Overview',
     icon: <DashboardIcon />,
     showInMenu: true,
   },
   {
     path: '/assets',
     element: <AssetListPage />,
-    name: 'Ativos',
+    name: 'Assets',
     icon: <AssetsIcon />,
     showInMenu: true,
   },
   {
     path: '/assets/:id',
     element: <AssetProfilePage />,
-    name: 'Perfil do Ativo',
-    showInMenu: false, // Não aparece no menu
+    name: 'Asset Profile',
+    showInMenu: false, // Doesn't appear in menu
   },
   // ...
 ];
 ```
 
-## [App.tsx - Configuração Principal]()
+## [App.tsx - Main Configuration]()
 
-Esta seção mostra como configurar o React Router DOM no componente raiz da aplicação, incluindo rotas públicas e privadas.
+This section shows how to configure React Router DOM in the application root component, including public and private routes.
 
 ```typescript
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
@@ -104,7 +104,7 @@ function App() {
     <BrowserRouter>
       <AuthProvider>
         <Routes>
-          {/* Rotas Públicas */}
+          {/* Public Routes */}
           {publicRoutes.map((route) => (
             <Route
               key={route.path}
@@ -113,7 +113,7 @@ function App() {
             />
           ))}
 
-          {/* Rotas Privadas com Layout */}
+          {/* Private Routes with Layout */}
           <Route element={<PrivateRoute><Layout /></PrivateRoute>}>
             {privateRoutes.map((route) => (
               <Route
@@ -124,7 +124,7 @@ function App() {
             ))}
           </Route>
 
-          {/* Redirect raiz */}
+          {/* Root redirect */}
           <Route path="/" element={<Navigate to="/overview" replace />} />
 
           {/* 404 */}
@@ -136,9 +136,9 @@ function App() {
 }
 ```
 
-## [PrivateRoute - Guard de Autenticação]()
+## [PrivateRoute - Authentication Guard]()
 
-Esta seção apresenta o componente responsável por proteger rotas que requerem autenticação, redirecionando usuários não autenticados.
+This section presents the component responsible for protecting routes that require authentication, redirecting unauthenticated users.
 
 ```typescript
 import { Navigate } from 'react-router-dom';
@@ -152,7 +152,7 @@ export function PrivateRoute({ children }: PrivateRouteProps) {
   const { token, isLoading } = useAuth();
 
   if (isLoading) {
-    return <div>Carregando...</div>;
+    return <div>Loading...</div>;
   }
 
   if (!token) {
@@ -163,9 +163,9 @@ export function PrivateRoute({ children }: PrivateRouteProps) {
 }
 ```
 
-## [Layout - Estrutura Compartilhada]()
+## [Layout - Shared Structure]()
 
-Esta seção demonstra como criar um layout compartilhado que envolve todas as páginas autenticadas, incluindo header, sidebar e outlet para conteúdo.
+This section demonstrates how to create a shared layout that wraps all authenticated pages, including header, sidebar and outlet for content.
 
 ```typescript
 import { Outlet } from 'react-router-dom';
@@ -183,7 +183,7 @@ export function Layout() {
         <Header />
 
         <main className="flex-1 overflow-auto p-6">
-          <Outlet /> {/* Renderiza a rota atual */}
+          <Outlet /> {/* Renders current route */}
         </main>
       </div>
     </div>
@@ -191,9 +191,9 @@ export function Layout() {
 }
 ```
 
-## [Navegação]()
+## [Navigation]()
 
-Esta seção explica como implementar navegação programática e por links usando os hooks e componentes do React Router.
+This section explains how to implement programmatic and link-based navigation using React Router hooks and components.
 
 ### [useNavigate Hook]()
 
@@ -212,13 +212,13 @@ function ProductList() {
   };
 
   const handleBack = () => {
-    navigate(-1); // Volta uma página
+    navigate(-1); // Go back one page
   };
 
   return (
     <div>
-      <button onClick={handleCreate}>Novo Produto</button>
-      <button onClick={handleBack}>Voltar</button>
+      <button onClick={handleCreate}>New Product</button>
+      <button onClick={handleBack}>Back</button>
     </div>
   );
 }
@@ -233,7 +233,7 @@ function ProductList() {
   return (
     <div>
       <Link to="/products/new" className="btn">
-        Novo Produto
+        New Product
       </Link>
 
       {products.map(p => (
@@ -246,7 +246,7 @@ function ProductList() {
 }
 ```
 
-### [NavLink (com active state)]()
+### [NavLink (with active state)]()
 
 ```typescript
 import { NavLink } from 'react-router-dom';
@@ -269,16 +269,16 @@ function Sidebar() {
           isActive ? 'nav-link active' : 'nav-link'
         }
       >
-        Ativos
+        Assets
       </NavLink>
     </nav>
   );
 }
 ```
 
-## [Parâmetros de Rota]()
+## [Route Parameters]()
 
-Esta seção demonstra como trabalhar com parâmetros dinâmicos na URL usando o hook useParams.
+This section demonstrates how to work with dynamic URL parameters using the useParams hook.
 
 ### [useParams Hook]()
 
@@ -296,10 +296,10 @@ function AssetProfile() {
 }
 ```
 
-### [Múltiplos Parâmetros]()
+### [Multiple Parameters]()
 
 ```typescript
-// Rota: /wallets/:walletId/assets/:assetId
+// Route: /wallets/:walletId/assets/:assetId
 
 function WalletAssetDetail() {
   const { walletId, assetId } = useParams<{
@@ -313,7 +313,7 @@ function WalletAssetDetail() {
 
 ## [Query Parameters]()
 
-Esta seção mostra como ler e manipular query parameters (parâmetros de busca) na URL usando useSearchParams.
+This section shows how to read and manipulate query parameters (search parameters) in the URL using useSearchParams.
 
 ### [useSearchParams Hook]()
 
@@ -339,7 +339,7 @@ function ProductList() {
       <input
         value={search}
         onChange={(e) => handleSearch(e.target.value)}
-        placeholder="Buscar..."
+        placeholder="Search..."
       />
       {/* URL: /products?page=2&search=notebook */}
     </div>
@@ -347,12 +347,12 @@ function ProductList() {
 }
 ```
 
-## [Rotas Aninhadas]()
+## [Nested Routes]()
 
-Esta seção apresenta como criar rotas aninhadas para estruturar páginas complexas com sub-navegação.
+This section presents how to create nested routes to structure complex pages with sub-navigation.
 
 ```typescript
-// Configuração
+// Configuration
 {
   path: '/assets',
   element: <AssetLayout />,
@@ -380,16 +380,16 @@ Esta seção apresenta como criar rotas aninhadas para estruturar páginas compl
 function AssetLayout() {
   return (
     <div>
-      <h1>Ativos</h1>
-      <Outlet /> {/* Renderiza a rota filha */}
+      <h1>Assets</h1>
+      <Outlet /> {/* Renders child route */}
     </div>
   );
 }
 ```
 
-## [Redirecionamentos]()
+## [Redirects]()
 
-Esta seção demonstra como implementar redirecionamentos automáticos usando o componente Navigate.
+This section demonstrates how to implement automatic redirects using the Navigate component.
 
 ### [Navigate Component]()
 
@@ -401,7 +401,7 @@ function OldProductPage() {
 }
 ```
 
-### [Redirect Condicional]()
+### [Conditional Redirect]()
 
 ```typescript
 function Dashboard() {
@@ -417,7 +417,7 @@ function Dashboard() {
 
 ## [useLocation Hook]()
 
-Esta seção explica como acessar informações sobre a localização atual (pathname, search, state) usando o hook useLocation.
+This section explains how to access current location information (pathname, search, state) using the useLocation hook.
 
 ```typescript
 import { useLocation } from 'react-router-dom';
@@ -431,23 +431,23 @@ function Header() {
 
   return (
     <div>
-      Você está em: {location.pathname}
+      You are at: {location.pathname}
     </div>
   );
 }
 ```
 
-## [Passar Estado Entre Rotas]()
+## [Passing State Between Routes]()
 
-Esta seção mostra como passar dados entre rotas sem query parameters usando o state do React Router.
+This section shows how to pass data between routes without query parameters using React Router state.
 
 ```typescript
-// Origem
+// Origin
 navigate('/products/new', {
   state: { from: 'dashboard', category: 'electronics' }
 });
 
-// Destino
+// Destination
 function ProductForm() {
   const location = useLocation();
   const state = location.state as { from: string; category: string };
@@ -457,9 +457,9 @@ function ProductForm() {
 }
 ```
 
-## [Menu Din-mico]()
+## [Dynamic Menu]()
 
-Esta seção apresenta como gerar um menu de navegação automaticamente a partir da configuração de rotas.
+This section presents how to generate a navigation menu automatically from the route configuration.
 
 ```typescript
 import { NavLink } from 'react-router-dom';
@@ -487,9 +487,9 @@ function Sidebar() {
 }
 ```
 
-## [Lazy Loading de Rotas]()
+## [Lazy Loading Routes]()
 
-Esta seção demonstra como implementar carregamento preguiçoso (lazy loading) de componentes de página para otimizar performance.
+This section demonstrates how to implement lazy loading of page components to optimize performance.
 
 ```typescript
 import { lazy, Suspense } from 'react';
@@ -498,29 +498,29 @@ import { lazy, Suspense } from 'react';
 const AssetListPage = lazy(() => import('@/pages/assets/AssetListPage'));
 const AssetProfilePage = lazy(() => import('@/pages/assets/AssetProfilePage'));
 
-// Uso
+// Usage
 <Route
   path="/assets"
   element={
-    <Suspense fallback={<div>Carregando...</div>}>
+    <Suspense fallback={<div>Loading...</div>}>
       <AssetListPage />
     </Suspense>
   }
 />
 ```
 
-## [404 - Página Não Encontrada]()
+## [404 - Page Not Found]()
 
-Esta seção mostra como implementar uma página customizada para rotas não encontradas (404).
+This section shows how to implement a custom page for not found routes (404).
 
 ```typescript
 // App.tsx
 <Routes>
-  {/* Rotas normais */}
+  {/* Normal routes */}
   <Route path="/" element={<Home />} />
   <Route path="/about" element={<About />} />
 
-  {/* 404 - deve ser a última */}
+  {/* 404 - must be last */}
   <Route path="*" element={<NotFound />} />
 </Routes>
 
@@ -530,9 +530,9 @@ function NotFound() {
 
   return (
     <div>
-      <h1>404 - Página não encontrada</h1>
+      <h1>404 - Page not found</h1>
       <button onClick={() => navigate('/')}>
-        Ir para home
+        Go to home
       </button>
     </div>
   );
@@ -541,7 +541,7 @@ function NotFound() {
 
 ## [Breadcrumbs]()
 
-Esta seção apresenta como implementar breadcrumbs (navegação em trilha) para melhorar a experiência de navegação do usuário.
+This section presents how to implement breadcrumbs (trail navigation) to improve user navigation experience.
 
 ```typescript
 import { useLocation, Link } from 'react-router-dom';
@@ -571,28 +571,28 @@ function Breadcrumbs() {
 }
 ```
 
-## [Boas Práticas]()
+## [Best Practices]()
 
-1. **Centralize rotas**: Use arquivo de configuração
-2. **Lazy loading**: Para rotas pesadas
-3. **Guards**: Proteja rotas privadas
-4. **Layout compartilhado**: Use Outlet para rotas aninhadas
-5. **404**: Sempre tenha rota catch-all
-6. **TypeScript**: Tipo os parâmetros com useParams
-7. **Replace**: Use quando não quer histórico (`navigate('/login', { replace: true })`)
+1. **Centralize routes**: Use configuration file
+2. **Lazy loading**: For heavy routes
+3. **Guards**: Protect private routes
+4. **Shared layout**: Use Outlet for nested routes
+5. **404**: Always have catch-all route
+6. **TypeScript**: Type parameters with useParams
+7. **Replace**: Use when you don't want history (`navigate('/login', { replace: true })`)
 
 ## [Checklist]()
 
-- [ ] Rotas públicas e privadas separadas
-- [ ] PrivateRoute implementado
-- [ ] Layout com Outlet para rotas aninhadas
-- [ ] 404 página configurada
-- [ ] Redirect de raiz para página inicial
-- [ ] useParams tipado
-- [ ] Navegação via useNavigate ou Link
-- [ ] Menu dinâmico a partir de config
+- [ ] Public and private routes separated
+- [ ] PrivateRoute implemented
+- [ ] Layout with Outlet for nested routes
+- [ ] 404 page configured
+- [ ] Root redirect to initial page
+- [ ] useParams typed
+- [ ] Navigation via useNavigate or Link
+- [ ] Dynamic menu from config
 
-## [Referências]()
+## [References]()
 
 - [React Router Documentation](https://reactrouter.com/en/main)
 - [React Router Tutorial](https://reactrouter.com/en/main/start/tutorial)

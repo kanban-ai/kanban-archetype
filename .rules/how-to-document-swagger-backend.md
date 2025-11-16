@@ -1,22 +1,22 @@
-# [Como documentar com Swagger no Backend?]()
+# [How to document with Swagger in the Backend?]()
 
-> Guia prático para documentar APIs usando Swagger/OpenAPI no NestJS.
+> Practical guide to documenting APIs using Swagger/OpenAPI in NestJS.
 
-## [O que é Swagger?]()
+## [What is Swagger?]()
 
-Swagger (OpenAPI) gera automaticamente uma interface interativa para testar e documentar sua API. Acesse em: `http://localhost:3000/api/docs`
+Swagger (OpenAPI) automatically generates an interactive interface to test and document your API. Access at: `http://localhost:3000/api/docs`
 
-## [Configuração Inicial]()
+## [Initial Setup]()
 
-Setup básico do Swagger no projeto NestJS para habilitar documentação automática de APIs.
+Basic Swagger setup in NestJS project to enable automatic API documentation.
 
-### [1. Instalar dependências]()
+### [1. Install dependencies]()
 
 ```bash
 npm install @nestjs/swagger
 ```
 
-### [2. Configurar no main.ts]()
+### [2. Configure in main.ts]()
 
 ```typescript
 import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
@@ -24,12 +24,12 @@ import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
 
-  // Configuração Swagger
+  // Swagger configuration
   const config = new DocumentBuilder()
     .setTitle('API Documentation')
-    .setDescription('Documentação completa da API')
+    .setDescription('Complete API documentation')
     .setVersion('1.0')
-    .addBearerAuth() // Suporte a JWT
+    .addBearerAuth() // JWT support
     .build();
 
   const document = SwaggerModule.createDocument(app, config);
@@ -39,11 +39,11 @@ async function bootstrap() {
 }
 ```
 
-## [Documentar Controllers]()
+## [Document Controllers]()
 
-Decorators para documentar endpoints REST incluindo tags, operações, parâmetros e respostas.
+Decorators to document REST endpoints including tags, operations, parameters and responses.
 
-### [Decorators Principais]()
+### [Main Decorators]()
 
 ```typescript
 import {
@@ -57,45 +57,45 @@ import {
 } from '@nestjs/swagger';
 ```
 
-### [Exemplo Completo]()
+### [Complete Example]()
 
 ```typescript
-@ApiTags('products') // Agrupa endpoints
-@ApiBearerAuth() // Requer token JWT
+@ApiTags('products') // Groups endpoints
+@ApiBearerAuth() // Requires JWT token
 @Controller({ path: 'products', version: '1' })
 export class ProductController {
 
   @Post()
-  @ApiOperation({ summary: 'Criar novo produto' })
+  @ApiOperation({ summary: 'Create new product' })
   @ApiResponse({
     status: 201,
-    description: 'Produto criado com sucesso',
+    description: 'Product created successfully',
   })
   @ApiResponse({
     status: 400,
-    description: 'Dados inválidos',
+    description: 'Invalid data',
   })
   @ApiResponse({
     status: 401,
-    description: 'Não autorizado',
+    description: 'Unauthorized',
   })
   create(@Body() dto: CreateProductDto) {
     return this.service.create(dto);
   }
 
   @Get()
-  @ApiOperation({ summary: 'Listar todos os produtos' })
+  @ApiOperation({ summary: 'List all products' })
   @ApiQuery({
     name: 'page',
     required: false,
     type: Number,
-    description: 'Número da página',
+    description: 'Page number',
   })
   @ApiQuery({
     name: 'pageSize',
     required: false,
     type: Number,
-    description: 'Itens por página',
+    description: 'Items per page',
   })
   findAll(
     @Query('page') page?: string,
@@ -105,19 +105,19 @@ export class ProductController {
   }
 
   @Get(':id')
-  @ApiOperation({ summary: 'Buscar produto por ID' })
+  @ApiOperation({ summary: 'Find product by ID' })
   @ApiParam({
     name: 'id',
     type: Number,
-    description: 'ID do produto',
+    description: 'Product ID',
   })
-  @ApiResponse({ status: 404, description: 'Produto não encontrado' })
+  @ApiResponse({ status: 404, description: 'Product not found' })
   findOne(@Param('id', ParseIntPipe) id: number) {
     return this.service.findOne(id);
   }
 
   @Patch(':id')
-  @ApiOperation({ summary: 'Atualizar produto' })
+  @ApiOperation({ summary: 'Update product' })
   update(
     @Param('id', ParseIntPipe) id: number,
     @Body() dto: UpdateProductDto,
@@ -126,18 +126,18 @@ export class ProductController {
   }
 
   @Delete(':id')
-  @ApiOperation({ summary: 'Remover produto' })
+  @ApiOperation({ summary: 'Remove product' })
   remove(@Param('id', ParseIntPipe) id: number) {
     return this.service.remove(id);
   }
 }
 ```
 
-## [Documentar DTOs]()
+## [Document DTOs]()
 
-Anotação de Data Transfer Objects com @ApiProperty para gerar documentação precisa dos schemas de entrada e saída.
+Data Transfer Objects annotation with @ApiProperty to generate accurate documentation of input and output schemas.
 
-### [Exemplo Create DTO]()
+### [Create DTO Example]()
 
 ```typescript
 import { ApiProperty } from '@nestjs/swagger';
@@ -145,8 +145,8 @@ import { IsString, IsNotEmpty, IsNumber, Min, MaxLength } from 'class-validator'
 
 export class CreateProductDto {
   @ApiProperty({
-    description: 'Nome do produto',
-    example: 'Notebook Dell',
+    description: 'Product name',
+    example: 'Dell Notebook',
     maxLength: 255,
   })
   @IsString()
@@ -155,15 +155,15 @@ export class CreateProductDto {
   name: string;
 
   @ApiProperty({
-    description: 'Descrição detalhada do produto',
-    example: 'Notebook Dell Inspiron 15, Intel i7, 16GB RAM',
+    description: 'Detailed product description',
+    example: 'Dell Inspiron 15 Notebook, Intel i7, 16GB RAM',
     required: false,
   })
   @IsString()
   description?: string;
 
   @ApiProperty({
-    description: 'Preço em reais',
+    description: 'Price in reais',
     example: 2500.00,
     minimum: 0,
   })
@@ -172,7 +172,7 @@ export class CreateProductDto {
   price: number;
 
   @ApiProperty({
-    description: 'Quantidade em estoque',
+    description: 'Stock quantity',
     example: 10,
     minimum: 0,
     default: 0,
@@ -185,17 +185,17 @@ export class CreateProductDto {
 
 ### [Update DTO]()
 
-Para DTOs de update, use `PartialType`:
+For update DTOs, use `PartialType`:
 
 ```typescript
 import { PartialType } from '@nestjs/swagger';
 import { CreateProductDto } from './create-product.dto';
 
-// Herda todas as propriedades mas torna opcionais
+// Inherits all properties but makes them optional
 export class UpdateProductDto extends PartialType(CreateProductDto) {}
 ```
 
-### [Com Enum]()
+### [With Enum]()
 
 ```typescript
 export enum ProductStatus {
@@ -206,7 +206,7 @@ export enum ProductStatus {
 
 export class CreateProductDto {
   @ApiProperty({
-    description: 'Status do produto',
+    description: 'Product status',
     enum: ProductStatus,
     default: ProductStatus.ACTIVE,
   })
@@ -215,18 +215,18 @@ export class CreateProductDto {
 }
 ```
 
-## [Documentar Respostas]()
+## [Document Responses]()
 
-Especificação de formatos de resposta HTTP com tipos, status codes e estruturas de dados.
+HTTP response format specification with types, status codes and data structures.
 
-### [Resposta com Type]()
+### [Response with Type]()
 
 ```typescript
 import { ApiResponse, ApiOkResponse } from '@nestjs/swagger';
 
 @ApiOkResponse({
-  description: 'Lista de produtos',
-  type: [ProductEntity], // Array de produtos
+  description: 'Product list',
+  type: [ProductEntity], // Array of products
 })
 @Get()
 findAll() {
@@ -234,8 +234,8 @@ findAll() {
 }
 
 @ApiOkResponse({
-  description: 'Produto encontrado',
-  type: ProductEntity, // Um produto
+  description: 'Product found',
+  type: ProductEntity, // One product
 })
 @Get(':id')
 findOne(@Param('id') id: number) {
@@ -243,26 +243,26 @@ findOne(@Param('id') id: number) {
 }
 ```
 
-### [Múltiplas Respostas]()
+### [Multiple Responses]()
 
 ```typescript
-@ApiResponse({ status: 200, description: 'Sucesso' })
-@ApiResponse({ status: 400, description: 'Dados inválidos' })
-@ApiResponse({ status: 401, description: 'Não autorizado' })
-@ApiResponse({ status: 404, description: 'Não encontrado' })
+@ApiResponse({ status: 200, description: 'Success' })
+@ApiResponse({ status: 400, description: 'Invalid data' })
+@ApiResponse({ status: 401, description: 'Unauthorized' })
+@ApiResponse({ status: 404, description: 'Not found' })
 @Post()
 create(@Body() dto: CreateProductDto) {
   return this.service.create(dto);
 }
 ```
 
-## [Decorators Úteis]()
+## [Useful Decorators]()
 
-Coleção de decorators do @nestjs/swagger para documentar diferentes aspectos da API de forma declarativa.
+Collection of @nestjs/swagger decorators to document different API aspects declaratively.
 
 ### [@ApiTags]()
 
-Agrupa endpoints relacionados:
+Groups related endpoints:
 
 ```typescript
 @ApiTags('products')
@@ -276,7 +276,7 @@ export class CategoryController {}
 
 ### [@ApiBearerAuth]()
 
-Indica que endpoint requer token JWT:
+Indicates endpoint requires JWT token:
 
 ```typescript
 @ApiBearerAuth()
@@ -286,12 +286,12 @@ export class ProductController {}
 
 ### [@ApiOperation]()
 
-Descreve o que o endpoint faz:
+Describes what the endpoint does:
 
 ```typescript
 @ApiOperation({
-  summary: 'Criar novo produto',
-  description: 'Endpoint para criar um novo produto no sistema',
+  summary: 'Create new product',
+  description: 'Endpoint to create a new product in the system',
 })
 @Post()
 create() {}
@@ -299,13 +299,13 @@ create() {}
 
 ### [@ApiParam]()
 
-Documenta parâmetros de rota:
+Documents route parameters:
 
 ```typescript
 @ApiParam({
   name: 'id',
   type: Number,
-  description: 'ID único do produto',
+  description: 'Unique product ID',
   example: 1,
 })
 @Get(':id')
@@ -314,20 +314,20 @@ findOne(@Param('id') id: number) {}
 
 ### [@ApiQuery]()
 
-Documenta query parameters:
+Documents query parameters:
 
 ```typescript
 @ApiQuery({
   name: 'search',
   required: false,
   type: String,
-  description: 'Termo de busca',
+  description: 'Search term',
 })
 @ApiQuery({
   name: 'active',
   required: false,
   type: Boolean,
-  description: 'Filtrar apenas ativos',
+  description: 'Filter only active',
 })
 @Get()
 findAll(
@@ -338,24 +338,24 @@ findAll(
 
 ### [@ApiBody]()
 
-Documenta body da requisição:
+Documents request body:
 
 ```typescript
 @ApiBody({
   type: CreateProductDto,
-  description: 'Dados do produto',
+  description: 'Product data',
 })
 @Post()
 create(@Body() dto: CreateProductDto) {}
 ```
 
-### [@ApiProperty no DTO]()
+### [@ApiProperty in DTO]()
 
-Documenta propriedades:
+Documents properties:
 
 ```typescript
 @ApiProperty({
-  description: 'Nome do produto',
+  description: 'Product name',
   example: 'Notebook',
   minLength: 3,
   maxLength: 255,
@@ -364,7 +364,7 @@ Documenta propriedades:
 name: string;
 
 @ApiProperty({
-  description: 'Preço',
+  description: 'Price',
   example: 1500.00,
   minimum: 0,
   type: Number,
@@ -372,9 +372,9 @@ name: string;
 price: number;
 
 @ApiProperty({
-  description: 'Tags do produto',
+  description: 'Product tags',
   type: [String],
-  example: ['eletrônico', 'computador'],
+  example: ['electronics', 'computer'],
   required: false,
 })
 tags?: string[];
@@ -382,25 +382,25 @@ tags?: string[];
 
 ### [@ApiPropertyOptional]()
 
-Para campos opcionais:
+For optional fields:
 
 ```typescript
 import { ApiPropertyOptional } from '@nestjs/swagger';
 
 @ApiPropertyOptional({
-  description: 'Descrição opcional',
-  example: 'Descrição detalhada',
+  description: 'Optional description',
+  example: 'Detailed description',
 })
 description?: string;
 ```
 
-## [Ocultar Propriedades]()
+## [Hide Properties]()
 
-Métodos para excluir propriedades sensíveis da documentação Swagger e das respostas da API.
+Methods to exclude sensitive properties from Swagger documentation and API responses.
 
 ### [@ApiHideProperty]()
 
-Oculta propriedade da documentação:
+Hides property from documentation:
 
 ```typescript
 import { ApiHideProperty } from '@nestjs/swagger';
@@ -409,51 +409,51 @@ export class UserEntity {
   @ApiProperty()
   email: string;
 
-  @ApiHideProperty() // Não aparece no Swagger
+  @ApiHideProperty() // Doesn't appear in Swagger
   passwordHash: string;
 }
 ```
 
 ### [@Exclude (class-transformer)]()
 
-Exclui da serialização:
+Excludes from serialization:
 
 ```typescript
 import { Exclude } from 'class-transformer';
 
 export class UserEntity {
-  @Exclude() // Nunca retorna ao cliente
+  @Exclude() // Never returns to client
   passwordHash: string;
 }
 ```
 
-## [Testar no Swagger UI]()
+## [Test in Swagger UI]()
 
-Instruções para utilizar a interface interativa do Swagger para testar endpoints autenticados e não autenticados.
+Instructions to use Swagger's interactive interface to test authenticated and unauthenticated endpoints.
 
-### [1. Acessar a documentação]()
+### [1. Access documentation]()
 
 ```
 http://localhost:3000/api/docs
 ```
 
-### [2. Autenticar]()
+### [2. Authenticate]()
 
-1. Clique no botão "Authorize" (cadeado)
-2. Cole o token JWT: `Bearer seu_token_aqui`
-3. Clique em "Authorize"
+1. Click the "Authorize" button (padlock)
+2. Paste the JWT token: `Bearer your_token_here`
+3. Click "Authorize"
 
-### [3. Testar endpoints]()
+### [3. Test endpoints]()
 
-1. Expanda o endpoint desejado
-2. Clique em "Try it out"
-3. Preencha os parâmetros
-4. Clique em "Execute"
-5. Veja a resposta
+1. Expand the desired endpoint
+2. Click "Try it out"
+3. Fill in the parameters
+4. Click "Execute"
+5. See the response
 
-## [Documentar Paginação]()
+## [Document Pagination]()
 
-Exemplo de DTO genérico para documentar respostas paginadas de forma consistente em toda API.
+Generic DTO example to document paginated responses consistently throughout the API.
 
 ```typescript
 export class PaginatedResponseDto<T> {
@@ -473,9 +473,9 @@ export class PaginatedResponseDto<T> {
   totalPages: number;
 }
 
-// Uso
+// Usage
 @ApiOkResponse({
-  description: 'Lista paginada de produtos',
+  description: 'Paginated product list',
   type: PaginatedResponseDto,
 })
 @Get()
@@ -484,30 +484,30 @@ findAll() {
 }
 ```
 
-## [Checklist de Documentação]()
+## [Documentation Checklist]()
 
-Para cada endpoint:
-- [ ] **@Controller com versionamento (`version: '1'`)**
-- [ ] @ApiTags no controller
-- [ ] @ApiBearerAuth (se protegido)
+For each endpoint:
+- [ ] **@Controller with versioning (`version: '1'`)**
+- [ ] @ApiTags on controller
+- [ ] @ApiBearerAuth (if protected)
 - [ ] @ApiOperation (summary)
-- [ ] @ApiResponse para cada status
-- [ ] @ApiParam para parâmetros de rota
-- [ ] @ApiQuery para query parameters
-- [ ] @ApiProperty em todos os campos dos DTOs
-- [ ] Exemplos em @ApiProperty
+- [ ] @ApiResponse for each status
+- [ ] @ApiParam for route parameters
+- [ ] @ApiQuery for query parameters
+- [ ] @ApiProperty on all DTO fields
+- [ ] Examples in @ApiProperty
 
-> **IMPORTANTE**: Todas as APIs devem usar versionamento. Veja [Como versionar API](./como-versionar-api-backend.md).
+> **IMPORTANT**: All APIs must use versioning. See [How to version API](./how-to-version-api-backend.md).
 
-## [Dicas]()
+## [Tips]()
 
-1. **Use exemplos realistas**: Ajuda quem vai usar a API
-2. **Documente todos os status codes**: 200, 400, 401, 404, etc
-3. **Descreva bem os campos**: O que é, formato esperado
-4. **Agrupe com @ApiTags**: Organiza a documentação
-5. **Oculte dados sensíveis**: Use @Exclude ou @ApiHideProperty
+1. **Use realistic examples**: Helps those who will use the API
+2. **Document all status codes**: 200, 400, 401, 404, etc
+3. **Describe fields well**: What it is, expected format
+4. **Group with @ApiTags**: Organizes documentation
+5. **Hide sensitive data**: Use @Exclude or @ApiHideProperty
 
-## [Referências]()
+## [References]()
 
 - [NestJS Swagger Documentation](https://docs.nestjs.com/openapi/introduction)
 - [OpenAPI Specification](https://swagger.io/specification/)

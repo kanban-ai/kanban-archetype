@@ -1,34 +1,34 @@
-# [Como usar Redis no Backend]()
+# [How to use Redis in Backend]()
 
-> Guia completo para usar Redis como cache e memória compartilhada para escalabilidade horizontal
+> Complete guide for using Redis as cache and shared memory for horizontal scalability
 
-## [Quando usar Redis para cache e memória compartilhada]()
+## [When to use Redis for cache and shared memory]()
 
-Esta seção identifica os casos de uso apropriados para Redis no projeto, focando em cache, contadores compartilhados e dados temporários entre instâncias.
+This section identifies appropriate use cases for Redis in the project, focusing on cache, shared counters and temporary data between instances.
 
-- ✅ **Cache de dados** - Reduzir carga no banco de dados
-- ✅ **Sessões compartilhadas** - Compartilhar sessões entre instâncias
-- ✅ **Contadores compartilhados** - Incrementos atômicos distribuídos
-- ✅ **Rate Limiting** - Controlar limite de requisições
-- ✅ **Cache de API externa** - Evitar requisições repetidas
-- ✅ **Dados temporários** - Memória compartilhada entre instâncias
-- ❌ **Armazenamento permanente** - Use PostgreSQL para dados persistentes
-- ❌ **Filas de tarefas** - Use RabbitMQ para background jobs (veja [como-usar-rabbitmq-backend.md](./como-usar-rabbitmq-backend.md))
-- ❌ **Pub/Sub** - Não usar Redis para comunicação entre instâncias
+- ✅ **Data caching** - Reduce database load
+- ✅ **Shared sessions** - Share sessions between instances
+- ✅ **Shared counters** - Distributed atomic increments
+- ✅ **Rate Limiting** - Control request limits
+- ✅ **External API cache** - Avoid repeated requests
+- ✅ **Temporary data** - Shared memory between instances
+- ❌ **Permanent storage** - Use PostgreSQL for persistent data
+- ❌ **Task queues** - Use RabbitMQ for background jobs (see [how-to-use-rabbitmq-backend.md](./how-to-use-rabbitmq-backend.md))
+- ❌ **Pub/Sub** - Don't use Redis for communication between instances
 
-## [Instalação de pacotes Redis no NestJS]()
+## [Redis package installation in NestJS]()
 
-Pacotes necessários para integrar Redis como cache usando cache-manager no NestJS.
+Required packages to integrate Redis as cache using cache-manager in NestJS.
 
 ```bash
 npm install @nestjs/cache-manager cache-manager cache-manager-redis-store redis
 ```
 
-## [Configuração Global do Redis usando Common Module reutilizável]()
+## [Redis Global Configuration using reusable Common Module]()
 
-Setup de um módulo Redis global configurado uma única vez e disponível em toda aplicação.
+Setup of a global Redis module configured once and available throughout the application.
 
-### [1. Criar RedisModule comum compartilhado no NestJS]()
+### [1. Create common shared RedisModule in NestJS]()
 
 `src/common/redis/redis.module.ts`
 
@@ -38,7 +38,7 @@ import { CacheModule } from '@nestjs/cache-manager';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { redisStore } from 'cache-manager-redis-store';
 
-@Global() // Torna disponível para todos os módulos
+@Global() // Makes it available to all modules
 @Module({
   imports: [
     CacheModule.registerAsync({
@@ -48,7 +48,7 @@ import { redisStore } from 'cache-manager-redis-store';
         store: redisStore,
         host: configService.get('REDIS_HOST', 'localhost'),
         port: configService.get('REDIS_PORT', 6379),
-        ttl: configService.get('REDIS_TTL', 300), // 5 minutos padrão
+        ttl: configService.get('REDIS_TTL', 300), // 5 minutes default
         password: configService.get('REDIS_PASSWORD'),
         db: configService.get('REDIS_DB', 0),
       }),
@@ -59,7 +59,7 @@ import { redisStore } from 'cache-manager-redis-store';
 export class RedisModule {}
 ```
 
-### [2. Registrar RedisModule no AppModule raiz]()
+### [2. Register RedisModule in root AppModule]()
 
 `src/app.module.ts`
 
@@ -69,31 +69,31 @@ import { RedisModule } from './common/redis/redis.module';
 
 @Module({
   imports: [
-    // ... outros módulos
-    RedisModule, // Importar uma única vez
-    // ... módulos de domínio
+    // ... other modules
+    RedisModule, // Import once
+    // ... domain modules
   ],
 })
 export class AppModule {}
 ```
 
-### [3. Configurar variáveis de ambiente do Redis]()
+### [3. Configure Redis environment variables]()
 
 `.env`
 
 ```bash
 REDIS_HOST=localhost
 REDIS_PORT=6379
-REDIS_PASSWORD=       # Opcional
+REDIS_PASSWORD=       # Optional
 REDIS_DB=0
-REDIS_TTL=300         # 5 minutos em segundos
+REDIS_TTL=300         # 5 minutes in seconds
 ```
 
-## [Uso Básico do Redis - Implementar cache simples em Services]()
+## [Redis Basic Usage - Implement simple cache in Services]()
 
-Como injetar e utilizar o cache manager do Redis em services para cache de consultas e dados.
+How to inject and use Redis cache manager in services for query and data caching.
 
-### [Injetar CACHE_MANAGER em Services do NestJS]()
+### [Inject CACHE_MANAGER in NestJS Services]()
 
 ```typescript
 import { Injectable, Inject } from '@nestjs/common';
@@ -111,16 +111,16 @@ export class ProductService {
   async findAll(): Promise<Product[]> {
     const cacheKey = 'products:all';
 
-    // Tentar pegar do cache
+    // Try to get from cache
     const cached = await this.cacheManager.get<Product[]>(cacheKey);
     if (cached) {
       return cached;
     }
 
-    // Se não existe, buscar do banco
+    // If it doesn't exist, fetch from database
     const products = await this.productRepository.find();
 
-    // Salvar no cache por 5 minutos
+    // Save in cache for 5 minutes
     await this.cacheManager.set(cacheKey, products, 300);
 
     return products;
@@ -149,7 +149,7 @@ export class ProductService {
       ...updateDto,
     });
 
-    // Invalidar caches relacionados
+    // Invalidate related caches
     await this.cacheManager.del(`product:${id}`);
     await this.cacheManager.del('products:all');
 
@@ -159,65 +159,65 @@ export class ProductService {
   async remove(id: string): Promise<void> {
     await this.productRepository.softDelete(id);
 
-    // Invalidar caches
+    // Invalidate caches
     await this.cacheManager.del(`product:${id}`);
     await this.cacheManager.del('products:all');
   }
 }
 ```
 
-## [Operações disponíveis no Redis com cache-manager]()
+## [Available Redis operations with cache-manager]()
 
-Métodos principais do cache-manager para interagir com Redis: SET, GET, DEL e FLUSH.
+Main cache-manager methods to interact with Redis: SET, GET, DEL and FLUSH.
 
-### [1. Salvar dados no Redis usando SET]()
+### [1. Save data to Redis using SET]()
 
 ```typescript
-// Simples
+// Simple
 await this.cacheManager.set('key', 'value');
 
-// Com TTL (em segundos)
-await this.cacheManager.set('key', 'value', 300); // 5 minutos
+// With TTL (in seconds)
+await this.cacheManager.set('key', 'value', 300); // 5 minutes
 
-// Objeto complexo (serializado automaticamente)
-await this.cacheManager.set('user:123', { id: 123, name: 'João' }, 600);
+// Complex object (automatically serialized)
+await this.cacheManager.set('user:123', { id: 123, name: 'John' }, 600);
 ```
 
-### [2. Buscar dados do Redis usando GET]()
+### [2. Fetch data from Redis using GET]()
 
 ```typescript
-// Retorna null se não existir
+// Returns null if doesn't exist
 const value = await this.cacheManager.get('key');
 
-// Com tipagem
+// With typing
 const user = await this.cacheManager.get<User>('user:123');
 ```
 
-### [3. Deletar chaves do Redis usando DEL]()
+### [3. Delete keys from Redis using DEL]()
 
 ```typescript
-// Deletar uma chave
+// Delete one key
 await this.cacheManager.del('key');
 
-// Deletar múltiplas chaves
+// Delete multiple keys
 await this.cacheManager.del('key1');
 await this.cacheManager.del('key2');
 ```
 
-### [4. Resetar todos dados do Redis usando FLUSH]()
+### [4. Reset all Redis data using FLUSH]()
 
 ```typescript
-// ⚠️ Cuidado: remove TODAS as chaves
+// ⚠️ Careful: removes ALL keys
 await this.cacheManager.reset();
 ```
 
-## [Casos de Uso Avançados do Redis no Backend]()
+## [Advanced Redis Use Cases in Backend]()
 
-Implementações avançadas de contadores atômicos, rate limiting, cache de API externa e sessões compartilhadas.
+Advanced implementations of atomic counters, rate limiting, external API cache and shared sessions.
 
-### [1. Implementar contador compartilhado com incremento atômico no Redis]()
+### [1. Implement shared counter with atomic increment in Redis]()
 
-Útil para estatísticas, rate limiting, contadores distribuídos.
+Useful for statistics, rate limiting, distributed counters.
 
 ```typescript
 import { Injectable, Inject } from '@nestjs/common';
@@ -230,17 +230,17 @@ export class StatsService {
   private redisClient: any;
 
   constructor(@Inject(CACHE_MANAGER) private cacheManager: Cache) {
-    // Acessar cliente Redis nativo para operações avançadas
+    // Access native Redis client for advanced operations
     this.redisClient = (this.cacheManager.store as any).getClient();
   }
 
   async incrementPageView(pageId: string): Promise<number> {
     const key = `stats:pageview:${pageId}`;
 
-    // INCR é atômico - seguro para múltiplas instâncias
+    // INCR is atomic - safe for multiple instances
     const newCount = await this.redisClient.incr(key);
 
-    // Definir expiração de 24 horas
+    // Set 24 hour expiration
     await this.redisClient.expire(key, 86400);
 
     return newCount;
@@ -254,9 +254,9 @@ export class StatsService {
 }
 ```
 
-### [2. Implementar Rate Limiting com Redis para controlar requisições]()
+### [2. Implement Rate Limiting with Redis to control requests]()
 
-Limitar requisições por usuário/IP usando contadores Redis.
+Limit requests per user/IP using Redis counters.
 
 ```typescript
 import { Injectable, Inject } from '@nestjs/common';
@@ -273,14 +273,14 @@ export class RateLimitService {
 
   async checkRateLimit(
     identifier: string, // userId, IP, etc
-    limit: number = 100, // máximo de requisições
-    windowSeconds: number = 60, // janela de tempo
+    limit: number = 100, // maximum requests
+    windowSeconds: number = 60, // time window
   ): Promise<{ allowed: boolean; remaining: number }> {
     const key = `ratelimit:${identifier}`;
 
     const current = await this.redisClient.incr(key);
 
-    // Primeira requisição - definir expiração
+    // First request - set expiration
     if (current === 1) {
       await this.redisClient.expire(key, windowSeconds);
     }
@@ -293,7 +293,7 @@ export class RateLimitService {
 }
 ```
 
-**Guard para aplicar rate limit:**
+**Guard to apply rate limit:**
 
 ```typescript
 import {
@@ -315,8 +315,8 @@ export class RateLimitGuard implements CanActivate {
 
     const { allowed, remaining } = await this.rateLimitService.checkRateLimit(
       identifier,
-      100, // 100 requisições
-      60,  // por minuto
+      100, // 100 requests
+      60,  // per minute
     );
 
     if (!allowed) {
@@ -326,7 +326,7 @@ export class RateLimitGuard implements CanActivate {
       );
     }
 
-    // Adicionar headers de rate limit
+    // Add rate limit headers
     const response = context.switchToHttp().getResponse();
     response.setHeader('X-RateLimit-Remaining', remaining);
 
@@ -335,9 +335,9 @@ export class RateLimitGuard implements CanActivate {
 }
 ```
 
-### [3. Implementar cache de respostas de APIs externas com Redis]()
+### [3. Implement external API response cache with Redis]()
 
-Cachear respostas de APIs externas usando Redis para reduzir latência e custos.
+Cache external API responses using Redis to reduce latency and costs.
 
 ```typescript
 @Injectable()
@@ -350,18 +350,18 @@ export class ExternalApiService {
   async fetchUserData(userId: string): Promise<any> {
     const cacheKey = `external:user:${userId}`;
 
-    // Tentar cache
+    // Try cache
     const cached = await this.cacheManager.get(cacheKey);
     if (cached) {
       return cached;
     }
 
-    // Buscar da API externa
+    // Fetch from external API
     const response = await this.httpService.axiosRef.get(
       `https://api.example.com/users/${userId}`,
     );
 
-    // Cachear por 1 hora
+    // Cache for 1 hour
     await this.cacheManager.set(cacheKey, response.data, 3600);
 
     return response.data;
@@ -369,9 +369,9 @@ export class ExternalApiService {
 }
 ```
 
-### [4. Implementar sessões compartilhadas com Redis para escala horizontal]()
+### [4. Implement shared sessions with Redis for horizontal scaling]()
 
-Usar Redis para múltiplas instâncias compartilharem sessões de usuário.
+Use Redis for multiple instances to share user sessions.
 
 ```typescript
 @Injectable()
@@ -385,7 +385,7 @@ export class SessionService {
     await this.cacheManager.set(
       key,
       { userId, ...data },
-      3600, // 1 hora
+      3600, // 1 hour
     );
 
     return sessionId;
@@ -410,12 +410,12 @@ export class SessionService {
 }
 ```
 
-## [Padrões de Nomenclatura de Chaves no Redis]()
+## [Redis Key Naming Patterns]()
 
-Use prefixos hierárquicos consistentes para organizar dados Redis:
+Use consistent hierarchical prefixes to organize Redis data:
 
 ```typescript
-// ✅ Bom - hierárquico e descritivo
+// ✅ Good - hierarchical and descriptive
 'user:123'
 'user:123:profile'
 'product:456'
@@ -425,15 +425,15 @@ Use prefixos hierárquicos consistentes para organizar dados Redis:
 'session:abc-def-123'
 'cache:api:external:user:789'
 
-// ❌ Ruim - sem estrutura
+// ❌ Bad - no structure
 'u123'
 'data'
 'temp'
 ```
 
-## [Helper para invalidação em massa de chaves Redis por padrão]()
+## [Helper for bulk Redis key invalidation by pattern]()
 
-Utilitário para deletar múltiplas chaves Redis usando padrões com wildcards.
+Utility to delete multiple Redis keys using wildcard patterns.
 
 ```typescript
 import { Injectable, Inject } from '@nestjs/common';
@@ -449,23 +449,23 @@ export class CacheService {
   }
 
   async deleteByPattern(pattern: string): Promise<void> {
-    // Buscar todas as chaves que correspondem ao padrão
+    // Find all keys matching the pattern
     const keys = await this.redisClient.keys(pattern);
 
     if (keys.length > 0) {
-      // Deletar todas
+      // Delete all
       await this.redisClient.del(...keys);
     }
   }
 
-  // Exemplos de uso:
-  // await cacheService.deleteByPattern('product:*')      // Todos produtos
-  // await cacheService.deleteByPattern('user:123:*')     // Tudo do usuário 123
-  // await cacheService.deleteByPattern('cache:api:*')    // Todo cache de API
+  // Usage examples:
+  // await cacheService.deleteByPattern('product:*')      // All products
+  // await cacheService.deleteByPattern('user:123:*')     // Everything from user 123
+  // await cacheService.deleteByPattern('cache:api:*')    // All API cache
 }
 ```
 
-## [Configurar Redis local com Docker Compose]()
+## [Configure local Redis with Docker Compose]()
 
 `docker-compose.yml`
 
@@ -489,31 +489,31 @@ volumes:
   redis-data:
 ```
 
-Subir o Redis:
+Start Redis:
 
 ```bash
 docker-compose up -d redis
 ```
 
-## [Boas Práticas ao usar Redis no NestJS]()
+## [Best Practices when using Redis in NestJS]()
 
-Recomendações essenciais para uso eficiente e seguro de Redis em produção.
+Essential recommendations for efficient and safe Redis usage in production.
 
-### [1. Sempre definir TTL para evitar acúmulo de dados no Redis]()
+### [1. Always define TTL to avoid data accumulation in Redis]()
 ```typescript
-// ✅ Bom - evita memória infinita
+// ✅ Good - avoids infinite memory
 await this.cacheManager.set('key', value, 300);
 
-// ❌ Ruim - pode acumular dados antigos
+// ❌ Bad - may accumulate old data
 await this.cacheManager.set('key', value);
 ```
 
-### [2. Invalidar cache do Redis ao atualizar ou deletar dados]()
+### [2. Invalidate Redis cache when updating or deleting data]()
 ```typescript
 async update(id: string, dto: UpdateDto) {
   const updated = await this.repository.save({ id, ...dto });
 
-  // Invalidar caches relacionados
+  // Invalidate related caches
   await this.cacheManager.del(`item:${id}`);
   await this.cacheManager.del('items:all');
 
@@ -521,76 +521,76 @@ async update(id: string, dto: UpdateDto) {
 }
 ```
 
-### [3. Usar prefixos consistentes nas chaves Redis]()
+### [3. Use consistent prefixes in Redis keys]()
 ```typescript
-// ✅ Bom - fácil identificar e invalidar
+// ✅ Good - easy to identify and invalidate
 const cacheKey = `user:${userId}:orders`;
 
-// ❌ Ruim - difícil gerenciar
+// ❌ Bad - difficult to manage
 const cacheKey = `${userId}_orders`;
 ```
 
-### [4. Tratar erros de conexão do Redis sem quebrar aplicação]()
+### [4. Handle Redis connection errors without breaking application]()
 ```typescript
 async getCachedData(key: string): Promise<any> {
   try {
     return await this.cacheManager.get(key);
   } catch (error) {
-    // Log mas não quebra a aplicação
+    // Log but don't break application
     console.error('Redis error:', error);
-    return null; // Fallback para buscar do banco
+    return null; // Fallback to fetch from database
   }
 }
 ```
 
-### [5. Usar módulo comum @Global para reutilizar Redis em toda aplicação]()
-- **Criar uma vez** - RedisModule no `src/common/redis/`
-- **Global** - Decorator `@Global()` para disponibilizar em todos módulos
-- **Reutilizar** - Apenas injetar `CACHE_MANAGER` onde precisar
+### [5. Use common @Global module to reuse Redis throughout application]()
+- **Create once** - RedisModule in `src/common/redis/`
+- **Global** - `@Global()` decorator to make available in all modules
+- **Reuse** - Just inject `CACHE_MANAGER` where needed
 
-### [6. Não cachear dados sensíveis no Redis]()
+### [6. Don't cache sensitive data in Redis]()
 ```typescript
-// ❌ Evitar - dados sensíveis
+// ❌ Avoid - sensitive data
 await this.cacheManager.set('user:password', hashedPassword);
 
-// ✅ Cachear apenas dados seguros
+// ✅ Cache only safe data
 await this.cacheManager.set('user:profile', { name, email });
 ```
 
-## [Checklist de Implementação do Redis no NestJS]()
+## [Redis Implementation Checklist in NestJS]()
 
-- [ ] Redis instalado (Docker ou local)
-- [ ] Pacotes instalados (`@nestjs/cache-manager`, `cache-manager-redis-store`, `redis`)
-- [ ] `RedisModule` criado em `src/common/redis/`
-- [ ] `@Global()` decorator aplicado
-- [ ] Variáveis de ambiente configuradas (`.env`)
-- [ ] Módulo importado no `AppModule`
-- [ ] TTL definido para todas operações de cache
-- [ ] Padrão de nomenclatura consistente
-- [ ] Invalidação ao atualizar/deletar dados
-- [ ] Tratamento de erro para quedas do Redis
+- [ ] Redis installed (Docker or local)
+- [ ] Packages installed (`@nestjs/cache-manager`, `cache-manager-redis-store`, `redis`)
+- [ ] `RedisModule` created in `src/common/redis/`
+- [ ] `@Global()` decorator applied
+- [ ] Environment variables configured (`.env`)
+- [ ] Module imported in `AppModule`
+- [ ] TTL defined for all cache operations
+- [ ] Consistent naming pattern
+- [ ] Invalidation when updating/deleting data
+- [ ] Error handling for Redis failures
 
-## [Troubleshooting - Problemas comuns ao usar Redis]()
+## [Troubleshooting - Common Redis problems]()
 
-Diagnóstico e solução de problemas comuns ao configurar e usar Redis no NestJS.
+Diagnosis and solutions for common problems when configuring and using Redis in NestJS.
 
-### [Resolver erro Redis connection refused]()
+### [Resolve Redis connection refused error]()
 
 ```bash
-# Verificar se Redis está rodando
+# Check if Redis is running
 docker ps | grep redis
 
-# Ver logs
+# View logs
 docker logs sdd-redis
 
-# Reiniciar
+# Restart
 docker-compose restart redis
 ```
 
-### [Debugar quando cache do Redis não está funcionando]()
+### [Debug when Redis cache is not working]()
 
 ```typescript
-// Debug - verificar se está salvando
+// Debug - check if it's saving
 const saved = await this.cacheManager.set('test', 'value', 60);
 console.log('Saved:', saved);
 
@@ -598,23 +598,23 @@ const retrieved = await this.cacheManager.get('test');
 console.log('Retrieved:', retrieved);
 ```
 
-### [Investigar e resolver problema de memória alta no Redis]()
+### [Investigate and resolve high Redis memory problem]()
 
 ```bash
-# Conectar ao Redis CLI
+# Connect to Redis CLI
 docker exec -it sdd-redis redis-cli
 
-# Ver informações de memória
+# View memory information
 INFO memory
 
-# Ver todas as chaves (cuidado em produção)
+# View all keys (careful in production)
 KEYS *
 
-# Limpar tudo (CUIDADO!)
+# Clear everything (CAREFUL!)
 FLUSHALL
 ```
 
-## [Referências e documentação oficial sobre Redis e NestJS]()
+## [References and official documentation about Redis and NestJS]()
 
 - [NestJS Cache](https://docs.nestjs.com/techniques/caching)
 - [Redis Commands](https://redis.io/commands)

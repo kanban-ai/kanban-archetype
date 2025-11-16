@@ -1,22 +1,22 @@
-# [Como integrar com API externa no Backend?]()
+# [How to integrate with external APIs in the Backend?]()
 
-> Guia completo sobre como consumir APIs externas no backend NestJS usando Axios.
+> Complete guide on consuming external APIs in NestJS backend using Axios.
 
-## [Configuração do Cliente HTTP para integração com APIs externas]()
+## [HTTP Client Configuration for external API integration]()
 
-Esta seção apresenta a configuração de um cliente HTTP reutilizável usando Axios, incluindo interceptors para logging, tratamento de erros e retry automático.
+This section presents configuration of a reusable HTTP client using Axios, including interceptors for logging, error handling and automatic retry.
 
-Configuração do HttpService do NestJS com Axios para fazer requisições HTTP:
+HttpService configuration in NestJS with Axios to make HTTP requests:
 
-### [1. Instalar Axios]()
+### [1. Install Axios]()
 
 ```bash
 npm install axios
 ```
 
-### [2. Criar módulo HTTP customizado]()
+### [2. Create custom HTTP module]()
 
-**Arquivo**: `src/common/http/http.module.ts`
+**File**: `src/common/http/http.module.ts`
 
 ```typescript
 import { Module } from '@nestjs/common';
@@ -29,9 +29,9 @@ import { HttpService } from './http.service';
 export class HttpModule {}
 ```
 
-### [3. Criar serviço HTTP base]()
+### [3. Create base HTTP service]()
 
-**Arquivo**: `src/common/http/http.service.ts`
+**File**: `src/common/http/http.service.ts`
 
 ```typescript
 import { Injectable, Logger } from '@nestjs/common';
@@ -44,7 +44,7 @@ export class HttpService {
 
   constructor() {
     this.axiosInstance = axios.create({
-      timeout: 10000, // 10 segundos
+      timeout: 10000, // 10 seconds
       headers: {
         'Content-Type': 'application/json',
       },
@@ -131,38 +131,38 @@ export class HttpService {
     return response.data;
   }
 
-  // Método para criar instância customizada
+  // Method to create custom instance
   createInstance(config: AxiosRequestConfig): AxiosInstance {
     return axios.create(config);
   }
 }
 ```
 
-## [Estrutura de Service para Integração com API externa no NestJS]()
+## [Service Structure for external API Integration in NestJS]()
 
-Esta seção define a arquitetura de services especializados em consumir APIs externas, seguindo padrão modular e reutilizável.
+This section defines the architecture of specialized services to consume external APIs, following modular and reusable pattern.
 
-Padrão recomendado para criar services que consomem APIs externas:
+Recommended pattern to create services that consume external APIs:
 
-### [Padrão de Service Externo]()
+### [External Service Pattern]()
 
-Crie services específicos para cada API externa na pasta `services/` do módulo.
+Create specific services for each external API in the module's `services/` folder.
 
-**Estrutura**:
+**Structure**:
 ```
 src/modules/providers/
 ├── providers.module.ts
-├── providers.service.ts           # Orquestrador
+├── providers.service.ts           # Orchestrator
 ├── providers.controller.ts
 └── services/
-    ├── kinvo-provider.service.ts  # Integração Kinvo
-    ├── yahoo-provider.service.ts  # Integração Yahoo Finance
-    └── b3-provider.service.ts     # Integração B3
+    ├── kinvo-provider.service.ts  # Kinvo Integration
+    ├── yahoo-provider.service.ts  # Yahoo Finance Integration
+    └── b3-provider.service.ts     # B3 Integration
 ```
 
-### [Exemplo: Service de Integração]()
+### [Example: Integration Service]()
 
-**Arquivo**: `src/modules/providers/services/yahoo-provider.service.ts`
+**File**: `src/modules/providers/services/yahoo-provider.service.ts`
 
 ```typescript
 import { Injectable, HttpException, HttpStatus, Logger } from '@nestjs/common';
@@ -282,11 +282,11 @@ export class YahooProviderService {
 }
 ```
 
-## [Autenticação com APIs Externas usando diferentes métodos]()
+## [Authentication with External APIs using different methods]()
 
-Implementação de API Key, Bearer Token, Basic Auth e OAuth 2.0:
+Implementation of API Key, Bearer Token, Basic Auth and OAuth 2.0:
 
-### [1. API Key no Header]()
+### [1. API Key in Header]()
 
 ```typescript
 await this.httpService.get(url, {
@@ -319,7 +319,7 @@ await this.httpService.get(url, {
 
 ### [4. OAuth 2.0 Flow]()
 
-**Arquivo**: `src/modules/integrations/services/oauth-provider.service.ts`
+**File**: `src/modules/integrations/services/oauth-provider.service.ts`
 
 ```typescript
 import { Injectable, HttpException, HttpStatus } from '@nestjs/common';
@@ -376,7 +376,7 @@ export class OAuthProviderService {
   }
 
   async getAccessToken(): Promise<string> {
-    // Verifica se token está expirado
+    // Check if token is expired
     if (!this.accessToken || new Date() >= this.tokenExpiresAt) {
       await this.authenticate();
     }
@@ -396,25 +396,25 @@ export class OAuthProviderService {
 }
 ```
 
-## [Timeout e Retry automático para requisições HTTP]()
+## [Timeout and automatic Retry for HTTP requests]()
 
-Configuração de timeout e retentativas automáticas com backoff exponencial:
+Timeout configuration and automatic retries with exponential backoff:
 
-### [1. Configurar Timeout]()
+### [1. Configure Timeout]()
 
 ```typescript
 await this.httpService.get(url, {
-  timeout: 5000, // 5 segundos
+  timeout: 5000, // 5 seconds
 });
 ```
 
-### [2. Implementar Retry com Axios Retry]()
+### [2. Implement Retry with Axios Retry]()
 
 ```bash
 npm install axios-retry
 ```
 
-**Arquivo**: `src/common/http/http.service.ts` (atualizado)
+**File**: `src/common/http/http.service.ts` (updated)
 
 ```typescript
 import axiosRetry from 'axios-retry';
@@ -424,12 +424,12 @@ constructor() {
     timeout: 10000,
   });
 
-  // Configurar retry
+  // Configure retry
   axiosRetry(this.axiosInstance, {
-    retries: 3, // Número de tentativas
-    retryDelay: axiosRetry.exponentialDelay, // Delay exponencial
+    retries: 3, // Number of attempts
+    retryDelay: axiosRetry.exponentialDelay, // Exponential delay
     retryCondition: (error) => {
-      // Retry em erros de rede ou 5xx
+      // Retry on network errors or 5xx
       return (
         axiosRetry.isNetworkOrIdempotentRequestError(error) ||
         (error.response?.status >= 500 && error.response?.status < 600)
@@ -446,7 +446,7 @@ constructor() {
 }
 ```
 
-### [3. Retry Manual com Decorador]()
+### [3. Manual Retry with Decorator]()
 
 ```typescript
 function Retry(maxRetries: number = 3, delayMs: number = 1000) {
@@ -481,7 +481,7 @@ function Retry(maxRetries: number = 3, delayMs: number = 1000) {
   };
 }
 
-// Uso
+// Usage
 @Injectable()
 export class ExternalApiService {
   @Retry(3, 1000)
@@ -491,9 +491,9 @@ export class ExternalApiService {
 }
 ```
 
-## [Circuit Breaker Pattern para proteger contra APIs instáveis]()
+## [Circuit Breaker Pattern to protect against unstable APIs]()
 
-Implementação de circuit breaker para evitar sobrecarga quando API externa falha:
+Circuit breaker implementation to avoid overload when external API fails:
 
 ```typescript
 import { Injectable, Logger } from '@nestjs/common';
@@ -512,9 +512,9 @@ export class CircuitBreakerService {
   private successCount = 0;
   private nextAttempt: Date = new Date();
 
-  private readonly threshold = 5; // Falhas antes de abrir
-  private readonly timeout = 60000; // 1 minuto
-  private readonly halfOpenRequests = 3; // Requests em half-open
+  private readonly threshold = 5; // Failures before opening
+  private readonly timeout = 60000; // 1 minute
+  private readonly halfOpenRequests = 3; // Requests in half-open
 
   async execute<T>(fn: () => Promise<T>): Promise<T> {
     if (this.state === CircuitState.OPEN) {
@@ -568,7 +568,7 @@ export class CircuitBreakerService {
   }
 }
 
-// Uso
+// Usage
 @Injectable()
 export class ExternalApiService {
   constructor(
@@ -584,11 +584,11 @@ export class ExternalApiService {
 }
 ```
 
-## [Cache de Respostas de APIs externas com Redis]()
+## [Cache External API Responses with Redis]()
 
-Cachear respostas HTTP para reduzir latência e custos de chamadas externas:
+Cache HTTP responses to reduce latency and external call costs:
 
-### [1. Cache simples em memória]()
+### [1. Simple in-memory cache]()
 
 ```typescript
 import { Injectable, Logger } from '@nestjs/common';
@@ -617,7 +617,7 @@ export class CacheService {
       return null;
     }
 
-    // Verifica se expirou
+    // Check if expired
     if (Date.now() > entry.expiresAt) {
       this.cache.delete(key);
       this.logger.debug(`Cache expired for key: ${key}`);
@@ -638,7 +638,7 @@ export class CacheService {
   }
 }
 
-// Uso
+// Usage
 @Injectable()
 export class YahooProviderService {
   constructor(
@@ -649,16 +649,16 @@ export class YahooProviderService {
   async getQuote(symbol: string): Promise<any> {
     const cacheKey = `quote:${symbol}`;
 
-    // Tenta buscar do cache
+    // Try to fetch from cache
     const cached = this.cacheService.get(cacheKey);
     if (cached) {
       return cached;
     }
 
-    // Busca da API
+    // Fetch from API
     const data = await this.httpService.get(`/quote?symbol=${symbol}`);
 
-    // Salva no cache por 5 minutos
+    // Save to cache for 5 minutes
     this.cacheService.set(cacheKey, data, 300);
 
     return data;
@@ -666,11 +666,11 @@ export class YahooProviderService {
 }
 ```
 
-### [2. Cache com Redis (Recomendado para produção)]()
+### [2. Cache with Redis (Recommended for production)]()
 
-> **📖 Documentação completa**: Veja [como-usar-redis-backend.md](./como-usar-redis-backend.md) para configuração global, casos de uso avançados e boas práticas.
+> **📖 Complete documentation**: See [how-to-use-redis-backend.md](./how-to-use-redis-backend.md) for global configuration, advanced use cases and best practices.
 
-**Resumo rápido para cache de API externa:**
+**Quick summary for external API cache:**
 
 ```typescript
 import { Injectable, Inject } from '@nestjs/common';
@@ -687,16 +687,16 @@ export class YahooProviderService {
   async getQuote(symbol: string): Promise<any> {
     const cacheKey = `cache:api:yahoo:quote:${symbol}`;
 
-    // Busca do cache
+    // Fetch from cache
     const cached = await this.cacheManager.get(cacheKey);
     if (cached) {
       return cached;
     }
 
-    // Busca da API
+    // Fetch from API
     const data = await this.httpService.get(`/quote?symbol=${symbol}`);
 
-    // Salva no cache (TTL: 5 minutos)
+    // Save to cache (TTL: 5 minutes)
     await this.cacheManager.set(cacheKey, data, 300);
 
     return data;
@@ -704,13 +704,13 @@ export class YahooProviderService {
 }
 ```
 
-**Nota:** O `CACHE_MANAGER` deve estar disponível globalmente através do `RedisModule` configurado em `src/common/redis/`. Consulte o guia de Redis para setup inicial.
+**Note:** `CACHE_MANAGER` must be globally available through `RedisModule` configured in `src/common/redis/`. See Redis guide for initial setup.
 
-## [Tratamento de Rate Limiting de APIs externas]()
+## [External API Rate Limiting handling]()
 
-Detectar e lidar com erro 429 (Too Many Requests) de APIs externas:
+Detect and handle error 429 (Too Many Requests) from external APIs:
 
-### [1. Detectar e tratar 429]()
+### [1. Detect and handle 429]()
 
 ```typescript
 @Injectable()
@@ -718,7 +718,7 @@ export class ExternalApiService {
   private rateLimitResetAt: Date | null = null;
 
   async makeRequest<T>(url: string): Promise<T> {
-    // Verifica se está em rate limit
+    // Check if in rate limit
     if (this.rateLimitResetAt && new Date() < this.rateLimitResetAt) {
       const waitSeconds = Math.ceil(
         (this.rateLimitResetAt.getTime() - Date.now()) / 1000,
@@ -733,7 +733,7 @@ export class ExternalApiService {
       return await this.httpService.get<T>(url);
     } catch (error) {
       if (error.response?.status === 429) {
-        // Lê header de retry
+        // Read retry header
         const retryAfter = error.response.headers['retry-after'];
 
         if (retryAfter) {
@@ -748,7 +748,7 @@ export class ExternalApiService {
 }
 ```
 
-### [2. Rate Limiting local (Throttle)]()
+### [2. Local Rate Limiting (Throttle)]()
 
 ```typescript
 import { Injectable } from '@nestjs/common';
@@ -777,7 +777,7 @@ export class ThrottleService {
   }
 }
 
-// Uso
+// Usage
 @Injectable()
 export class ExternalApiService {
   constructor(
@@ -797,13 +797,13 @@ export class ExternalApiService {
 }
 ```
 
-## [Webhooks - Receber eventos de APIs externas]()
+## [Webhooks - Receive events from external APIs]()
 
-Implementar endpoints para receber callbacks de APIs externas:
+Implement endpoints to receive callbacks from external APIs:
 
-### [Receber Webhooks de APIs Externas]()
+### [Receive Webhooks from External APIs]()
 
-**Arquivo**: `src/modules/webhooks/webhooks.controller.ts`
+**File**: `src/modules/webhooks/webhooks.controller.ts`
 
 ```typescript
 import { Controller, Post, Body, Headers, HttpException, HttpStatus } from '@nestjs/common';
@@ -816,19 +816,19 @@ export class WebhooksController {
   constructor(private readonly webhooksService: WebhooksService) {}
 
   @Post('stripe')
-  @ApiKeyAuth() // Proteger com API Key
+  @ApiKeyAuth() // Protect with API Key
   async stripeWebhook(
     @Body() payload: any,
     @Headers('stripe-signature') signature: string,
   ) {
-    // Validar assinatura
+    // Validate signature
     const isValid = this.validateStripeSignature(payload, signature);
 
     if (!isValid) {
       throw new HttpException('Invalid signature', HttpStatus.UNAUTHORIZED);
     }
 
-    // Processar webhook
+    // Process webhook
     await this.webhooksService.handleStripeEvent(payload);
 
     return { received: true };
@@ -848,36 +848,36 @@ export class WebhooksController {
 ```
 
 
-## [Variáveis de Ambiente para configuração de APIs externas]()
+## [Environment Variables for external API configuration]()
 
-Organização de URLs, tokens e configurações de APIs em .env:
+Organization of URLs, tokens and API configurations in .env:
 
-**Arquivo**: `.env`
+**File**: `.env`
 
 ```env
-# API Externa - Yahoo Finance
+# External API - Yahoo Finance
 YAHOO_FINANCE_API_URL=https://api.yahoo.com/v1
-YAHOO_FINANCE_API_KEY=sua-api-key-aqui
+YAHOO_FINANCE_API_KEY=your-api-key-here
 
-# API Externa - Kinvo
+# External API - Kinvo
 KINVO_API_URL=https://api.kinvo.com.br
-KINVO_API_KEY=sua-api-key-aqui
+KINVO_API_KEY=your-api-key-here
 
-# API Externa - B3
+# External API - B3
 B3_API_URL=https://api.b3.com.br
-B3_USERNAME=seu-usuario
-B3_PASSWORD=sua-senha
+B3_USERNAME=your-username
+B3_PASSWORD=your-password
 
 # OAuth Provider
 OAUTH_TOKEN_URL=https://oauth.provider.com/token
-OAUTH_CLIENT_ID=seu-client-id
-OAUTH_CLIENT_SECRET=seu-client-secret
+OAUTH_CLIENT_ID=your-client-id
+OAUTH_CLIENT_SECRET=your-client-secret
 
 # Webhook
 STRIPE_WEBHOOK_SECRET=whsec_xxxxx
 ```
 
-**Validação no ConfigService**:
+**Validation in ConfigService**:
 
 ```typescript
 import { registerAs } from '@nestjs/config';
@@ -894,13 +894,13 @@ export default registerAs('external-apis', () => ({
 }));
 ```
 
-## [Exemplo Completo de Módulo de Providers para APIs externas]()
+## [Complete Example of Providers Module for external APIs]()
 
-Implementação real integrando Yahoo Finance, Kinvo e B3:
+Real implementation integrating Yahoo Finance, Kinvo and B3:
 
 ### [1. Module]()
 
-**Arquivo**: `src/modules/providers/providers.module.ts`
+**File**: `src/modules/providers/providers.module.ts`
 
 ```typescript
 import { Module } from '@nestjs/common';
@@ -931,7 +931,7 @@ export class ProvidersModule {}
 
 ### [2. Controller]()
 
-**Arquivo**: `src/modules/providers/providers.controller.ts`
+**File**: `src/modules/providers/providers.controller.ts`
 
 ```typescript
 import { Controller, Get, Param, Query } from '@nestjs/common';
@@ -945,13 +945,13 @@ export class ProvidersController {
   constructor(private readonly providersService: ProvidersService) {}
 
   @Get('quote/:symbol')
-  @ApiOperation({ summary: 'Buscar cotação de um símbolo' })
+  @ApiOperation({ summary: 'Fetch quote for a symbol' })
   async getQuote(@Param('symbol') symbol: string) {
     return await this.providersService.getQuote(symbol);
   }
 
   @Get('history/:symbol')
-  @ApiOperation({ summary: 'Buscar histórico de cotações' })
+  @ApiOperation({ summary: 'Fetch quote history' })
   async getHistory(
     @Param('symbol') symbol: string,
     @Query('startDate') startDate: string,
@@ -966,9 +966,9 @@ export class ProvidersController {
 }
 ```
 
-### [3. Service Orquestrador]()
+### [3. Orchestrator Service]()
 
-**Arquivo**: `src/modules/providers/providers.service.ts`
+**File**: `src/modules/providers/providers.service.ts`
 
 ```typescript
 import { Injectable, Logger } from '@nestjs/common';
@@ -989,7 +989,7 @@ export class ProvidersService {
   async getQuote(symbol: string): Promise<any> {
     this.logger.log(`Fetching quote for ${symbol}`);
 
-    // Tenta buscar de múltiplas fontes (fallback)
+    // Try to fetch from multiple sources (fallback)
     try {
       return await this.yahooProvider.getQuote(symbol);
     } catch (error) {
@@ -1018,79 +1018,79 @@ export class ProvidersService {
 }
 ```
 
-## [Boas Práticas ao integrar com APIs externas no NestJS]()
+## [Best Practices when integrating with external APIs in NestJS]()
 
-Recomendações essenciais para integrações robustas e confiáveis:
+Essential recommendations for robust and reliable integrations:
 
-### [1. Sempre usar timeout]()
+### [1. Always use timeout]()
 ```typescript
-timeout: 10000 // 10 segundos
+timeout: 10000 // 10 seconds
 ```
 
-### [2. Implementar retry para falhas temporárias]()
-- Usar biblioteca axios-retry
-- Retry apenas em erros 5xx e erros de rede
+### [2. Implement retry for temporary failures]()
+- Use axios-retry library
+- Retry only on 5xx errors and network errors
 
-### [3. Logging detalhado]()
-- Log de todas requisições (debug)
-- Log de erros (error)
-- Log de retry (warn)
+### [3. Detailed logging]()
+- Log all requests (debug)
+- Log errors (error)
+- Log retries (warn)
 
-### [4. Tratamento de erros específico]()
-- 401: API Key inválida
+### [4. Specific error handling]()
+- 401: Invalid API Key
 - 429: Rate limit
-- 5xx: Erro do servidor externo
+- 5xx: External server error
 - Timeout: ECONNABORTED
 
-### [5. Cache inteligente]()
-- Cachear respostas que mudam pouco
-- Usar TTL apropriado
-- **Use Redis para produção** - veja [como-usar-redis-backend.md](./como-usar-redis-backend.md)
+### [5. Smart caching]()
+- Cache responses that change little
+- Use appropriate TTL
+- **Use Redis for production** - see [how-to-use-redis-backend.md](./how-to-use-redis-backend.md)
 
 ### [6. Circuit Breaker]()
-- Proteger aplicação de APIs instáveis
-- Evitar cascata de falhas
+- Protect application from unstable APIs
+- Avoid failure cascade
 
-### [7. Rate Limiting local]()
-- Respeitar limites da API externa
-- Implementar throttle quando necessário
+### [7. Local Rate Limiting]()
+- Respect external API limits
+- Implement throttle when necessary
 
-### [8. Segurança]()
-- **NUNCA** commitar API keys no código
-- Usar variáveis de ambiente
-- Validar assinaturas de webhooks
+### [8. Security]()
+- **NEVER** commit API keys in code
+- Use environment variables
+- Validate webhook signatures
 
-### [9. Monitoramento]()
-- Métricas de latência
-- Taxa de sucesso/erro
-- Estado do circuit breaker
+### [9. Monitoring]()
+- Latency metrics
+- Success/error rate
+- Circuit breaker state
 
-### [10. Testes]()
-- Mock de todas chamadas HTTP
-- Testar cenários de erro
-- Testar timeout e retry
+### [10. Testing]()
+- Mock all HTTP calls
+- Test error scenarios
+- Test timeout and retry
 
-## [Checklist de Integração com API externa]()
+## [External API Integration Checklist]()
 
-Lista de verificação para implementação completa de integração:
+Verification checklist for complete integration implementation:
 
-- [ ] HttpService base criado
-- [ ] Service específico para cada API externa
-- [ ] Timeout configurado
-- [ ] Retry implementado
-- [ ] Tratamento de erros específico
-- [ ] Cache implementado (se aplicável)
-- [ ] Circuit breaker (se aplicável)
-- [ ] Rate limiting respeitado
-- [ ] Variáveis de ambiente configuradas
-- [ ] API keys protegidas
-- [ ] Logging implementado
-- [ ] Testes unitários criados
-- [ ] Documentação Swagger (se expor endpoints)
+- [ ] Base HttpService created
+- [ ] Specific service for each external API
+- [ ] Timeout configured
+- [ ] Retry implemented
+- [ ] Specific error handling
+- [ ] Cache implemented (if applicable)
+- [ ] Circuit breaker (if applicable)
+- [ ] Rate limiting respected
+- [ ] Environment variables configured
+- [ ] API keys protected
+- [ ] Logging implemented
+- [ ] Unit tests created
+- [ ] Swagger documentation (if exposing endpoints)
 
-## [Referências e documentação oficial sobre integrações HTTP]()
+## [References and official documentation on HTTP integrations]()
 
-Links para documentação do Axios, NestJS HttpModule e boas práticas:
+Links to Axios documentation, NestJS HttpModule and best practices:
 
 - [Axios Documentation](https://axios-http.com/docs/intro)
 - [NestJS HTTP Module](https://docs.nestjs.com/techniques/http-module)

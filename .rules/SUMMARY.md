@@ -1,0 +1,716 @@
+# [Summary - FAQ Documentation]()
+
+> Complete index with all guides, sections and topics of the project.
+
+## [📚 Stack and Technologies]()
+
+Documentation about all technologies, frameworks and libraries used in backend and frontend.
+
+### [TypeScript Patterns - `./typescript-patterns-standards.md`]()
+
+- **Rule #1: NEVER use `any`** - Total prohibition of any type
+- **Rule #2: strict: true** - Strict mode mandatory
+- **Rule #3: Explicit typing** - Interfaces and types with clear types
+- **Rule #4: use `unknown`** - Safe alternative for unknown types
+- **Type Guards** - Runtime type validation
+- **Generics** - Reusable code with type safety
+- **Readonly** - Immutability and mutation prevention
+- **Naming** - PascalCase conventions for types
+- **ESLint Rules** - Mandatory typescript-eslint rules
+- **Checklist** - TypeScript quality verification
+
+### [Backend - `./backend-technology-stack.md`]()
+
+- **Main Stack** - NestJS Framework, TypeScript, Node.js, Express
+- **Database** - PostgreSQL, TypeORM, pg driver
+- **Authentication and Security** - Passport, JWT, bcrypt
+- **Data Validation** - class-validator, class-transformer
+- **API Documentation** - Swagger/OpenAPI
+- **Configuration** - @nestjs/config, dotenv
+- **Utilities** - Axios, dayjs, rxjs
+- **Development Tools** - ESLint, Prettier, Jest
+- **Architecture and Patterns** - Dependency Injection, Repository Pattern
+- **Custom Modules** - 15 implemented domain modules
+
+### [Frontend - `./frontend-technology-stack.md`]()
+
+- **Main Stack** - React, TypeScript, Vite, SWC
+- **Styling** - Tailwind CSS v4, @tailwindcss/vite
+- **Routing** - React Router DOM
+- **HTTP Requests** - Axios
+- **Data Visualization** - Chart.js, react-chartjs-2, Tippy.js
+- **State Management** - Native Context API
+- **Development Tools** - ESLint, typescript-eslint
+- **Component Structure** - Reusable common components
+- **Form Libraries** - Native HTML5 validation
+
+## [🔧 Backend - Development]()
+
+Complete guides for API development, service integration and backend feature implementation.
+
+### [Redis - `./how-to-use-redis-backend.md`]()
+
+- **When to Use** - Cache, sessions, counters, rate limiting, temporary data
+- **Installation** - Required packages
+- **Global Configuration** - Common and reusable RedisModule
+- **Basic Usage** - Simple cache with get/set/del
+- **Operations** - SET, GET, DEL, FLUSH
+- **Shared Counter** - Atomic increment for horizontal scaling
+- **Rate Limiting** - Control requests per user/IP
+- **External API Cache** - Reduce latency and costs
+- **Shared Sessions** - Multiple instances
+- **Key Naming** - Hierarchical patterns
+- **Mass Invalidation** - Helper with patterns
+- **Docker Compose** - Local setup
+- **Best Practices** - TTL, prefixes, invalidation, security
+- **Checklist** - Implementation verification
+- **Troubleshooting** - Common issues
+
+### [RabbitMQ - `./how-to-use-rabbitmq-backend.md`]()
+
+- **When to Use** - Asynchronous processing, long tasks, automatic retry, background jobs
+- **Installation** - @nestjs/microservices packages
+- **Topic Exchange Architecture** - ONE single exchange `app_exchange` with topic routing
+- **Naming Pattern** - `<module>.<resource>.<action>` (ex: order.order.created)
+- **Global Configuration** - Common and reusable RabbitMQModule
+- **Producer** - Publish messages with topic
+- **Consumer** - Subscribe to specific topics with @EventPattern
+- **Wildcards** - Use `*` (one word) and `#` (zero or more words)
+- **Examples per Module** - Order, Payment, Notification, Product, User, Report
+- **Dead Letter Queue** - Retries and failed messages
+- **Batch Processing** - Group multiple messages by topic
+- **Multiple Consumers** - Horizontal scaling with round-robin
+- **Retry Control** - Limit attempts and exponential backoff
+- **Docker Compose** - Local setup with Management UI
+- **Best Practices** - Naming pattern, single exchange, ACK/NACK, logging with routing key
+- **Redis vs RabbitMQ Differences** - When to use each
+- **Checklist** - Implementation verification
+- **Troubleshooting** - Common issues
+
+### [Scheduler Bull - `./how-to-use-scheduler-bull-redis-backend.md`]()
+
+- **When to Use** - Distributed scheduled tasks, horizontal scalability, automatic retry
+- **node-cron vs Bull Difference** - Feature comparison and when to use each
+- **Installation** - Bull packages
+- **Folder Structure** - Organization jobs/, processors/, services/
+- **Global Configuration** - Common and reusable BullConfigModule
+- **@Cron Decorator** - Create custom decorator with metadata
+- **How It Works** - Flow: Decorator → Metadata → Jobs Registry → Bull
+- **Create Jobs** - Classes with methods marked by @Cron
+- **Create Processor** - @Processor and @Process to execute jobs
+- **Registry Service** - OnModuleInit to read metadata and register jobs
+- **Cron Expressions** - Quick reference for common schedules
+- **Bull Board Dashboard** - Web UI for queue monitoring
+- **Tests** - Test jobs and processors in isolation
+- **Manual Trigger** - Endpoint for on-demand job trigger
+- **Best Practices** - Retry, logging, unique jobId, explicit timezone
+- **Troubleshooting** - Duplicate job, doesn't execute, DI errors
+- **Checklist** - Complete implementation verification
+- **Complete Example** - Notifications module with scheduler
+
+### [Date Handling - `./how-to-handle-dates-backend-frontend.md`]()
+
+- **Golden Rule** - Database UTC, Backend UTC, Frontend converts on display
+- **Database** - TIMESTAMP WITH TIME ZONE, always UTC
+- **Backend** - dayjs.utc() for all manipulations
+- **Backend DTO** - Validation with @IsISO8601()
+- **Backend Service** - Convert ISO string to UTC Date
+- **Frontend** - dayjs with utc, timezone, relativeTime plugins
+- **Frontend Helper** - UTC ↔ Local timezone conversion
+- **DateDisplay Component** - Formatted display with timezone
+- **Frontend Forms** - datetime-local and conversion to UTC
+- **Common Operations** - Practical examples backend and frontend
+- **Checklist** - Implementation verification
+- **Common Errors** - What not to do vs what to do
+
+### [Initial Setup - `./how-to-setup-backend.md`]()
+
+- **Overview** - Configure NestJS + TypeORM from scratch
+- **Prerequisites** - Node.js 18+, PostgreSQL, npm/yarn
+- **Step 1: Create Project** - nest new backend
+- **Step 2: Install Dependencies** - TypeORM, Passport, Validation, Swagger
+- **Step 3: Configure tsconfig** - Path aliases @/*
+- **Step 4: Folder Structure** - modules, config, common, database
+- **Step 5: .env File** - Environment variables
+- **Step 6: database.config.ts** - TypeORM configuration
+- **Step 7: package.json Scripts** - Migration commands
+- **Step 8: app.module.ts** - ConfigModule and TypeOrmModule
+- **Next Steps** - References to continue setup
+
+### [API and Endpoints - `./how-to-create-api-backend.md`]()
+
+- **Step 1: Generate Resource** - nest g resource command
+- **Step 2: Create Entity** - TypeORM data model
+- **Step 3: Create DTOs** - Create and Update with validation
+- **Step 4: Implement Service** - Business logic and CRUD
+- **Step 5: Implement Controller** - REST routes **with v1 versioning**
+- **Step 6: Configure Module** - Dependency registration
+- **Step 7: Register in AppModule** - Global import
+- **Step 8: Create Migration** - Schema versioning
+- **Step 9: Test API** - Via Swagger or curl
+- **Advanced Resources** - Pagination, filters, relationships
+- **Implementation Checklist** - Complete verification list
+
+### [API Versioning - `./how-to-version-api-backend.md`]()
+
+- **Why version** - Avoid breaking integrations, allow evolution
+- **When to version** - Breaking changes, contract changes
+- **Strategies** - URL (recommended), Header, Query Parameter
+- **NestJS Implementation** - VersioningType.URI
+- **Folder structure** - Organization by version (v1/, v2/)
+- **Complete example** - Evolution from V1 to V2
+- **Share code** - Adapter Pattern, Base Services
+- **Swagger per version** - Separate documentation
+- **Deprecation** - Warning headers, transition period
+- **Best practices** - Always start with v1, document changes
+- **Frontend** - Consume versioned APIs
+- **Tests** - Test multiple versions
+
+### [External API Integration - `./how-to-integrate-external-api-backend.md`]()
+
+- **HTTP Client Configuration** - Base HttpService with Axios
+- **Service Structure** - Pattern for external integration
+- **Authentication** - API Key, Bearer Token, Basic Auth, OAuth 2.0
+- **Timeout and Retry** - Configuration and implementation
+- **Circuit Breaker** - Protection against unstable APIs
+- **Response Cache** - In-memory and Redis
+- **Rate Limiting** - Detect 429 and local throttle
+- **Webhooks** - Receive events from external APIs
+- **Test Mocks** - HttpService mock and nock
+- **Environment Variables** - Secure configuration
+- **Complete Example** - Providers module (Yahoo, Kinvo, B3)
+- **Best Practices** - Implementation checklist
+
+### [Swagger - `./how-to-document-swagger-backend.md`]()
+
+- **Initial Configuration** - Swagger setup in main.ts
+- **Document Controllers** - Main decorators
+- **Document DTOs** - @ApiProperty and examples
+- **Document Responses** - Types and multiple status codes
+- **Useful Decorators** - @ApiTags, @ApiBearerAuth, @ApiOperation
+- **Hide Properties** - @ApiHideProperty and @Exclude
+- **Test in Swagger UI** - How to authenticate and test endpoints
+- **Document Pagination** - Paginated response DTO
+- **Documentation Checklist** - Complete verification
+- **Tips** - Documentation best practices
+
+### [Data Validation - `./how-to-use-data-validation-api-backend.md`]()
+
+- **Global Configuration** - ValidationPipe in main.ts
+- **String Validators** - IsString, IsEmail, MaxLength, Matches
+- **Numeric Validators** - IsNumber, Min, Max, IsPositive
+- **Boolean Validators** - IsBoolean
+- **Date Validators** - IsDate, MinDate, MaxDate
+- **Array Validators** - IsArray, ArrayMinSize, each item
+- **Enum Validators** - IsEnum
+- **Optional Fields** - @IsOptional
+- **Complete Example: Create DTO** - Full validation
+- **Nested Object Validation** - @ValidateNested
+- **Custom Validation** - Create own validators
+- **Error Messages** - Message customization
+- **Conditional Validation** - @ValidateIf
+- **Type Transformation** - @Type and @Transform
+- **Error Handling** - Structure and capture
+- **Best Practices** - Validation checklist
+
+## [💾 Database]()
+
+Documentation about TypeORM, entities, migrations and database schema management.
+
+### [TypeORM Entity - `./how-to-create-typeorm-entity-backend.md`]()
+
+- **Basic Structure** - Simple entity, SuperEntity and SoftDeletableEntity
+- **SuperEntity** - Base class with id, created_at, updated_at
+- **SoftDeletableEntity** - Base class for soft delete (extends SuperEntity)
+- **Column Types** - Text, numbers, boolean, date, JSON
+- **Relationships** - Many-to-One, One-to-Many, Many-to-Many
+- **Advanced Features** - Indexes, unique, default values
+- **Optional Columns** - nullable
+- **Enums** - Definition and usage
+- **Field Exclusion** - @Exclude for sensitive data
+- **Soft Delete** - SoftDeletableEntity, softDelete(), restore(), withDeleted
+- **Conventions** - Naming of classes, tables, columns
+- **Complete Example** - Entity with all features
+- **Register in Module** - TypeOrmModule.forFeature
+- **Use in Service** - @InjectRepository
+- **Important Tips** - Best practices
+
+### [Migrations - `./how-to-create-migration-backend.md`]()
+
+- **What are Migrations** - Database versioning
+- **Available Commands** - create, generate, run, revert, show
+- **Create Manual Migration** - Step by step
+- **Migration Types** - Create table, add column, indexes, FK
+- **Example: Add Field** - Complete migration
+- **Example: Relationship** - Add FK
+- **Automatic Migrations** - migration:generate
+- **Best Practices** - Down, tests, naming, single responsibility, **NEVER triggers/functions**
+- **Important Rule** - All business logic in application, not in database
+- **Troubleshooting** - Common problems and solutions
+- **package.json Scripts** - Available commands
+
+### [Migration Commands - `./migration-commands-packagejson-backend.md`]()
+
+- **Required Scripts** - typeorm, generate, create, run, revert, show
+- **typeorm (Base)** - Base script with ts-node
+- **migration:generate** - Auto-generate
+- **migration:create** - Create empty
+- **migration:run** - Execute pending
+- **migration:revert** - Revert last
+- **migration:show** - List status
+- **db:drop** - Reset database
+- **Workflow** - Create entity - generate - execute
+- **DataSource Configuration** - database.config.ts
+- **Required Dependencies** - ts-node, tsconfig-paths
+- **Additional Scripts** - seed, check, backup
+- **CI/CD Integration** - GitHub Actions, Docker
+- **Troubleshooting** - Common errors
+
+## [🔐 Authentication and Security]()
+
+Guides for implementing JWT authentication, API Key and security strategies.
+
+### [JWT Authentication - `./how-authentication-works.md`]()
+
+- **Overview** - Complete JWT system
+- **Authentication Flow** - Signup - Login - Requests
+- **User Entity** - User model
+- **JWT Strategy** - Token validation
+- **Local Strategy** - Login with credentials
+- **Auth Service** - Authentication logic
+- **Auth Controller** - Public endpoints
+- **Guards** - Global JWT Guard and Local Guard
+- **Public Decorator** - Mark public routes
+- **How to Use in Controller** - Access req.user
+- **Data Isolation** - Filter by userId
+- **Complete Flow** - Signup, Login, Authenticated request
+- **Frontend: Implement** - localStorage, Axios interceptor
+- **Environment Variables** - JWT_SECRET, JWT_EXPIRATION
+- **Security** - Implemented best practices
+- **Troubleshooting** - Common issues
+
+### [API Key - `./how-api-key-authentication-works.md`]()
+
+- **What is API Key** - Alternative authentication
+- **When to Use** - Integrations, webhooks, cron jobs
+- **Configure Variable** - X_API_KEY in .env
+- **Create Guard** - ApiKeyAuthGuard
+- **Create Decorator** - @ApiKeyAuth()
+- **Register Global** - main.ts
+- **How to Use** - Endpoint with API Key
+- **How to Call** - curl, Axios, fetch
+- **Advanced Implementation** - Multiple API Keys per client
+- **Rate Limiting** - Limit requests
+- **Document Swagger** - addApiKey
+- **Security** - Best practices
+- **JWT vs API Key Differences** - Comparison table
+- **Troubleshooting** - Common errors
+
+## [🤖 Agent System and Review Pipeline]()
+
+Specialized agent system and review pipeline to ensure quality and compliance with project technical rules.
+
+### [Review Pipeline - `./agent-review-pipeline.md`]()
+
+- **Overview** - Two-stage review pipeline
+- **Complete Flow** - developer → feature-review → code-review
+- **Involved Agents** - developer-fullstack, feature-review, code-reviewer
+- **developer-fullstack** - Implement following technical rules (`.rules`)
+- **feature-review** - Validate completeness vs task requirements
+- **code-reviewer** - Validate compliance vs technical rules (`.rules`)
+- **Detailed Pipeline** - Stage 1 (Completeness) and Stage 2 (Quality)
+- **Correction Loop** - Flow when there are incompatibilities or violations
+- **Complete Example** - Implement Product CRUD with 4 rounds
+- **Best Practices** - For Scrum Master, Developers and Reviewers
+- **Output Files** - Reports in ./todo/
+- **Summary** - Ensure complete code compliant with rules
+
+## [🏗️ Backend Structure and Patterns]()
+
+Architecture, code organization and design patterns for scalable backend modules.
+
+### [Main File - `./how-main-file-works-backend.md`]()
+
+- **What is main.ts** - Entry point
+- **Basic Structure** - Minimal bootstrap
+- **Complete Configuration** - Project setup with NestExpressApplication
+- **1. NestFactory.create** - Create application with Express typing
+- **2. Global Prefix** - /api in all routes
+- **3. CORS** - Enable cross-origin
+- **4. Serve Static Files** - useStaticAssets for public folder
+- **5. SPA Fallback** - React Router with index.html
+- **6. Global ValidationPipe** - Automatic validation
+- **7. Global Guards** - JWT Auth
+- **8. Swagger** - Documentation with Bearer and API Key
+- **9. Listen** - Start server
+- **Detailed Explanation** - Each section with examples
+- **Optional Configurations** - Helmet, compression, rate limiting
+- **Environment Variables** - Required .env
+- **Checklist** - Setup verification
+
+### [Folder Structure - `./backend-module-folder-structure.md`]()
+
+- **Standard Structure** - File organization
+- **Module** - Module configuration
+- **Controller** - REST endpoints
+- **Service** - Business logic
+- **Entity** - Data model
+- **DTOs** - Input validation
+- **When to Create Sub-services** - Complex logic
+- **When to Use Interfaces** - Contracts
+- **When to Use Enums** - Fixed values
+- **Real Example** - Simple and complex module
+- **Naming Conventions** - Pattern table
+- **Organization by Size** - Small, medium, large
+- **Module Location** - src/modules
+- **Tips** - Best practices
+
+### [Scalable Pattern - `./scalable-implementation-pattern-backend.md`]()
+
+- **Fundamental Principles** - Single Responsibility, DI, Inversion
+- **1. Single Responsibility** - One class, one responsibility
+- **2. Dependency Injection** - Inject dependencies
+- **Implementation Patterns** - Use-Case (MAIN), Repository, DTO, Strategy, Factory
+- **1. Use-Case Pattern** - ⭐ MAIN pattern for complex business rules (see ./how-to-create-use-case-backend.md)
+- **3. Dependency Inversion** - Depend on abstractions
+- **Repository Pattern** - TypeORM repository
+- **DTO Pattern** - Validation and transfer
+- **Strategy Pattern** - Multiple implementations
+- **Factory Pattern** - Complex creation
+- **Layer Separation** - Controller - Service - Repository
+- **Error Handling** - NestJS exceptions
+- **Ownership Validation** - Filter by userId
+- **Transactions** - Atomic operations
+- **Logging** - NestJS Logger
+- **Tests** - Testable structure
+- **Checklist** - Scalability verification
+- **Final Tips** - Best practices
+
+### [Use-Cases - `./how-to-create-use-case-backend.md`]()
+
+- **What is Use-Case** - Class with interfaces segregated by responsibility
+- **When to Use** - Complex rules, multiple transactions, multiple responsibilities
+- **When NOT to Use** - Simple CRUD, direct operations, trivial endpoints
+- **File Structure** - use-cases/ folder, interfaces.ts, *.usecase.ts
+- **Naming Convention** - Patterns for interfaces and use-cases
+- **Step 1: Define Interfaces** - One responsibility = one method per interface
+- **Step 2: Create Use-Case** - Implement multiple related interfaces
+- **Step 3: Register in Module** - Add to providers and exports
+- **Step 4: Inject** - Via DI in Service or Controller
+- **SOLID Principles** - S (Single Responsibility), O (Open/Closed), L (Liskov), I (Interface Segregation), D (Dependency Inversion)
+- **Testing Use-Cases** - Reference to complete testing guide
+- **Service vs Use-Case Differences** - Detailed comparison and when to use each
+- **Best Practices** - One interface = one method, descriptive naming, type aliases
+- **Checklist** - Complete implementation verification
+- **Troubleshooting** - Cannot resolve dependency, circular dependency, use-case too large
+- **Complete Example** - Order module with interfaces and use-cases
+
+### [Use-Case Tests - `./how-to-test-use-cases-jest-backend.md`]()
+
+- **Test Principles** - Test only Use-Cases, mock dependencies, isolated execution
+- **Jest Configuration** - jest.config.js, package.json scripts, dependencies
+- **File Structure** - Location and naming of .spec.ts
+- **Basic Template** - Standard Use-Case test structure
+- **Complete Example** - FinancialRulesUseCase with mocks
+- **Mock Multiple Dependencies** - Repository + HttpService + ConfigService
+- **Mock ConfigService** - Simulate environment variables
+- **Test Exceptions** - BadRequestException, NotFoundException
+- **Jest.spyOn** - Mock methods of the Use-Case itself
+- **Tests with Dates** - useFakeTimers and setSystemTime
+- **Arrange-Act-Assert Pattern** - Test organization
+- **Code Coverage** - 100% goal for Use-Cases
+- **Jest Commands** - test, watch, coverage, debug
+- **Checklist** - Complete test verification
+- **Common Errors** - Solutions for frequent problems
+
+## [🎨 Frontend - Development]()
+
+Complete guides for React development, API consumption and reusable component creation.
+
+### [Initial Setup - `./how-to-setup-frontend.md`]()
+
+- **Overview** - Configure React + TypeScript + Vite + Tailwind from scratch
+- **Prerequisites** - Node.js 18+, npm/yarn/pnpm
+- **Step 1: Create Project** - Vite with React + TypeScript template
+- **Step 2: Install Tailwind** - Tailwind CSS v4 setup with @tailwindcss/vite
+- **Step 3: React Router** - Installation
+- **Step 4: Axios** - Installation
+- **Step 5: TypeScript** - Path aliases @/*
+- **Changes v3 → v4** - Migration guide and differences
+- **Step 6: Folder Structure** - components, pages, services, config
+- **Step 7: Environment Variables** - .env with VITE_API_URL
+- **Step 8: Scripts** - dev, build, preview, lint
+- **Step 9: Configure Axios** - Instance with interceptors
+- **Step 10: Configure Routes** - routes.config.tsx
+- **Step 11: Home Page** - HomePage example
+- **Step 12: Test Project** - Execution commands
+- **Optional Configurations** - ESLint, Prettier, VS Code
+- **Setup Checklist** - Complete verification
+- **Next Steps** - References to continue
+- **Troubleshooting** - Cannot find module, Tailwind not working, PostCSS Tailwind v4 error, CORS
+
+### [Consume API - `./how-to-consume-api-frontend.md`]()
+
+- **Axios Configuration** - Configured instance (401 interceptor without direct redirect)
+- **Environment Variable** - VITE_API_URL
+- **Create Services** - Service structure (examples without business logic)
+- **useState and useEffect** - List data
+- **Create Item** - Form submit
+- **Update Item** - Edit form
+- **Delete Item** - Confirmation
+- **Error Handling** - getErrorMessage helper
+- **Custom Hook** - useApi hook
+- **Pagination** - Query params
+- **File Upload** - FormData
+- **Query Params** - Filters and search
+- **React Suspense** - Data fetching with Suspense and ErrorBoundary
+- **Cancel Requests** - CancelToken
+- **Checklist** - Complete verification
+
+### [Common Components - `./how-to-create-common-components-frontend.md`]()
+
+- **Principles** - Reusable, configurable, typed
+- **Location** - src/components/common
+- **1. Button** - Variants and sizes
+- **2. Modal** - Overlay and footer
+- **3. Card** - Title and footer
+- **4. Input** - Label and error
+- **5. Select** - Dropdown with options
+- **6. Spinner** - Loading indicator
+- **7. Alert** - Success, error, warning
+- **8. Badge** - Colored tags
+- **Compound Components** - Card.Header, Card.Body
+- **Best Practices** - Default props, spread, forwardRef, typing
+- **Organization** - index.ts for re-export
+- **Checklist** - Component verification
+
+### [Frontend Routing - `./how-routing-works-frontend.md`]()
+
+- **Overview** - React Router DOM
+- **File Structure** - App, config, components, pages
+- **Centralized Configuration** - routes.config.tsx
+- **App.tsx** - Public and private routes
+- **PrivateRoute** - Authentication guard
+- **Layout** - Structure with Outlet
+- **useNavigate** - Programmatic navigation
+- **Link Component** - Declarative links
+- **NavLink** - Link with active state
+- **useParams** - Route parameters
+- **useSearchParams** - Query parameters
+- **Nested Routes** - Children and Outlet
+- **Redirects** - Navigate component
+- **useLocation** - Route information
+- **Pass State** - navigate with state
+- **Dynamic Menu** - Based on config
+- **Lazy Loading** - Code splitting
+- **404 Page** - Catch-all route
+- **Breadcrumbs** - Hierarchical navigation
+- **Best Practices** - Checklist
+
+## [📖 Quick Guides]()
+
+Shortcuts for common tasks with direct links to specific guide sections.
+
+### [Create complete new backend module]()
+
+1. [How to create an API](./how-to-create-api-backend.md#passo-a-passo)
+2. [How to create Entity](./how-to-create-typeorm-entity-backend.md#estrutura-básica)
+3. [How to create Migration](./how-to-create-migration-backend.md#passo-a-passo-criar-migration-manual)
+4. [How to document Swagger](./how-to-document-swagger-backend.md#documentar-controllers)
+5. [How to validate data](./how-to-use-data-validation-api-backend.md#exemplo-completo-create-dto)
+
+### [Authentication setup]()
+
+1. [JWT Authentication](./how-authentication-works.md#componentes-do-sistema)
+2. [API Key](./how-api-key-authentication-works.md#implementação)
+
+### [Initial frontend setup]()
+
+1. [Frontend Setup](./how-to-setup-frontend.md#passo-a-passo)
+
+### [Create new frontend page]()
+
+1. [Consume API](./how-to-consume-api-frontend.md#criar-services)
+2. [Create components](./how-to-create-common-components-frontend.md#exemplos-práticos)
+3. [Configure routes](./how-routing-works-frontend.md#configuração-centralizada)
+
+## [🔍 Keyword Search]()
+
+Alphabetical index of technical terms with direct links to corresponding guides.
+
+| Keyword | Main Document |
+|---------|---------------|
+| Agents | [Review Pipeline](./agent-review-pipeline.md) |
+| Pipeline | [Review Pipeline](./agent-review-pipeline.md) |
+| feature-review | [Review Pipeline](./agent-review-pipeline.md#2-feature-review) |
+| code-reviewer | [Review Pipeline](./agent-review-pipeline.md#3-code-reviewer) |
+| developer-fullstack | [Review Pipeline](./agent-review-pipeline.md#1-developer-fullstack) |
+| Code Review | [Review Pipeline](./agent-review-pipeline.md) |
+| TypeScript | [TypeScript Patterns](./typescript-patterns-standards.md) |
+| any | [TypeScript Patterns - Rule #1](./typescript-patterns-standards.md#regra-1-nunca-use-o-tipo-any) |
+| unknown | [TypeScript Patterns - Rule #4](./typescript-patterns-standards.md#regra-4-use-unknown-ao-invés-de-any-para-tipos-desconhecidos) |
+| Generics | [TypeScript Patterns - Rule #7](./typescript-patterns-standards.md#regra-7-generics-para-código-reutilizável) |
+| Type Guards | [TypeScript Patterns](./typescript-patterns-standards.md#type-guards-comuns) |
+| strict mode | [TypeScript Patterns - Rule #2](./typescript-patterns-standards.md#regra-2-sempre-use-strict-true-no-tsconfigjson) |
+| Typing | [TypeScript Patterns](./typescript-patterns-standards.md) |
+| Backend Setup | [Initial Setup](./how-to-setup-backend.md) |
+| Frontend Setup | [Initial Setup](./how-to-setup-frontend.md) |
+| NestJS Setup | [Initial Setup](./how-to-setup-backend.md) |
+| Vite Setup | [Frontend Setup](./how-to-setup-frontend.md) |
+| TypeORM | [Entity](./how-to-create-typeorm-entity-backend.md), [Migration](./how-to-create-migration-backend.md) |
+| JWT | [Authentication](./how-authentication-works.md) |
+| Swagger | [API Documentation](./how-to-document-swagger-backend.md) |
+| Validation | [API Data](./how-to-use-data-validation-api-backend.md) |
+| Versioning | [API Versioning](./how-to-version-api-backend.md) |
+| API Versioning | [API Versioning](./how-to-version-api-backend.md) |
+| v1 v2 | [API Versioning](./how-to-version-api-backend.md) |
+| Breaking Changes | [API Versioning](./how-to-version-api-backend.md) |
+| React Router | [Frontend Routes](./how-routing-works-frontend.md) |
+| Axios | [Consume API](./how-to-consume-api-frontend.md), [Backend External API](./how-to-integrate-external-api-backend.md) |
+| Tailwind | [Frontend Setup](./how-to-setup-frontend.md), [Components](./how-to-create-common-components-frontend.md) |
+| NestJS | [Create API](./how-to-create-api-backend.md), [Main](./how-main-file-works-backend.md) |
+| Guards | [Authentication](./how-authentication-works.md#guards-proteção-de-rotas) |
+| DTOs | [Validation](./how-to-use-data-validation-api-backend.md), [Create API](./how-to-create-api-backend.md#passo-3-criar-dtos-validação) |
+| CRUD | [Create API](./how-to-create-api-backend.md#passo-4-implementar-o-service) |
+| Hooks | [Consume API](./how-to-consume-api-frontend.md#custom-hook-para-api) |
+| Dates | [Date Handling](./how-to-handle-dates-backend-frontend.md) |
+| dayjs | [Date Handling](./how-to-handle-dates-backend-frontend.md) |
+| UTC | [Date Handling](./how-to-handle-dates-backend-frontend.md) |
+| Timezone | [Date Handling](./how-to-handle-dates-backend-frontend.md) |
+| Triggers | [Migrations](./how-to-create-migration-backend.md#8-nunca-crie-triggers-ou-funções-no-banco-de-dados) |
+| PostgreSQL Functions | [Migrations](./how-to-create-migration-backend.md#8-nunca-crie-triggers-ou-funções-no-banco-de-dados) |
+| Stored Procedures | [Migrations](./how-to-create-migration-backend.md#8-nunca-crie-triggers-ou-funções-no-banco-de-dados) |
+| External API | [External API Integration](./how-to-integrate-external-api-backend.md) |
+| HTTP Client | [External API Integration](./how-to-integrate-external-api-backend.md) |
+| Webhooks | [External API Integration](./how-to-integrate-external-api-backend.md#webhooks), [API Key](./how-api-key-authentication-works.md) |
+| Circuit Breaker | [External API Integration](./how-to-integrate-external-api-backend.md#circuit-breaker-pattern) |
+| Cache | [Redis](./how-to-use-redis-backend.md), [External API Integration](./how-to-integrate-external-api-backend.md#cache-de-respostas) |
+| Redis | [How to use Redis](./how-to-use-redis-backend.md) |
+| RabbitMQ | [How to use RabbitMQ](./how-to-use-rabbitmq-backend.md) |
+| Topic Exchange | [RabbitMQ - Topic Exchange](./how-to-use-rabbitmq-backend.md#arquitetura-topic-exchange) |
+| Queues | [RabbitMQ](./how-to-use-rabbitmq-backend.md) |
+| Background Jobs | [RabbitMQ](./how-to-use-rabbitmq-backend.md#quando-usar-rabbitmq) |
+| Events | [RabbitMQ - Topics](./how-to-use-rabbitmq-backend.md#padrão-de-nomenclatura-de-tópicos) |
+| Retry | [RabbitMQ - Retries](./how-to-use-rabbitmq-backend.md#2-controle-de-retries-com-contador), [External API](./how-to-integrate-external-api-backend.md#timeout-e-retry) |
+| Dead Letter Queue | [RabbitMQ - DLQ](./how-to-use-rabbitmq-backend.md#1-dead-letter-queue-dlq-com-topic-exchange) |
+| Asynchronous Processing | [RabbitMQ](./how-to-use-rabbitmq-backend.md#quando-usar-rabbitmq) |
+| Wildcards | [RabbitMQ - Pattern Matching](./how-to-use-rabbitmq-backend.md#2-consumer-com-pattern-matching-wildcards) |
+| Rate Limit | [Redis - Rate Limiting](./how-to-use-redis-backend.md#2-rate-limiting), [External API](./how-to-integrate-external-api-backend.md#tratamento-de-rate-limiting) |
+| Horizontal Scaling | [Redis](./how-to-use-redis-backend.md#quando-usar-redis), [RabbitMQ](./how-to-use-rabbitmq-backend.md) |
+| Sessions | [Redis - Shared Sessions](./how-to-use-redis-backend.md#4-sessões-compartilhadas) |
+| Counter | [Redis - Atomic Counter](./how-to-use-redis-backend.md#1-contador-compartilhado-incremento-atômico) |
+| Scheduler | [Bull Scheduler](./how-to-use-scheduler-bull-redis-backend.md) |
+| Cron | [Bull Scheduler - Cron Expressions](./how-to-use-scheduler-bull-redis-backend.md#exemplo-expressões-cron-comuns) |
+| Bull | [Bull Scheduler](./how-to-use-scheduler-bull-redis-backend.md) |
+| Scheduled Tasks | [Bull Scheduler](./how-to-use-scheduler-bull-redis-backend.md#quando-usar-scheduler-com-bull) |
+| Scheduled Background Jobs | [Bull Scheduler](./how-to-use-scheduler-bull-redis-backend.md) |
+| Bull Board | [Bull Scheduler - Dashboard](./how-to-use-scheduler-bull-redis-backend.md#como-adicionar-bull-board-dashboard) |
+| Cron Decorator | [Bull Scheduler - @Cron](./how-to-use-scheduler-bull-redis-backend.md#criar-decorator-cron-customizado) |
+| Unit Tests | [Use-Case Tests](./how-to-test-use-cases-jest-backend.md) |
+| Jest | [Use-Case Tests](./how-to-test-use-cases-jest-backend.md) |
+| Mocks | [Use-Case Tests](./how-to-test-use-cases-jest-backend.md#mockando-múltiplas-dependências) |
+| Test Coverage | [Use-Case Tests](./how-to-test-use-cases-jest-backend.md#cobertura-de-código) |
+| Use-Case | [Create Use-Case](./how-to-create-use-case-backend.md), [Tests](./how-to-test-use-cases-jest-backend.md) |
+
+## [🗺️ Navigation by Level]()
+
+Guides organized by complexity level: beginner, intermediate and advanced.
+
+### [🌱 Beginner]()
+
+1. [Backend Stack](./backend-technology-stack.md#stack-principal)
+2. [Frontend Stack](./frontend-technology-stack.md#stack-principal)
+3. [Backend Setup](./how-to-setup-backend.md#visão-geral)
+4. [Frontend Setup](./how-to-setup-frontend.md#visão-geral)
+5. [JWT Authentication](./how-authentication-works.md#visão-geral)
+6. [Consume API](./how-to-consume-api-frontend.md#configuração-do-axios)
+
+### [🌿 Intermediate]()
+
+1. [Create Backend API](./how-to-create-api-backend.md#visão-geral)
+2. [API Versioning](./how-to-version-api-backend.md#por-que-versionar-apis)
+3. [Create Entity](./how-to-create-typeorm-entity-backend.md#estrutura-básica)
+4. [Create Migration](./how-to-create-migration-backend.md#passo-a-passo-criar-migration-manual)
+5. [Document Swagger](./how-to-document-swagger-backend.md#documentar-controllers)
+6. [Redis - Cache and Horizontal Scaling](./how-to-use-redis-backend.md#configuração-global-common-module)
+7. [RabbitMQ - Queues and Background Jobs](./how-to-use-rabbitmq-backend.md#configuração-global-common-module)
+8. [Bull Scheduler - Scheduled Tasks](./how-to-use-scheduler-bull-redis-backend.md#quando-usar-scheduler-com-bull)
+9. [Integrate External API](./how-to-integrate-external-api-backend.md#configuração-do-cliente-http)
+10. [Date Handling](./how-to-handle-dates-backend-frontend.md#princípios-fundamentais)
+11. [Create Components](./how-to-create-common-components-frontend.md#exemplos-práticos)
+12. [Frontend Routes](./how-routing-works-frontend.md#configuração-centralizada)
+
+### [🌳 Advanced]()
+
+1. [Scalable Pattern](./scalable-implementation-pattern-backend.md#princípios-fundamentais)
+2. [Folder Structure](./backend-module-folder-structure.md#estrutura-padrão)
+3. [Main File](./how-main-file-works-backend.md#configuração-completa-do-projeto)
+4. [API Key](./how-api-key-authentication-works.md#implementação-avançada)
+5. [Custom Validation](./how-to-use-data-validation-api-backend.md#validação-customizada)
+
+## [📁 File Structure]()
+
+Complete directory tree showing organization of all documentation files.
+
+```
+.rules/
+├── SUMMARY.md                                              (this file)
+│
+├── Agent System
+│   └── agent-review-pipeline.md                           (12 sections + complete example)
+│
+├── Stack and Technologies
+│   ├── typescript-patterns-standards.md                   (10 rules + examples)
+│   ├── backend-technology-stack.md                        (11 sections)
+│   └── frontend-technology-stack.md                       (10 sections)
+│
+├── Backend - API
+│   ├── how-to-create-api-backend.md                       (11 steps + extras)
+│   ├── how-to-version-api-backend.md                      (12 sections + examples)
+│   ├── how-to-integrate-external-api-backend.md           (12 sections)
+│   ├── how-to-document-swagger-backend.md                 (10 sections)
+│   ├── how-to-use-data-validation-api-backend.md          (15 topics)
+│   ├── how-to-handle-dates-backend-frontend.md            (12 sections + examples)
+│   ├── how-to-use-redis-backend.md                        (15 sections + examples)
+│   ├── how-to-use-rabbitmq-backend.md                     (17 sections + examples)
+│   └── how-to-use-scheduler-bull-redis-backend.md         (17 sections + examples)
+│
+├── Backend - Database
+│   ├── how-to-create-typeorm-entity-backend.md            (14 topics)
+│   ├── how-to-create-migration-backend.md                 (9 types + examples)
+│   └── migration-commands-packagejson-backend.md          (7 commands)
+│
+├── Backend - Authentication
+│   ├── how-authentication-works.md                        (15 sections)
+│   └── how-api-key-authentication-works.md                (10 topics)
+│
+├── Backend - Structure
+│   ├── how-to-setup-backend.md                            (9 steps)
+│   ├── how-main-file-works-backend.md                     (8 configurations)
+│   ├── backend-module-folder-structure.md                 (6 sections)
+│   ├── scalable-implementation-pattern-backend.md         (10 patterns)
+│   ├── how-to-create-use-case-backend.md                  (15 sections)
+│   └── how-to-test-use-cases-jest-backend.md              (14 sections)
+│
+└── Frontend
+    ├── how-to-setup-frontend.md                           (17 steps)
+    ├── how-to-consume-api-frontend.md                     (14 topics)
+    ├── how-to-create-common-components-frontend.md        (8 examples + practices)
+    └── how-routing-works-frontend.md                      (14 concepts)
+```
+
+## [📊 Statistics]()
+
+- **Total documents**: 27
+- **Agent System**: 1 document (12 sections)
+- **Backend**: 18 documents (247 sections)
+- **Frontend**: 4 documents (53 sections)
+- **Stack**: 3 documents (31 sections)
+- **Total sections**: 343 documented sections
+
+
+---
+
+**Last update**: November 16, 2025
+**Documentation maintained by**: Claude Code
+**Version**: 1.1.0

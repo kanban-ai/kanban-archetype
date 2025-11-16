@@ -1,58 +1,58 @@
-# [Como iniciar/fazer o setup do Frontend?]()
+# [How to setup the Frontend?]()
 
-> Guia completo para configurar um projeto React + TypeScript + Vite + Tailwind CSS do zero.
+> Complete guide to configure a React + TypeScript + Vite + Tailwind CSS project from scratch.
 
-## [Visão Geral]()
+## [Overview]()
 
-Este guia mostra como criar um projeto frontend moderno usando:
-- React v19+ para UI
-- TypeScript para type safety
-- Vite para build rápido
-- Tailwind CSS para estilização
-- React Router para roteamento
+This guide shows how to create a modern frontend project using:
+- React v19+ for UI
+- TypeScript for type safety
+- Vite for fast build
+- Tailwind CSS for styling
+- React Router for routing
 
-## [Pré-requisitos]()
+## [Prerequisites]()
 
-- **Node.js**: Versão 18 ou superior
-- **npm**, **yarn** ou **pnpm**: Gerenciador de pacotes
-- Editor de código (VS Code recomendado)
+- **Node.js**: Version 18 or higher
+- **npm**, **yarn** or **pnpm**: Package manager
+- Code editor (VS Code recommended)
 
-## [Passo 1: Criar Projeto com Vite]()
+## [Step 1: Create Project with Vite]()
 
-Criação do projeto React com TypeScript usando Vite como build tool para desenvolvimento rápido.
+Creating React project with TypeScript using Vite as build tool for fast development.
 
 ```bash
-# Criar projeto com template React + TypeScript
+# Create project with React + TypeScript template
 npm create vite@latest frontend -- --template react-swc-ts
 
-# Acessar pasta
+# Access folder
 cd frontend
 
-# Instalar dependências
+# Install dependencies
 npm install
 ```
 
-**O que foi criado:**
-- Estrutura base do React
-- Configuração TypeScript
-- Vite configurado com SWC (transpilador rápido)
-- Scripts de dev e build
+**What was created:**
+- React base structure
+- TypeScript configuration
+- Vite configured with SWC (fast transpiler)
+- Dev and build scripts
 
-## [Passo 2: Instalar Tailwind CSS v4]()
+## [Step 2: Install Tailwind CSS v4]()
 
-Instalação e configuração do Tailwind CSS v4 com plugin Vite nativo para performance máxima.
+Installation and configuration of Tailwind CSS v4 with native Vite plugin for maximum performance.
 
-### [2.1. Instalar dependências]()
+### [2.1. Install dependencies]()
 
 ```bash
 npm install -D tailwindcss @tailwindcss/vite
 ```
 
-> **Importante**: Tailwind CSS v4 (lançado em janeiro/2025) usa um plugin Vite nativo para máxima performance e configuração zero.
+> **Important**: Tailwind CSS v4 (released January/2025) uses a native Vite plugin for maximum performance and zero configuration.
 
-### [2.2. Configurar Plugin Vite]()
+### [2.2. Configure Vite Plugin]()
 
-**Arquivo**: `vite.config.ts`
+**File**: `vite.config.ts`
 
 ```typescript
 import { defineConfig } from 'vite'
@@ -72,21 +72,21 @@ export default defineConfig({
 })
 ```
 
-> **Nota**: O plugin `@tailwindcss/vite` deve vir ANTES do plugin React.
+> **Note**: The `@tailwindcss/vite` plugin must come BEFORE the React plugin.
 
-### [2.3. Importar Tailwind CSS]()
+### [2.3. Import Tailwind CSS]()
 
-**Arquivo**: `src/index.css`
+**File**: `src/index.css`
 
 ```css
 @import "tailwindcss";
 ```
 
-> **Mudança v3 → v4**: Não use mais `@tailwind base;`, `@tailwind components;`, `@tailwind utilities;`. Use apenas `@import "tailwindcss";`
+> **Change v3 → v4**: Don't use `@tailwind base;`, `@tailwind components;`, `@tailwind utilities;` anymore. Use only `@import "tailwindcss";`
 
-### [2.4. Customização de Tema (Opcional)]()
+### [2.4. Theme Customization (Optional)]()
 
-Se precisar customizar o tema, adicione no `src/index.css`:
+If you need to customize theme, add to `src/index.css`:
 
 ```css
 @import "tailwindcss";
@@ -97,9 +97,9 @@ Se precisar customizar o tema, adicione no `src/index.css`:
 }
 ```
 
-### [2.5. Importar CSS no main]()
+### [2.5. Import CSS in main]()
 
-**Arquivo**: `src/main.tsx`
+**File**: `src/main.tsx`
 
 ```typescript
 import React from 'react'
@@ -114,29 +114,29 @@ ReactDOM.createRoot(document.getElementById('root')!).render(
 )
 ```
 
-## [Passo 3: Instalar React Router]()
+## [Step 3: Install React Router]()
 
-Instalação do React Router DOM para gerenciamento de rotas client-side no aplicativo.
+Installation of React Router DOM for client-side route management in the application.
 
 ```bash
 npm install react-router-dom
 ```
 
-## [Passo 4: Instalar Axios]()
+## [Step 4: Install Axios]()
 
-Instalação do Axios para realizar requisições HTTP ao backend de forma simplificada.
+Installation of Axios to make HTTP requests to backend in a simplified way.
 
 ```bash
 npm install axios
 ```
 
-## [Passo 5: Configurar TypeScript]()
+## [Step 5: Configure TypeScript]()
 
-Configuração de path aliases e opções do compilador TypeScript para melhor experiência de desenvolvimento.
+Configuration of path aliases and TypeScript compiler options for better development experience.
 
-### [5.1. Path Aliases (opcional mas recomendado)]()
+### [5.1. Path Aliases (optional but recommended)]()
 
-**Arquivo**: `tsconfig.json`
+**File**: `tsconfig.json`
 
 ```json
 {
@@ -172,9 +172,9 @@ Configuração de path aliases e opções do compilador TypeScript para melhor e
 }
 ```
 
-### [5.2. Configurar alias no Vite]()
+### [5.2. Configure alias in Vite]()
 
-**Arquivo**: `vite.config.ts`
+**File**: `vite.config.ts`
 
 ```typescript
 import { defineConfig } from 'vite'
@@ -185,7 +185,7 @@ import path from 'path'
 // https://vite.dev/config/
 export default defineConfig({
   plugins: [
-    tailwindcss(),  // Plugin Tailwind v4
+    tailwindcss(),  // Tailwind v4 Plugin
     react(),
   ],
   resolve: {
@@ -196,36 +196,36 @@ export default defineConfig({
 })
 ```
 
-> **Importante**: O plugin `tailwindcss()` deve aparecer ANTES do `react()`.
+> **Important**: The `tailwindcss()` plugin must appear BEFORE `react()`.
 
-## [Passo 6: Estrutura de Pastas]()
+## [Step 6: Folder Structure]()
 
-Criar a seguinte estrutura:
+Create the following structure:
 
 ```
 frontend/
- src/
-    components/        # Componentes reutilizáveis
-       common/        # Componentes comuns (Button, Input, etc)
-    pages/             # Páginas da aplicação
-    services/          # Services para API
-    config/            # Configurações (routes, api)
+  src/
+    components/        # Reusable components
+      common/        # Common components (Button, Input, etc)
+    pages/             # Application pages
+    services/          # API services
+    config/            # Configurations (routes, api)
     contexts/          # React Contexts
     hooks/             # Custom hooks
     types/             # TypeScript types/interfaces
-    utils/             # Funções utilitárias
-    App.tsx            # Componente principal
+    utils/             # Utility functions
+    App.tsx            # Main component
     main.tsx           # Entry point
-    index.css          # Estilos globais
- public/                # Arquivos estáticos
- index.html             # HTML base
- package.json
- tsconfig.json
- vite.config.ts
- tailwind.config.js
+    index.css          # Global styles
+  public/                # Static files
+  index.html             # Base HTML
+  package.json
+  tsconfig.json
+  vite.config.ts
+  tailwind.config.js
 ```
 
-Criar pastas:
+Create folders:
 
 ```bash
 mkdir -p src/components/common
@@ -238,33 +238,33 @@ mkdir -p src/types
 mkdir -p src/utils
 ```
 
-**Nota sobre estrutura**: Esta é a **estrutura mínima** recomendada para setup inicial. Conforme o projeto cresce (>20 componentes), organize componentes em subpastas especializadas como `forms/`, `layouts/`, `sections/`, `guards/`, `containers/`.
+**Note on structure**: This is the **minimum structure** recommended for initial setup. As the project grows (>20 components), organize components in specialized subfolders like `forms/`, `layouts/`, `sections/`, `guards/`, `containers/`.
 
-**Documentação completa**: Ver `.rules/qual-padrao-de-nomenclatura-de-componentes-react-frontend.md` seção "Estrutura de Pastas: Mínima vs Completa".
+**Complete documentation**: See `.rules/react-component-naming-pattern-frontend.md` section "Folder Structure: Minimal vs Complete".
 
-## [Passo 7: Configurar Variáveis de Ambiente]()
+## [Step 7: Configure Environment Variables]()
 
-Setup de arquivos .env para armazenar URLs da API e outras configurações sensíveis.
+Setup of .env files to store API URLs and other sensitive configurations.
 
-### [7.1. Criar arquivo .env]()
+### [7.1. Create .env file]()
 
-**Arquivo**: `.env`
-
-```env
-VITE_API_URL=http://localhost:3000/api
-```
-
-### [7.2. Criar arquivo .env.example]()
-
-**Arquivo**: `.env.example`
+**File**: `.env`
 
 ```env
 VITE_API_URL=http://localhost:3000/api
 ```
 
-### [7.3. Adicionar ao .gitignore]()
+### [7.2. Create .env.example file]()
 
-**Arquivo**: `.gitignore`
+**File**: `.env.example`
+
+```env
+VITE_API_URL=http://localhost:3000/api
+```
+
+### [7.3. Add to .gitignore]()
+
+**File**: `.gitignore`
 
 ```
 # Vite
@@ -292,9 +292,9 @@ dist-ssr
 node_modules
 ```
 
-## [Passo 8: Scripts package.json]()
+## [Step 8: package.json Scripts]()
 
-**Arquivo**: `package.json`
+**File**: `package.json`
 
 ```json
 {
@@ -333,9 +333,9 @@ node_modules
 }
 ```
 
-## [Passo 9: Configurar Axios]()
+## [Step 9: Configure Axios]()
 
-**Arquivo**: `src/services/api.ts`
+**File**: `src/services/api.ts`
 
 ```typescript
 import axios from 'axios';
@@ -347,7 +347,7 @@ const api = axios.create({
   },
 });
 
-// Interceptor para adicionar token em todas requisições
+// Interceptor to add token to all requests
 api.interceptors.request.use((config) => {
   const token = localStorage.getItem('token');
 
@@ -358,15 +358,15 @@ api.interceptors.request.use((config) => {
   return config;
 });
 
-// Interceptor para tratar erros
+// Interceptor to handle errors
 api.interceptors.response.use(
   (response) => response,
   (error) => {
     if (error.response?.status === 401) {
-      // Token inválido/expirado - limpar dados locais
+      // Invalid/expired token - clear local data
       localStorage.removeItem('token');
       localStorage.removeItem('user');
-      // Permitir que o componente lide com o redirecionamento
+      // Allow component to handle redirection
     }
 
     return Promise.reject(error);
@@ -376,9 +376,9 @@ api.interceptors.response.use(
 export default api;
 ```
 
-## [Passo 10: Configurar Rotas]()
+## [Step 10: Configure Routes]()
 
-**Arquivo**: `src/config/routes.config.tsx`
+**File**: `src/config/routes.config.tsx`
 
 ```typescript
 import { RouteObject } from 'react-router-dom';
@@ -397,7 +397,7 @@ export const routes: RouteObject[] = [
 ];
 ```
 
-**Arquivo**: `src/App.tsx`
+**File**: `src/App.tsx`
 
 ```typescript
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
@@ -418,9 +418,9 @@ function App() {
 export default App;
 ```
 
-## [Passo 11: Criar Página Inicial]()
+## [Step 11: Create Home Page]()
 
-**Arquivo**: `src/pages/HomePage.tsx`
+**File**: `src/pages/HomePage.tsx`
 
 ```typescript
 function HomePage() {
@@ -428,7 +428,7 @@ function HomePage() {
     <div className="min-h-screen bg-gray-100 flex items-center justify-center">
       <div className="bg-white p-8 rounded-lg shadow-md">
         <h1 className="text-3xl font-bold text-primary mb-4">
-          Frontend Setup Completo!
+          Frontend Setup Complete!
         </h1>
         <p className="text-gray-600">
           React + TypeScript + Vite + Tailwind CSS
@@ -441,32 +441,32 @@ function HomePage() {
 export default HomePage;
 ```
 
-## [Passo 12: Testar o Projeto]()
+## [Step 12: Test Project]()
 
-Comandos para executar o projeto em modo desenvolvimento, produção e verificar tipos TypeScript.
+Commands to run project in development mode, production and verify TypeScript types.
 
 ```bash
-# Rodar em desenvolvimento
+# Run in development
 npm run dev
 
-# Build de produção
+# Production build
 npm run build
 
-# Preview do build
+# Preview build
 npm run preview
 
-# Verificar tipos TypeScript
+# Check TypeScript types
 npm run type-check
 
-# Rodar linter
+# Run linter
 npm run lint
 ```
 
-Acesse: `http://localhost:5173`
+Access: `http://localhost:5173`
 
-## [Configurações Adicionais (Opcional)]()
+## [Additional Configurations (Optional)]()
 
-Ferramentas opcionais de qualidade de código e extensões VS Code para melhorar produtividade.
+Optional code quality tools and VS Code extensions to improve productivity.
 
 ### [ESLint + Prettier]()
 
@@ -474,7 +474,7 @@ Ferramentas opcionais de qualidade de código e extensões VS Code para melhorar
 npm install -D prettier eslint-config-prettier eslint-plugin-prettier
 ```
 
-**Arquivo**: `.prettierrc`
+**File**: `.prettierrc`
 
 ```json
 {
@@ -485,9 +485,9 @@ npm install -D prettier eslint-config-prettier eslint-plugin-prettier
 }
 ```
 
-### [VS Code Extensions Recomendadas]()
+### [Recommended VS Code Extensions]()
 
-**Arquivo**: `.vscode/extensions.json`
+**File**: `.vscode/extensions.json`
 
 ```json
 {
@@ -502,7 +502,7 @@ npm install -D prettier eslint-config-prettier eslint-plugin-prettier
 
 ### [VS Code Settings]()
 
-**Arquivo**: `.vscode/settings.json`
+**File**: `.vscode/settings.json`
 
 ```json
 {
@@ -518,37 +518,37 @@ npm install -D prettier eslint-config-prettier eslint-plugin-prettier
 }
 ```
 
-## [Checklist de Setup]()
+## [Setup Checklist]()
 
-- [ ] Projeto criado com Vite + React + TypeScript
-- [ ] Tailwind CSS v4 instalado (`tailwindcss` + `@tailwindcss/vite`)
-- [ ] Plugin `@tailwindcss/vite` configurado no `vite.config.ts`
-- [ ] CSS com `@import "tailwindcss";` configurado
-- [ ] React Router instalado
-- [ ] Axios instalado e configurado
-- [ ] Path aliases configurados (@/*)
-- [ ] Estrutura de pastas criada
-- [ ] Variáveis de ambiente (.env)
-- [ ] Scripts package.json atualizados
-- [ ] Service API configurado
-- [ ] Rotas configuradas
-- [ ] Página inicial criada
-- [ ] Projeto rodando em dev
-- [ ] Build de produção funcionando
+- [ ] Project created with Vite + React + TypeScript
+- [ ] Tailwind CSS v4 installed (`tailwindcss` + `@tailwindcss/vite`)
+- [ ] `@tailwindcss/vite` plugin configured in `vite.config.ts`
+- [ ] CSS with `@import "tailwindcss";` configured
+- [ ] React Router installed
+- [ ] Axios installed and configured
+- [ ] Path aliases configured (@/*)
+- [ ] Folder structure created
+- [ ] Environment variables (.env)
+- [ ] package.json scripts updated
+- [ ] API service configured
+- [ ] Routes configured
+- [ ] Home page created
+- [ ] Project running in dev
+- [ ] Production build working
 
-## [Mudanças do Tailwind v3 para v4]()
+## [Changes from Tailwind v3 to v4]()
 
-Se você já conhece Tailwind v3, aqui estão as principais mudanças:
+If you already know Tailwind v3, here are the main changes:
 
-### [O que mudou]()
+### [What changed]()
 
-1. **Plugin Vite Nativo**: Agora usa `@tailwindcss/vite` ao invés de PostCSS
-2. **Sintaxe CSS**: `@import "tailwindcss";` ao invés de `@tailwind base;` etc
-3. **Sem arquivos de config**: `tailwind.config.js` e `postcss.config.js` são opcionais
-4. **Customização no CSS**: Use `@theme` para customizar cores, fontes, etc
-5. **Performance**: Build muito mais rápido com o plugin Vite nativo
+1. **Native Vite Plugin**: Now uses `@tailwindcss/vite` instead of PostCSS
+2. **CSS Syntax**: `@import "tailwindcss";` instead of `@tailwind base;` etc
+3. **No config files**: `tailwind.config.js` and `postcss.config.js` are optional
+4. **Customization in CSS**: Use `@theme` to customize colors, fonts, etc
+5. **Performance**: Much faster build with native Vite plugin
 
-### [Comparação]()
+### [Comparison]()
 
 **v3**:
 ```bash
@@ -594,62 +594,62 @@ export default defineConfig({
 })
 ```
 
-## [Próximos Passos]()
+## [Next Steps]()
 
-Após concluir o setup inicial:
+After completing initial setup:
 
-1. **Autenticação**: Implementar sistema de login/logout
-   - Ver: `./como-consumir-api-frontend.md`
+1. **Authentication**: Implement login/logout system
+   - See: `./how-to-consume-api-frontend.md`
 
-2. **Componentes Comuns**: Criar biblioteca de componentes reutilizáveis
-   - Ver: `./como-criar-componentes-comum-frontend.md`
+2. **Common Components**: Create reusable component library
+   - See: `./how-to-create-common-components-frontend.md`
 
-3. **Rotas Protegidas**: Implementar guards de autenticação
-   - Ver: `./como-funciona-as-rotas-no-frontend.md`
+3. **Protected Routes**: Implement authentication guards
+   - See: `./how-routing-works-frontend.md`
 
-4. **Consumir API**: Criar services e integrar com backend
-   - Ver: `./como-consumir-api-frontend.md`
+4. **Consume API**: Create services and integrate with backend
+   - See: `./how-to-consume-api-frontend.md`
 
 ## [Troubleshooting]()
 
-Soluções para problemas comuns durante a instalação e configuração do projeto frontend.
+Solutions for common problems during frontend project installation and configuration.
 
-### [Erro: Cannot find module '@/*']()
+### [Error: Cannot find module '@/*']()
 
-**Solução**: Verifique se configurou path aliases no `tsconfig.json` e `vite.config.ts`
+**Solution**: Check if you configured path aliases in `tsconfig.json` and `vite.config.ts`
 
-### [Tailwind não está funcionando]()
+### [Tailwind not working]()
 
-**Solução**:
-1. Verifique se importou `./index.css` no `main.tsx`
-2. Verifique se o `src/index.css` contém `@import "tailwindcss";`
-3. Verifique se o plugin `@tailwindcss/vite` está no `vite.config.ts`:
+**Solution**:
+1. Check if you imported `./index.css` in `main.tsx`
+2. Check if `src/index.css` contains `@import "tailwindcss";`
+3. Check if `@tailwindcss/vite` plugin is in `vite.config.ts`:
    ```typescript
    import tailwindcss from '@tailwindcss/vite'
 
    export default defineConfig({
      plugins: [
-       tailwindcss(),  // ANTES do react()
+       tailwindcss(),  // BEFORE react()
        react(),
      ],
    })
    ```
-4. Verifique se instalou as dependências corretas:
+4. Check if you installed correct dependencies:
    ```bash
    npm install -D tailwindcss @tailwindcss/vite
    ```
-5. Reinicie o servidor: `npm run dev`
+5. Restart server: `npm run dev`
 
-### [Erro: Cannot find module '@tailwindcss/vite']()
+### [Error: Cannot find module '@tailwindcss/vite']()
 
-**Problema**: O plugin Vite do Tailwind v4 não está instalado.
+**Problem**: Tailwind v4 Vite plugin is not installed.
 
-**Solução**:
+**Solution**:
 ```bash
 npm install -D tailwindcss @tailwindcss/vite
 ```
 
-Depois atualize o `vite.config.ts`:
+Then update `vite.config.ts`:
 ```typescript
 import tailwindcss from '@tailwindcss/vite'
 
@@ -661,27 +661,27 @@ export default defineConfig({
 })
 ```
 
-### [Erro: @tailwind directives are deprecated]()
+### [Error: @tailwind directives are deprecated]()
 
-**Problema**: Você está usando sintaxe antiga do Tailwind v3.
+**Problem**: You're using old Tailwind v3 syntax.
 
-**Solução**: No `src/index.css`, substitua:
+**Solution**: In `src/index.css`, replace:
 
-❌ **Errado (v3)**:
+❌ **Wrong (v3)**:
 ```css
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 ```
 
-✅ **Correto (v4)**:
+✅ **Correct (v4)**:
 ```css
 @import "tailwindcss";
 ```
 
-### [Erro de CORS ao fazer requests]()
+### [CORS error when making requests]()
 
-**Solução**: Configure CORS no backend ou use proxy do Vite:
+**Solution**: Configure CORS in backend or use Vite proxy:
 
 ```typescript
 // vite.config.ts
@@ -697,7 +697,7 @@ export default defineConfig({
 })
 ```
 
-## [Referências]()
+## [References]()
 
 - [Vite Documentation](https://vite.dev/)
 - [React Documentation](https://react.dev/)

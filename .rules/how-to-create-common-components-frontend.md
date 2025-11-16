@@ -1,32 +1,32 @@
-# [Como criar componentes comuns no Frontend?]()
+# [How to create common components in Frontend?]()
 
-> Guia para criar componentes reutilizáveis em React + TypeScript + Tailwind CSS.
+> Guide to create reusable components in React + TypeScript + Tailwind CSS.
 
-## [Princípios de Componentes Comuns]()
+## [Common Components Principles]()
 
-Componentes comuns devem ser:
-- **Reutilizáveis**: Funcionam em diferentes contextos
-- **Configuráveis**: Props para customização
-- **Tipados**: TypeScript para type-safety
-- **Autocontidos**: Não dependem de contexto específico
-- **Documentados**: Props bem descritas
+Common components should be:
+- **Reusable**: Work in different contexts
+- **Configurable**: Props for customization
+- **Typed**: TypeScript for type-safety
+- **Self-contained**: Don't depend on specific context
+- **Documented**: Well-described props
 
-## [Localização]()
+## [Location]()
 
-Esta seção define onde os componentes comuns devem ser armazenados na estrutura do projeto React.
+This section defines where common components should be stored in the React project structure.
 
 ```
 src/components/common/
- Button.tsx
- Modal.tsx
- Card.tsx
- Input.tsx
- ...
+  Button.tsx
+  Modal.tsx
+  Card.tsx
+  Input.tsx
+  ...
 ```
 
-## [Exemplos Práticos]()
+## [Practical Examples]()
 
-Esta seção apresenta implementações completas de componentes comuns do projeto, incluindo tipagem TypeScript, estilos Tailwind e boas práticas de React.
+This section presents complete implementations of project common components, including TypeScript typing, Tailwind styles and React best practices.
 
 ### [1. Button Component]()
 
@@ -68,14 +68,14 @@ export function Button({
       disabled={disabled || loading}
       {...props}
     >
-      {loading ? 'Carregando...' : children}
+      {loading ? 'Loading...' : children}
     </button>
   );
 }
 
-// Uso
+// Usage
 <Button variant="primary" size="md" onClick={handleClick}>
-  Salvar
+  Save
 </Button>
 ```
 
@@ -112,7 +112,7 @@ export function Modal({ isOpen, onClose, title, children, footer }: ModalProps) 
             onClick={onClose}
             className="text-gray-500 hover:text-gray-700"
           >
-            
+            ✕
           </button>
         </div>
 
@@ -132,21 +132,21 @@ export function Modal({ isOpen, onClose, title, children, footer }: ModalProps) 
   );
 }
 
-// Uso
+// Usage
 const [isOpen, setIsOpen] = useState(false);
 
 <Modal
   isOpen={isOpen}
   onClose={() => setIsOpen(false)}
-  title="Confirmar Ação"
+  title="Confirm Action"
   footer={
     <div className="flex gap-2">
-      <Button onClick={() => setIsOpen(false)}>Cancelar</Button>
-      <Button variant="primary">Confirmar</Button>
+      <Button onClick={() => setIsOpen(false)}>Cancel</Button>
+      <Button variant="primary">Confirm</Button>
     </div>
   }
 >
-  <p>Tem certeza que deseja continuar?</p>
+  <p>Are you sure you want to continue?</p>
 </Modal>
 ```
 
@@ -180,9 +180,9 @@ export function Card({ title, children, className = '', footer }: CardProps) {
   );
 }
 
-// Uso
-<Card title="Estatísticas" footer={<Button>Ver mais</Button>}>
-  <p>Conteúdo do card</p>
+// Usage
+<Card title="Statistics" footer={<Button>View more</Button>}>
+  <p>Card content</p>
 </Card>
 ```
 
@@ -225,10 +225,10 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
   }
 );
 
-// Uso
+// Usage
 <Input
-  label="Nome"
-  placeholder="Digite seu nome"
+  label="Name"
+  placeholder="Enter your name"
   error={errors.name}
   value={name}
   onChange={(e) => setName(e.target.value)}
@@ -276,12 +276,12 @@ export function Select({ label, error, options, className = '', ...props }: Sele
   );
 }
 
-// Uso
+// Usage
 <Select
   label="Status"
   options={[
-    { value: 'active', label: 'Ativo' },
-    { value: 'inactive', label: 'Inativo' },
+    { value: 'active', label: 'Active' },
+    { value: 'inactive', label: 'Inactive' },
   ]}
   value={status}
   onChange={(e) => setStatus(e.target.value)}
@@ -307,7 +307,7 @@ export function Spinner({ size = 'md' }: SpinnerProps) {
   );
 }
 
-// Uso
+// Usage
 <Spinner size="lg" />
 ```
 
@@ -333,15 +333,15 @@ export function Alert({ type, message, onClose }: AlertProps) {
       <span>{message}</span>
       {onClose && (
         <button onClick={onClose} className="ml-4 font-bold">
-          
+          ✕
         </button>
       )}
     </div>
   );
 }
 
-// Uso
-<Alert type="success" message="Operação realizada com sucesso!" />
+// Usage
+<Alert type="success" message="Operation completed successfully!" />
 ```
 
 ### [8. Badge Component]()
@@ -367,13 +367,13 @@ export function Badge({ children, variant = 'default' }: BadgeProps) {
   );
 }
 
-// Uso
-<Badge variant="success">Ativo</Badge>
+// Usage
+<Badge variant="success">Active</Badge>
 ```
 
-## [Padrões de Composição]()
+## [Composition Patterns]()
 
-Esta seção demonstra padrões avançados de composição de componentes para criar APIs flexíveis e expressivas.
+This section demonstrates advanced component composition patterns to create flexible and expressive APIs.
 
 ### [Compound Components]()
 
@@ -395,25 +395,25 @@ Card.Footer = function CardFooter({ children }: { children: React.ReactNode }) {
   return <div className="border-t pt-2 mt-2">{children}</div>;
 };
 
-// Uso
+// Usage
 <Card>
   <Card.Header>
-    <h3>Título</h3>
+    <h3>Title</h3>
   </Card.Header>
   <Card.Body>
-    <p>Conteúdo</p>
+    <p>Content</p>
   </Card.Body>
   <Card.Footer>
-    <Button>Ação</Button>
+    <Button>Action</Button>
   </Card.Footer>
 </Card>
 ```
 
-## [Boas Práticas]()
+## [Best Practices]()
 
-Esta seção lista as principais práticas recomendadas para criação de componentes robustos, reutilizáveis e manuteníveis.
+This section lists main recommended practices for creating robust, reusable and maintainable components.
 
-### [1. Props com valores padrão]()
+### [1. Props with default values]()
 
 ```typescript
 interface ButtonProps {
@@ -422,15 +422,15 @@ interface ButtonProps {
 }
 
 export function Button({
-  variant = 'primary', // Valor padrão
-  size = 'md',          // Valor padrão
+  variant = 'primary', // Default value
+  size = 'md',          // Default value
   ...props
 }: ButtonProps) {
   // ...
 }
 ```
 
-### [2. Spread de props nativas]()
+### [2. Spread native props]()
 
 ```typescript
 interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
@@ -438,11 +438,11 @@ interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
 }
 
 export function Button({ variant, ...props }: ButtonProps) {
-  return <button {...props} />; // Repassa onClick, disabled, etc
+  return <button {...props} />; // Pass through onClick, disabled, etc
 }
 ```
 
-### [3. forwardRef para refs]()
+### [3. forwardRef for refs]()
 
 ```typescript
 export const Input = forwardRef<HTMLInputElement, InputProps>(
@@ -452,52 +452,52 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
 );
 ```
 
-### [4. Tipagem estrita]()
+### [4. Strict typing]()
 
 ```typescript
-// L Ruim
+// ❌ Bad
 interface ButtonProps {
   variant?: string;
 }
 
-//  Bom
+// ✅ Good
 interface ButtonProps {
   variant?: 'primary' | 'secondary' | 'danger';
 }
 ```
 
-### [5. Documentação inline]()
+### [5. Inline documentation]()
 
 ```typescript
 interface ButtonProps {
   /**
-   * Variante visual do botão
+   * Button visual variant
    * @default 'primary'
    */
   variant?: 'primary' | 'secondary';
 
   /**
-   * Mostra indicador de carregamento
+   * Show loading indicator
    */
   loading?: boolean;
 }
 ```
 
-## [Organização]()
+## [Organization]()
 
-Esta seção explica como organizar os arquivos de componentes comuns e criar um ponto de importação centralizado.
+This section explains how to organize common component files and create a centralized import point.
 
 ```
 src/components/common/
- Button.tsx
- Input.tsx
- Modal.tsx
- Card.tsx
- Alert.tsx
- Badge.tsx
- Spinner.tsx
- Select.tsx
- index.ts  # Re-export tudo
+  Button.tsx
+  Input.tsx
+  Modal.tsx
+  Card.tsx
+  Alert.tsx
+  Badge.tsx
+  Spinner.tsx
+  Select.tsx
+  index.ts  # Re-export everything
 ```
 
 **index.ts**:
@@ -509,23 +509,23 @@ export { Card } from './Card';
 // ...
 ```
 
-**Uso**:
+**Usage**:
 ```typescript
 import { Button, Input, Modal } from '@/components/common';
 ```
 
 ## [Checklist]()
 
-- [ ] Componente aceita className para customização
-- [ ] Props tipadas com TypeScript
-- [ ] Valores padrão definidos
-- [ ] Spread de props nativas quando aplicável
-- [ ] forwardRef quando precisa expor ref
-- [ ] Estilos consistentes com Tailwind
-- [ ] Responsivo (mobile-first)
-- [ ] Acessível (ARIA quando necessário)
+- [ ] Component accepts className for customization
+- [ ] Props typed with TypeScript
+- [ ] Default values defined
+- [ ] Spread native props when applicable
+- [ ] forwardRef when needs to expose ref
+- [ ] Consistent Tailwind styles
+- [ ] Responsive (mobile-first)
+- [ ] Accessible (ARIA when necessary)
 
-## [Referências]()
+## [References]()
 
 - [React TypeScript Cheatsheet](https://react-typescript-cheatsheet.netlify.app/)
 - [Tailwind CSS Components](https://tailwindui.com/components)

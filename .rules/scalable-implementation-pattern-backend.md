@@ -1,25 +1,25 @@
-# [Como deve ser criado um padrão escalável de implementação no módulo Backend?]()
+# [How to create a scalable implementation pattern in Backend modules?]()
 
-> Guia de boas práticas para criar módulos escaláveis e manuteníveis no NestJS.
+> Guide to best practices for creating scalable and maintainable modules in NestJS.
 
-## [Princípios Fundamentais]()
+## [Fundamental Principles]()
 
-Conceitos essenciais de design de software aplicados ao desenvolvimento de módulos escaláveis no NestJS.
+Essential software design concepts applied to developing scalable NestJS modules.
 
 ### [1. Single Responsibility Principle]()
 
-Cada classe deve ter uma única responsabilidade:
+Each class should have a single responsibility:
 
 ```typescript
-// L Ruim - Service fazendo tudo
+// ❌ Bad - Service doing everything
 @Injectable()
 export class ProductService {
   async create() { /* ... */ }
-  async sendEmail() { /* ... */ }  // Não deveria estar aqui
-  async generatePDF() { /* ... */ } // Não deveria estar aqui
+  async sendEmail() { /* ... */ }  // Shouldn't be here
+  async generatePDF() { /* ... */ } // Shouldn't be here
 }
 
-// > Bom - Responsabilidades separadas
+// ✅ Good - Separated responsibilities
 @Injectable()
 export class ProductService {
   constructor(
@@ -37,53 +37,53 @@ export class ProductService {
 
 ### [2. Dependency Injection]()
 
-Sempre use injeção de dependência:
+Always use dependency injection:
 
 ```typescript
-// L Ruim - Criando dependências
+// ❌ Bad - Creating dependencies
 @Injectable()
 export class ProductService {
-  private emailService = new EmailService(); // Ruim
+  private emailService = new EmailService(); // Bad
 
   async create() { /* ... */ }
 }
 
-// > Bom - Injetando dependências
+// ✅ Good - Injecting dependencies
 @Injectable()
 export class ProductService {
   constructor(
-    private emailService: EmailService, // Injetado
-    private pdfService: PdfService,     // Injetado
+    private emailService: EmailService, // Injected
+    private pdfService: PdfService,     // Injected
   ) {}
 }
 ```
 
-### [3. Inversão de Dependência]()
+### [3. Dependency Inversion]()
 
-Dependa de abstrações, não de implementações:
+Depend on abstractions, not implementations:
 
 ```typescript
-// Interface (contrato)
+// Interface (contract)
 export interface INotificationService {
   send(message: string): Promise<void>;
 }
 
-// Implementações
+// Implementations
 @Injectable()
 export class EmailNotificationService implements INotificationService {
   async send(message: string) {
-    // Enviar email
+    // Send email
   }
 }
 
 @Injectable()
 export class SmsNotificationService implements INotificationService {
   async send(message: string) {
-    // Enviar SMS
+    // Send SMS
   }
 }
 
-// Service depende da interface
+// Service depends on interface
 @Injectable()
 export class ProductService {
   constructor(
@@ -93,41 +93,41 @@ export class ProductService {
 
   async create(dto) {
     const product = await this.repository.save(dto);
-    await this.notificationService.send('Produto criado');
+    await this.notificationService.send('Product created');
     return product;
   }
 }
 ```
 
-## [Padrões de Implementação]()
+## [Implementation Patterns]()
 
-Padrões de design comprovados para estruturar código escalável e manutenível em aplicações NestJS.
+Proven design patterns for structuring scalable and maintainable code in NestJS applications.
 
-### [1. Use-Case Pattern (Padrão Principal para Regras de Negócio)]()
+### [1. Use-Case Pattern (Main Pattern for Business Rules)]()
 
-**Para regras de negócio complexas, SEMPRE use Use-Cases.**
+**For complex business rules, ALWAYS use Use-Cases.**
 
-Use-Cases são o padrão recomendado para implementar lógica de negócio complexa no backend. Eles seguem o princípio de segregação de interfaces (ISP) e promovem código testável e manutenível.
+Use-Cases are the recommended pattern for implementing complex business logic in the backend. They follow the Interface Segregation Principle (ISP) and promote testable and maintainable code.
 
-**Quando usar Use-Cases:**
-- Regras de negócio complexas com múltiplas transações
-- Operações que envolvem múltiplas entidades
-- Lógica que precisa ser testada isoladamente
-- Processos que podem ter múltiplas implementações
+**When to use Use-Cases:**
+- Complex business rules with multiple transactions
+- Operations involving multiple entities
+- Logic that needs to be tested in isolation
+- Processes that can have multiple implementations
 
-**Quando NÃO usar Use-Cases:**
-- CRUD simples e operações diretas
-- Leitura/escrita básica sem processamento
-- Consultas triviais sem regras de negócio
+**When NOT to use Use-Cases:**
+- Simple CRUD and direct operations
+- Basic read/write without processing
+- Trivial queries without business rules
 
-**Estrutura básica:**
+**Basic structure:**
 ```typescript
-// 1. Definir interface com uma responsabilidade
+// 1. Define interface with single responsibility
 export interface CalculateBalance {
   calculateBalance(userId: number): Promise<number>;
 }
 
-// 2. Implementar Use-Case magro (1 interface = 1 use-case)
+// 2. Implement thin Use-Case (1 interface = 1 use-case)
 @Injectable()
 export class CalculateBalanceUseCase implements CalculateBalance {
   constructor(
@@ -136,22 +136,22 @@ export class CalculateBalanceUseCase implements CalculateBalance {
   ) {}
 
   async calculateBalance(userId: number): Promise<number> {
-    // Implementação com métodos privados auxiliares
+    // Implementation with private helper methods
     const credits = await this.getCredits(userId);
     const debits = await this.getDebits(userId);
     return credits - debits;
   }
 
   private async getCredits(userId: number): Promise<number> {
-    // Lógica auxiliar privada
+    // Private helper logic
   }
 
   private async getDebits(userId: number): Promise<number> {
-    // Lógica auxiliar privada
+    // Private helper logic
   }
 }
 
-// 3. Injetar no controller via interface
+// 3. Inject in controller via interface
 @Controller('balance')
 export class BalanceController {
   constructor(
@@ -165,17 +165,17 @@ export class BalanceController {
 }
 ```
 
-**IMPORTANTE**: Consulte a documentação completa em `./como-criar-use-case-backend.md` para:
-- Estrutura de arquivos e pastas
-- Convenções de nomenclatura (sempre em inglês)
-- Use-Cases magros (1 interface por use-case)
-- Exemplos completos e boas práticas
-- Testes unitários
-- Comparação com Services tradicionais
+**IMPORTANT**: See the complete documentation in `./how-to-create-use-case-backend.md` for:
+- File and folder structure
+- Naming conventions (always in English)
+- Thin Use-Cases (1 interface per use-case)
+- Complete examples and best practices
+- Unit tests
+- Comparison with traditional Services
 
 ### [2. Repository Pattern (TypeORM)]()
 
-Use repository do TypeORM para acesso a dados:
+Use TypeORM repository for data access:
 
 ```typescript
 @Injectable()
@@ -195,10 +195,10 @@ export class ProductService {
 
 ### [3. DTO Pattern]()
 
-Use DTOs para validação e transferência de dados:
+Use DTOs for validation and data transfer:
 
 ```typescript
-// DTO para entrada
+// DTO for input
 export class CreateProductDto {
   @IsString()
   @IsNotEmpty()
@@ -227,30 +227,30 @@ async create(dto: CreateProductDto, userId: number) {
 
 ### [4. Strategy Pattern]()
 
-Use quando há múltiplas implementações de um comportamento:
+Use when there are multiple implementations of a behavior:
 
 ```typescript
-// Interface da estratégia
+// Strategy interface
 export interface IPaymentStrategy {
   process(amount: number): Promise<PaymentResult>;
 }
 
-// Implementações
+// Implementations
 @Injectable()
 export class CreditCardStrategy implements IPaymentStrategy {
   async process(amount: number) {
-    // Processar cartão de crédito
+    // Process credit card
   }
 }
 
 @Injectable()
 export class PixStrategy implements IPaymentStrategy {
   async process(amount: number) {
-    // Processar PIX
+    // Process PIX
   }
 }
 
-// Service que usa estratégias
+// Service that uses strategies
 @Injectable()
 export class PaymentService {
   private strategies = new Map<string, IPaymentStrategy>();
@@ -266,7 +266,7 @@ export class PaymentService {
   async processPayment(method: string, amount: number) {
     const strategy = this.strategies.get(method);
     if (!strategy) {
-      throw new BadRequestException('Método de pagamento inválido');
+      throw new BadRequestException('Invalid payment method');
     }
     return await strategy.process(amount);
   }
@@ -275,7 +275,7 @@ export class PaymentService {
 
 ### [5. Factory Pattern]()
 
-Use para criação complexa de objetos:
+Use for complex object creation:
 
 ```typescript
 @Injectable()
@@ -289,53 +289,53 @@ export class ReportFactory {
       case 'csv':
         return new CsvReport(data);
       default:
-        throw new BadRequestException('Tipo de relatório inválido');
+        throw new BadRequestException('Invalid report type');
     }
   }
 }
 ```
 
-## [Organização Escalável]()
+## [Scalable Organization]()
 
-Estruturação de código em camadas bem definidas para facilitar manutenção e evolução do sistema.
+Code structuring in well-defined layers to facilitate system maintenance and evolution.
 
-### [Separação por Camadas]()
-
-```
-modulo/
- modulo.controller.ts    # Camada HTTP
- modulo.service.ts        # Camada de negócio
- modulo.repository.ts     # Camada de dados (opcional)
- entities/               # Modelo de dados
- dto/                    # Validação
- services/               # Sub-services
-```
-
-**Estrutura Recomendada com Use-Cases:**
+### [Layer Separation]()
 
 ```
-modulo/
- modulo.controller.ts    # Camada HTTP
- modulo.service.ts        # CRUD simples e operações diretas
- use-cases/              # ⭐ Regras de negócio complexas (RECOMENDADO)
-   interfaces.ts         # Interfaces segregadas por responsabilidade
-   calculate-balance.usecase.ts
-   process-payment.usecase.ts
-   generate-report.usecase.ts
- entities/               # Modelo de dados TypeORM
- dto/                    # Validação de entrada/saída
- services/               # Sub-services auxiliares
+module/
+├── module.controller.ts    # HTTP layer
+├── module.service.ts        # Business layer
+├── module.repository.ts     # Data layer (optional)
+├── entities/               # Data model
+├── dto/                    # Validation
+└── services/               # Sub-services
 ```
 
-**IMPORTANTE**:
-- ✅ Use **Use-Cases** para regras de negócio complexas, múltiplas transações e lógica que precisa ser testada isoladamente
-- ✅ Use **Service** apenas para CRUD simples e operações diretas
-- ✅ Consulte `./como-criar-use-case-backend.md` para documentação completa sobre Use-Cases
+**Recommended Structure with Use-Cases:**
 
-### [Exemplo Real]()
+```
+module/
+├── module.controller.ts    # HTTP layer
+├── module.service.ts        # Simple CRUD and direct operations
+├── use-cases/              # ⭐ Complex business rules (RECOMMENDED)
+│   ├── interfaces.ts         # Interfaces segregated by responsibility
+│   ├── calculate-balance.usecase.ts
+│   ├── process-payment.usecase.ts
+│   └── generate-report.usecase.ts
+├── entities/               # TypeORM data model
+├── dto/                    # Input/output validation
+└── services/               # Auxiliary sub-services
+```
+
+**IMPORTANT**:
+- ✅ Use **Use-Cases** for complex business rules, multiple transactions and logic that needs to be tested in isolation
+- ✅ Use **Service** only for simple CRUD and direct operations
+- ✅ See `./how-to-create-use-case-backend.md` for complete Use-Cases documentation
+
+### [Real Example]()
 
 ```typescript
-// Controller - Camada HTTP
+// Controller - HTTP Layer
 @Controller('products')
 export class ProductController {
   constructor(private service: ProductService) {}
@@ -346,7 +346,7 @@ export class ProductController {
   }
 }
 
-// Service - Camada de Negócio
+// Service - Business Layer
 @Injectable()
 export class ProductService {
   constructor(
@@ -357,10 +357,10 @@ export class ProductService {
   ) {}
 
   async create(dto: CreateProductDto, userId: number) {
-    // Validação de negócio
+    // Business validation
     await this.validateStock(dto.stock);
 
-    // Criar produto
+    // Create product
     const product = this.repository.create({
       ...dto,
       userId,
@@ -368,7 +368,7 @@ export class ProductService {
 
     const saved = await this.repository.save(product);
 
-    // Processos paralelos
+    // Parallel processes
     await Promise.all([
       this.notificationService.notifyCreation(saved),
       this.inventoryService.registerProduct(saved),
@@ -379,7 +379,7 @@ export class ProductService {
 
   private async validateStock(stock: number) {
     if (stock < 0) {
-      throw new BadRequestException('Estoque não pode ser negativo');
+      throw new BadRequestException('Stock cannot be negative');
     }
   }
 }
@@ -387,9 +387,9 @@ export class ProductService {
 
 ## [Error Handling]()
 
-Estratégias para tratamento de erros consistente e informativo usando exceções do NestJS.
+Strategies for consistent and informative error handling using NestJS exceptions.
 
-### [Use Exceções do NestJS]()
+### [Use NestJS Exceptions]()
 
 ```typescript
 import {
@@ -408,20 +408,20 @@ export class ProductService {
     });
 
     if (!product) {
-      throw new NotFoundException(`Produto ${id} não encontrado`);
+      throw new NotFoundException(`Product ${id} not found`);
     }
 
     return product;
   }
 
   async create(dto: CreateProductDto, userId: number) {
-    // Validar regra de negócio
+    // Validate business rule
     const existing = await this.repository.findOne({
       where: { code: dto.code, userId },
     });
 
     if (existing) {
-      throw new ConflictException('Produto com este código já existe');
+      throw new ConflictException('Product with this code already exists');
     }
 
     return await this.repository.save({ ...dto, userId });
@@ -429,17 +429,17 @@ export class ProductService {
 }
 ```
 
-## [Validação de Ownership]()
+## [Ownership Validation]()
 
-Sempre valide que o recurso pertence ao usuário:
+Always validate that the resource belongs to the user:
 
 ```typescript
 @Injectable()
 export class ProductService {
-  // Método auxiliar privado
+  // Private helper method
   private async findOneOrFail(id: number, userId: number) {
     const product = await this.repository.findOne({
-      where: { id, userId }, // Filtra por usuário
+      where: { id, userId }, // Filter by user
     });
 
     if (!product) {
@@ -449,7 +449,7 @@ export class ProductService {
     return product;
   }
 
-  // Usar em todos os métodos
+  // Use in all methods
   async update(id: number, dto: UpdateProductDto, userId: number) {
     const product = await this.findOneOrFail(id, userId);
 
@@ -464,9 +464,9 @@ export class ProductService {
 }
 ```
 
-## [Transações]()
+## [Transactions]()
 
-Use transações para operações atômicas:
+Use transactions for atomic operations:
 
 ```typescript
 import { DataSource } from 'typeorm';
@@ -482,16 +482,16 @@ export class OrderService {
   ) {}
 
   async createOrder(dto: CreateOrderDto, userId: number) {
-    // Executar em transação
+    // Execute in transaction
     return await this.dataSource.transaction(async (manager) => {
-      // Criar pedido
+      // Create order
       const order = manager.create(Order, {
         userId,
         total: dto.total,
       });
       await manager.save(order);
 
-      // Criar itens
+      // Create items
       const items = dto.items.map(item =>
         manager.create(OrderItem, {
           ...item,
@@ -508,7 +508,7 @@ export class OrderService {
 
 ## [Logging]()
 
-Adicione logging estratégico:
+Add strategic logging:
 
 ```typescript
 import { Logger } from '@nestjs/common';
@@ -518,16 +518,16 @@ export class ProductService {
   private readonly logger = new Logger(ProductService.name);
 
   async create(dto: CreateProductDto, userId: number) {
-    this.logger.log(`Criando produto para usuário ${userId}`);
+    this.logger.log(`Creating product for user ${userId}`);
 
     try {
       const product = await this.repository.save({ ...dto, userId });
 
-      this.logger.log(`Produto ${product.id} criado com sucesso`);
+      this.logger.log(`Product ${product.id} created successfully`);
       return product;
 
     } catch (error) {
-      this.logger.error(`Erro ao criar produto: ${error.message}`, error.stack);
+      this.logger.error(`Error creating product: ${error.message}`, error.stack);
       throw error;
     }
   }
@@ -535,38 +535,38 @@ export class ProductService {
 ```
 
 
-## [Checklist de Escalabilidade]()
+## [Scalability Checklist]()
 
-- [ ] **Use-Cases para regras de negócio complexas** (consulte `./como-criar-use-case-backend.md`)
-- [ ] Um service = Uma responsabilidade (CRUD simples)
-- [ ] Segregação de interfaces (Use-Case Pattern)
-- [ ] Injeção de dependência em tudo
-- [ ] Validação com DTOs
-- [ ] Tratamento de erros com exceções apropriadas
-- [ ] Isolamento por userId
-- [ ] Transações para operações atômicas
-- [ ] Logging em pontos críticos
-- [ ] Documentação Swagger
-- [ ] Código type-safe (TypeScript)
-- [ ] Nomenclatura em inglês para classes, interfaces e métodos
+- [ ] **Use-Cases for complex business rules** (see `./how-to-create-use-case-backend.md`)
+- [ ] One service = One responsibility (simple CRUD)
+- [ ] Interface segregation (Use-Case Pattern)
+- [ ] Dependency injection everywhere
+- [ ] Validation with DTOs
+- [ ] Error handling with appropriate exceptions
+- [ ] Isolation by userId
+- [ ] Transactions for atomic operations
+- [ ] Logging at critical points
+- [ ] Swagger documentation
+- [ ] Type-safe code (TypeScript)
+- [ ] English naming for classes, interfaces and methods
 
-## [Dicas Finais]()
+## [Final Tips]()
 
-1. **Use Use-Cases para regras complexas**: Sempre que houver múltiplas transações ou lógica de negócio complexa
-2. **Prefira Use-Cases magros**: 1 interface por use-case (consulte `./como-criar-use-case-backend.md`)
-3. **Comece simples**: Não otimize prematuramente
-4. **Refatore quando necessário**: Quando passar de 300 linhas ou houver complexidade
-5. **Use interfaces**: Para desacoplar implementações (Use-Case Pattern)
-6. **Evite lógica no controller**: Controller só roteia, Use-Case processa
-7. **Service apenas para CRUD simples**: Regras complexas vão em Use-Cases
-8. **Teste isoladamente**: Mock de interfaces, não de classes concretas
-9. **Doc inline**: Comente código complexo
-10. **Consistência**: Siga os padrões do projeto
-11. **Nomenclatura em inglês**: Classes, interfaces e métodos sempre em inglês
+1. **Use Use-Cases for complex rules**: Whenever there are multiple transactions or complex business logic
+2. **Prefer thin Use-Cases**: 1 interface per use-case (see `./how-to-create-use-case-backend.md`)
+3. **Start simple**: Don't optimize prematurely
+4. **Refactor when needed**: When exceeding 300 lines or complexity arises
+5. **Use interfaces**: To decouple implementations (Use-Case Pattern)
+6. **Avoid logic in controller**: Controller only routes, Use-Case processes
+7. **Service only for simple CRUD**: Complex rules go in Use-Cases
+8. **Test in isolation**: Mock interfaces, not concrete classes
+9. **Inline docs**: Comment complex code
+10. **Consistency**: Follow project patterns
+11. **English naming**: Classes, interfaces and methods always in English
 
-## [Referências]()
+## [References]()
 
-- **[Use-Cases no Backend](./como-criar-use-case-backend.md)** - Documentação completa sobre Use-Case Pattern
+- **[Use-Cases in Backend](./how-to-create-use-case-backend.md)** - Complete documentation on Use-Case Pattern
 - [NestJS Best Practices](https://docs.nestjs.com/techniques/performance)
 - [Clean Architecture](https://blog.cleancoder.com/uncle-bob/2012/08/13/the-clean-architecture.html)
 - [SOLID Principles](https://en.wikipedia.org/wiki/SOLID)
