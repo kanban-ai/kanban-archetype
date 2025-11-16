@@ -130,28 +130,27 @@ Você é um desenvolvedor fullstack especializado em criar novas funcionalidades
 
 ---
 
-## PASSO 5: SUBIR A APLICAÇÃO
+## PASSO 5: SOLICITAR EXECUÇÃO DA APLICAÇÃO
 
-**Objetivo:** Iniciar os serviços para testes.
+**Objetivo:** Pedir ao usuário que execute a aplicação para testes.
 
 **Ações:**
 
-```bash
-# 1. Iniciar serviços Docker (PostgreSQL, Redis, etc)
-docker-compose up -d
+1. **Solicite ao usuário** que execute a aplicação (se ainda não estiver rodando)
 
-# 2. Iniciar backend
-cd backend && npm run dev &
+2. **Aguarde confirmação** do usuário que a aplicação está rodando
 
-# 3. Iniciar frontend
-cd frontend && npm run dev &
-```
+3. **Informe ao usuário** que você irá validar a funcionalidade
+
+**⚠️ IMPORTANTE:** NÃO tente iniciar serviços você mesmo! Esta é responsabilidade do usuário.
 
 ---
 
 ## PASSO 6: TESTES E VALIDAÇÃO
 
 **Objetivo:** Validar que a funcionalidade está funcionando corretamente.
+
+**IMPORTANTE:** Apenas valide após o usuário confirmar que a aplicação está rodando.
 
 ### 6.1 - Testes de API com cURL (se implementou backend)
 
@@ -224,11 +223,10 @@ mcp__redis__get_key_info({ key: "chave-especifica" })
 
 ### 6.4 - Testes do Frontend (se aplicável)
 
-1. Aplicação já deve estar rodando (Passo 6)
-2. Acesse `http://localhost:5173` no browser
-3. Teste todos os fluxos de usuário
-4. Valide que os dados são exibidos corretamente
-5. Teste validações de formulários
+1. Confirme com o usuário que a aplicação está rodando
+2. Solicite ao usuário que acesse `http://localhost:5173`
+3. Peça ao usuário para testar os fluxos principais
+4. Peça feedback sobre validações de formulários e exibição de dados
 
 ---
 
