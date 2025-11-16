@@ -777,7 +777,7 @@ Do not create custom folder structures outside this hierarchy. Avoid placing mod
 ### Example: NestJS Project Structure
 
 ```
-back/src/
+backend/src/
 ├── app.module.ts          # Root module importing all feature modules
 ├── main.ts               # Application entry point with bootstrap
 ├── auth/                 # Authentication and authorization (special module)
@@ -802,6 +802,8 @@ back/src/
     ├── quote/
     └── financial/
 ```
+
+**Note**: This shows the internal backend/src/ folder structure. For the complete project root organization including where backend/, frontend/, and build/ folders should be located, see [Project Root Structure](./project-root-structure.md).
 
 ### Checklist
 
