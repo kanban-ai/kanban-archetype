@@ -298,8 +298,9 @@ async function indexDocuments() {
 
   for (const filename of files) {
     const filepath = path.join(RULES_DIR, filename);
+    const relativePath = path.join('.rules', filename); // Caminho relativo ao projeto
     const content = fs.readFileSync(filepath, 'utf-8');
-    const blocks = extractBlocks(content, filename, filepath);
+    const blocks = extractBlocks(content, filename, relativePath);
     allBlocks.push(...blocks);
   }
 
