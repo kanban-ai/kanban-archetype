@@ -1,4 +1,4 @@
-# [How to version APIs in the Backend?]()
+# How to version APIs in the Backend
 
 > Complete guide to implement REST API versioning in the backend using NestJS.
 

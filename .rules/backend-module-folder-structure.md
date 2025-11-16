@@ -1,10 +1,10 @@
-# [What should be the Backend module folder structure?]()
+# Backend Module Folder Structure
 
-> Pattern for organizing files and folders for NestJS modules in the project.
+> Standardized pattern for organizing files and folders in NestJS modules, ensuring consistency, scalability, and maintainability across the project.
 
 ## [Standard NestJS Module Structure]()
 
-Standard organization of files and folders for NestJS modules, following framework conventions and best practices.
+Recommended file and folder organization for NestJS modules following framework conventions and industry best practices. This structure balances modularity, discoverability, and maintainability while supporting both simple CRUD and complex business logic use cases.
 
 ```
 src/modules/module-name/
@@ -25,7 +25,7 @@ src/modules/module-name/
 
 ## [Description and Responsibility of Each Module File]()
 
-Detailed explanation of the responsibility and content of each file type in a module structure.
+Comprehensive guide detailing the specific role, content patterns, and usage guidelines for each file type in a NestJS module. Understanding these responsibilities ensures proper separation of concerns and maintains clean architecture throughout the application.
 
 ### [Module (*.module.ts)]()
 
@@ -148,10 +148,7 @@ export class UpdateModuleNameDto extends PartialType(CreateModuleNameDto) {}
 
 ## [When to Create Use-Cases Folder in Module]()
 
-Use `use-cases/` folder when:
-- Complex business rules with multiple transactions
-- Operations involving multiple related responsibilities
-- Need for high testability and low coupling
+Guidelines for deciding when to introduce use-cases folder for complex business logic versus keeping simple operations in services. Use-cases are appropriate when operations involve multiple transactions, sophisticated validation, or require high testability through interface segregation.
 
 ### [Example]()
 
@@ -194,7 +191,7 @@ export class FinancialRulesUseCase
 
 ## [When to Create Enums in Backend Module]()
 
-Use `enums/` folder for fixed values:
+Best practices for organizing enumeration types representing fixed value sets like statuses, types, or categories. Enums provide type safety, improve code readability, and ensure database consistency when used with TypeORM enum column types.
 
 ```typescript
 // enums/alert-type.enum.ts
@@ -211,7 +208,7 @@ type: AlertType;
 
 ## [Real Examples: Simple and Complex Modules]()
 
-Concrete examples of simple and complex module structures used in the real project.
+Practical examples contrasting simple CRUD modules with complex modules containing use-cases, enums, and advanced features. These real-world patterns demonstrate how module structure evolves based on business logic complexity and feature requirements.
 
 ### [Simple Module (Asset)]()
 
@@ -249,9 +246,9 @@ src/modules/financial/
 
 ## [Naming Conventions in English for Classes and Interfaces]()
 
-Reference table with naming patterns for each file and class type in the module.
+Standardized naming patterns for all module elements ensuring consistency and international compatibility. Following English naming conventions with proper case styles facilitates collaboration, integrates with TypeScript ecosystem, and maintains professional code standards.
 
-**IMPORTANT**: All classes, interfaces, entities, DTOs, enums and use-cases must be named in **English**, following international TypeScript development conventions.
+**IMPORTANT**: All classes, interfaces, entities, DTOs, enums and use-cases must be named in English, following international TypeScript development conventions.
 
 | Item | Pattern | Example | Language |
 |------|---------|---------|----------|
@@ -270,7 +267,7 @@ Reference table with naming patterns for each file and class type in the module.
 
 ## [Module Organization by Size and Complexity]()
 
-Code organization recommendations based on module size and complexity.
+Progressive structure guidelines adapting module organization to codebase size. Start simple with flat structures for small modules, introduce use-cases for medium complexity, and fully subdivide with guards and multiple use-cases for large, feature-rich modules.
 
 ### [Small Module (< 300 lines)]()
 
@@ -323,7 +320,7 @@ module/
 
 ## [Module Location in Project Structure]()
 
-Hierarchical project directory structure indicating where domain modules should be created.
+Project-wide directory hierarchy showing proper module placement within the NestJS application. All domain modules reside in src/modules with shared code in common, authentication in auth, and database configurations separated from business logic.
 
 ```
 back/src/
@@ -341,6 +338,8 @@ back/src/
 
 ## [Practical Tips for Module Organization]()
 
+Essential organizational principles for maintaining clean module architecture including single responsibility, progressive refactoring, proper exports, DTO separation, and entity organization. These tips prevent common pitfalls and ensure modules remain maintainable as they grow.
+
 1. **One module = One responsibility**: Don't mix domains
 2. **Start simple**: Don't create unnecessary folders
 3. **Refactor when it grows**: If it exceeds 300 lines, separate
@@ -349,5 +348,7 @@ back/src/
 6. **Own entities**: One entity per file
 
 ## [References]()
+
+Official NestJS documentation link providing deeper insights into module system, dependency injection, and architectural patterns. This reference expands on concepts presented here with framework-specific implementation details.
 
 - [NestJS Module Documentation](https://docs.nestjs.com/modules)

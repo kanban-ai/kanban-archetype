@@ -1,4 +1,4 @@
-# [How to use Scheduler with Bull in Backend]()
+# How to use Scheduler with Bull in Backend
 
 > Complete guide to schedule tasks with cron using Bull and @Cron decorator that encapsulates all complexity
 

@@ -1,8 +1,10 @@
-# [How to setup the Frontend?]()
+# How to setup the Frontend
 
-> Complete guide to configure a React + TypeScript + Vite + Tailwind CSS project from scratch.
+> Complete guide to configure a React + TypeScript + Vite + Tailwind CSS project from scratch with all dependencies and folder structure.
 
 ## [Overview]()
+
+This section presents a complete setup guide for creating a modern frontend project using React v19+, TypeScript, Vite, Tailwind CSS v4, React Router and Axios.
 
 This guide shows how to create a modern frontend project using:
 - React v19+ for UI
@@ -13,11 +15,15 @@ This guide shows how to create a modern frontend project using:
 
 ## [Prerequisites]()
 
+This section lists the minimum system requirements and tools needed before starting the frontend project setup process.
+
 - **Node.js**: Version 18 or higher
 - **npm**, **yarn** or **pnpm**: Package manager
 - Code editor (VS Code recommended)
 
 ## [Step 1: Create Project with Vite]()
+
+This section explains how to bootstrap a new React project using Vite's official scaffolding tool with the SWC-powered TypeScript template for optimal build performance.
 
 Creating React project with TypeScript using Vite as build tool for fast development.
 
@@ -40,9 +46,11 @@ npm install
 
 ## [Step 2: Install Tailwind CSS v4]()
 
+This section covers the complete installation and configuration process for Tailwind CSS v4 using the native Vite plugin, replacing the traditional PostCSS approach.
+
 Installation and configuration of Tailwind CSS v4 with native Vite plugin for maximum performance.
 
-### [2.1. Install dependencies]()
+### 2.1. Install dependencies
 
 ```bash
 npm install -D tailwindcss @tailwindcss/vite
@@ -50,7 +58,7 @@ npm install -D tailwindcss @tailwindcss/vite
 
 > **Important**: Tailwind CSS v4 (released January/2025) uses a native Vite plugin for maximum performance and zero configuration.
 
-### [2.2. Configure Vite Plugin]()
+### 2.2. Configure Vite Plugin
 
 **File**: `vite.config.ts`
 
@@ -74,7 +82,7 @@ export default defineConfig({
 
 > **Note**: The `@tailwindcss/vite` plugin must come BEFORE the React plugin.
 
-### [2.3. Import Tailwind CSS]()
+### 2.3. Import Tailwind CSS
 
 **File**: `src/index.css`
 
@@ -84,7 +92,7 @@ export default defineConfig({
 
 > **Change v3 → v4**: Don't use `@tailwind base;`, `@tailwind components;`, `@tailwind utilities;` anymore. Use only `@import "tailwindcss";`
 
-### [2.4. Theme Customization (Optional)]()
+### 2.4. Theme Customization (Optional)
 
 If you need to customize theme, add to `src/index.css`:
 
@@ -97,7 +105,7 @@ If you need to customize theme, add to `src/index.css`:
 }
 ```
 
-### [2.5. Import CSS in main]()
+### 2.5. Import CSS in main
 
 **File**: `src/main.tsx`
 
@@ -116,6 +124,8 @@ ReactDOM.createRoot(document.getElementById('root')!).render(
 
 ## [Step 3: Install React Router]()
 
+This section shows how to install React Router DOM v7, the official routing library for React applications with client-side navigation capabilities.
+
 Installation of React Router DOM for client-side route management in the application.
 
 ```bash
@@ -123,6 +133,8 @@ npm install react-router-dom
 ```
 
 ## [Step 4: Install Axios]()
+
+This section explains how to add Axios, a promise-based HTTP client for making API requests to the backend with automatic JSON transformation.
 
 Installation of Axios to make HTTP requests to backend in a simplified way.
 
@@ -132,9 +144,11 @@ npm install axios
 
 ## [Step 5: Configure TypeScript]()
 
+This section details TypeScript configuration including compiler options and path aliases to improve import statements and development experience.
+
 Configuration of path aliases and TypeScript compiler options for better development experience.
 
-### [5.1. Path Aliases (optional but recommended)]()
+### 5.1. Path Aliases (optional but recommended)
 
 **File**: `tsconfig.json`
 
@@ -172,7 +186,7 @@ Configuration of path aliases and TypeScript compiler options for better develop
 }
 ```
 
-### [5.2. Configure alias in Vite]()
+### 5.2. Configure alias in Vite
 
 **File**: `vite.config.ts`
 
@@ -199,6 +213,8 @@ export default defineConfig({
 > **Important**: The `tailwindcss()` plugin must appear BEFORE `react()`.
 
 ## [Step 6: Folder Structure]()
+
+This section presents the recommended project folder structure, organizing components, pages, services, and utilities for maintainable and scalable code.
 
 Create the following structure:
 
@@ -244,9 +260,11 @@ mkdir -p src/utils
 
 ## [Step 7: Configure Environment Variables]()
 
+This section shows how to configure environment variables using .env files to store API URLs and environment-specific settings securely.
+
 Setup of .env files to store API URLs and other sensitive configurations.
 
-### [7.1. Create .env file]()
+### 7.1. Create .env file
 
 **File**: `.env`
 
@@ -254,7 +272,7 @@ Setup of .env files to store API URLs and other sensitive configurations.
 VITE_API_URL=http://localhost:3000/api
 ```
 
-### [7.2. Create .env.example file]()
+### 7.2. Create .env.example file
 
 **File**: `.env.example`
 
@@ -262,7 +280,7 @@ VITE_API_URL=http://localhost:3000/api
 VITE_API_URL=http://localhost:3000/api
 ```
 
-### [7.3. Add to .gitignore]()
+### 7.3. Add to .gitignore
 
 **File**: `.gitignore`
 
@@ -293,6 +311,8 @@ node_modules
 ```
 
 ## [Step 8: package.json Scripts]()
+
+This section lists all available npm scripts for development, production build, preview, linting and type checking with updated dependencies.
 
 **File**: `package.json`
 
@@ -334,6 +354,8 @@ node_modules
 ```
 
 ## [Step 9: Configure Axios]()
+
+This section demonstrates how to create an Axios instance with base URL configuration, request interceptors for authentication, and response error handling.
 
 **File**: `src/services/api.ts`
 
@@ -378,6 +400,8 @@ export default api;
 
 ## [Step 10: Configure Routes]()
 
+This section shows how to set up centralized route configuration and integrate React Router in the main App component for clean navigation management.
+
 **File**: `src/config/routes.config.tsx`
 
 ```typescript
@@ -420,6 +444,8 @@ export default App;
 
 ## [Step 11: Create Home Page]()
 
+This section provides a sample HomePage component using Tailwind CSS to verify that the entire setup is working correctly.
+
 **File**: `src/pages/HomePage.tsx`
 
 ```typescript
@@ -442,6 +468,8 @@ export default HomePage;
 ```
 
 ## [Step 12: Test Project]()
+
+This section lists essential commands to run the development server, create production builds, and validate code quality through type checking and linting.
 
 Commands to run project in development mode, production and verify TypeScript types.
 
@@ -466,9 +494,11 @@ Access: `http://localhost:5173`
 
 ## [Additional Configurations (Optional)]()
 
+This section presents optional but recommended configurations for code quality tools like Prettier and useful VS Code extensions to enhance development workflow.
+
 Optional code quality tools and VS Code extensions to improve productivity.
 
-### [ESLint + Prettier]()
+### ESLint + Prettier
 
 ```bash
 npm install -D prettier eslint-config-prettier eslint-plugin-prettier
@@ -485,7 +515,7 @@ npm install -D prettier eslint-config-prettier eslint-plugin-prettier
 }
 ```
 
-### [Recommended VS Code Extensions]()
+### Recommended VS Code Extensions
 
 **File**: `.vscode/extensions.json`
 
@@ -500,7 +530,7 @@ npm install -D prettier eslint-config-prettier eslint-plugin-prettier
 }
 ```
 
-### [VS Code Settings]()
+### VS Code Settings
 
 **File**: `.vscode/settings.json`
 
@@ -520,6 +550,8 @@ npm install -D prettier eslint-config-prettier eslint-plugin-prettier
 
 ## [Setup Checklist]()
 
+This section provides a comprehensive checklist to verify that all setup steps have been completed successfully before starting development.
+
 - [ ] Project created with Vite + React + TypeScript
 - [ ] Tailwind CSS v4 installed (`tailwindcss` + `@tailwindcss/vite`)
 - [ ] `@tailwindcss/vite` plugin configured in `vite.config.ts`
@@ -538,9 +570,11 @@ npm install -D prettier eslint-config-prettier eslint-plugin-prettier
 
 ## [Changes from Tailwind v3 to v4]()
 
+This section highlights the key differences between Tailwind CSS v3 and v4 for developers migrating from the previous version, focusing on installation and configuration changes.
+
 If you already know Tailwind v3, here are the main changes:
 
-### [What changed]()
+### What changed
 
 1. **Native Vite Plugin**: Now uses `@tailwindcss/vite` instead of PostCSS
 2. **CSS Syntax**: `@import "tailwindcss";` instead of `@tailwind base;` etc
@@ -548,7 +582,7 @@ If you already know Tailwind v3, here are the main changes:
 4. **Customization in CSS**: Use `@theme` to customize colors, fonts, etc
 5. **Performance**: Much faster build with native Vite plugin
 
-### [Comparison]()
+### Comparison
 
 **v3**:
 ```bash
@@ -596,6 +630,8 @@ export default defineConfig({
 
 ## [Next Steps]()
 
+This section suggests the recommended next steps after completing the basic frontend setup, including authentication, component library, and API integration.
+
 After completing initial setup:
 
 1. **Authentication**: Implement login/logout system
@@ -612,13 +648,15 @@ After completing initial setup:
 
 ## [Troubleshooting]()
 
+This section provides solutions to common errors encountered during frontend setup, including module resolution, Tailwind configuration, and CORS issues.
+
 Solutions for common problems during frontend project installation and configuration.
 
-### [Error: Cannot find module '@/*']()
+### Error: Cannot find module '@/*'
 
 **Solution**: Check if you configured path aliases in `tsconfig.json` and `vite.config.ts`
 
-### [Tailwind not working]()
+### Tailwind not working
 
 **Solution**:
 1. Check if you imported `./index.css` in `main.tsx`
@@ -640,7 +678,7 @@ Solutions for common problems during frontend project installation and configura
    ```
 5. Restart server: `npm run dev`
 
-### [Error: Cannot find module '@tailwindcss/vite']()
+### Error: Cannot find module '@tailwindcss/vite'
 
 **Problem**: Tailwind v4 Vite plugin is not installed.
 
@@ -661,7 +699,7 @@ export default defineConfig({
 })
 ```
 
-### [Error: @tailwind directives are deprecated]()
+### Error: @tailwind directives are deprecated
 
 **Problem**: You're using old Tailwind v3 syntax.
 
@@ -679,7 +717,7 @@ export default defineConfig({
 @import "tailwindcss";
 ```
 
-### [CORS error when making requests]()
+### CORS error when making requests
 
 **Solution**: Configure CORS in backend or use Vite proxy:
 
@@ -698,6 +736,8 @@ export default defineConfig({
 ```
 
 ## [References]()
+
+This section lists official documentation links for all technologies used in the frontend setup for further reading and advanced configurations.
 
 - [Vite Documentation](https://vite.dev/)
 - [React Documentation](https://react.dev/)

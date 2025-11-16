@@ -1,10 +1,10 @@
-# [How to Create an API in the Backend?]()
+# How to Create an API in the Backend
 
-> Step-by-step guide to create a new REST API in the backend using NestJS.
+> Step-by-step guide to create a complete REST API in NestJS with TypeORM entities, DTOs, services, controllers, and migrations.
 
-## [Overview - How to create a complete REST API in NestJS]()
+## [Overview]()
 
-This section presents an overview of the process for creating a REST API in NestJS, detailing all the necessary components for a functional and well-structured CRUD.
+This section presents the complete workflow for creating a REST API in NestJS, from generating resources with CLI to implementing entities, DTOs, services, controllers and migrations following project standards.
 
 This guide shows how to create a complete CRUD following project standards, including:
 - NestJS Module
@@ -27,7 +27,7 @@ cd back
 nest g resource module-name
 ```
 
-### [Interactive options:]()
+### Interactive options:
 
 During CLI command execution, you will be asked about module configurations. Choose the appropriate options to create a REST API with CRUD endpoints.
 
@@ -82,7 +82,7 @@ export class ModuleName extends SuperEntity {
 }
 ```
 
-### [Important tips:]()
+### Important tips:
 
 This section lists essential best practices when creating TypeORM entities, ensuring consistency and avoiding common errors in the project.
 
@@ -95,7 +95,7 @@ This section lists essential best practices when creating TypeORM entities, ensu
 
 This step explains creating DTOs (Data Transfer Objects) using class-validator decorators to ensure data integrity received in requests.
 
-### [Create DTO]()
+### Create DTO
 
 The Create DTO defines the structure and validations for creating new records, specifying required fields, types, and business rules.
 
@@ -135,7 +135,7 @@ export class CreateModuleNameDto {
 }
 ```
 
-### [Update DTO]()
+### Update DTO
 
 The Update DTO inherits from Create DTO making all fields optional, allowing partial updates of existing records.
 
@@ -217,7 +217,7 @@ export class ModuleNameService {
 }
 ```
 
-### [Service best practices:]()
+### Service best practices:
 
 List of essential best practices when implementing services, focusing on security, validation, and consistent data return.
 
@@ -294,7 +294,7 @@ export class ModuleNameController {
 }
 ```
 
-### [Controller best practices:]()
+### Controller best practices:
 
 Fundamental recommendations for robust controllers, including automatic documentation, type validation, and correct use of HTTP verbs.
 
@@ -403,7 +403,7 @@ npm run typeorm -- migration:run
 
 This final step shows how to test the created endpoints using Swagger UI interface or command-line tools like curl.
 
-### [Via Swagger]()
+### Via Swagger
 
 Swagger UI provides an interactive visual interface to test all endpoints documented with @Api decorators.
 
@@ -411,7 +411,7 @@ Swagger UI provides an interactive visual interface to test all endpoints docume
 2. Click "Authorize" and insert JWT token
 3. Test the created endpoints
 
-### [Via curl]()
+### Via curl
 
 Examples of curl commands to test each CRUD operation of the API via command line, useful for automation and scripts.
 
@@ -445,7 +445,7 @@ curl -X DELETE http://localhost:3000/api/v1/module-name/1 \
 
 This section presents advanced functionalities to make your APIs more robust, including pagination, filters, and relationship handling.
 
-### [Pagination]()
+### Pagination
 
 Implementation of pagination to list large volumes of data efficiently, returning navigation metadata.
 
@@ -479,7 +479,7 @@ findAll(
 }
 ```
 
-### [Filters and Search]()
+### Filters and Search
 
 ```typescript
 // DTO
@@ -509,7 +509,7 @@ async findAll(userId: number, filters: FilterModuleNameDto) {
 }
 ```
 
-### [Relationships]()
+### Relationships
 
 ```typescript
 // Load with relationships

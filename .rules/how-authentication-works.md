@@ -1,17 +1,14 @@
-# [How does Authentication work?]()
+# How Authentication Works
 
-> Complete guide on the JWT authentication system implemented in the project.
+> Complete guide explaining JWT-based authentication system, token validation, user isolation, and secure request handling in the project.
 
 ## [Overview]()
 
-The project uses **JWT (JSON Web Tokens)** based authentication with the following characteristics:
-- Login with email/password
-- JWT token for authenticated requests
-- Automatic token refresh
-- Global route protection (opt-out with @Public())
-- Data isolation per user
+The project implements JWT-based authentication providing secure, stateless user verification with automatic token refresh, global route protection via opt-out decorators, and complete data isolation ensuring users can only access their own resources.
 
 ## [Authentication Flow]()
+
+Step-by-step authentication process from user signup through credential validation to JWT token generation and verification. The flow ensures secure password hashing, token-based session management, and automatic user data injection into request context for authorization.
 
 ```
 1. User signs up → Hash password → Save in DB
@@ -21,6 +18,8 @@ The project uses **JWT (JSON Web Tokens)** based authentication with the followi
 ```
 
 ## [System Components]()
+
+Core architectural components implementing authentication including User entity, JWT strategy for token validation, Local strategy for login, Auth service for credential verification, and Auth controller exposing public endpoints. Each component has specific responsibilities following separation of concerns.
 
 ### [1. User Entity]()
 
@@ -203,6 +202,8 @@ export class AuthController {
 
 ## [Guards (Route Protection)]()
 
+Global guard implementation using NestJS guard system with JWT validation and Public decorator for opt-out pattern. Guards intercept every request to verify authentication tokens before allowing access to protected routes, ensuring application-wide security by default.
+
 ### [JWT Auth Guard (Global)]()
 
 Applied globally, protects all routes by default:
@@ -259,6 +260,8 @@ async login(@Body() loginDto: LoginDto) {
 
 ## [How to Use in Controller]()
 
+Practical patterns for accessing authenticated user data in controllers and services using Request object injection. The framework automatically injects user information after successful JWT validation, enabling secure data isolation and user-specific operations throughout the application.
+
 ### [Access Logged User]()
 
 ```typescript
@@ -290,7 +293,7 @@ Automatically injected after JWT validation:
 
 ## [Data Isolation per User]()
 
-**Rule**: All data must be filtered by `userId`
+Critical security pattern ensuring all database queries are filtered by authenticated userId to prevent unauthorized data access. This isolation layer guarantees users can only view, modify, or delete their own resources, implementing proper multi-tenant security architecture.
 
 ### [Service Example]()
 
@@ -326,6 +329,8 @@ export class ProductService {
 ```
 
 ## [Complete Request Flow]()
+
+End-to-end HTTP request examples demonstrating signup, login, and authenticated requests with real payloads and responses. These examples show proper header formatting, token usage, and expected response structures for successful authentication workflows.
 
 ### [1. Signup (Create account)]()
 
@@ -395,6 +400,8 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
 ```
 
 ## [Frontend: How to Implement]()
+
+Frontend integration guide covering token storage, automatic token injection via Axios interceptors, error handling for expired tokens, and protected route implementation with React Router. These patterns ensure seamless client-side authentication experience.
 
 ### [1. Store Token]()
 
@@ -471,6 +478,8 @@ const PrivateRoute = ({ children }) => {
 
 ## [Environment Variables]()
 
+Required environment configuration for JWT authentication including secret key generation, token expiration settings, and security best practices. Proper environment variable management is critical for production security and token validation consistency.
+
 **.env**:
 ```env
 JWT_SECRET=your-secret-key-here-minimum-32-characters
@@ -482,6 +491,8 @@ JWT_EXPIRATION=24h
 - Never commit `.env` to git
 
 ## [Security]()
+
+Comprehensive security measures implemented including bcrypt password hashing, token expiration, active user validation, data isolation by userId, and password exclusion from responses. Additional improvements like refresh tokens and rate limiting are discussed for enhanced protection.
 
 ### [Implemented Best Practices]()
 
@@ -501,6 +512,8 @@ JWT_EXPIRATION=24h
 - [ ] OAuth (Google, GitHub, etc)
 
 ## [Troubleshooting]()
+
+Common authentication error scenarios and solutions including invalid tokens, disabled users, missing authorization headers, and proper token format. These troubleshooting patterns help diagnose and resolve authentication failures quickly.
 
 ### [Invalid/expired token]()
 
@@ -523,6 +536,8 @@ JWT_EXPIRATION=24h
 **Correct**: `Authorization: Bearer <token>`
 
 ## [References]()
+
+External documentation links for JWT specification, Passport.js authentication middleware, and NestJS security guidelines. These resources provide deeper understanding of authentication concepts and implementation patterns used in the project.
 
 - [JWT.io](https://jwt.io)
 - [Passport.js Documentation](https://www.passportjs.org)

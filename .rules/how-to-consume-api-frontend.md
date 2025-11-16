@@ -1,6 +1,6 @@
-# [How to consume the API in Frontend?]()
+# How to consume the API in Frontend
 
-> Complete guide on how to make HTTP requests to the API using Axios in React.
+> Complete guide on how to make HTTP requests to the API using Axios in React
 
 ## [Axios Configuration]()
 

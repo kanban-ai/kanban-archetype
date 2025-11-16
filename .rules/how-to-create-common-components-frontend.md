@@ -1,6 +1,6 @@
-# [How to create common components in Frontend?]()
+# How to create common components in Frontend
 
-> Guide to create reusable components in React + TypeScript + Tailwind CSS.
+> Guide to create reusable components in React with TypeScript and Tailwind CSS
 
 ## [Common Components Principles]()
 

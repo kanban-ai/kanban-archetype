@@ -1,6 +1,6 @@
-# How to test Use-Cases with Jest in the Backend?
+# How to test Use-Cases with Jest in the Backend
 
-Complete guide to configure and create unit tests exclusively for Use-Case classes using Jest, mocking all external dependencies for isolated execution.
+> Complete guide to configure and create unit tests exclusively for Use-Case classes using Jest, mocking all external dependencies for isolated execution.
 
 ## [Use-Case Testing Principles]()
 

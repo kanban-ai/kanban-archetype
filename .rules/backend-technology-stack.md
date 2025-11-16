@@ -4,30 +4,70 @@
 
 ## [Main Stack]()
 
-Core technologies used in the backend including framework, runtime, language and HTTP server.
+Core technologies used in the backend including framework, runtime, language and HTTP server. NestJS provides the main framework structure with TypeScript for type safety, Node.js as runtime environment, and Express.js as the underlying HTTP server for handling requests and responses efficiently.
 
-### [Framework and Runtime]()
+### When to use?
 
-- **NestJS**: Main backend framework
-  - Progressive framework for building efficient and scalable server-side applications
-  - Based on TypeScript
-  - Modular architecture with dependency injection
-  - Native support for TypeScript, WebSockets, Microservices
+Use this stack when building scalable server-side applications requiring strong typing, modular architecture, dependency injection, and built-in support for REST APIs, WebSockets, or microservices. Ideal for enterprise applications and complex backend systems requiring maintainability and testability.
 
-- **Node.js**: JavaScript runtime
-  - Asynchronous platform based on Chrome's V8
-  - Event-driven and non-blocking I/O
+### When NOT to use?
 
-- **TypeScript**: Programming language
-  - JavaScript superset with static typing
-  - Target: ES2023
-  - Strict mode enabled
+Avoid this stack for simple static sites, serverless functions with cold start constraints, or when team has no TypeScript/Node.js experience. Not recommended for CPU-intensive tasks better suited for languages like Go or Rust, or when framework overhead is excessive for minimal requirements.
 
-- **Express.js**: HTTP server
-  - Integrated via `@nestjs/platform-express`
-  - Minimalist and fast web framework
+### Example
+
+```typescript
+// main.ts - NestJS application entry point
+import { NestFactory } from '@nestjs/core';
+import { AppModule } from './app.module';
+
+async function bootstrap() {
+  const app = await NestFactory.create(AppModule);
+  await app.listen(3000);
+}
+bootstrap();
+
+// app.module.ts - Root module with dependency injection
+@Module({
+  imports: [UserModule, AuthModule],
+  controllers: [AppController],
+  providers: [AppService],
+})
+export class AppModule {}
+```
+
+### Checklist
+
+- [ ] Node.js version >= 18.x installed
+- [ ] TypeScript configured with strict mode enabled
+- [ ] NestJS CLI installed globally (`npm i -g @nestjs/cli`)
+- [ ] Express.js integrated via `@nestjs/platform-express`
+- [ ] Environment variables configured in .env file
+- [ ] tsconfig.json targeting ES2023 with strict compilation
+
+### Troubleshooting
+
+**Problem**: NestJS application fails to start with dependency injection errors
+**Solution**: Ensure all providers are properly registered in module imports/providers arrays and circular dependencies are avoided
+
+**Problem**: TypeScript compilation errors despite valid JavaScript
+**Solution**: Check tsconfig.json strict mode settings and ensure all types are properly declared without using `any`
+
+**Problem**: Express middleware not executing
+**Solution**: Verify middleware registration order in main.ts or module configuration, as order matters for request processing
+
+### Best Practices
+
+- Enable TypeScript strict mode for maximum type safety
+- Organize code in feature modules following domain-driven design
+- Use dependency injection instead of direct instantiation
+- Implement proper error handling with exception filters
+- Configure environment variables via ConfigModule
+- Keep controllers thin, business logic in services/use-cases
 
 ## [Database]()
+
+Database management system, ORM framework and PostgreSQL driver for data persistence, migrations and type-safe queries in the backend application.
 
 - **PostgreSQL**: Relational database
   - Robust SQL database system
@@ -45,6 +85,8 @@ Core technologies used in the backend including framework, runtime, language and
   - Connection pooling
 
 ## [Authentication and Security]()
+
+Authentication strategies, JWT token management, password hashing and security middleware for protecting API endpoints and user data in the backend application.
 
 - **Passport**: Authentication middleware
   - Modular authentication strategy
@@ -68,6 +110,8 @@ Core technologies used in the backend including framework, runtime, language and
 
 ## [Data Validation]()
 
+Validation and transformation libraries for DTOs ensuring data integrity, type safety and automatic validation of incoming requests using decorators in NestJS controllers.
+
 - **class-validator**: DTO validation
   - Declarative validation using decorators
   - Support for custom validation
@@ -80,12 +124,16 @@ Core technologies used in the backend including framework, runtime, language and
 
 ## [API Documentation]()
 
+Automatic OpenAPI/Swagger documentation generation from code using decorators, providing interactive UI for testing and exploring all backend API endpoints with schema definitions.
+
 - **@nestjs/swagger**: Automatic documentation
   - OpenAPI/Swagger documentation generation
   - Interactive UI for testing endpoints
   - Decorators for documenting DTOs and endpoints
 
 ## [Configuration]()
+
+Environment variable management and configuration loading with type safety validation, separating settings by development, staging and production environments using .env files.
 
 - **@nestjs/config**: Configuration management
   - Environment variable loading
@@ -97,6 +145,8 @@ Core technologies used in the backend including framework, runtime, language and
   - Configuration separation by environment
 
 ## [Utilities]()
+
+Essential utility libraries for HTTP requests to external APIs, date manipulation with immutability, reactive programming with observables and metadata reflection required by TypeScript decorators.
 
 - **axios**: HTTP client
   - HTTP requests to external APIs
@@ -221,7 +271,9 @@ Domain-specific modules developed for the project, organized by business functio
 14. **ConfigModule**: User settings
 15. **RebalanceModule**: Portfolio rebalancing
 
-## [Main Technologies]()
+## [Main Technologies Summary]()
+
+Quick reference list of all core technologies used in the backend stack for rapid lookup and onboarding new developers to the project's technology ecosystem.
 
 - NestJS
 - TypeScript
@@ -241,17 +293,23 @@ Domain-specific modules developed for the project, organized by business functio
 
 ## [Package Managers]()
 
+The project supports multiple package managers for dependency installation and management, with pnpm recommended for better performance and disk space efficiency.
+
 The project supports both:
 - **npm**: package.json + package-lock.json
 - **pnpm**: pnpm-lock.yaml (recommended for performance)
 
 ## [System Requirements]()
 
+Minimum versions required for runtime, database and package managers to run the backend application successfully in development and production environments.
+
 - Node.js >= 18.x
 - PostgreSQL >= 14.x
 - npm >= 9.x or pnpm >= 8.x
 
 ## [References]()
+
+Official documentation links for all major technologies used in the backend stack providing detailed guides, API references and best practices for deeper learning.
 
 - [NestJS Documentation](https://docs.nestjs.com)
 - [TypeORM Documentation](https://typeorm.io)

@@ -1,10 +1,10 @@
-# How to create a Use-Case in NestJS Backend?
+# How to Create Use-Cases in NestJS Backend
 
-> Guide to implementing Use-Cases following SOLID principles and interface segregation in the backend.
+> Comprehensive guide to implementing thin, focused Use-Cases following SOLID principles and interface segregation for scalable backend development.
 
 ## [What is a Use-Case?]()
 
-A Use-Case is a class that implements one or more interfaces, where each interface represents a specific domain responsibility. This approach promotes high cohesion, low coupling and facilitates unit testing.
+A Use-Case is a class implementing one or more interfaces representing specific domain responsibilities. This design promotes high cohesion, low coupling, and facilitates comprehensive unit testing through dependency injection and interface segregation.
 
 **Main characteristics:**
 - Each interface has only one method (Interface Segregation Principle)
@@ -118,7 +118,7 @@ Notice that:
 
 ## [When to Use Use-Cases?]()
 
-Use Use-Cases when there are:
+Use-Cases are recommended when business operations involve complex logic, multiple database transactions, or sophisticated rules requiring high testability and maintainability. They excel at isolating business rules from infrastructure concerns.
 
 ### 1. Complex Business Rules
 When an operation involves multiple database transactions or complex business logic.
@@ -141,9 +141,7 @@ When you need to test each responsibility in isolation or easily swap implementa
 
 ## [File Structure: Thin Use-Cases in Separate Files]()
 
-File organization pattern for Use-Cases within a module.
-
-**IMPORTANT**: Prefer creating **many small files** (1 use-case = 1 file = 1 interface) instead of few large files.
+File organization pattern for Use-Cases within modules, strongly favoring thin, focused files where each use-case implements a single interface. This approach maximizes reusability, testability, and code clarity by creating many small files rather than few large ones.
 
 ### Example: Structure with Thin Use-Cases (Recommended)
 
@@ -194,6 +192,8 @@ src/modules/financeiro/
 | Interface | `ResponsibilityName` | PascalCase without I prefix | English |
 
 ## [Step-by-Step Use-Case Implementation]()
+
+Detailed implementation workflow covering interface definition, use-case creation, module registration, and dependency injection. Follow this systematic approach to ensure SOLID principles compliance and proper integration with NestJS framework.
 
 ### Step 1: Define the Interfaces
 
@@ -524,6 +524,8 @@ export class FinanceiroController {
 
 ## [SOLID Principles Applied in Use-Cases]()
 
+Practical demonstration of how Use-Cases implement each SOLID principle: Single Responsibility through interface segregation, Open-Closed through extension, Liskov Substitution through polymorphism, Interface Segregation through minimal contracts, and Dependency Inversion through abstraction.
+
 ### S - Single Responsibility Principle
 Each interface represents a single responsibility. If a responsibility changes, only one method is affected.
 
@@ -625,7 +627,7 @@ export class FinanceiroService {
 
 ## [Testing Use-Cases]()
 
-Use-Cases should have complete unit tests mocking all external dependencies.
+Use-Cases require comprehensive unit tests with mocked dependencies to ensure isolated testing of business logic. Tests should cover success scenarios, edge cases, and error handling using Jest framework with arrange-act-assert pattern.
 
 **📖 For complete Use-Case testing guide, see**: `./how-to-test-use-cases-jest-backend.md`
 
@@ -639,7 +641,7 @@ The guide contains:
 
 ## [Comparison: Traditional Service vs Use-Case]()
 
-Comparison between traditional approach with Services and approach with Use-Cases:
+Side-by-side analysis contrasting traditional service-based architecture with Use-Case-driven design, highlighting differences in responsibility distribution, coupling levels, testability, and dependency management. Use-Cases excel in complex scenarios while services suffice for simple CRUD.
 
 | Aspect | Traditional Service | Use-Case |
 |--------|-------------------|----------|
@@ -684,6 +686,8 @@ export class BalanceController {
 ```
 
 ## [Best Practices for Thin and Focused Use-Cases]()
+
+Essential guidelines for creating maintainable Use-Cases: one interface per method, descriptive English naming, type aliases for combinations, and preferring single-interface use-cases. These practices ensure code remains modular, testable, and aligned with SOLID principles.
 
 ### 1. One Interface = One Method
 ```typescript
@@ -840,7 +844,7 @@ export interface CalculateCurrentBalance {
 
 ## [Use-Case Implementation Checklist]()
 
-Use this list to verify if your Use-Case is correct:
+Comprehensive verification checklist covering interface design, implementation quality, module registration, dependency injection, testing coverage, and adherence to SOLID principles. Use this to validate every use-case before deployment.
 
 - [ ] `interfaces.ts` file created in `use-cases/`
 - [ ] Each interface has only one method
@@ -856,6 +860,8 @@ Use this list to verify if your Use-Case is correct:
 - [ ] Interface documentation is complete
 
 ## [Troubleshooting: Common Use-Case Problems]()
+
+Solutions for frequent implementation challenges including dependency resolution errors, circular dependencies, and oversized use-cases. These troubleshooting patterns help resolve common NestJS and TypeScript issues when working with use-cases.
 
 ### Error: "Cannot resolve dependency"
 
@@ -927,7 +933,7 @@ export class ReportRulesUseCase
 
 ## [Complete Example: Orders Module with Use-Cases]()
 
-Complete example of a real module using Use-Cases:
+End-to-end implementation demonstrating real-world use-case pattern in an orders module, including interface definitions, use-case implementation with multiple responsibilities, and controller integration showcasing practical application of all concepts.
 
 ### Interfaces
 
@@ -1067,6 +1073,8 @@ export class OrderController {
 ```
 
 ## [References on Use-Cases and SOLID]()
+
+Curated external resources including NestJS providers documentation, SOLID principles explanations, Clean Architecture guidance, and Interface Segregation Principle references for deepening understanding of use-case patterns and architectural best practices.
 
 - [NestJS Providers](https://docs.nestjs.com/providers)
 - [SOLID Principles](https://en.wikipedia.org/wiki/SOLID)

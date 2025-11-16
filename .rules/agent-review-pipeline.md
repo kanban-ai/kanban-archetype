@@ -1,6 +1,10 @@
-# How the Agent Review Pipeline Works
+# [How the Agent Review Pipeline Works]()
 
-## Overview
+> Complete guide to the two-stage review pipeline used in SDD to ensure implementation completeness and code quality compliance with technical standards.
+
+## [Overview]()
+
+This section provides a high-level view of the two-stage review pipeline architecture, showing how developer-fullstack, feature-review and code-reviewer agents interact sequentially to validate both completeness and quality of implementations.
 
 The SDD system uses a **two-stage review pipeline** to ensure that every implementation is complete and complies with the project's technical standards.
 
@@ -39,9 +43,11 @@ INCOMPLETE    COMPLETE
 
 ---
 
-## Agents Involved
+## [Agents Involved]()
 
-### 1. developer-fullstack
+Detailed description of each specialized agent's role, responsibilities, tools, workflow steps and use cases within the review pipeline.
+
+### [1. developer-fullstack]()
 
 **Responsibility:** Implement complete features (backend + frontend).
 
@@ -68,7 +74,7 @@ INCOMPLETE    COMPLETE
 
 ---
 
-### 2. feature-review
+### [2. feature-review]()
 
 **Responsibility:** Validate if implementation is **complete** and meets **task requirements**.
 
@@ -110,7 +116,7 @@ INCOMPLETE    COMPLETE
 
 ---
 
-### 3. code-reviewer
+### [3. code-reviewer]()
 
 **Responsibility:** Validate if code follows **technical rules, architecture patterns, code style and best practices** defined in `.rules`.
 
@@ -167,9 +173,13 @@ INCOMPLETE    COMPLETE
 
 ---
 
-## Review Pipeline: Detailed Flow
+## [Review Pipeline: Detailed Flow]()
 
-### Stage 1: Feature Review (Completeness)
+Step-by-step breakdown of the complete review process from implementation through both stages of validation, including decision trees and feedback loops for corrections.
+
+### [Stage 1: Feature Review (Completeness)]()
+
+Validation phase that compares implemented code against original task requirements to ensure all specified endpoints, validations, fields and integrations are present and functional.
 
 **When:** After developer-fullstack completes implementation.
 
@@ -203,7 +213,9 @@ INCOMPLETE    COMPLETE
 
 ---
 
-### Stage 2: Code Review (Technical Quality)
+### [Stage 2: Code Review (Technical Quality)]()
+
+Quality validation phase that compares implemented code against project technical standards, architecture patterns and best practices defined in .rules to ensure compliance and maintainability.
 
 **When:** After feature-review approves (✅ COMPLETE).
 
@@ -237,9 +249,13 @@ INCOMPLETE    COMPLETE
 
 ---
 
-## Complete Execution Example
+## [Complete Execution Example]()
 
-### Scenario: Implement Products CRUD
+Real-world walkthrough of implementing a Products CRUD feature through multiple rounds of development and review, demonstrating how the pipeline catches incompleteness and quality issues.
+
+### [Scenario: Implement Products CRUD]()
+
+Practical example showing the complete lifecycle of a CRUD implementation including initial attempt, completeness validation failures, fixes, and quality review corrections.
 
 **Task:** `./todo/task-products.md`
 
@@ -252,7 +268,9 @@ INCOMPLETE    COMPLETE
 
 ---
 
-### Round 1: First Implementation
+### [Round 1: First Implementation]()
+
+First development attempt showing common incompleteness issues like missing endpoints and fields, followed by feature-review rejection with detailed feedback.
 
 **1. Developer-fullstack implements:**
 - ✅ GET /v1/products
@@ -285,7 +303,9 @@ Critical Incompatibilities:
 
 ---
 
-### Round 2: Complete Implementation
+### [Round 2: Complete Implementation]()
+
+Developer addresses completeness issues by implementing all missing endpoints, fields and validations, achieving full task coverage and passing feature-review.
 
 **4. Developer-fullstack completes:**
 - ✅ PUT /v1/products/:id (ADDED)
@@ -310,7 +330,9 @@ All requirements implemented!
 
 ---
 
-### Round 3: Code Review (First Review)
+### [Round 3: Code Review (First Review)]()
+
+First code-review attempt identifies quality violations like missing userId validation, incomplete Swagger documentation and cache invalidation issues.
 
 **7. Code-reviewer validates:**
 
@@ -334,7 +356,9 @@ High Violations:
 
 ---
 
-### Round 4: Quality Fixes
+### [Round 4: Quality Fixes]()
+
+Final round where developer implements all quality improvements, passing both feature-review validation and code-review approval to complete the task successfully.
 
 **9. Developer-fullstack fixes:**
 - ✅ Adds userId validation on all endpoints
@@ -362,9 +386,13 @@ Code complies with technical standards!
 
 ---
 
-## Best Practices
+## [Best Practices]()
 
-### For Scrum Master (/execute command)
+Essential guidelines and recommendations for each role in the pipeline to maximize effectiveness and maintain code quality standards throughout the development process.
+
+### [For Scrum Master (/execute command)]()
+
+Guidelines for orchestrating the review pipeline, delegating tasks correctly, managing feedback loops and maintaining TODO list accuracy.
 
 1. **Always follow the complete pipeline:**
    - developer → feature-review → code-review
@@ -382,7 +410,9 @@ Code complies with technical standards!
 
 ---
 
-### For Developers
+### [For Developers]()
+
+Best practices for implementing features to pass both review stages on first attempt, including thorough requirement analysis and technical rule consultation.
 
 1. **Read the COMPLETE task before implementing**
 2. **Consult `.rules` for technical rules, architecture patterns and best practices**
@@ -391,7 +421,9 @@ Code complies with technical standards!
 
 ---
 
-### For Reviewers
+### [For Reviewers]()
+
+Guidance for both feature-review and code-review agents on how to provide actionable feedback with specific examples and rule references.
 
 **Feature Review:**
 - Compare code vs task (not vs technical rules)
@@ -405,7 +437,9 @@ Code complies with technical standards!
 
 ---
 
-## Output Files
+## [Output Files]()
+
+Documentation standards for review reports including location, naming conventions and context format examples to maintain consistency across all reviews.
 
 All reports are saved in `./todo/`:
 
@@ -422,7 +456,9 @@ All reports are saved in `./todo/`:
 
 ---
 
-## Summary
+## [Summary]()
+
+Quick reference table showing the complete pipeline flow with all possible outcomes and transitions between stages for rapid understanding of the process.
 
 | Stage | Agent | Validates | Result | Next Step |
 |-------|-------|-----------|--------|-----------|

@@ -1,4 +1,4 @@
-# [How to Handle Dates - Backend and Frontend]()
+# How to Handle Dates - Backend and Frontend
 
 > Complete guide on correct date handling in backend and frontend, using ISODate UTC in the database and dayjs for manipulation.
 

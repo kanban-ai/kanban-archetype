@@ -1,10 +1,10 @@
-# [What should be the migration commands in Backend package.json?]()
+# What should be the migration commands in Backend package.json?
 
-> Configuration of npm scripts to manage TypeORM migrations.
+> Complete guide for configuring npm scripts to manage TypeORM migrations including generate, create, run, revert, and troubleshooting database schema changes.
 
 ## [Necessary Scripts in package.json for Migrations]()
 
-This section presents the essential npm scripts to manage TypeORM migrations. Each script is a shortcut that facilitates executing commands like generating, creating and running migrations in the project.
+This section presents the essential npm scripts to manage TypeORM migrations including base typeorm script with ts-node and tsconfig-paths support, migration:generate for automatic generation, migration:create for manual creation, migration:run for execution, migration:revert for rollback, migration:show for status, and db:drop for complete database reset. Each script is a shortcut that facilitates executing TypeORM CLI commands in development and production environments.
 
 List of essential npm scripts to manage TypeORM migrations:
 
@@ -26,7 +26,7 @@ Add to `package.json`:
 
 ## [Detailed Description of each Migration Command]()
 
-This section details each migration command, explaining when to use it, what it does and practical usage examples in daily work.
+This section provides detailed documentation for each migration command including migration:generate for automatic schema synchronization based on entity changes, migration:create for manual data seeds and complex alterations, migration:run for executing pending migrations, migration:revert for rollback, migration:show for status listing, and db:drop for complete database reset. Each command includes practical usage examples, when to use guidelines, and expected behavior in development workflow.
 
 Complete explanation of each npm script and its parameters:
 
@@ -136,7 +136,7 @@ npm run db:drop
 
 ## [Workflow to create and apply Migrations]()
 
-Command sequence for complete migrations workflow:
+Step-by-step command sequence for complete migrations workflow covering entity creation, migration generation, migration file review, execution, and error handling. This workflow ensures safe database schema changes by reviewing generated migrations before execution, allowing rollback if errors occur, and maintaining version control of database schema evolution aligned with entity definitions in TypeScript code.
 
 ### [1. Create new entity]()
 
@@ -189,7 +189,7 @@ npm run migration:run
 
 ## [DataSource Configuration for TypeORM CLI]()
 
-database.config.ts file necessary for migration commands:
+Essential database.config.ts configuration file that TypeORM CLI requires to connect to database and locate entities and migrations. This DataSource configuration uses ConfigService for environment variables, defines paths to entities and migrations using glob patterns, disables synchronize for safety, and enables logging for visibility. Without this configuration file, migration commands will fail to execute.
 
 For commands to work, configure `database.config.ts`:
 
@@ -217,7 +217,7 @@ export default new DataSource({
 
 ## [Necessary Dependencies to run Migrations]()
 
-Required npm packages for TypeORM CLI to work:
+Required npm packages for TypeORM CLI to execute migrations including ts-node for TypeScript execution, tsconfig-paths for path alias resolution, typescript compiler, typeorm library, and pg PostgreSQL driver. These devDependencies and dependencies must be installed for migration commands to work correctly in development and production environments supporting TypeScript entity files and database connections.
 
 ```json
 {
@@ -235,7 +235,7 @@ Required npm packages for TypeORM CLI to work:
 
 ## [Additional Useful Scripts for development]()
 
-Extra commands for seeding, backup and migration verification:
+Extra npm scripts for advanced database operations including seed script for populating initial data, db:check for testing database connectivity, and db:backup/db:restore for production database backup and restore using pg_dump and psql utilities. These commands facilitate development workflow, testing with realistic data, and disaster recovery procedures for production environments.
 
 ### [Data Seed]()
 
@@ -270,7 +270,7 @@ Extra commands for seeding, backup and migration verification:
 
 ## [CI/CD Integration for automatic Migrations]()
 
-How to run migrations in GitHub Actions pipelines and Docker:
+Integration examples for running migrations automatically in deployment pipelines including GitHub Actions workflow with environment variables from secrets, and Docker container startup script that executes migrations before starting the application. These patterns ensure database schema is always synchronized with application code in staging and production environments, enabling continuous deployment with zero-downtime database updates.
 
 ### [GitHub Actions]()
 
@@ -293,7 +293,7 @@ CMD ["sh", "-c", "npm run migration:run && npm run start:prod"]
 
 ## [Troubleshooting - Common Migration command errors]()
 
-Solutions for frequent problems when running migrations:
+Solutions for frequent problems when running migrations including module resolution errors requiring ts-node and tsconfig-paths installation, missing migrations due to incorrect path configuration in database.config.ts, and connection failures caused by invalid or missing environment variables. Each error includes diagnostic steps and specific solutions to quickly resolve migration execution problems in development and production environments.
 
 ### [Error: "Cannot find module"]()
 
@@ -322,7 +322,7 @@ echo $DB_USERNAME
 
 ## [Complete package.json Example with all scripts]()
 
-Complete package.json with all migration commands configured:
+Complete working package.json example including all migration commands properly configured alongside standard NestJS scripts for build, start, and test. This reference configuration demonstrates correct script organization, typeorm base command with ts-node and tsconfig-paths, and all migration operations ready to use in development workflow for generating, creating, running, reverting, and inspecting database migrations.
 
 ```json
 {
@@ -349,7 +349,7 @@ Complete package.json with all migration commands configured:
 
 ## [References and TypeORM CLI documentation]()
 
-Links to official TypeORM CLI documentation:
+Links to official TypeORM CLI documentation for migrations and NestJS TypeORM integration guide. These resources provide comprehensive information about advanced migration features, configuration options, and best practices for managing database schema evolution in TypeScript applications using TypeORM with NestJS framework.
 
 - [TypeORM Migrations CLI](https://typeorm.io/migrations#creating-a-new-migration)
 - [NestJS TypeORM](https://docs.nestjs.com/recipes/sql-typeorm)

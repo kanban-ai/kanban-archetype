@@ -1,6 +1,6 @@
-# [How routing works in Frontend?]()
+# How routing works in Frontend
 
-> Complete guide on routing with React Router DOM in the project.
+> Complete guide on routing with React Router DOM in the project, including route configuration, navigation patterns, and authentication guards.
 
 **Page Naming**: All pages must follow the `Page` suffix (ex: `LoginPage.tsx`, `AssetListPage.tsx`). For complete naming conventions, see: `.rules/react-component-naming-pattern-frontend.md`
 

@@ -1,12 +1,16 @@
-# [What is the React component naming pattern in Frontend?]()
+# React component naming pattern in Frontend
 
-> Naming conventions with suffixes for quick identification of React component categories.
+> Naming conventions with suffixes for quick identification of React component categories, improving code organization and search capabilities.
 
 ## [Overview]()
+
+This section introduces the component naming system used in the project, explaining how suffix patterns help identify component types at a glance.
 
 This document defines suffix patterns for React file and component naming, facilitating identification, search and code organization.
 
 ## [Suffix Table by Category]()
+
+This section presents a comprehensive table mapping component categories to their corresponding suffix patterns, with examples and recommended locations in the project structure.
 
 | Category | Suffix | Example | Location |
 |-----------|--------|---------|-------------|
@@ -29,13 +33,15 @@ This document defines suffix patterns for React file and component naming, facil
 
 ## [Differentiation: Section vs Common Component]()
 
-### [Section]()
+This section clarifies the distinction between Section components (page-specific visual blocks) and Common components (reusable generic elements) to ensure proper categorization.
+
+### Section
 Component that represents a **complete visual section** of a page:
 - Usually used once per page
 - Contains specific structure and layout
 - Examples: `HeaderSection`, `HeroSection`, `FeaturesSection`, `FooterSection`
 
-### [Common Component]()
+### Common Component
 **Reusable generic** component used in multiple places:
 - Highly reusable
 - Configurable via props
@@ -43,9 +49,11 @@ Component that represents a **complete visual section** of a page:
 
 ## [Folder Structure: Minimal vs Complete]()
 
+This section explains the recommended folder organization evolution from a minimal structure for small projects to a complete modular structure for production applications.
+
 The project folder structure can start simple and evolve as complexity increases.
 
-### [Minimal Structure (Initial Setup)]()
+### Minimal Structure (Initial Setup)
 
 For new or small projects, start with simplified structure:
 
@@ -74,7 +82,7 @@ src/
 
 **When to use:** Initial setup, small projects (<10 components), MVPs
 
-### [Complete Structure (Production Project)]()
+### Complete Structure (Production Project)
 
 As project grows, organize components in specialized subfolders:
 
@@ -147,7 +155,7 @@ src/
 
 **When to use:** Production project, >20 components, multiple modules
 
-### [Migration: Minimal → Complete]()
+### Migration: Minimal → Complete
 
 **When to migrate subfolders:**
 
@@ -172,7 +180,9 @@ mv src/components/common/HeaderSection.tsx src/components/sections/
 
 ## [Naming Rules]()
 
-### [PascalCase for Components]()
+This section defines the mandatory naming conventions for components, hooks, providers and base components to maintain consistency across the codebase.
+
+### PascalCase for Components
 All React components must use PascalCase:
 - ✅ `MetricCard.tsx`
 - ✅ `AssetListPage.tsx`
@@ -180,7 +190,7 @@ All React components must use PascalCase:
 - ❌ `metricCard.tsx`
 - ❌ `asset-list-page.tsx`
 
-### [Hooks with use Prefix]()
+### Hooks with use Prefix
 Custom hooks must always have `use` prefix:
 - ✅ `useAuth.ts`
 - ✅ `useNotifications.ts`
@@ -188,13 +198,13 @@ Custom hooks must always have `use` prefix:
 - ❌ `auth.ts`
 - ❌ `notifications.ts`
 
-### [Providers with Provider Suffix]()
+### Providers with Provider Suffix
 Context providers must have `Provider` suffix:
 - ✅ `AuthProvider.tsx`
 - ✅ `ToastProvider.tsx`
 - ❌ `AuthContext.tsx` (Context is the context, not the Provider)
 
-### [Base Components without Suffix]()
+### Base Components without Suffix
 Generic base components don't need suffix:
 - ✅ `Button.tsx` (base component)
 - ✅ `Input.tsx` (base component)
@@ -204,7 +214,9 @@ Generic base components don't need suffix:
 
 ## [Practical Naming Examples]()
 
-### [Example 1: Modal System]()
+This section provides real-world examples of naming patterns applied to common component systems like modals, cards, pages and forms.
+
+### Example 1: Modal System
 ```
 src/components/common/
 ├── Modal.tsx              # Generic base component
@@ -214,7 +226,7 @@ src/components/common/
 └── SelectWalletModal.tsx  # Wallet selection modal
 ```
 
-### [Example 2: Card System]()
+### Example 2: Card System
 ```
 src/components/common/
 ├── Card.tsx               # Generic base component
@@ -224,7 +236,7 @@ src/components/common/
 └── ProfileCard.tsx        # Profile card
 ```
 
-### [Example 3: Asset Pages]()
+### Example 3: Asset Pages
 ```
 src/pages/assets/
 ├── AssetListPage.tsx      # Asset listing
@@ -233,7 +245,7 @@ src/pages/assets/
 └── AssetDashboardPage.tsx # Asset dashboard
 ```
 
-### [Example 4: Forms]()
+### Example 4: Forms
 ```
 src/components/forms/
 ├── LoginForm.tsx          # Login form
@@ -245,7 +257,9 @@ src/components/forms/
 
 ## [Advantages of Suffix Pattern]()
 
-### [Quick Visual Identification]()
+This section explains the key benefits of using suffix patterns in component naming, including quick identification, easier search, collision avoidance and self-documentation.
+
+### Quick Visual Identification
 Suffix allows immediate identification of component type when reading code:
 ```typescript
 import { AssetListPage } from '@/pages/assets/AssetListPage';
@@ -255,7 +269,7 @@ import { LineChart } from '@/components/common/LineChart';
 // Without looking at folder, I already know: Page, Card, Modal, Chart
 ```
 
-### [Easier Search]()
+### Easier Search
 Search by suffix pattern finds all components of category:
 ```bash
 # Find all pages
@@ -268,7 +282,7 @@ find src -name "*Modal.tsx"
 find src -name "*Chart.tsx"
 ```
 
-### [Avoids Name Collision]()
+### Avoids Name Collision
 Suffixes allow related names without conflict:
 ```
 AssetList.tsx          # ❌ Ambiguous: is it page or component?
@@ -276,7 +290,7 @@ AssetListPage.tsx      # ✅ Clearly a page
 AssetListCard.tsx      # ✅ Clearly a card
 ```
 
-### [Self-documentation]()
+### Self-documentation
 Code becomes self-documented by name:
 ```typescript
 // Self-explanatory code
@@ -294,14 +308,16 @@ Code becomes self-documented by name:
 
 ## [When NOT to Use Suffix]()
 
-### [Primitive Base Components]()
+This section defines exceptions to the suffix rule, identifying component types where suffixes are unnecessary or redundant due to highly specific or primitive nature.
+
+### Primitive Base Components
 Generic base components don't need suffix:
 - `Button.tsx` (not `BaseButton.tsx`)
 - `Input.tsx` (not `BaseInput.tsx`)
 - `Modal.tsx` (not `BaseModal.tsx`)
 - `Card.tsx` (not `BaseCard.tsx`)
 
-### [Very Specific Components]()
+### Very Specific Components
 Components with already very specific names can omit suffix:
 - `Sidebar.tsx` (already clear it's a section)
 - `Header.tsx` (already clear it's a section)
@@ -309,6 +325,8 @@ Components with already very specific names can omit suffix:
 - `Tooltip.tsx` (already clear it's a UI component)
 
 ## [Import Organization]()
+
+This section presents the standard import order convention to maintain clean and organized code, grouping imports by type and dependency level.
 
 Keep imports organized by category:
 
@@ -349,6 +367,8 @@ import styles from './AssetListPage.module.css';
 
 ## [Naming Checklist]()
 
+This section provides a quick reference checklist to verify that new components follow all naming conventions and organizational standards.
+
 When creating a new component, check:
 
 - [ ] Name is in PascalCase
@@ -362,7 +382,9 @@ When creating a new component, check:
 
 ## [Complete Examples]()
 
-### [Complete Example: Modal]()
+This section presents complete implementation examples showing how naming patterns are applied in real component code with proper TypeScript typing.
+
+### Complete Example: Modal
 ```typescript
 // src/components/common/ConfirmModal.tsx
 import { Modal } from './Modal';
@@ -393,7 +415,7 @@ export function ConfirmModal({
 }
 ```
 
-### [Complete Example: Page]()
+### Complete Example: Page
 ```typescript
 // src/pages/assets/AssetListPage.tsx
 import { useState } from 'react';
@@ -422,7 +444,7 @@ export function AssetListPage() {
 }
 ```
 
-### [Complete Example: Hook]()
+### Complete Example: Hook
 ```typescript
 // src/hooks/useAuth.ts
 import { useState, useEffect } from 'react';
@@ -441,6 +463,8 @@ export function useAuth() {
 ```
 
 ## [References]()
+
+This section lists related documentation files and external resources for deeper understanding of React naming conventions and TypeScript best practices.
 
 - File: `.rules/frontend-technology-stack.md` - Technology stack
 - File: `.rules/how-to-create-common-components-frontend.md` - Component creation

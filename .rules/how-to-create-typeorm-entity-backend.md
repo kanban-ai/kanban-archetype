@@ -1,23 +1,20 @@
-# [How to create a TypeORM Entity?]()
+# How to Create TypeORM Entities
 
-> Practical guide to creating entities (data models) with TypeORM in the project.
+<document description: Comprehensive guide for creating TypeORM entities with relationships, soft delete, proper naming conventions, and PostgreSQL column types in NestJS backend applications.>
 
-## [What is a TypeORM Entity and what is it for]()
+## [TypeORM Entity Fundamentals and Purpose]()
 
-This section explains the fundamental concept of entities in TypeORM and their function as object-relational mapping between TypeScript and PostgreSQL.
+Entities are TypeScript classes providing object-relational mapping between application code and PostgreSQL tables. Each entity class represents a table structure with typed properties mapping to columns, enabling type-safe database operations, automatic query generation, and maintaining strong typing throughout the application stack.
 
-Entities are TypeScript classes that represent PostgreSQL tables:
+### When to use?
+Use TypeORM entities when you need to represent database tables as TypeScript classes with automatic CRUD operations, relationship management, and type safety. Essential for any NestJS backend application using PostgreSQL as the database layer.
 
-An Entity represents a table in the database. Each instance of the class is a row in the table.
+### When NOT to use?
+Avoid creating entities for temporary data structures, API responses that don't map to tables, utility classes without database persistence, or when using raw SQL queries exclusively without ORM benefits.
 
 ## [Entity Location in the NestJS project]()
 
-This section defines the recommended organization of entities in the project, following a modular pattern instead of centralized.
-
-Entities should be inside the module folder, not centralized:
-
-- **SuperEntity**: Centralized in `src/database/entities/super.entity.ts` (shared by all modules)
-- **Other Entities**: Inside each module in `src/modules/[module-name]/entities/[name].entity.ts`
+Entity organization follows modular architecture with entities residing within their respective module folders rather than centralized location. Only SuperEntity base class is centralized in database folder, ensuring each module maintains its own domain models for better encapsulation, separation of concerns, and module independence.
 
 ### [Structure example:]()
 ```
@@ -36,9 +33,7 @@ src/
 
 ## [Basic TypeORM Entity Structure in NestJS]()
 
-This section presents the standard entity structure in the project, including use of SuperEntity and SoftDeletableEntity for common functionalities.
-
-How to create entities that extend SuperEntity or SoftDeletableEntity:
+Standard entity implementation patterns using SuperEntity for automatic ID and timestamps or SoftDeletableEntity for soft delete capability. These base classes provide consistent behavior across all entities while reducing boilerplate code and ensuring timestamp handling consistency.
 
 ### [Simple Entity]()
 
@@ -117,9 +112,7 @@ export class Product extends SoftDeletableEntity {
 
 ## [Column Types available in TypeORM]()
 
-This section catalogs all data types supported by TypeORM for PostgreSQL columns, with practical usage examples.
-
-Complete list of data types for PostgreSQL columns:
+Comprehensive catalog of PostgreSQL data types supported by TypeORM including text types for strings, numeric types for integers and decimals, boolean flags, timestamp types for dates, and JSONB for flexible data structures. Proper type selection ensures data integrity and query performance.
 
 ### [Text]()
 
@@ -175,9 +168,7 @@ metadata: any;
 
 ## [Relationships between TypeORM Entities]()
 
-This section teaches how to implement relationships between tables using TypeORM decorators, enabling queries with joins and eager loading.
-
-How to create Many-to-One, One-to-Many and Many-to-Many relationships:
+Relationship implementation using TypeORM decorators to define foreign keys and associations between entities. Supports many-to-one, one-to-many, and many-to-many patterns with automatic join handling, eager loading capabilities, and bidirectional navigation between related entities.
 
 ### [Many-to-One (N:1)]()
 
@@ -247,9 +238,7 @@ export class Product extends SuperEntity {
 
 ## [Advanced TypeORM Entity Features]()
 
-This section presents advanced features to optimize queries and ensure data integrity with indexes, constraints and special types.
-
-Indexes, unique constraints, default values and enums:
+Advanced entity configuration including index creation for query optimization, unique constraints for data integrity, default values for column initialization, nullable fields, enum types for fixed sets, field exclusion for sensitive data, and soft delete implementation for recoverable deletions.
 
 ### [Indexes]()
 
@@ -414,7 +403,7 @@ export class ProductService {
 
 ## [Entity Naming Conventions in the Project]()
 
-Established patterns for classes, tables and columns:
+Standardized naming conventions ensuring consistency across the codebase with PascalCase for entity classes, snake_case for database tables and columns, English naming for international compatibility, and proper singular/plural usage following TypeScript and PostgreSQL best practices.
 
 ### [Naming]()
 
@@ -495,7 +484,7 @@ export class Product extends SuperEntity {
 
 ## [Register Entity in NestJS Module]()
 
-How to import entities with TypeOrmModule.forFeature:
+Entity registration process using TypeOrmModule.forFeature to make entities available for dependency injection within modules. Proper registration enables repository access in services and ensures TypeORM tracks the entity for migrations and query building.
 
 ```typescript
 import { Module } from '@nestjs/common';
@@ -517,7 +506,7 @@ export class ProductModule {}
 
 ## [Use Entity in Service with Repository Pattern]()
 
-Inject repository to perform database operations:
+Repository pattern implementation for database operations using dependency injection to access TypeORM repositories. Repositories provide type-safe methods for querying, inserting, updating, and deleting records with support for relations, ordering, and complex queries.
 
 ```typescript
 import { Injectable } from '@nestjs/common';
@@ -549,7 +538,7 @@ export class ProductService {
 
 ## [Important Tips when working with TypeORM Entities]()
 
-Essential best practices to avoid common problems:
+Critical best practices for entity development including proper base class selection, timestamptz usage for dates, snake_case for columns, explicit foreign key naming, separate ID fields for relations, sensitive data exclusion, index creation, nullable fields, and avoiding manual deleted_at.
 
 1. **Choose the correct base class**:
    - `SuperEntity`: For normal entities (without soft delete)
@@ -565,7 +554,7 @@ Essential best practices to avoid common problems:
 
 ## [References and TypeORM official documentation]()
 
-Links to official documentation of entities and decorators:
+Official TypeORM documentation links covering entities, relationships, and decorator reference. These resources provide comprehensive framework documentation with additional patterns and advanced usage scenarios beyond this guide.
 
 - [TypeORM Entities Documentation](https://typeorm.io/entities)
 - [TypeORM Relations Documentation](https://typeorm.io/relations)

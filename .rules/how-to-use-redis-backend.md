@@ -1,4 +1,4 @@
-# [How to use Redis in Backend]()
+# How to use Redis in Backend
 
 > Complete guide for using Redis as cache and shared memory for horizontal scalability
 

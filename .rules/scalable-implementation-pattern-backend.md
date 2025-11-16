@@ -1,10 +1,40 @@
-# [How to create a scalable implementation pattern in Backend modules?]()
+# How to create a scalable implementation pattern in Backend modules?
 
-> Guide to best practices for creating scalable and maintainable modules in NestJS.
+> Complete guide to best practices for creating scalable and maintainable NestJS modules using SOLID principles, dependency injection, and proven design patterns.
 
 ## [Fundamental Principles]()
 
-Essential software design concepts applied to developing scalable NestJS modules.
+Essential software design concepts applied to developing scalable NestJS modules including Single Responsibility Principle, Dependency Injection, and Dependency Inversion. These principles ensure code maintainability, testability, and reduce coupling between components, enabling easier refactoring and long-term scalability.
+
+### When to use?
+Apply these fundamental principles when designing any NestJS module or service. Use Single Responsibility to ensure each class has one job, Dependency Injection to avoid tight coupling, and Dependency Inversion to depend on abstractions rather than concrete implementations. Essential for all backend development.
+
+### When NOT to use?
+These principles are foundational and should always be followed in production code. However, in quick prototypes, proof-of-concepts, or throwaway scripts where long-term maintainability is not a concern, strict adherence may be relaxed for speed of development.
+
+### Example
+See subsections below for specific examples of each principle.
+
+### Checklist
+- [ ] Each class has a single, well-defined responsibility
+- [ ] Dependencies are injected via constructor, not created internally
+- [ ] Services depend on interfaces, not concrete implementations
+- [ ] Code is testable with mockable dependencies
+- [ ] No circular dependencies exist
+
+### Troubleshooting
+**Problem:** Circular dependency errors at runtime.
+**Solution:** Review your dependency graph and introduce interfaces to break the cycle using Dependency Inversion.
+
+**Problem:** Difficulty testing services due to hard dependencies.
+**Solution:** Ensure all dependencies are injected via constructor and use interfaces for better mockability.
+
+### Best Practices
+- Keep constructors clean with only dependency injection
+- Use interfaces for all external dependencies to enable easy mocking
+- Follow the "new is glue" principle - avoid using 'new' in business logic
+- Document complex dependency relationships in comments
+- Regularly refactor to maintain principle compliance
 
 ### [1. Single Responsibility Principle]()
 
@@ -101,7 +131,7 @@ export class ProductService {
 
 ## [Implementation Patterns]()
 
-Proven design patterns for structuring scalable and maintainable code in NestJS applications.
+Proven design patterns for structuring scalable and maintainable code in NestJS applications including Use-Case Pattern for business logic, Repository Pattern for data access, DTO Pattern for validation, Strategy Pattern for multiple implementations, and Factory Pattern for object creation. These patterns provide clear separation of concerns and facilitate code reuse.
 
 ### [1. Use-Case Pattern (Main Pattern for Business Rules)]()
 
@@ -297,7 +327,7 @@ export class ReportFactory {
 
 ## [Scalable Organization]()
 
-Code structuring in well-defined layers to facilitate system maintenance and evolution.
+Code structuring in well-defined layers including HTTP, Business, and Data layers to facilitate system maintenance and evolution. Recommended folder structure separates controllers, services, use-cases, entities, DTOs and sub-services. This layered architecture ensures clear boundaries between components and enables independent development and testing of each layer.
 
 ### [Layer Separation]()
 
@@ -387,7 +417,7 @@ export class ProductService {
 
 ## [Error Handling]()
 
-Strategies for consistent and informative error handling using NestJS exceptions.
+Strategies for consistent and informative error handling using NestJS built-in exceptions like NotFoundException, BadRequestException, ConflictException, and UnauthorizedException. Proper error handling provides meaningful feedback to clients and ensures robust API behavior. Always throw specific exceptions with descriptive messages to improve debugging and user experience.
 
 ### [Use NestJS Exceptions]()
 
@@ -431,7 +461,7 @@ export class ProductService {
 
 ## [Ownership Validation]()
 
-Always validate that the resource belongs to the user:
+Security pattern that ensures users can only access resources they own by filtering database queries by userId. This prevents unauthorized access to data and is critical for multi-tenant applications. Always implement private helper methods to validate ownership before performing update or delete operations, throwing NotFoundException when resource does not belong to the authenticated user.
 
 ```typescript
 @Injectable()
@@ -466,7 +496,7 @@ export class ProductService {
 
 ## [Transactions]()
 
-Use transactions for atomic operations:
+Database transactions ensure atomicity of operations involving multiple tables or entities. Use TypeORM DataSource transaction method to wrap related database operations, ensuring that all succeed or all fail together. This prevents data inconsistency when creating orders with items, transferring funds between accounts, or performing any multi-step database operations that must be atomic.
 
 ```typescript
 import { DataSource } from 'typeorm';
@@ -508,7 +538,7 @@ export class OrderService {
 
 ## [Logging]()
 
-Add strategic logging:
+Strategic logging at critical points using NestJS Logger service provides visibility into application behavior, facilitates debugging, and enables monitoring. Log at service level with appropriate log levels: log for informational messages, warn for non-critical issues, error for failures with stack traces. Include contextual information like userId, entityId, and operation names to enable effective troubleshooting in production environments.
 
 ```typescript
 import { Logger } from '@nestjs/common';

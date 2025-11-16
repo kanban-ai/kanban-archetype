@@ -1,36 +1,24 @@
-# [How to create a Migration in the Backend?]()
+# How to Create Migrations in the Backend
 
-> Complete guide to creating and managing migrations with TypeORM in the project.
+> Complete guide to creating and managing database migrations with TypeORM using pure SQL, ensuring version control, schema evolution, and data integrity.
 
-> **⚠️ IMPORTANT**: All migrations must be written using pure SQL through `queryRunner.query()`, not TypeORM objects like `new Table()`, `new TableColumn()`, etc.
+**IMPORTANT**: All migrations must be written using pure SQL through queryRunner.query, not TypeORM objects like new Table or new TableColumn.
 
 ## [What are TypeORM Migrations and why use them]()
 
-This section explains the concept of migrations and their benefits for database schema version control in development and production environments.
-
-Migrations are database schema versioning scripts:
-
-Migrations are database version control files. They allow you to:
-- Version schema changes in the database
-- Maintain change history
-- Synchronize database across environments (dev, staging, prod)
-- Revert changes when necessary
+Migrations are version-controlled database schema change scripts enabling structured evolution of database structure across environments. They provide rollback capabilities, change history tracking, team synchronization, and automated deployment support for consistent schema management.
 
 ## [Available TypeORM CLI Commands for Migrations]()
 
-This section lists all essential TypeORM CLI commands to create, execute, revert and manage migrations in the project.
-
-Complete list of commands to manage migrations:
+Comprehensive CLI command reference for migration lifecycle management including creation, automatic generation, execution, rollback, and status checking. These commands form the foundation of database schema version control workflow.
 
 ### [Create Empty Migration]()
 
-Command to generate an empty migration file where you will manually implement the up and down methods.
+Generates blank migration file with empty up and down methods for manual SQL implementation. Use this when you need full control over migration logic or when implementing complex schema changes.
 
 ```bash
 npm run typeorm -- migration:create src/database/migrations/MigrationName
 ```
-
-Creates an empty file for you to implement manually.
 
 ### [Generate Automatic Migration]()
 
@@ -66,24 +54,15 @@ Shows which migrations have been executed and which are pending.
 
 ## [Step by Step to Create Manual Migration]()
 
-This section guides you through the complete process of creating a manual migration, from file generation to SQL operation execution.
-
-How to create migration manually with up and down methods:
+Complete workflow for creating manual migrations including file generation with timestamped naming, implementing up method for schema changes, down method for rollback, and executing migrations. This approach provides precise control over database modifications.
 
 ### [1. Create the file]()
 
-First step is to generate the migration file with unique timestamp to ensure execution order.
+Generate timestamped migration file ensuring chronological execution order. The timestamp prefix guarantees migrations run sequentially regardless of file system ordering or creation date.
 
 ```bash
 npm run typeorm -- migration:create src/database/migrations/CreateProductsTable
 ```
-
-This generates:
-```
-src/database/migrations/1234567890000-CreateProductsTable.ts
-```
-
-> The timestamp at the beginning ensures execution order.
 
 ### [2. Implement `up` method]()
 
@@ -135,13 +114,11 @@ npm run typeorm -- migration:run
 
 ## [Types of SQL Operations in Migrations]()
 
-This section presents practical examples of all common SQL operations in migrations, including creation, modification and removal of database structures.
-
-DDL examples to create tables, columns, indexes and FKs:
+Comprehensive catalog of DDL and DML operations for migrations including table creation, column modifications, index management, foreign key constraints, and data seeding. These patterns cover all common schema evolution scenarios.
 
 ### [1. Create Table]()
 
-SQL command to create a new table with columns, types and constraints.
+Creates new database table with specified columns, data types, primary keys, and default values. Use SERIAL for auto-incrementing IDs and TIMESTAMPTZ for timezone-aware timestamps.
 
 ```typescript
 await queryRunner.query(`
@@ -239,7 +216,7 @@ await queryRunner.query(`
 
 ## [Complete Migration Example to Add Field]()
 
-Complete migration adding new column to existing table:
+End-to-end example demonstrating column addition to existing table with proper default value, data type specification, and rollback implementation. This pattern applies to any single-column modification scenario.
 
 ### [Migration: Add `active` field to `products` table]()
 
@@ -265,7 +242,7 @@ export class AddActiveToProducts1234567890001 implements MigrationInterface {
 
 ## [Complete Migration Example to Add Foreign Key]()
 
-Migration to add relationship between tables:
+Comprehensive foreign key addition example including column creation, constraint definition with cascade rules, index creation for query performance, and complete rollback logic. Demonstrates proper relationship establishment between tables.
 
 ### [Migration: Add `category_id` relationship in `products`]()
 
@@ -319,7 +296,7 @@ export class AddCategoryToProducts1234567890002 implements MigrationInterface {
 
 ## [Automatic Migrations generated by TypeORM]()
 
-How to use migration:generate to create migrations based on entities:
+Automated migration generation comparing entity definitions with current database schema to produce synchronization migrations. This approach accelerates development by automatically detecting and scripting schema differences.
 
 ### [When to use]()
 
@@ -378,7 +355,7 @@ npm run typeorm -- migration:run
 
 ## [Best Practices when creating TypeORM Migrations]()
 
-Essential recommendations for safe and maintainable migrations:
+Critical guidelines ensuring safe, reversible, and maintainable migrations including down method implementation, transaction usage, development testing, descriptive naming, single responsibility, data preservation, documentation, English naming, and avoiding database logic.
 
 ### [1. Always implement `down()`]()
 
@@ -546,7 +523,7 @@ updated_at: Date;
 
 ## [Troubleshooting - Common Migration Problems]()
 
-Solutions for frequent errors when working with migrations:
+Common error scenarios and solutions including migration detection issues, duplicate execution errors, forced re-execution procedures, and database recovery from failed migrations. These patterns help diagnose and resolve migration failures.
 
 ### [Migration is not being detected]()
 
@@ -586,9 +563,7 @@ npm run typeorm -- migration:run
 
 ## [package.json Scripts for Migrations]()
 
-Recommended npm commands to manage migrations:
-
-Verify these scripts exist in `package.json`:
+Essential NPM scripts simplifying migration workflow by providing short commands for creation, generation, execution, rollback, and status checking. Verify these scripts exist in package.json for streamlined migration management.
 
 ```json
 {
@@ -605,12 +580,7 @@ Verify these scripts exist in `package.json`:
 
 ## [Real Migration Example from Project]()
 
-Real migration creating users table with all columns:
-
-In the project, migrations are in:
-```
-back/src/database/migrations/
-```
+Reference to actual project migrations demonstrating real-world implementation patterns including genesis schema, performance indexes, calculated fields, and feature tables. Review these examples for practical migration patterns.
 
 Existing migrations:
 - `1728000000000-genesis.ts` - Initial schema
@@ -621,7 +591,7 @@ Existing migrations:
 
 ## [References and TypeORM Migrations official documentation]()
 
-Links to official migrations documentation:
+Official TypeORM documentation links covering migration concepts, API reference, and advanced patterns. These resources provide comprehensive framework-specific details beyond this guide.
 
 - [TypeORM Migrations](https://typeorm.io/migrations)
 - [Migration API](https://typeorm.io/migrations#migration-api)

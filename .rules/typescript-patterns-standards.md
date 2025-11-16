@@ -1,14 +1,14 @@
-# What TypeScript patterns should be followed?
+# [What TypeScript Patterns Should Be Followed?]()
 
 > Mandatory rules and best practices for TypeScript code in the project (backend and frontend).
 
-## [Overview]()
+## [Overview - TypeScript Mandatory Patterns and Best Practices]()
 
 This document defines the mandatory TypeScript patterns that must be followed in all project code, both backend (NestJS) and frontend (React). The goal is to ensure type-safe, maintainable, and high-quality code.
 
-## [Rule #1: NEVER use the `any` type]()
+## [Rule #1: NEVER Use the `any` Type]()
 
-**PROHIBITED** to use the `any` type in any part of the code.
+The use of the `any` type is strictly prohibited throughout the codebase. This rule eliminates type safety, hinders code maintenance, hides runtime errors, and nullifies TypeScript's benefits. Use typed alternatives like interfaces, generics, or `unknown` with type guards instead.
 
 ### [Why avoid `any`?]()
 
@@ -117,9 +117,9 @@ If you're thinking of using `any`, you probably need one of these alternatives:
 | Library without types | Create `.d.ts` file |
 | API response | Create contract interface |
 
-## [Rule #2: Always use `strict: true` in tsconfig.json]()
+## [Rule #2: Always Use `strict: true` in tsconfig.json]()
 
-TypeScript strict mode must always be enabled.
+TypeScript strict mode must be enabled in all projects to enforce the highest level of type safety. This configuration activates critical checks including noImplicitAny, strictNullChecks, strictFunctionTypes, and others that prevent common type-related bugs and ensure code quality.
 
 ### [Mandatory configuration]()
 
@@ -145,9 +145,9 @@ TypeScript strict mode must always be enabled.
 - `noImplicitThis`: `this` must have explicit type
 - `alwaysStrict`: Adds 'use strict' to all files
 
-## [Rule #3: Explicit typing in interfaces and types]()
+## [Rule #3: Explicit Typing in Interfaces and Types]()
 
-Always define explicit types for properties, parameters, and returns.
+All interfaces, types, function parameters, and return values must have explicit type declarations. Avoid implicit typing and vague types like `string` for values with limited options. Use union types, specific interfaces, and explicit return type annotations for clarity and type safety.
 
 ### [❌ WRONG - Implicit or vague types]()
 
@@ -200,9 +200,9 @@ async function getUser(id: number): Promise<User> {
 }
 ```
 
-## [Rule #4: Use `unknown` instead of `any` for unknown types]()
+## [Rule #4: Use `unknown` Instead of `any` for Unknown Types]()
 
-When the type is truly unknown, use `unknown` + type guards.
+When dealing with truly unknown data types (like JSON parsing or external APIs), use the `unknown` type combined with type guards for validation. Unlike `any`, `unknown` forces you to validate the type before use, maintaining type safety while handling unpredictable data sources.
 
 ### [Difference between `any` and `unknown`]()
 
@@ -263,9 +263,9 @@ function isValidResponse(value: unknown): value is ApiResponse {
 }
 ```
 
-## [Rule #5: Naming conventions for types and interfaces]()
+## [Rule #5: Naming Conventions for Types and Interfaces]()
 
-Follow consistent conventions for type names.
+All TypeScript types, interfaces, and enums must follow PascalCase naming convention without prefixes like 'I'. This ensures consistency across the codebase and aligns with modern TypeScript best practices. Type aliases should only be used when necessary for clarity or reusability.
 
 ### [Mandatory conventions]()
 
@@ -295,9 +295,9 @@ type user_id = number;  // Wrong
 type userId = number;   // Wrong (use type alias only when necessary)
 ```
 
-## [Rule #6: Optional properties vs undefined]()
+## [Rule #6: Optional Properties vs Undefined]()
 
-Use `?` for optional properties, not `| undefined`.
+Use the optional property syntax (`?`) for properties that may be absent, rather than explicitly adding `| undefined`. Reserve `| null` for properties that always exist but can have a null value. This distinction clarifies whether a property might not exist versus explicitly being set to null.
 
 ### [✅ CORRECT]()
 
@@ -344,9 +344,9 @@ interface User {
 }
 ```
 
-## [Rule #7: Generics for reusable code]()
+## [Rule #7: Generics for Reusable Code]()
 
-Use generics instead of `any` for reusable functions and classes.
+Leverage TypeScript generics to create reusable, type-safe functions, classes, and interfaces instead of resorting to the `any` type. Generics preserve type information across function boundaries, enabling code reusability while maintaining full type checking and IntelliSense support for different data types.
 
 ### [✅ Correct examples]()
 
@@ -400,9 +400,9 @@ function firstElement<T>(arr: T[]): T | undefined {
 }
 ```
 
-## [Rule #8: Type assertions with care]()
+## [Rule #8: Type Assertions with Care]()
 
-Use type assertions (`as`) only when absolutely necessary.
+Type assertions using the `as` keyword should be used sparingly and only when you have external knowledge about a type that TypeScript cannot infer. Never use `as any` or double assertions (`as unknown as Type`). Prefer type guards and runtime validation over assertions for better type safety.
 
 ### [⚠️ Use sparingly]()
 
@@ -436,9 +436,9 @@ if (element && isHTMLInputElement(element)) {
 }
 ```
 
-## [Rule #9: Readonly for immutability]()
+## [Rule #9: Readonly for Immutability]()
 
-Use `readonly` to prevent accidental mutations.
+Apply the `readonly` modifier to properties and parameters that should not be modified after initialization. This prevents accidental mutations, improves code predictability, and makes your intentions explicit. Use `Readonly<T>` utility type for complete object immutability and readonly arrays to prevent array mutations.
 
 ### [✅ Correct usage of readonly]()
 
@@ -471,9 +471,9 @@ const config: Readonly<Config> = {
 // config.apiUrl = 'other';  // ❌ Error
 ```
 
-## [Rule #10: Avoid double type assertion]()
+## [Rule #10: Avoid Double Type Assertion]()
 
-Never use double assertion (`as unknown as Type`), this is a code smell.
+Double type assertions like `as unknown as Type` are strictly prohibited as they indicate fundamental design problems in your code. This pattern bypasses TypeScript's type system completely and creates a false sense of type safety. Refactor your code structure or use proper type guards instead.
 
 ### [❌ NEVER do this]()
 
@@ -501,7 +501,7 @@ const user = validateUser(data);  // Throws error if invalid
 
 ## [TypeScript Patterns Checklist]()
 
-When writing TypeScript code, check:
+This comprehensive checklist ensures your TypeScript code follows all mandatory patterns and best practices. Use it before submitting code for review to verify compliance with type safety requirements, naming conventions, and architectural standards for both backend and frontend code.
 
 - [ ] No use of `any` in all code
 - [ ] `strict: true` enabled in tsconfig.json
@@ -518,6 +518,8 @@ When writing TypeScript code, check:
 - [ ] React component props fully typed
 
 ## [Tools to Ensure Quality]()
+
+Configure automated tools to enforce TypeScript patterns and catch violations early in the development cycle. ESLint rules and pre-commit hooks prevent non-compliant code from reaching the repository, ensuring consistent quality across all contributions and reducing code review overhead.
 
 ### [TypeScript ESLint Rules]()
 
@@ -553,6 +555,8 @@ Add automatic verification before commits:
 
 ## [Additional Resources]()
 
+For context-specific TypeScript patterns and detailed implementation examples in DTOs, entities, components, and use-cases, refer to these related documentation files that provide practical guidance for applying these typing rules in real-world scenarios.
+
 For more information about typing in specific contexts, see:
 
 - **DTO Validation**: [how-to-use-data-validation-api-backend.md](./how-to-use-data-validation-api-backend.md)
@@ -561,6 +565,8 @@ For more information about typing in specific contexts, see:
 - **TypeORM Entities**: [how-to-create-typeorm-entity-backend.md](./how-to-create-typeorm-entity-backend.md)
 
 ## [Penalties for Violation]()
+
+TypeScript pattern violations are treated seriously as they compromise code quality, maintainability, and type safety across the entire project. Code that does not comply with these mandatory rules will be rejected during review and must be corrected before merging to protect the codebase integrity.
 
 Code that violates these rules:
 

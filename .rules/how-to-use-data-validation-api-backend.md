@@ -1,4 +1,4 @@
-# [How to use data validation in the API?]()
+# How to use data validation in the API
 
 > Complete guide on data validation using class-validator in NestJS.
 

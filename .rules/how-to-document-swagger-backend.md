@@ -1,4 +1,4 @@
-# [How to document with Swagger in the Backend?]()
+# How to document with Swagger in the Backend
 
 > Practical guide to documenting APIs using Swagger/OpenAPI in NestJS.
 

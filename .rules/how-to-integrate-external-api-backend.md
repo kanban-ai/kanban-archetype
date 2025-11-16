@@ -1,10 +1,10 @@
-# [How to integrate with external APIs in the Backend?]()
+# How to integrate with external APIs in the Backend?
 
-> Complete guide on consuming external APIs in NestJS backend using Axios.
+> Complete guide on consuming external APIs in NestJS backend using Axios including HTTP client configuration, authentication, retry logic, caching, and error handling.
 
 ## [HTTP Client Configuration for external API integration]()
 
-This section presents configuration of a reusable HTTP client using Axios, including interceptors for logging, error handling and automatic retry.
+This section presents configuration of a reusable HTTP client using Axios including base service with 10-second timeout, request and response interceptors for logging, detailed error handling with AxiosError differentiation, and convenience methods for GET, POST, PUT, PATCH, DELETE operations. The HttpService wraps Axios instance providing centralized configuration, consistent logging, and reusable HTTP methods across all external API integrations in the application.
 
 HttpService configuration in NestJS with Axios to make HTTP requests:
 
@@ -140,7 +140,7 @@ export class HttpService {
 
 ## [Service Structure for external API Integration in NestJS]()
 
-This section defines the architecture of specialized services to consume external APIs, following modular and reusable pattern.
+This section defines the architecture of specialized services to consume external APIs following modular pattern where each external API has its own dedicated service file in the module's services folder. Recommended structure separates orchestrator service from provider-specific services like kinvo-provider.service.ts, yahoo-provider.service.ts, enabling clean separation of concerns, independent testing, and easy addition of new API integrations without modifying existing code.
 
 Recommended pattern to create services that consume external APIs:
 
@@ -284,7 +284,7 @@ export class YahooProviderService {
 
 ## [Authentication with External APIs using different methods]()
 
-Implementation of API Key, Bearer Token, Basic Auth and OAuth 2.0:
+Implementation of different authentication methods for external APIs including API Key in custom header, Bearer Token in Authorization header, Basic Authentication using username and password, and complete OAuth 2.0 flow with automatic token refresh and expiration handling. Each authentication method demonstrates proper header configuration, credential management using ConfigService, and secure token storage for subsequent authenticated requests to external services.
 
 ### [1. API Key in Header]()
 
@@ -398,7 +398,7 @@ export class OAuthProviderService {
 
 ## [Timeout and automatic Retry for HTTP requests]()
 
-Timeout configuration and automatic retries with exponential backoff:
+Timeout configuration and automatic retries with exponential backoff using axios-retry library for network resilience. Implementation includes configurable timeout per request, automatic retry on network errors and 5xx server errors, exponential delay between retries to avoid overwhelming failing servers, retry logging for monitoring, and custom retry decorator for manual retry logic. These patterns prevent cascading failures and improve reliability when consuming unstable external APIs.
 
 ### [1. Configure Timeout]()
 
@@ -493,7 +493,7 @@ export class ExternalApiService {
 
 ## [Circuit Breaker Pattern to protect against unstable APIs]()
 
-Circuit breaker implementation to avoid overload when external API fails:
+Circuit breaker implementation to avoid overload when external API fails by tracking failure count and transitioning between CLOSED, OPEN, and HALF_OPEN states. When failure threshold is exceeded, circuit opens preventing requests for timeout period. After timeout, circuit enters half-open state allowing limited test requests. If test requests succeed, circuit closes resuming normal operation. This pattern protects application from cascading failures and resource exhaustion when external dependencies are unhealthy.
 
 ```typescript
 import { Injectable, Logger } from '@nestjs/common';
@@ -586,7 +586,7 @@ export class ExternalApiService {
 
 ## [Cache External API Responses with Redis]()
 
-Cache HTTP responses to reduce latency and external call costs:
+Cache HTTP responses to reduce latency, external call costs, and improve application performance using in-memory cache for simple scenarios or Redis for production environments with distributed cache requirements. Implementation includes cache-aside pattern checking cache before making external requests, configurable TTL for different data types, and automatic cache population on miss. See how-to-use-redis-backend.md for comprehensive Redis configuration and advanced caching strategies.
 
 ### [1. Simple in-memory cache]()
 
@@ -708,7 +708,7 @@ export class YahooProviderService {
 
 ## [External API Rate Limiting handling]()
 
-Detect and handle error 429 (Too Many Requests) from external APIs:
+Detect and handle error 429 Too Many Requests from external APIs by parsing Retry-After header, tracking rate limit reset timestamp, throwing informative error to client with wait time, and implementing local throttling to respect API quotas. Throttle service limits concurrent requests and adds delay between requests preventing rate limit errors. These patterns ensure compliance with external API usage policies and prevent account suspension or service degradation.
 
 ### [1. Detect and handle 429]()
 
@@ -799,7 +799,7 @@ export class ExternalApiService {
 
 ## [Webhooks - Receive events from external APIs]()
 
-Implement endpoints to receive callbacks from external APIs:
+Implement endpoints to receive callbacks from external APIs including webhook controller with signature validation using HMAC SHA256, API Key authentication to prevent unauthorized webhook delivery, and webhook processing service for handling events asynchronously. Signature validation ensures webhook authenticity by comparing request signature against expected signature computed from payload and secret, protecting against spoofed webhook requests and man-in-the-middle attacks.
 
 ### [Receive Webhooks from External APIs]()
 
@@ -850,7 +850,7 @@ export class WebhooksController {
 
 ## [Environment Variables for external API configuration]()
 
-Organization of URLs, tokens and API configurations in .env:
+Organization of URLs, tokens and API configurations in .env file including base URLs for each external API, API keys and credentials, OAuth client configuration, and webhook secrets. Use ConfigService registerAs for typed configuration validation and grouping related settings. Never commit credentials to version control, always use environment variables for sensitive data, and maintain separate .env files for development, staging, and production environments.
 
 **File**: `.env`
 
@@ -896,7 +896,7 @@ export default registerAs('external-apis', () => ({
 
 ## [Complete Example of Providers Module for external APIs]()
 
-Real implementation integrating Yahoo Finance, Kinvo and B3:
+Real implementation integrating multiple external APIs including Yahoo Finance, Kinvo and B3 with dedicated provider services in services folder, orchestrator service implementing fallback pattern trying multiple providers sequentially, controller exposing unified endpoints for quote and history data, and module configuration importing HttpModule and registering all provider services. This architecture demonstrates production-ready external API integration with error resilience and service abstraction.
 
 ### [1. Module]()
 
@@ -1020,7 +1020,7 @@ export class ProvidersService {
 
 ## [Best Practices when integrating with external APIs in NestJS]()
 
-Essential recommendations for robust and reliable integrations:
+Essential recommendations for robust and reliable integrations including always configuring timeout to prevent hanging requests, implementing retry for transient failures on 5xx and network errors, detailed logging at debug and error levels, specific error handling for different HTTP status codes, smart caching with Redis for production, circuit breaker for unstable APIs, local rate limiting to respect external quotas, secure API key management, comprehensive monitoring of latency and error rates, and thorough testing with mocked HTTP calls.
 
 ### [1. Always use timeout]()
 ```typescript
@@ -1072,7 +1072,7 @@ timeout: 10000 // 10 seconds
 
 ## [External API Integration Checklist]()
 
-Verification checklist for complete integration implementation:
+Verification checklist for complete integration implementation covering base HttpService creation with interceptors, specific service per external API with proper error handling, timeout configuration, retry implementation with exponential backoff, cache with Redis, circuit breaker for resilience, rate limiting compliance, environment variables for configuration, API key security, comprehensive logging, unit tests with mocked HTTP calls, and Swagger documentation for exposed endpoints.
 
 - [ ] Base HttpService created
 - [ ] Specific service for each external API
@@ -1090,7 +1090,7 @@ Verification checklist for complete integration implementation:
 
 ## [References and official documentation on HTTP integrations]()
 
-Links to Axios documentation, NestJS HttpModule and best practices:
+Links to official documentation including Axios HTTP client library, NestJS HTTP Module techniques, axios-retry library for automatic retries, Martin Fowler's Circuit Breaker pattern explanation, and OWASP API Security best practices. These resources provide comprehensive information about HTTP client configuration, interceptor patterns, error handling strategies, resilience patterns, and security considerations for external API integrations.
 
 - [Axios Documentation](https://axios-http.com/docs/intro)
 - [NestJS HTTP Module](https://docs.nestjs.com/techniques/http-module)

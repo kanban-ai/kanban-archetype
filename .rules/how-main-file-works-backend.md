@@ -1,6 +1,6 @@
-# [How the main Backend file works?]()
+# How the main Backend file works?
 
-> Guide about the main.ts file, the entry point of the NestJS application.
+> Comprehensive guide about the main.ts file, NestJS application entry point, covering configuration, middlewares, guards, Swagger, and production setup.
 
 ## [What is main.ts?]()
 
