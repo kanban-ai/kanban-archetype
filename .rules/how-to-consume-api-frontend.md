@@ -23,11 +23,8 @@ Axios instance with environment-based configuration and authentication intercept
 ```typescript
 import axios from 'axios';
 
-// API version (centralize here)
-const API_VERSION = 'v1';
-
 const api = axios.create({
-  baseURL: `${import.meta.env.VITE_API_URL || 'http://localhost:3000/api'}/${API_VERSION}`,
+  baseURL: import.meta.env.VITE_API_URL || 'http://localhost:3000/api',
   headers: {
     'Content-Type': 'application/json',
   },
@@ -68,18 +65,32 @@ export default api;
 VITE_API_URL=http://localhost:3000/api
 ```
 
-> **IMPORTANT**: The API version (`v1`) is configured in `api.ts` and automatically applied to all requests. If the backend creates a v2, just change `API_VERSION = 'v2'` in one place. See [How to version API](./how-to-version-api-backend.md) for more details.
+> **🚨 CRITICAL - API VERSIONING**: The API version (`v1`, `v2`, etc.) **MUST** be specified in each service method, NOT in `api.ts` or environment variables.
+>
+> **NEVER:**
+> - ❌ Put version in `api.ts` baseURL
+> - ❌ Put version in environment variable (`.env` file)
+> - ❌ Centralize version in a single constant
+>
+> **ALWAYS:**
+> - ✅ Include version in each service method path: `api.get('/v1/products')`
+> - ✅ Manage version per endpoint/resource individually
+> - ✅ Allow gradual migration (some endpoints v1, others v2)
+>
+> **Why?** When backend introduces v2, you need flexibility to migrate endpoints gradually. For example, `UserService` can use `/v2/users` while `ProductService` still uses `/v1/products`. If version was centralized, ALL endpoints would change at once, breaking the application during migration.
+>
+> See [How to version API](./how-to-version-api-backend.md#frontend-integration---consuming-versioned-apis-with-axios) for complete versioning strategy.
 
 ### Checklist
 
 - [ ] Axios installed via npm/yarn (`npm install axios`)
 - [ ] `api.ts` file created with centralized instance
-- [ ] Base URL configured using environment variable
-- [ ] API version centralized in constant for easy updates
+- [ ] Base URL configured using environment variable (WITHOUT version suffix)
 - [ ] Request interceptor adds JWT token from localStorage
 - [ ] Response interceptor handles 401 unauthorized errors
 - [ ] Content-Type header set to `application/json` by default
 - [ ] Environment variables properly configured in `.env` file
+- [ ] Services include version in each endpoint path (`/v1/products`, `/v2/users`, etc.)
 
 ### Troubleshooting
 
@@ -95,12 +106,12 @@ VITE_API_URL=http://localhost:3000/api
 
 ### Best Practices
 
-1. Centralize API version constant for seamless updates across application
-2. Use environment variables for configuration across different deployment environments
-3. Add authentication token in request interceptor, not in individual service methods
-4. Handle 401 errors globally in interceptor but delegate navigation to React components
-5. Export single configured instance to ensure consistency across all API calls
-6. Keep `api.ts` focused solely on HTTP client configuration, not business logic
+1. Use environment variables for base URL configuration across different deployment environments
+2. Add authentication token in request interceptor, not in individual service methods
+3. Handle 401 errors globally in interceptor but delegate navigation to React components
+4. Export single configured instance to ensure consistency across all API calls
+5. Keep `api.ts` focused solely on HTTP client configuration, not business logic
+6. Include API version in each service method path for granular version control
 7. Document interceptor behavior and side effects clearly with comments
 8. Consider adding request/response logging interceptors for debugging in development mode
 
@@ -144,36 +155,37 @@ export interface CreateProductDto {
 export const ProductService = {
   // List all products
   async findAll(): Promise<Product[]> {
-    const response = await api.get<Product[]>('/products');
+    const response = await api.get<Product[]>('/v1/products');
     return response.data;
   },
 
   // Find product by ID
   async findOne(id: number): Promise<Product> {
-    const response = await api.get<Product>(`/products/${id}`);
+    const response = await api.get<Product>(`/v1/products/${id}`);
     return response.data;
   },
 
   // Create new product
   async create(data: CreateProductDto): Promise<Product> {
-    const response = await api.post<Product>('/products', data);
+    const response = await api.post<Product>('/v1/products', data);
     return response.data;
   },
 
   // Update existing product
   async update(id: number, data: Partial<CreateProductDto>): Promise<Product> {
-    const response = await api.patch<Product>(`/products/${id}`, data);
+    const response = await api.patch<Product>(`/v1/products/${id}`, data);
     return response.data;
   },
 
   // Delete product
   async remove(id: number): Promise<void> {
-    await api.delete(`/products/${id}`);
+    await api.delete(`/v1/products/${id}`);
   },
 };
 
-// NOTE: This is just a structure example.
-// Adapt according to your project's specific needs.
+// NOTE: Version (v1) is included in each endpoint path.
+// If backend migrates to v2, update only the endpoints that changed.
+// Example: `/v2/products` for new version, while other services remain `/v1/...`
 ```
 
 ### Checklist
@@ -182,6 +194,7 @@ export const ProductService = {
 - [ ] TypeScript interfaces defined for all entity shapes
 - [ ] DTOs (Data Transfer Objects) defined for create/update operations
 - [ ] All necessary CRUD operations implemented (findAll, findOne, create, update, remove)
+- [ ] API version included in each endpoint path (`/v1/products`, `/v1/users`, etc.)
 - [ ] Async/await used consistently throughout service methods
 - [ ] Response types specified using TypeScript generics (`<Product>`, `<Product[]>`)
 - [ ] Service exported as object with methods for easy importing
@@ -203,12 +216,13 @@ export const ProductService = {
 
 1. Create one service file per distinct resource or bounded domain context
 2. Define TypeScript interfaces that accurately mirror backend response schemas
-3. Use descriptive, conventional method names (findAll, findOne, create, update, remove)
-4. Explicitly type all method parameters and return values for compile-time safety
-5. Export interfaces alongside services for reuse in components and other services
-6. Keep services pure and stateless with no UI logic, navigation, or side effects
-7. Document complex operations, business rules, or non-obvious behaviors with comments
-8. Group related operations together (e.g., all user profile operations in UserService)
+3. Include API version in each endpoint path for granular migration control (`/v1/products`)
+4. Use descriptive, conventional method names (findAll, findOne, create, update, remove)
+5. Explicitly type all method parameters and return values for compile-time safety
+6. Export interfaces alongside services for reuse in components and other services
+7. Keep services pure and stateless with no UI logic, navigation, or side effects
+8. Document complex operations, business rules, or non-obvious behaviors with comments
+9. Group related operations together (e.g., all user profile operations in UserService)
 
 ## [Consuming Services in Functional React Components]()
 

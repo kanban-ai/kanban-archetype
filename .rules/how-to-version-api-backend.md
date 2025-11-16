@@ -662,13 +662,11 @@ Skip centralized configuration for simple applications consuming single API vers
 ### Example
 
 ```typescript
-// src/config/api.config.ts
+// src/services/api.ts
 import axios from 'axios';
 
-const API_VERSION = 'v2'; // Centralize the version
-
 export const api = axios.create({
-  baseURL: `${import.meta.env.VITE_API_URL}/${API_VERSION}`,
+  baseURL: import.meta.env.VITE_API_URL || 'http://localhost:3000/api',
   headers: {
     'Content-Type': 'application/json',
   },
@@ -685,34 +683,70 @@ api.interceptors.response.use(
   (error) => Promise.reject(error)
 );
 
-// Usage in components
-api.get('/users'); // calls /api/v2/users
-api.post('/users', userData);
+export default api;
 ```
+
+```typescript
+// src/services/user.service.ts
+import api from './api';
+
+export const UserService = {
+  // Using v2 endpoint (migrated)
+  async findAll() {
+    const response = await api.get('/v2/users');
+    return response.data;
+  },
+
+  async create(userData: any) {
+    const response = await api.post('/v2/users', userData);
+    return response.data;
+  },
+};
+```
+
+```typescript
+// src/services/product.service.ts
+import api from './api';
+
+export const ProductService = {
+  // Still using v1 endpoint (not migrated yet)
+  async findAll() {
+    const response = await api.get('/v1/products');
+    return response.data;
+  },
+};
+```
+
+> **🚨 CRITICAL**: API version must be specified in each service method, NOT in `api.ts` baseURL. This allows gradual migration where some services use `/v2/...` while others remain on `/v1/...`.
 
 ### Checklist
 
-- [ ] Centralized Axios instance with version configuration
+- [ ] Centralized Axios instance WITHOUT version in baseURL
 - [ ] Environment variable for API base URL
-- [ ] Version constant easily changeable
+- [ ] Version specified in each service method endpoint path
 - [ ] Deprecation header interceptor configured
-- [ ] Consistent usage across all API calls
+- [ ] Services can use different versions simultaneously
 - [ ] Error handling for version mismatches
 
 ### Troubleshooting
 
 **Issue**: API version not applied to requests
-**Solution**: Ensure all API calls use centralized axios instance. Check baseURL includes version prefix. Verify environment variables are loaded correctly.
+**Solution**: Ensure each service method includes version in the path (`/v1/products`, `/v2/users`). Check that services import and use the centralized axios instance. Verify baseURL does NOT include version.
 
 **Issue**: Deprecation warnings not visible
 **Solution**: Implement response interceptor to log deprecation headers. Display warnings to developers in console or UI during development.
 
+**Issue**: Cannot migrate endpoints gradually
+**Solution**: Never centralize version in baseURL. Always specify version per service method to allow mixed versions during migration period.
+
 ### Best Practices
 
-- Centralize API version in single configuration file
-- Use environment variables for different environments (dev, staging, prod)
-- Implement interceptors to handle version-specific behavior
+- Specify API version in each service method path, not in baseURL
+- Use environment variables for base URL only (dev, staging, prod)
+- Implement interceptors to handle deprecation warnings
 - Log deprecation warnings prominently during development
+- Allow different services to use different versions during migration
+- Update service methods individually as endpoints migrate to new versions
 
 ## [Complete Versioning Checklist - Implementation Verification]()
 
@@ -742,7 +776,8 @@ Skip detailed checklist for simple internal tools, prototype applications, or wh
 - [ ] Migration guides available
 
 **Frontend Integration:**
-- [ ] Frontend using centralized version configuration
+- [ ] Frontend services include version in each endpoint path
+- [ ] Services can use different API versions simultaneously
 - [ ] Deprecation warnings logged and monitored
 
 **Quality Assurance:**

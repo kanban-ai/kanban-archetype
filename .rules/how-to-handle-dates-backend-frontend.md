@@ -351,7 +351,7 @@ export const EventForm: React.FC = () => {
     };
 
     try {
-      await api.post('/api/events', payload);
+      await api.post('/v1/events', payload);
       alert('Event created successfully!');
     } catch (error) {
       console.error('Error creating event:', error);
@@ -518,7 +518,7 @@ await this.repository.save({
 });
 
 // Frontend - DON'T send Date object
-await api.post('/api/events', {
+await api.post('/v1/events', {
   event_date: new Date(), // Send ISO string in UTC
 });
 
@@ -538,7 +538,7 @@ await this.repository.save({
 });
 
 // Frontend - Send ISO string in UTC
-await api.post('/api/events', {
+await api.post('/v1/events', {
   event_date: convertToUTC(localDate),
 });
 

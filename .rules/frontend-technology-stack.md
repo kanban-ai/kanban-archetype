@@ -305,25 +305,28 @@ api.interceptors.response.use(
   }
 );
 
-// Usage in service
+// Usage in service - NOTE: Version included in each endpoint path
 export const userService = {
-  getAll: () => api.get<User[]>('/users'),
-  getById: (id: number) => api.get<User>(`/users/${id}`),
-  create: (data: CreateUserDto) => api.post<User>('/users', data),
-  update: (id: number, data: UpdateUserDto) => api.put<User>(`/users/${id}`, data),
-  delete: (id: number) => api.delete(`/users/${id}`),
+  getAll: () => api.get<User[]>('/v1/users'),
+  getById: (id: number) => api.get<User>(`/v1/users/${id}`),
+  create: (data: CreateUserDto) => api.post<User>('/v1/users', data),
+  update: (id: number, data: UpdateUserDto) => api.put<User>(`/v1/users/${id}`, data),
+  delete: (id: number) => api.delete(`/v1/users/${id}`),
 };
 ```
+
+> **🚨 CRITICAL**: API version must be specified in each service method path, NOT in `baseURL`. This allows gradual migration where different services use different versions. See [how-to-consume-api-frontend.md](./how-to-consume-api-frontend.md) for details.
 
 ### Checklist
 
 - [ ] Axios installed and imported
-- [ ] Axios instance configured with baseURL
+- [ ] Axios instance configured with baseURL (WITHOUT version)
 - [ ] Request interceptor adds authentication token
 - [ ] Response interceptor handles common errors (401, 403, 500)
 - [ ] TypeScript interfaces defined for API responses
 - [ ] Timeout configured to prevent hanging requests
 - [ ] Error handling implemented in components
+- [ ] Services include version in each endpoint path (`/v1/users`, etc.)
 
 ### Troubleshooting
 
@@ -338,12 +341,13 @@ export const userService = {
 
 ### Best Practices
 
-- Create centralized Axios instance with base configuration
+- Create centralized Axios instance with base configuration (WITHOUT version in baseURL)
 - Use interceptors for authentication token injection
 - Handle authentication errors globally in response interceptor
 - Define TypeScript interfaces for all API responses
 - Implement request cancellation with AbortController for cleanup
 - Use separate service files for different API resources
+- Include API version in each service method path for granular control
 - Configure appropriate timeout values (5-10 seconds typical)
 - Log errors in interceptors for debugging in development
 

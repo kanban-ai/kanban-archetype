@@ -40,7 +40,7 @@ Current repository state:
 * no period at the end
 * up to ~72 characters
 * describe **what** and **why**, not **how**
-* breaking changes use `!` (e.g., `feat(api)!: altera estrutura de resposta`)
+* breaking changes use ! (e.g., `feat(api)!: altera estrutura de resposta`)
 * if there are several unrelated changes, suggest splitting into separate commits
 
 5. Do not show the suggested message to the user for validation. Just execute the steps above.

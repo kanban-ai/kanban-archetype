@@ -185,14 +185,17 @@ api.interceptors.response.use(
 export default api;
 ```
 
+> **🚨 CRITICAL - API VERSIONING**: The `baseURL` should NOT include the API version. The version (`v1`, `v2`, etc.) must be specified in each service method individually, allowing gradual migration of endpoints. Example: `api.get('/v1/products')` in ProductService. See [how-to-consume-api-frontend.md](./how-to-consume-api-frontend.md) for details.
+
 ### Checklist
 
 - [ ] `react-router-dom` installed
 - [ ] `axios` installed
-- [ ] Axios instance configured with base URL
+- [ ] Axios instance configured with base URL (WITHOUT version)
 - [ ] Request interceptor added for authentication
 - [ ] Response interceptor added for error handling
 - [ ] Environment variable for API URL defined
+- [ ] Services will include version in each endpoint path (`/v1/products`, etc.)
 
 ### Troubleshooting
 

@@ -684,6 +684,8 @@ api.interceptors.response.use(
 export default api;
 ```
 
+> **🚨 CRITICAL - API VERSIONING**: The `baseURL` should NOT include the API version. The version (`v1`, `v2`, etc.) must be specified in each service method individually. Example: `api.get('/v1/auth/login')`. See [how-to-consume-api-frontend.md](./how-to-consume-api-frontend.md) for details.
+
 Protected route component for React Router:
 
 ```typescript
@@ -710,12 +712,13 @@ const PrivateRoute = ({ children }) => {
 
 ### Checklist
 
-- [ ] Axios instance configured with baseURL from environment variable
+- [ ] Axios instance configured with baseURL from environment variable (WITHOUT version)
 - [ ] Request interceptor adds Authorization Bearer token to all requests
 - [ ] Response interceptor handles 401 errors by clearing token and redirecting
 - [ ] Login response stores both access_token and user data in localStorage
 - [ ] PrivateRoute component checks for token before rendering protected pages
 - [ ] Logout function clears token from localStorage and redirects to login
+- [ ] Services include version in each endpoint path (`/v1/auth/login`, etc.)
 
 ### Troubleshooting
 
