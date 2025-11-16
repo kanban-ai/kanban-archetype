@@ -1,12 +1,12 @@
 # How to Create Migrations in the Backend
 
-<document description: Complete guide to creating and managing database migrations with TypeORM using pure SQL ensuring version control, schema evolution, data integrity, and rollback capabilities across all environments.>
+Complete guide to creating and managing database migrations with TypeORM using pure SQL ensuring version control, schema evolution, data integrity, and rollback capabilities across all environments.
 
 **IMPORTANT**: All migrations must be written using pure SQL through queryRunner.query, not TypeORM objects like new Table or new TableColumn.
 
 ## [TypeORM Migration System Overview]()
 
-<section description: Migrations are version-controlled database schema change scripts enabling structured evolution of database structure across environments with rollback capabilities, change history tracking, team synchronization, and automated deployment support for consistent schema management.>
+Migrations are version-controlled database schema change scripts enabling structured evolution of database structure across environments with rollback capabilities, change history tracking, team synchronization, and automated deployment support for consistent schema management.
 
 ### When to use?
 
@@ -62,7 +62,7 @@ Avoid migrations for temporary development experiments, environment-specific see
 
 ## [TypeORM CLI Migration Commands]()
 
-<section description: Comprehensive CLI command reference for migration lifecycle management including creation, automatic generation, execution, rollback, and status checking. These commands form the foundation of database schema version control workflow enabling systematic schema evolution.>
+Comprehensive CLI command reference for migration lifecycle management including creation, automatic generation, execution, rollback, and status checking. These commands form the foundation of database schema version control workflow enabling systematic schema evolution.
 
 ### When to use?
 
@@ -132,7 +132,7 @@ Lists which migrations have been executed and which are pending.
 
 ## [Manual Migration Creation Workflow]()
 
-<section description: Complete workflow for creating manual migrations including file generation with timestamped naming, implementing up method for schema changes, down method for rollback, and executing migrations. This approach provides precise control over database modifications with pure SQL.>
+Complete workflow for creating manual migrations including file generation with timestamped naming, implementing up method for schema changes, down method for rollback, and executing migrations. This approach provides precise control over database modifications with pure SQL.
 
 ### When to use?
 
@@ -227,7 +227,7 @@ npm run typeorm -- migration:run
 
 ## [Common SQL Operations in Migrations]()
 
-<section description: Comprehensive catalog of DDL and DML operations for migrations including table creation, column modifications, index management, foreign key constraints, and data seeding. These patterns cover all common schema evolution scenarios with PostgreSQL-specific syntax and best practices.>
+Comprehensive catalog of DDL and DML operations for migrations including table creation, column modifications, index management, foreign key constraints, and data seeding. These patterns cover all common schema evolution scenarios with PostgreSQL-specific syntax and best practices.
 
 ### When to use?
 
@@ -357,7 +357,7 @@ await queryRunner.query(`
 
 ## [Adding Column to Existing Table]()
 
-<section description: End-to-end example demonstrating column addition to existing table with proper default value, data type specification, and complete rollback implementation. This pattern applies to any single-column modification scenario requiring backward compatibility.>
+End-to-end example demonstrating column addition to existing table with proper default value, data type specification, and complete rollback implementation. This pattern applies to any single-column modification scenario requiring backward compatibility.
 
 ### When to use?
 
@@ -418,7 +418,7 @@ export class AddActiveToProducts1234567890001 implements MigrationInterface {
 
 ## [Adding Foreign Key Relationship]()
 
-<section description: Comprehensive foreign key addition example including column creation, constraint definition with cascade rules, index creation for query performance, and complete rollback logic. Demonstrates proper relationship establishment between tables with referential integrity.>
+Comprehensive foreign key addition example including column creation, constraint definition with cascade rules, index creation for query performance, and complete rollback logic. Demonstrates proper relationship establishment between tables with referential integrity.
 
 ### When to use?
 
@@ -507,7 +507,7 @@ export class AddCategoryToProducts1234567890002 implements MigrationInterface {
 
 ## [Automatic Migration Generation from Entities]()
 
-<section description: Automated migration generation comparing entity definitions with current database schema to produce synchronization migrations. This approach accelerates development by automatically detecting and scripting schema differences while requiring careful review before execution.>
+Automated migration generation comparing entity definitions with current database schema to produce synchronization migrations. This approach accelerates development by automatically detecting and scripting schema differences while requiring careful review before execution.
 
 ### When to use?
 
@@ -590,7 +590,7 @@ npm run typeorm -- migration:run
 
 ## [Migration Best Practices and Safety Guidelines]()
 
-<section description: Critical guidelines ensuring safe, reversible, and maintainable migrations including down method implementation, transaction usage, development testing, descriptive naming, single responsibility, data preservation, documentation, and avoiding database logic ensuring production-safe migrations.>
+Critical guidelines ensuring safe, reversible, and maintainable migrations including down method implementation, transaction usage, development testing, descriptive naming, single responsibility, data preservation, documentation, and avoiding database logic ensuring production-safe migrations.
 
 ### When to use?
 
@@ -762,7 +762,7 @@ updated_at: Date;
 
 ## [Troubleshooting Common Migration Issues]()
 
-<section description: Common error scenarios and solutions including migration detection issues, duplicate execution errors, forced re-execution procedures, and database recovery from failed migrations. These patterns help diagnose and resolve migration failures systematically.>
+Common error scenarios and solutions including migration detection issues, duplicate execution errors, forced re-execution procedures, and database recovery from failed migrations. These patterns help diagnose and resolve migration failures systematically.
 
 ### When to use?
 
@@ -847,7 +847,7 @@ npm run typeorm -- migration:revert  # Reverts next most recent
 
 ## [Package.json Scripts for Migration Workflow]()
 
-<section description: Essential NPM scripts simplifying migration workflow by providing short commands for creation, generation, execution, rollback, and status checking. Verify these scripts exist in package.json for streamlined migration management and consistent team workflow.>
+Essential NPM scripts simplifying migration workflow by providing short commands for creation, generation, execution, rollback, and status checking. Verify these scripts exist in package.json for streamlined migration management and consistent team workflow.
 
 ### When to use?
 
@@ -919,7 +919,7 @@ npm run migration:show
 
 ## [Real Project Migration Examples Reference]()
 
-<section description: Reference to actual project migrations demonstrating real-world implementation patterns including genesis schema, performance indexes, calculated fields, and feature tables. Review these examples for practical migration patterns and conventions followed in production codebase.>
+Reference to actual project migrations demonstrating real-world implementation patterns including genesis schema, performance indexes, calculated fields, and feature tables. Review these examples for practical migration patterns and conventions followed in production codebase.
 
 ### When to use?
 
@@ -986,7 +986,7 @@ Don't blindly copy existing migrations without understanding context and require
 
 ## [Official TypeORM Migration Documentation]()
 
-<section description: Official TypeORM documentation links covering migration concepts, API reference, and advanced patterns. These resources provide comprehensive framework-specific details beyond this guide for in-depth understanding and advanced scenarios.>
+Official TypeORM documentation links covering migration concepts, API reference, and advanced patterns. These resources provide comprehensive framework-specific details beyond this guide for in-depth understanding and advanced scenarios.
 
 - [TypeORM Migrations](https://typeorm.io/migrations)
 - [TypeORM Migration API](https://typeorm.io/migrations#migration-api)

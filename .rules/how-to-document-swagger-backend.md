@@ -1,6 +1,6 @@
 # How to document with Swagger in the Backend
 
-<document description: Practical guide for documenting REST APIs using Swagger/OpenAPI decorators in NestJS backend, covering controllers, DTOs, responses, and authentication.>
+Practical guide for documenting REST APIs using Swagger/OpenAPI decorators in NestJS backend, covering controllers, DTOs, responses, and authentication.
 
 ## [What is Swagger and OpenAPI Documentation]()
 

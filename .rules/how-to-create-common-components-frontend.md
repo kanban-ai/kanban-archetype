@@ -1,10 +1,10 @@
 # How to Create Common Components in Frontend
 
-<document description: Comprehensive guide to creating reusable React components with TypeScript and Tailwind CSS following component composition patterns, type safety principles, and project styling conventions.>
+Comprehensive guide to creating reusable React components with TypeScript and Tailwind CSS following component composition patterns, type safety principles, and project styling conventions.
 
 ## [React Common Component Design Principles]()
 
-<section description: Common components serve as foundational UI building blocks that work across different contexts through configurable props, strict TypeScript typing, and self-contained design ensuring consistency, reusability, and maintainability throughout the application.>
+Common components serve as foundational UI building blocks that work across different contexts through configurable props, strict TypeScript typing, and self-contained design ensuring consistency, reusability, and maintainability throughout the application.
 
 ### When to use?
 
@@ -66,7 +66,7 @@ src/components/common/
 
 ## [Button Component Implementation]()
 
-<section description: Configurable button component with variant styles (primary, secondary, danger), size options (sm, md, lg), loading state support, and full TypeScript typing extending native HTML button attributes for comprehensive customization and type safety.>
+Configurable button component with variant styles (primary, secondary, danger), size options (sm, md, lg), loading state support, and full TypeScript typing extending native HTML button attributes for comprehensive customization and type safety.
 
 ### When to use?
 
@@ -159,7 +159,7 @@ export function Button({
 
 ## [Modal Component Implementation]()
 
-<section description: Full-featured modal dialog component with overlay backdrop, header section, scrollable body content, optional footer area, and close functionality providing flexible container for forms, confirmations, and detailed content display.>
+Full-featured modal dialog component with overlay backdrop, header section, scrollable body content, optional footer area, and close functionality providing flexible container for forms, confirmations, and detailed content display.
 
 ### When to use?
 
@@ -271,7 +271,7 @@ const [isOpen, setIsOpen] = useState(false);
 
 ## [Form Input Component Implementation]()
 
-<section description: Versatile input field component with integrated label, error message display, focus states, and validation feedback extending native HTML input attributes while providing consistent styling and user experience across all forms.>
+Versatile input field component with integrated label, error message display, focus states, and validation feedback extending native HTML input attributes while providing consistent styling and user experience across all forms.
 
 ### When to use?
 
@@ -364,7 +364,7 @@ Input.displayName = 'Input';
 
 ## [Select Dropdown Component Implementation]()
 
-<section description: Dropdown selection component with label support, error display, dynamic option rendering from array, and full native select element functionality providing consistent styling and user experience for choice-based inputs.>
+Dropdown selection component with label support, error display, dynamic option rendering from array, and full native select element functionality providing consistent styling and user experience for choice-based inputs.
 
 ### When to use?
 
@@ -466,7 +466,7 @@ export function Select({ label, error, options, className = '', ...props }: Sele
 
 ## [Card Container Component Implementation]()
 
-<section description: Versatile card container component with optional header, scrollable body content, and footer section providing consistent bordered, shadowed containers for grouping related content and creating visual hierarchy.>
+Versatile card container component with optional header, scrollable body content, and footer section providing consistent bordered, shadowed containers for grouping related content and creating visual hierarchy.
 
 ### When to use?
 
@@ -549,7 +549,7 @@ export function Card({ title, children, className = '', footer }: CardProps) {
 
 ## [Loading Spinner Component Implementation]()
 
-<section description: Animated loading indicator component with configurable sizes (sm, md, lg) using CSS animations and Tailwind utilities providing visual feedback during asynchronous operations and data loading states.>
+Animated loading indicator component with configurable sizes (sm, md, lg) using CSS animations and Tailwind utilities providing visual feedback during asynchronous operations and data loading states.
 
 ### When to use?
 
@@ -624,7 +624,7 @@ export function Spinner({ size = 'md', className = '' }: SpinnerProps) {
 
 ## [Alert Message Component Implementation]()
 
-<section description: Dismissible alert component with type variants (success, error, warning, info) providing color-coded user feedback messages with optional close functionality for confirmations, errors, warnings, and informational notices.>
+Dismissible alert component with type variants (success, error, warning, info) providing color-coded user feedback messages with optional close functionality for confirmations, errors, warnings, and informational notices.
 
 ### When to use?
 
@@ -703,7 +703,7 @@ export function Alert({ type, message, onClose }: AlertProps) {
 
 ## [Badge Label Component Implementation]()
 
-<section description: Small inline label component with color variants (default, success, danger, warning) for displaying status indicators, tags, counts, and category labels with consistent sizing and color-coded meaning.>
+Small inline label component with color variants (default, success, danger, warning) for displaying status indicators, tags, counts, and category labels with consistent sizing and color-coded meaning.
 
 ### When to use?
 
@@ -772,7 +772,7 @@ export function Badge({ children, variant = 'default' }: BadgeProps) {
 
 ## [Component Organization and Export Strategy]()
 
-<section description: Centralized component organization with barrel export pattern enabling clean imports throughout application while maintaining clear file structure and reducing import statement complexity for common components.>
+Centralized component organization with barrel export pattern enabling clean imports throughout application while maintaining clear file structure and reducing import statement complexity for common components.
 
 ### When to use?
 
@@ -849,7 +849,7 @@ import { Modal } from '@/components/common/Modal';
 
 ## [TypeScript Patterns for Component Props]()
 
-<section description: TypeScript best practices for component props including extending native HTML attributes, providing default values, using strict type unions, implementing forwardRef, and documenting props with JSDoc ensuring type safety and developer experience.>
+TypeScript best practices for component props including extending native HTML attributes, providing default values, using strict type unions, implementing forwardRef, and documenting props with JSDoc ensuring type safety and developer experience.
 
 ### When to use?
 
@@ -956,7 +956,7 @@ interface ButtonProps {
 
 ## [Common Components Implementation Checklist]()
 
-<section description: Comprehensive verification checklist ensuring all common component implementations follow established patterns for type safety, styling consistency, accessibility, reusability, and project conventions.>
+Comprehensive verification checklist ensuring all common component implementations follow established patterns for type safety, styling consistency, accessibility, reusability, and project conventions.
 
 - [ ] Component accepts className prop for customization
 - [ ] Props fully typed with TypeScript interfaces
@@ -977,7 +977,7 @@ interface ButtonProps {
 
 ## [Official Documentation References]()
 
-<section description: Official documentation and community resources for React, TypeScript, Tailwind CSS, and component design patterns providing comprehensive guidance beyond this guide's scope for advanced topics and framework-specific features.>
+Official documentation and community resources for React, TypeScript, Tailwind CSS, and component design patterns providing comprehensive guidance beyond this guide's scope for advanced topics and framework-specific features.
 
 - [React TypeScript Cheatsheet](https://react-typescript-cheatsheet.netlify.app/)
 - [React forwardRef Documentation](https://react.dev/reference/react/forwardRef)

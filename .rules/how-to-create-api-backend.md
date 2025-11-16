@@ -1,10 +1,10 @@
 # How to Create an API in the Backend
 
-<document description: Step-by-step guide to create a complete REST API in NestJS with TypeORM entities, DTOs, services, controllers, and migrations following project standards.>
+Step-by-step guide to create a complete REST API in NestJS with TypeORM entities, DTOs, services, controllers, and migrations following project standards.
 
 ## [NestJS Resource Generation with CLI]()
 
-<section description: Using NestJS CLI to automatically generate complete module structure including controllers, services, entities, and DTOs saves development time and ensures framework convention compliance across the codebase.>
+Using NestJS CLI to automatically generate complete module structure including controllers, services, entities, and DTOs saves development time and ensures framework convention compliance across the codebase.
 
 ### When to use?
 
@@ -67,7 +67,7 @@ src/modules/module-name/
 
 ## [TypeORM Entity Definition as Data Model]()
 
-<section description: TypeORM entities define database table structure through TypeScript decorators, specifying columns, data types, relationships, and constraints while providing type-safe database access and automatic schema synchronization capabilities.>
+TypeORM entities define database table structure through TypeScript decorators, specifying columns, data types, relationships, and constraints while providing type-safe database access and automatic schema synchronization capabilities.
 
 ### When to use?
 
@@ -136,7 +136,7 @@ export class ModuleName extends SuperEntity {
 
 ## [Data Transfer Objects with Validation]()
 
-<section description: DTOs define API request/response structure with class-validator decorators ensuring data integrity through automatic validation. They separate external API contracts from internal entity representations protecting database models from direct exposure.>
+DTOs define API request/response structure with class-validator decorators ensuring data integrity through automatic validation. They separate external API contracts from internal entity representations protecting database models from direct exposure.
 
 ### When to use?
 
@@ -222,7 +222,7 @@ export class UpdateModuleNameDto extends PartialType(CreateModuleNameDto) {}
 
 ## [Service Implementation with Business Logic]()
 
-<section description: Services contain business logic, CRUD operations, and data access orchestration using injected TypeORM repositories. They implement security through user isolation, handle exceptions appropriately, and return processed data to controllers.>
+Services contain business logic, CRUD operations, and data access orchestration using injected TypeORM repositories. They implement security through user isolation, handle exceptions appropriately, and return processed data to controllers.
 
 ### When to use?
 
@@ -322,7 +322,7 @@ export class ModuleNameService {
 
 ## [Controller with Versioned REST Endpoints]()
 
-<section description: Controllers define HTTP route handlers with versioning, Swagger documentation, and request/response transformation. They delegate business logic to services while handling HTTP-specific concerns like status codes, parameter parsing, and authentication context access.>
+Controllers define HTTP route handlers with versioning, Swagger documentation, and request/response transformation. They delegate business logic to services while handling HTTP-specific concerns like status codes, parameter parsing, and authentication context access.
 
 ### When to use?
 
@@ -428,7 +428,7 @@ export class ModuleNameController {
 
 ## [NestJS Module Configuration and Registration]()
 
-<section description: NestJS modules organize application structure by grouping related controllers, services, and dependencies. Module registration with TypeORM establishes repository availability and enables dependency injection throughout the module scope while exports allow cross-module service sharing.>
+NestJS modules organize application structure by grouping related controllers, services, and dependencies. Module registration with TypeORM establishes repository availability and enables dependency injection throughout the module scope while exports allow cross-module service sharing.
 
 ### When to use?
 
@@ -502,7 +502,7 @@ export class AppModule {}
 
 ## [Database Migration Creation for Schema Changes]()
 
-<section description: TypeORM migrations provide version-controlled database schema evolution using pure SQL. They ensure consistent schema across environments, enable rollback capabilities, and maintain change history while supporting automated deployment and team synchronization through sequential timestamped files.>
+TypeORM migrations provide version-controlled database schema evolution using pure SQL. They ensure consistent schema across environments, enable rollback capabilities, and maintain change history while supporting automated deployment and team synchronization through sequential timestamped files.
 
 ### When to use?
 
@@ -593,7 +593,7 @@ npm run typeorm -- migration:run
 
 ## [API Testing with Swagger and HTTP Tools]()
 
-<section description: Testing REST APIs using Swagger UI interactive documentation or command-line curl requests validates endpoint functionality, authentication, request/response formats, and error handling ensuring API contracts are correctly implemented and documented.>
+Testing REST APIs using Swagger UI interactive documentation or command-line curl requests validates endpoint functionality, authentication, request/response formats, and error handling ensuring API contracts are correctly implemented and documented.
 
 ### When to use?
 
@@ -671,7 +671,7 @@ curl -X DELETE http://localhost:3000/api/v1/module-name/1 \
 
 ## [Advanced REST API Features]()
 
-<section description: Advanced API functionality including pagination for large datasets, filtering and search capabilities, and relationship loading strategies enhance API usability, performance, and flexibility while maintaining consistent patterns and efficient database queries.>
+Advanced API functionality including pagination for large datasets, filtering and search capabilities, and relationship loading strategies enhance API usability, performance, and flexibility while maintaining consistent patterns and efficient database queries.
 
 ### When to use?
 
@@ -791,7 +791,7 @@ async findOne(id: number, userId: number) {
 
 ## [Naming Conventions for NestJS Resources]()
 
-<section description: Consistent naming patterns across modules, entities, tables, DTOs, services, and controllers ensure code readability, maintainability, and alignment with NestJS and TypeORM conventions while facilitating team collaboration and automated tooling integration.>
+Consistent naming patterns across modules, entities, tables, DTOs, services, and controllers ensure code readability, maintainability, and alignment with NestJS and TypeORM conventions while facilitating team collaboration and automated tooling integration.
 
 ### When to use?
 
@@ -845,7 +845,7 @@ Maintain consistency with existing patterns when working on legacy code that use
 
 ## [Complete API Implementation Checklist]()
 
-<section description: Comprehensive verification checklist ensuring all components of REST API implementation are complete including code generation, entity definition, DTO validation, service logic, controller routing, module configuration, database migration, documentation, security, and versioning.>
+Comprehensive verification checklist ensuring all components of REST API implementation are complete including code generation, entity definition, DTO validation, service logic, controller routing, module configuration, database migration, documentation, security, and versioning.
 
 - [ ] Resource generated with `nest g resource`
 - [ ] Entity created extending SuperEntity
@@ -862,7 +862,7 @@ Maintain consistency with existing patterns when working on legacy code that use
 
 ## [Official Documentation References]()
 
-<section description: Official framework and library documentation providing comprehensive reference for NestJS architecture patterns, TypeORM entity management, validation decorators, and advanced features beyond this guide's scope for deeper understanding and troubleshooting.>
+Official framework and library documentation providing comprehensive reference for NestJS architecture patterns, TypeORM entity management, validation decorators, and advanced features beyond this guide's scope for deeper understanding and troubleshooting.
 
 - [NestJS Controllers](https://docs.nestjs.com/controllers)
 - [NestJS Providers](https://docs.nestjs.com/providers)

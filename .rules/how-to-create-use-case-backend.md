@@ -1,6 +1,6 @@
 # How to Create Use-Cases in NestJS Backend
 
-<document description: Comprehensive guide for implementing thin, focused Use-Cases following SOLID principles, interface segregation, and dependency injection for scalable NestJS backend development.>
+Comprehensive guide for implementing thin, focused Use-Cases following SOLID principles, interface segregation, and dependency injection for scalable NestJS backend development.
 
 ## [What is a Use-Case and Core Philosophy]()
 
