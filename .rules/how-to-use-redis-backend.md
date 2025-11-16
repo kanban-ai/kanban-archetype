@@ -1,34 +1,39 @@
 # How to use Redis in Backend
 
-> Complete guide for using Redis as cache and shared memory for horizontal scalability
+> Complete guide for using Redis as cache and shared memory for horizontal scalability in distributed NestJS applications
 
-## [When to use Redis for cache and shared memory]()
+## [Setting up Redis as Cache in NestJS]()
 
-This section identifies appropriate use cases for Redis in the project, focusing on cache, shared counters and temporary data between instances.
+This section covers the complete integration process for Redis in NestJS using cache-manager, including package installation, global module configuration, environment setup, and basic cache operations for improving application performance.
 
-- ✅ **Data caching** - Reduce database load
-- ✅ **Shared sessions** - Share sessions between instances
-- ✅ **Shared counters** - Distributed atomic increments
-- ✅ **Rate Limiting** - Control request limits
-- ✅ **External API cache** - Avoid repeated requests
-- ✅ **Temporary data** - Shared memory between instances
-- ❌ **Permanent storage** - Use PostgreSQL for persistent data
-- ❌ **Task queues** - Use RabbitMQ for background jobs (see [how-to-use-rabbitmq-backend.md](./how-to-use-rabbitmq-backend.md))
-- ❌ **Pub/Sub** - Don't use Redis for communication between instances
+### When to use?
 
-## [Redis package installation in NestJS]()
+Use Redis when you need:
+- ✅ Data caching to reduce database load and improve response times
+- ✅ Shared sessions across multiple application instances
+- ✅ Shared counters with atomic increments for distributed systems
+- ✅ Rate limiting to control API request rates per user or IP
+- ✅ External API response caching to avoid repeated expensive requests
+- ✅ Temporary data storage shared between multiple instances
+- ✅ Fast in-memory data access for frequently used information
 
-Required packages to integrate Redis as cache using cache-manager in NestJS.
+### When NOT to use?
+
+Avoid Redis when:
+- ❌ You need permanent storage (use PostgreSQL for persistent data)
+- ❌ You need task queues with retry mechanisms (use RabbitMQ for background jobs)
+- ❌ You need pub/sub communication between instances (use RabbitMQ)
+- ❌ You need complex queries and relationships (use PostgreSQL)
+
+### Example
+
+**Installation:**
 
 ```bash
 npm install @nestjs/cache-manager cache-manager cache-manager-redis-store redis
 ```
 
-## [Redis Global Configuration using reusable Common Module]()
-
-Setup of a global Redis module configured once and available throughout the application.
-
-### [1. Create common shared RedisModule in NestJS]()
+**Global Redis Module Configuration:**
 
 `src/common/redis/redis.module.ts`
 
@@ -59,7 +64,7 @@ import { redisStore } from 'cache-manager-redis-store';
 export class RedisModule {}
 ```
 
-### [2. Register RedisModule in root AppModule]()
+**Register in AppModule:**
 
 `src/app.module.ts`
 
@@ -69,15 +74,14 @@ import { RedisModule } from './common/redis/redis.module';
 
 @Module({
   imports: [
-    // ... other modules
     RedisModule, // Import once
-    // ... domain modules
+    // ... other modules
   ],
 })
 export class AppModule {}
 ```
 
-### [3. Configure Redis environment variables]()
+**Environment Variables:**
 
 `.env`
 
@@ -89,11 +93,74 @@ REDIS_DB=0
 REDIS_TTL=300         # 5 minutes in seconds
 ```
 
-## [Redis Basic Usage - Implement simple cache in Services]()
+### Checklist
 
-How to inject and use Redis cache manager in services for query and data caching.
+- [ ] Redis installed (Docker or local)
+- [ ] Packages installed (`@nestjs/cache-manager`, `cache-manager-redis-store`, `redis`)
+- [ ] `RedisModule` created in `src/common/redis/`
+- [ ] `@Global()` decorator applied to module
+- [ ] Environment variables configured (`.env`)
+- [ ] Module imported in `AppModule`
+- [ ] Connection tested successfully
 
-### [Inject CACHE_MANAGER in NestJS Services]()
+### Troubleshooting
+
+**Resolve Redis connection refused error:**
+
+```bash
+# Check if Redis is running
+docker ps | grep redis
+
+# View logs
+docker logs sdd-redis
+
+# Restart
+docker-compose restart redis
+```
+
+**Debug when Redis cache is not working:**
+
+```typescript
+// Debug - check if it's saving
+const saved = await this.cacheManager.set('test', 'value', 60);
+console.log('Saved:', saved);
+
+const retrieved = await this.cacheManager.get('test');
+console.log('Retrieved:', retrieved);
+```
+
+### Best Practices
+
+- ✅ Configure Redis as a global module to reuse across all modules
+- ✅ Use environment variables for connection settings
+- ✅ Import RedisModule only once in AppModule
+- ✅ Set default TTL to prevent infinite memory usage
+- ✅ Test connection during application startup
+- ❌ Never expose Redis credentials in code
+- ❌ Don't store sensitive data without encryption
+
+## [Basic Redis Cache Operations]()
+
+This section demonstrates how to inject and use Redis cache manager in services for query and data caching using standard cache-manager operations like SET, GET, DEL and FLUSH.
+
+### When to use?
+
+Use basic cache operations when:
+- ✅ You need to cache database query results
+- ✅ You want to reduce API response times
+- ✅ You need to store temporary computed values
+- ✅ You want to minimize database load
+
+### When NOT to use?
+
+Avoid basic cache when:
+- ❌ Data changes frequently (cache will be invalidated constantly)
+- ❌ Data is small and queries are fast (overhead not worth it)
+- ❌ You need complex atomic operations (use advanced patterns)
+
+### Example
+
+**Inject CACHE_MANAGER in Services:**
 
 ```typescript
 import { Injectable, Inject } from '@nestjs/common';
@@ -166,11 +233,9 @@ export class ProductService {
 }
 ```
 
-## [Available Redis operations with cache-manager]()
+**Available Redis Operations:**
 
-Main cache-manager methods to interact with Redis: SET, GET, DEL and FLUSH.
-
-### [1. Save data to Redis using SET]()
+**1. Save data to Redis using SET:**
 
 ```typescript
 // Simple
@@ -183,7 +248,7 @@ await this.cacheManager.set('key', 'value', 300); // 5 minutes
 await this.cacheManager.set('user:123', { id: 123, name: 'John' }, 600);
 ```
 
-### [2. Fetch data from Redis using GET]()
+**2. Fetch data from Redis using GET:**
 
 ```typescript
 // Returns null if doesn't exist
@@ -193,7 +258,7 @@ const value = await this.cacheManager.get('key');
 const user = await this.cacheManager.get<User>('user:123');
 ```
 
-### [3. Delete keys from Redis using DEL]()
+**3. Delete keys from Redis using DEL:**
 
 ```typescript
 // Delete one key
@@ -204,26 +269,151 @@ await this.cacheManager.del('key1');
 await this.cacheManager.del('key2');
 ```
 
-### [4. Reset all Redis data using FLUSH]()
+**4. Reset all Redis data using FLUSH:**
 
 ```typescript
 // ⚠️ Careful: removes ALL keys
 await this.cacheManager.reset();
 ```
 
-## [Advanced Redis Use Cases in Backend]()
+### Checklist
 
-Advanced implementations of atomic counters, rate limiting, external API cache and shared sessions.
+- [ ] `CACHE_MANAGER` injected via constructor
+- [ ] Cache key naming pattern defined
+- [ ] TTL set for all cache operations
+- [ ] Cache invalidation on updates/deletes
+- [ ] Error handling for Redis failures
+- [ ] Type safety with generics
 
-### [1. Implement shared counter with atomic increment in Redis]()
+### Troubleshooting
 
-Useful for statistics, rate limiting, distributed counters.
+**Cache always returning null:**
+
+1. Verify Redis is running
+2. Check if key exists: `redis-cli KEYS *`
+3. Verify TTL hasn't expired
+4. Check for typos in cache keys
+
+**Stale data in cache:**
+
+1. Verify cache invalidation logic
+2. Check if TTL is too long
+3. Manually delete key: `await this.cacheManager.del(key)`
+
+### Best Practices
+
+- ✅ Always define TTL to avoid data accumulation
+- ✅ Invalidate cache when updating or deleting data
+- ✅ Use consistent prefixes in Redis keys
+- ✅ Handle Redis connection errors gracefully
+- ✅ Use generic types for type safety
+- ✅ Don't cache sensitive data in Redis
+- ❌ Never set cache without TTL
+- ❌ Don't ignore cache invalidation
+
+## [Redis Key Naming Patterns]()
+
+This section explains hierarchical key naming conventions to organize Redis data effectively and enable efficient pattern-based operations for cache invalidation and management.
+
+### When to use?
+
+Use naming patterns when:
+- ✅ You need to organize cache keys logically
+- ✅ You want to invalidate related keys easily
+- ✅ You need to identify key purpose at a glance
+- ✅ You want to prevent key collisions
+
+### When NOT to use?
+
+This pattern is always recommended; there's no case where you shouldn't use structured naming.
+
+### Example
+
+**Hierarchical Naming Pattern:**
+
+```typescript
+// ✅ Good - hierarchical and descriptive
+'user:123'
+'user:123:profile'
+'product:456'
+'products:category:electronics'
+'stats:pageview:home'
+'ratelimit:user:123'
+'session:abc-def-123'
+'cache:api:external:user:789'
+
+// ❌ Bad - no structure
+'u123'
+'data'
+'temp'
+```
+
+**Pattern Components:**
+
+1. **Prefix**: Resource type (user, product, session)
+2. **Identifier**: Unique ID or key
+3. **Subresource**: Additional context (profile, stats)
+
+**Benefits:**
+
+- Easy to find related keys: `KEYS user:*`
+- Clear purpose and ownership
+- Prevents naming conflicts
+- Enables bulk operations
+
+### Checklist
+
+- [ ] Naming pattern documented
+- [ ] All keys follow consistent pattern
+- [ ] Prefixes match resource types
+- [ ] IDs properly separated with colons
+- [ ] Team agrees on convention
+
+### Troubleshooting
+
+**Cannot find keys:**
+
+1. Use `KEYS pattern` to search
+2. Verify naming pattern consistency
+3. Check for typos in prefix
+
+### Best Practices
+
+- ✅ Use colon (`:`) as separator
+- ✅ Use descriptive prefixes
+- ✅ Include resource type and ID
+- ✅ Keep patterns consistent across application
+- ✅ Document your naming conventions
+- ❌ Don't use random or cryptic names
+- ❌ Don't mix naming patterns
+
+## [Advanced Redis Use Cases]()
+
+This section demonstrates advanced implementations including atomic counters for distributed systems, rate limiting with Redis, external API response caching, and shared session management for horizontal scaling.
+
+### When to use?
+
+Use advanced patterns when:
+- ✅ You need atomic operations for distributed counters
+- ✅ You require rate limiting for API protection
+- ✅ You want to cache expensive external API calls
+- ✅ You need shared sessions across multiple instances
+
+### When NOT to use?
+
+Avoid advanced patterns when:
+- ❌ Basic cache operations suffice
+- ❌ You don't need atomic operations
+- ❌ Single instance deployment doesn't need sharing
+
+### Example
+
+**1. Atomic Counter with Redis:**
 
 ```typescript
 import { Injectable, Inject } from '@nestjs/common';
 import { CACHE_MANAGER } from '@nestjs/cache-manager';
 import { Cache } from 'cache-manager';
-import { createClient } from 'redis';
 
 @Injectable()
 export class StatsService {
@@ -254,15 +444,9 @@ export class StatsService {
 }
 ```
 
-### [2. Implement Rate Limiting with Redis to control requests]()
-
-Limit requests per user/IP using Redis counters.
+**2. Rate Limiting with Redis:**
 
 ```typescript
-import { Injectable, Inject } from '@nestjs/common';
-import { CACHE_MANAGER } from '@nestjs/cache-manager';
-import { Cache } from 'cache-manager';
-
 @Injectable()
 export class RateLimitService {
   private redisClient: any;
@@ -293,18 +477,9 @@ export class RateLimitService {
 }
 ```
 
-**Guard to apply rate limit:**
+**Rate Limit Guard:**
 
 ```typescript
-import {
-  Injectable,
-  CanActivate,
-  ExecutionContext,
-  HttpException,
-  HttpStatus,
-} from '@nestjs/common';
-import { RateLimitService } from './rate-limit.service';
-
 @Injectable()
 export class RateLimitGuard implements CanActivate {
   constructor(private rateLimitService: RateLimitService) {}
@@ -335,9 +510,7 @@ export class RateLimitGuard implements CanActivate {
 }
 ```
 
-### [3. Implement external API response cache with Redis]()
-
-Cache external API responses using Redis to reduce latency and costs.
+**3. External API Cache:**
 
 ```typescript
 @Injectable()
@@ -369,9 +542,7 @@ export class ExternalApiService {
 }
 ```
 
-### [4. Implement shared sessions with Redis for horizontal scaling]()
-
-Use Redis for multiple instances to share user sessions.
+**4. Shared Sessions:**
 
 ```typescript
 @Injectable()
@@ -410,30 +581,71 @@ export class SessionService {
 }
 ```
 
-## [Redis Key Naming Patterns]()
+### Checklist
 
-Use consistent hierarchical prefixes to organize Redis data:
+- [ ] Atomic operations implemented correctly
+- [ ] Rate limits configured appropriately
+- [ ] External API cache with reasonable TTL
+- [ ] Session management with proper TTL
+- [ ] Error handling for Redis failures
+- [ ] Monitoring for cache hit rates
 
-```typescript
-// ✅ Good - hierarchical and descriptive
-'user:123'
-'user:123:profile'
-'product:456'
-'products:category:electronics'
-'stats:pageview:home'
-'ratelimit:user:123'
-'session:abc-def-123'
-'cache:api:external:user:789'
+### Troubleshooting
 
-// ❌ Bad - no structure
-'u123'
-'data'
-'temp'
+**Investigate and resolve high Redis memory problem:**
+
+```bash
+# Connect to Redis CLI
+docker exec -it sdd-redis redis-cli
+
+# View memory information
+INFO memory
+
+# View all keys (careful in production)
+KEYS *
+
+# Clear everything (CAREFUL!)
+FLUSHALL
 ```
 
-## [Helper for bulk Redis key invalidation by pattern]()
+**Counter inconsistencies:**
 
-Utility to delete multiple Redis keys using wildcard patterns.
+1. Verify atomic operations are used (INCR, not GET+SET)
+2. Check for race conditions
+3. Verify TTL is set correctly
+
+### Best Practices
+
+- ✅ Use atomic operations for counters (INCR)
+- ✅ Set appropriate rate limits per use case
+- ✅ Cache expensive external API calls
+- ✅ Use TTL for all temporary data
+- ✅ Monitor memory usage regularly
+- ❌ Don't implement counters with GET+SET
+- ❌ Don't cache without expiration
+
+## [Bulk Redis Key Invalidation by Pattern]()
+
+This section provides utilities to delete multiple Redis keys using wildcard patterns, enabling efficient cache invalidation for related data across the application.
+
+### When to use?
+
+Use pattern-based deletion when:
+- ✅ You need to invalidate all related cache keys at once
+- ✅ You want to clear cache for a specific resource type
+- ✅ You need to remove all data for a user or entity
+- ✅ You want to implement cache invalidation strategies
+
+### When NOT to use?
+
+Avoid pattern deletion when:
+- ❌ You need to delete a single specific key
+- ❌ Pattern matches too many keys (performance impact)
+- ❌ You're in production with millions of keys (use SCAN instead)
+
+### Example
+
+**Cache Service with Pattern Deletion:**
 
 ```typescript
 import { Injectable, Inject } from '@nestjs/common';
@@ -457,15 +669,78 @@ export class CacheService {
       await this.redisClient.del(...keys);
     }
   }
-
-  // Usage examples:
-  // await cacheService.deleteByPattern('product:*')      // All products
-  // await cacheService.deleteByPattern('user:123:*')     // Everything from user 123
-  // await cacheService.deleteByPattern('cache:api:*')    // All API cache
 }
 ```
 
-## [Configure local Redis with Docker Compose]()
+**Usage Examples:**
+
+```typescript
+// Delete all products
+await cacheService.deleteByPattern('product:*');
+
+// Delete everything from user 123
+await cacheService.deleteByPattern('user:123:*');
+
+// Delete all API cache
+await cacheService.deleteByPattern('cache:api:*');
+
+// Delete all rate limit counters
+await cacheService.deleteByPattern('ratelimit:*');
+```
+
+### Checklist
+
+- [ ] Pattern deletion service implemented
+- [ ] Patterns tested in development
+- [ ] Performance tested with large datasets
+- [ ] Error handling for missing keys
+- [ ] Logging for deletion operations
+
+### Troubleshooting
+
+**Pattern matching too many keys:**
+
+1. Use more specific patterns
+2. Consider SCAN instead of KEYS in production
+3. Delete in batches
+
+**Deletion failing:**
+
+1. Check if pattern is correct
+2. Verify keys exist: `redis-cli KEYS pattern`
+3. Check permissions
+
+### Best Practices
+
+- ✅ Use specific patterns to limit scope
+- ✅ Log deletion operations
+- ✅ Use SCAN for production with many keys
+- ✅ Test patterns in development first
+- ❌ Don't use `*` pattern (deletes everything)
+- ❌ Don't use KEYS in production (blocks Redis)
+
+## [Local Redis Setup with Docker]()
+
+This section provides Docker Compose configuration for running Redis locally for development and testing purposes with data persistence and health checks.
+
+### When to use?
+
+Use Docker setup when:
+- ✅ You need local development environment
+- ✅ You want quick setup and teardown
+- ✅ You need consistent environment across team
+- ✅ You want data persistence between restarts
+
+### When NOT to use?
+
+Avoid Docker when:
+- ❌ You have production Redis server
+- ❌ You prefer native installation
+- ❌ Docker is not available in your environment
+
+### Example
+
+**Docker Compose Configuration:**
 
 `docker-compose.yml`
 
@@ -489,133 +764,153 @@ volumes:
   redis-data:
 ```
 
-Start Redis:
+**Start Redis:**
 
 ```bash
 docker-compose up -d redis
 ```
 
-## [Best Practices when using Redis in NestJS]()
-
-Essential recommendations for efficient and safe Redis usage in production.
-
-### [1. Always define TTL to avoid data accumulation in Redis]()
-```typescript
-// ✅ Good - avoids infinite memory
-await this.cacheManager.set('key', value, 300);
-
-// ❌ Bad - may accumulate old data
-await this.cacheManager.set('key', value);
-```
-
-### [2. Invalidate Redis cache when updating or deleting data]()
-```typescript
-async update(id: string, dto: UpdateDto) {
-  const updated = await this.repository.save({ id, ...dto });
-
-  // Invalidate related caches
-  await this.cacheManager.del(`item:${id}`);
-  await this.cacheManager.del('items:all');
-
-  return updated;
-}
-```
-
-### [3. Use consistent prefixes in Redis keys]()
-```typescript
-// ✅ Good - easy to identify and invalidate
-const cacheKey = `user:${userId}:orders`;
-
-// ❌ Bad - difficult to manage
-const cacheKey = `${userId}_orders`;
-```
-
-### [4. Handle Redis connection errors without breaking application]()
-```typescript
-async getCachedData(key: string): Promise<any> {
-  try {
-    return await this.cacheManager.get(key);
-  } catch (error) {
-    // Log but don't break application
-    console.error('Redis error:', error);
-    return null; // Fallback to fetch from database
-  }
-}
-```
-
-### [5. Use common @Global module to reuse Redis throughout application]()
-- **Create once** - RedisModule in `src/common/redis/`
-- **Global** - `@Global()` decorator to make available in all modules
-- **Reuse** - Just inject `CACHE_MANAGER` where needed
-
-### [6. Don't cache sensitive data in Redis]()
-```typescript
-// ❌ Avoid - sensitive data
-await this.cacheManager.set('user:password', hashedPassword);
-
-// ✅ Cache only safe data
-await this.cacheManager.set('user:profile', { name, email });
-```
-
-## [Redis Implementation Checklist in NestJS]()
-
-- [ ] Redis installed (Docker or local)
-- [ ] Packages installed (`@nestjs/cache-manager`, `cache-manager-redis-store`, `redis`)
-- [ ] `RedisModule` created in `src/common/redis/`
-- [ ] `@Global()` decorator applied
-- [ ] Environment variables configured (`.env`)
-- [ ] Module imported in `AppModule`
-- [ ] TTL defined for all cache operations
-- [ ] Consistent naming pattern
-- [ ] Invalidation when updating/deleting data
-- [ ] Error handling for Redis failures
-
-## [Troubleshooting - Common Redis problems]()
-
-Diagnosis and solutions for common problems when configuring and using Redis in NestJS.
-
-### [Resolve Redis connection refused error]()
+**Connect to Redis CLI:**
 
 ```bash
-# Check if Redis is running
-docker ps | grep redis
-
-# View logs
-docker logs sdd-redis
-
-# Restart
-docker-compose restart redis
-```
-
-### [Debug when Redis cache is not working]()
-
-```typescript
-// Debug - check if it's saving
-const saved = await this.cacheManager.set('test', 'value', 60);
-console.log('Saved:', saved);
-
-const retrieved = await this.cacheManager.get('test');
-console.log('Retrieved:', retrieved);
-```
-
-### [Investigate and resolve high Redis memory problem]()
-
-```bash
-# Connect to Redis CLI
+# Access Redis CLI
 docker exec -it sdd-redis redis-cli
 
-# View memory information
-INFO memory
+# Test connection
+PING
+# Response: PONG
 
-# View all keys (careful in production)
+# View all keys
 KEYS *
 
-# Clear everything (CAREFUL!)
-FLUSHALL
+# Get specific key
+GET user:123
+
+# View memory info
+INFO memory
 ```
 
-## [References and official documentation about Redis and NestJS]()
+### Checklist
+
+- [ ] Docker installed and running
+- [ ] `docker-compose.yml` created
+- [ ] Redis container started
+- [ ] Connection tested (PING/PONG)
+- [ ] Volume for data persistence configured
+- [ ] Healthcheck passing
+
+### Troubleshooting
+
+**Container fails to start:**
+
+```bash
+# Check container logs
+docker logs sdd-redis
+
+# Check if port is already in use
+lsof -i :6379
+
+# Remove and recreate container
+docker-compose down -v
+docker-compose up -d redis
+```
+
+**Cannot connect to Redis:**
+
+1. Verify container is running: `docker ps | grep redis`
+2. Check if port 6379 is exposed
+3. Verify healthcheck status: `docker inspect sdd-redis`
+4. Test connection: `redis-cli ping`
+
+### Best Practices
+
+- ✅ Use volumes for data persistence
+- ✅ Configure healthcheck for monitoring
+- ✅ Use appendonly mode for durability
+- ✅ Monitor container logs
+- ✅ Set proper resource limits in production
+- ❌ Don't expose Redis publicly without authentication
+- ❌ Don't run without persistence in production
+
+## [Redis vs RabbitMQ Comparison]()
+
+This comparative section helps you choose between Redis and RabbitMQ based on specific use case requirements, understanding the strengths and limitations of each technology.
+
+### When to use?
+
+Use this comparison when:
+- ✅ You're deciding between Redis and RabbitMQ
+- ✅ You need to understand trade-offs
+- ✅ You're architecting a new feature
+- ✅ You want to optimize existing implementation
+
+### When NOT to use?
+
+This comparison is not needed when:
+- ❌ You clearly need caching (use Redis)
+- ❌ You clearly need message queues (use RabbitMQ)
+- ❌ You're already using the right tool
+
+### Example
+
+| Feature | Redis | RabbitMQ |
+|---------|-------|----------|
+| **Primary use** | Cache and shared data | Message queues with topics |
+| **Delivery guarantee** | ❌ No | ✅ Yes (ACK/NACK) |
+| **Persistence** | ⚠️ Optional (may lose data) | ✅ Durable messages |
+| **Retries** | ❌ Manual | ✅ Automatic with DLQ |
+| **Topic routing** | ❌ Not available | ✅ Topic Exchange with wildcards |
+| **Asynchronous processing** | ❌ Not recommended | ✅ Ideal |
+| **Ordering** | ⚠️ Not guaranteed | ✅ FIFO guaranteed |
+| **Speed** | ✅ Very fast | ⚠️ Moderate |
+| **Horizontal scaling** | ✅ Data sharing | ✅ Multiple consumers |
+| **When to use** | Cache, sessions, counters | Background jobs, events, retry |
+
+**Use Redis for:**
+- Caching frequently accessed data
+- Session storage
+- Rate limiting
+- Atomic counters
+- Temporary data storage
+
+**Use RabbitMQ for:**
+- Background job processing
+- Event-driven architectures
+- Reliable message delivery
+- Asynchronous workflows
+
+### Checklist
+
+- [ ] Identified use case requirements
+- [ ] Compared delivery guarantees needed
+- [ ] Evaluated persistence requirements
+- [ ] Considered performance needs
+- [ ] Determined scaling strategy
+
+### Troubleshooting
+
+**Chose wrong tool:**
+
+If using Redis for queues or RabbitMQ for caching:
+1. Identify the actual requirement
+2. Migrate to appropriate tool
+3. Update implementation
+4. Test thoroughly
+
+### Best Practices
+
+- ✅ Use Redis for caching and temporary data
+- ✅ Use RabbitMQ for asynchronous message processing
+- ✅ Combine both when needed (Redis for cache, RabbitMQ for jobs)
+- ✅ Understand trade-offs before choosing
+- ❌ Don't use Redis for reliable message queues
+- ❌ Don't use RabbitMQ for caching
+
+## [References and Documentation]()
+
+Official documentation and resources for Redis and NestJS integration.
 
 - [NestJS Cache](https://docs.nestjs.com/techniques/caching)
 - [Redis Commands](https://redis.io/commands)
 - [cache-manager](https://github.com/node-cache-manager/node-cache-manager)
+- [Redis Best Practices](https://redis.io/docs/manual/patterns/)

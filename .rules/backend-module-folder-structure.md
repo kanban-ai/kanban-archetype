@@ -6,6 +6,14 @@
 
 Recommended file and folder organization for NestJS modules following framework conventions and industry best practices. This structure balances modularity, discoverability, and maintainability while supporting both simple CRUD and complex business logic use cases.
 
+### When to use?
+Use this structure for all new NestJS modules in the project to ensure consistency. Apply this pattern when creating domain modules that handle business entities, API endpoints, and data persistence with TypeORM, ensuring uniform organization across the codebase.
+
+### When NOT to use?
+Do not use this structure for shared utility modules like common helpers, authentication modules, or infrastructure modules like database configuration. These special-purpose modules may have different organizational needs that don't follow the standard CRUD pattern.
+
+### Example
+
 ```
 src/modules/module-name/
 ├── module-name.module.ts          # Module configuration
@@ -22,6 +30,30 @@ src/modules/module-name/
 └── enums/                        # Enumerations (optional)
     └── module-name-status.enum.ts
 ```
+
+### Checklist
+- [ ] Module file with @Module decorator configuring imports, controllers, providers, and exports
+- [ ] Controller file with REST endpoints using proper HTTP decorators
+- [ ] Service file for simple CRUD operations or delegating to use-cases
+- [ ] Entities folder containing TypeORM entity classes
+- [ ] DTOs folder with create and update data transfer objects
+- [ ] Use-cases folder added when business logic complexity requires it
+- [ ] Enums folder created when fixed value sets are needed
+
+### Troubleshooting
+
+**Module not loading**: Ensure the module is imported in the parent module (usually app.module.ts) and all providers are properly declared.
+
+**Circular dependency errors**: Check for circular imports between modules. Use forwardRef() or restructure to avoid bidirectional dependencies.
+
+**Entity not recognized**: Verify the entity is registered in TypeOrmModule.forFeature() array in the module file.
+
+### Best Practices
+
+- Keep module files focused on a single business domain for better maintainability
+- Start with the minimal structure (module, controller, service, entities, dto) and add folders as needed
+- Use barrel exports (index.ts) in folders with multiple files for cleaner imports
+- Always co-locate related files within the same module folder rather than creating global folders
 
 ## [Description and Responsibility of Each Module File]()
 
@@ -150,7 +182,13 @@ export class UpdateModuleNameDto extends PartialType(CreateModuleNameDto) {}
 
 Guidelines for deciding when to introduce use-cases folder for complex business logic versus keeping simple operations in services. Use-cases are appropriate when operations involve multiple transactions, sophisticated validation, or require high testability through interface segregation.
 
-### [Example]()
+### When to use?
+Create a use-cases folder when your module requires complex business logic involving multiple entities, transactions spanning several database operations, sophisticated validation rules beyond simple DTO validation, or when you need interface segregation for better testability and dependency injection patterns.
+
+### When NOT to use?
+Do not create use-cases for simple CRUD operations that only involve basic create, read, update, delete actions on a single entity. Keep straightforward business logic in the service file to avoid over-engineering and unnecessary complexity for simple modules.
+
+### Example
 
 ```
 src/modules/financial/
@@ -189,9 +227,37 @@ export class FinancialRulesUseCase
 
 **See more**: [How to create Use-Cases](./how-to-create-use-case-backend.md)
 
+### Checklist
+- [ ] Business logic requires multiple database queries or transactions
+- [ ] Logic involves complex validations beyond DTO class-validator rules
+- [ ] Operation coordinates multiple entities or external services
+- [ ] Testability requires interface segregation for mocking dependencies
+- [ ] Service file exceeds 200-300 lines indicating complexity
+
+### Troubleshooting
+
+**When to split use-cases**: If a single use-case file exceeds 300 lines, split into multiple use-case files by business responsibility.
+
+**Circular dependencies with service**: Inject use-cases into service, never inject service into use-case. Use-cases should depend on repositories directly.
+
+### Best Practices
+
+- Create one use-case class per major business operation or feature
+- Use interface segregation with separate interfaces for each method
+- Keep use-cases focused on business logic, delegate data access to repositories
+- Write comprehensive unit tests for use-cases using mocked repositories
+
 ## [When to Create Enums in Backend Module]()
 
 Best practices for organizing enumeration types representing fixed value sets like statuses, types, or categories. Enums provide type safety, improve code readability, and ensure database consistency when used with TypeORM enum column types.
+
+### When to use?
+Create enums when your module has fixed value sets like statuses, types, categories, or predefined options that should be type-safe and validated. Use enums for database columns that should only accept specific values, ensuring data integrity and providing autocomplete in TypeScript.
+
+### When NOT to use?
+Do not use enums for dynamic values that may change frequently or be user-configurable. Avoid enums for values that should be stored in a separate database table with additional metadata, or when the set of values is large and might require runtime configuration.
+
+### Example
 
 ```typescript
 // enums/alert-type.enum.ts
@@ -205,6 +271,28 @@ export enum AlertType {
 @Column({ type: 'enum', enum: AlertType })
 type: AlertType;
 ```
+
+### Checklist
+- [ ] Enum uses PascalCase naming following TypeScript conventions
+- [ ] Enum values use snake_case for database column compatibility
+- [ ] Enum is exported from its own file in the enums folder
+- [ ] Entity column uses @Column with type: 'enum' and enum property
+- [ ] DTO validates enum values using @IsEnum() decorator from class-validator
+
+### Troubleshooting
+
+**Database enum type errors**: When adding or removing enum values, create a migration to update the database enum type definition.
+
+**Validation errors**: Ensure DTOs use @IsEnum(EnumType) decorator for proper request validation.
+
+**TypeScript errors**: Import enum properly in entity and DTO files, and ensure enum values match database column constraints.
+
+### Best Practices
+
+- Use string enum values instead of numeric for better database readability
+- Keep enum values in snake_case to match database naming conventions
+- Document what each enum value represents using JSDoc comments
+- Create separate enums for different concerns rather than one large enum
 
 ## [Real Examples: Simple and Complex Modules]()
 

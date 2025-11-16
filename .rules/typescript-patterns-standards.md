@@ -8,15 +8,43 @@ This document defines the mandatory TypeScript patterns that must be followed in
 
 ## [Rule #1: NEVER Use the `any` Type]()
 
-The use of the `any` type is strictly prohibited throughout the codebase. This rule eliminates type safety, hinders code maintenance, hides runtime errors, and nullifies TypeScript's benefits. Use typed alternatives like interfaces, generics, or `unknown` with type guards instead.
+The use of the `any` type is strictly prohibited throughout the codebase. This rule eliminates type safety, hinders code maintenance, hides runtime errors, and nullifies TypeScript's benefits. Use typed alternatives like interfaces, generics, or `unknown` with type guards instead to maintain full compile-time type checking.
 
-### [Why avoid `any`?]()
+### When to use?
 
-- **Loses type safety**: TypeScript stops validating the code
-- **Hinders maintenance**: No autocomplete or property validation
-- **Hides errors**: Bugs only appear at runtime instead of compile-time
-- **Propagates uncertainty**: `any` spreads through code like a virus
-- **Nullifies TypeScript benefits**: Reverts to pure JavaScript
+Never use the `any` type. This section exists to document what NOT to do. There are no valid use cases for `any` in this codebase. Always use properly typed alternatives like interfaces, type aliases, generics, or `unknown` with type guards for type-safe code that maintains compile-time type checking and IDE autocomplete.
+
+### When NOT to use?
+
+Never use `any` in any situation including function parameters, return types, variable declarations, array types, generic constraints, type assertions, DTO properties, API responses, callbacks, React component props, or any other TypeScript type annotation. There are always better typed alternatives for every scenario.
+
+### Checklist
+
+- [ ] No `any` type in function parameters
+- [ ] No `any` type in return types
+- [ ] No `any` type in variable declarations
+- [ ] No `any[]` array types
+- [ ] No `as any` type assertions
+- [ ] Use interfaces or types instead of `any`
+- [ ] Use generics for reusable type-safe code
+- [ ] Use `unknown` with type guards for truly unknown data
+
+### Troubleshooting
+
+**Problem**: TypeScript complains about unknown types from external libraries
+**Solution**: Install @types package for the library, create custom .d.ts declaration file, or use `unknown` with proper type guards instead of resorting to `any`
+
+**Problem**: Complex type inference too difficult to express
+**Solution**: Break down complex types into smaller interfaces, use utility types like Pick/Omit/Partial, leverage generic constraints, or explicitly define the type structure
+
+### Best Practices
+
+- Use `unknown` instead of `any` when type is truly unknown
+- Create interfaces or type aliases for structured data
+- Leverage generics for reusable type-safe functions
+- Use union types for multiple possible types
+- Implement type guards to validate unknown data
+- Configure ESLint rule `@typescript-eslint/no-explicit-any: error`
 
 ### [❌ NEVER do this]()
 
@@ -119,35 +147,72 @@ If you're thinking of using `any`, you probably need one of these alternatives:
 
 ## [Rule #2: Always Use `strict: true` in tsconfig.json]()
 
-TypeScript strict mode must be enabled in all projects to enforce the highest level of type safety. This configuration activates critical checks including noImplicitAny, strictNullChecks, strictFunctionTypes, and others that prevent common type-related bugs and ensure code quality.
+TypeScript strict mode must be enabled in all projects to enforce the highest level of type safety. This configuration activates critical checks including noImplicitAny, strictNullChecks, strictFunctionTypes, and others that prevent common type-related bugs and ensure code quality through comprehensive compile-time validation.
 
-### [Mandatory configuration]()
+### When to use?
+
+Always use strict mode in all TypeScript projects without exception. Enable it from project initialization for new projects, and enable it incrementally for legacy projects. Strict mode is mandatory for all backend (NestJS) and frontend (React) code to ensure maximum type safety and catch potential bugs at compile time.
+
+### When NOT to use?
+
+There are no situations where strict mode should be disabled. While migrating legacy JavaScript to TypeScript, you may temporarily disable strict mode, but you must create a migration plan to enable it. Never disable strict mode permanently or for production code.
+
+### Example
 
 ```json
+// tsconfig.json - Mandatory strict configuration
 {
   "compilerOptions": {
     "strict": true,
     "noUnusedLocals": true,
     "noUnusedParameters": true,
     "noImplicitReturns": true,
-    "noFallthroughCasesInSwitch": true
+    "noFallthroughCasesInSwitch": true,
+    "noUncheckedIndexedAccess": true,
+    "exactOptionalPropertyTypes": true
   }
 }
 ```
 
-### [What `strict: true` enables]()
+### Checklist
 
-- `noImplicitAny`: Prohibits variables without defined type
-- `strictNullChecks`: Null and undefined must be handled explicitly
-- `strictFunctionTypes`: Strict validation of function types
-- `strictBindCallApply`: Validates bind, call and apply
-- `strictPropertyInitialization`: Class properties must be initialized
-- `noImplicitThis`: `this` must have explicit type
-- `alwaysStrict`: Adds 'use strict' to all files
+- [ ] `strict: true` enabled in tsconfig.json
+- [ ] `noUnusedLocals: true` configured
+- [ ] `noUnusedParameters: true` configured
+- [ ] `noImplicitReturns: true` configured
+- [ ] `noFallthroughCasesInSwitch: true` configured
+- [ ] No compiler errors after enabling strict mode
+- [ ] All implicit any errors resolved
+
+### Troubleshooting
+
+**Problem**: Hundreds of errors after enabling strict mode
+**Solution**: Enable strict flags incrementally one at a time, start with noImplicitAny, fix all errors before enabling next flag, use TypeScript's incremental compilation to speed up fixes
+
+**Problem**: Third-party library types causing strict mode errors
+**Solution**: Install latest @types packages, create custom type declarations in .d.ts files, use module augmentation to extend library types, or wrap library with typed facade
+
+### Best Practices
+
+- Enable strict mode from day one in new projects
+- Configure all additional strict flags beyond base strict mode
+- Use ESLint TypeScript rules to enforce strict patterns
+- Review and fix strict mode violations immediately
+- Never use @ts-ignore to bypass strict mode errors
+- Document any legitimate @ts-expect-error with explanation
+- Understand what strict mode enables (noImplicitAny, strictNullChecks, strictFunctionTypes, etc)
 
 ## [Rule #3: Explicit Typing in Interfaces and Types]()
 
-All interfaces, types, function parameters, and return values must have explicit type declarations. Avoid implicit typing and vague types like `string` for values with limited options. Use union types, specific interfaces, and explicit return type annotations for clarity and type safety.
+All interfaces, types, function parameters, and return values must have explicit type declarations. Avoid implicit typing and vague types like `string` for values with limited options. Use union types, specific interfaces, and explicit return type annotations for clarity and type safety preventing runtime errors through compile-time validation.
+
+### When to use?
+
+Always use explicit typing for all function parameters, return types, interface properties, type aliases, class properties, and variable declarations when type cannot be clearly inferred. Use union types for limited value sets, explicit return annotations for all functions, and specific interfaces instead of generic object types.
+
+### When NOT to use?
+
+Implicit typing is acceptable only when TypeScript can clearly infer the type from the value assignment (e.g., `const count = 5` clearly infers number). Avoid explicit typing for obvious primitives in variable initialization, but always be explicit for function parameters and returns.
 
 ### [❌ WRONG - Implicit or vague types]()
 
@@ -199,6 +264,33 @@ async function getUser(id: number): Promise<User> {
   return await api.get(`/users/${id}`);
 }
 ```
+
+### Checklist
+
+- [ ] All function parameters have explicit types
+- [ ] All function return types are explicitly declared
+- [ ] Interface properties have specific types, not vague types
+- [ ] Union types used for limited value sets instead of string
+- [ ] Async functions return Promise<T> with explicit type
+- [ ] No implicit any from missing type annotations
+- [ ] Avoid Function type, use specific function signatures
+
+### Troubleshooting
+
+**Problem**: TypeScript infers wrong type from complex expressions
+**Solution**: Add explicit type annotation to variable or return type, break complex expressions into smaller typed steps, use type assertions only when absolutely certain of the type
+
+**Problem**: Union type too complex or hard to maintain
+**Solution**: Extract union to named type alias, use enum for related constants, consider using discriminated unions with type field for better type narrowing
+
+### Best Practices
+
+- Always declare return types for functions, especially async functions
+- Use union types ('a' | 'b' | 'c') instead of generic string for limited values
+- Use specific event types (React.MouseEvent) instead of generic Event
+- Prefer interface over type for object shapes (better error messages)
+- Use type for unions, intersections, and utility types
+- Document complex types with JSDoc comments for better IDE hints
 
 ## [Rule #4: Use `unknown` Instead of `any` for Unknown Types]()
 

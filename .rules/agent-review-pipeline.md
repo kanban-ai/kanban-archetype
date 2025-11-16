@@ -6,6 +6,36 @@
 
 This section provides a high-level view of the two-stage review pipeline architecture, showing how developer-fullstack, feature-review and code-reviewer agents interact sequentially to validate both completeness and quality of implementations.
 
+### When to use?
+Apply this review pipeline for all feature implementations, bug fixes, and code changes before marking tasks as complete. Use Stage 1 (feature-review) to validate completeness against requirements, then Stage 2 (code-review) to validate quality against technical standards.
+
+### When NOT to use?
+Skip the formal review pipeline only for trivial documentation updates, configuration changes, or emergency hotfixes that require immediate deployment. However, these should still undergo review asynchronously after deployment.
+
+### Example
+See the Complete Flow diagram above showing the sequential progression from developer-fullstack through feature-review and code-review stages with feedback loops for corrections.
+
+### Checklist
+- [ ] All implementations go through Stage 1 (feature-review) first
+- [ ] Only complete implementations proceed to Stage 2 (code-review)
+- [ ] Incomplete or rejected implementations return to developer
+- [ ] Both reviews must approve before marking task complete
+- [ ] Review reports saved in ./todo/ folder with proper naming
+
+### Troubleshooting
+**Problem:** Unclear which stage to start at for bug fixes.
+**Solution:** Always start at developer-fullstack, then proceed to Stage 1 (feature-review).
+
+**Problem:** Code-review rejected but feature-review was complete.
+**Solution:** Return to developer to fix violations, then restart at Stage 1 to ensure fixes maintain completeness.
+
+### Best Practices
+- Never skip stages - both completeness and quality validation are essential
+- Keep review reports for audit trail and learning purposes
+- Document context clearly when delegating to reviewers
+- Use consistent naming for review reports (e.g., feature-review-products-api.md)
+- Ensure developers read and understand review feedback before fixing
+
 The SDD system uses a **two-stage review pipeline** to ensure that every implementation is complete and complies with the project's technical standards.
 
 ### Complete Flow
@@ -46,6 +76,36 @@ INCOMPLETE    COMPLETE
 ## [Agents Involved]()
 
 Detailed description of each specialized agent's role, responsibilities, tools, workflow steps and use cases within the review pipeline.
+
+### When to use?
+Reference this section when delegating tasks to understand which agent handles which responsibility. Use developer-fullstack for implementation, feature-review for completeness validation, and code-reviewer for quality validation.
+
+### When NOT to use?
+Don't consult this section for understanding the review flow itself - use the Overview and Review Pipeline sections instead. This section is purely for understanding individual agent capabilities and responsibilities.
+
+### Example
+See subsections below for detailed specifications of developer-fullstack, feature-review, and code-reviewer agents including their tools, workflows, and verdict criteria.
+
+### Checklist
+- [ ] Correct agent selected based on task type
+- [ ] Agent has access to required tools (MCP, file operations)
+- [ ] Agent location (.claude/agents/) known for reference
+- [ ] Agent workflow understood before delegation
+- [ ] Expected outputs and verdict criteria clear
+
+### Troubleshooting
+**Problem:** Agent doesn't have necessary tools for validation.
+**Solution:** Check agent specification - may need to use different agent or manual validation.
+
+**Problem:** Unclear which agent should handle a specific task.
+**Solution:** developer-fullstack for coding, feature-review for completeness, code-reviewer for quality.
+
+### Best Practices
+- Always specify context and files when delegating to agents
+- Provide task file path to feature-review for requirement comparison
+- List all modified files clearly for both review agents
+- Reference agent documentation files when in doubt about capabilities
+- Ensure agents have completed their workflow before reading reports
 
 ### [1. developer-fullstack]()
 
@@ -177,6 +237,38 @@ Detailed description of each specialized agent's role, responsibilities, tools, 
 
 Step-by-step breakdown of the complete review process from implementation through both stages of validation, including decision trees and feedback loops for corrections.
 
+### When to use?
+Follow this detailed flow for every feature implementation to ensure systematic progression through both validation stages. Use as a checklist when orchestrating reviews as Scrum Master to ensure no steps are skipped.
+
+### When NOT to use?
+Don't follow this flow for understanding individual agent responsibilities - use the Agents Involved section instead. This flow is specifically for understanding the complete end-to-end review process.
+
+### Example
+See subsections below for Stage 1 (Feature Review) and Stage 2 (Code Review) detailed processes including delegation steps, validation criteria, and decision trees.
+
+### Checklist
+- [ ] Stage 1 completed before proceeding to Stage 2
+- [ ] Feature-review report read and verdict identified
+- [ ] Incomplete implementations return to developer
+- [ ] Code-review only runs after feature-review approval
+- [ ] Rejected code returns to developer then restarts at Stage 1
+- [ ] Tasks marked complete only after both stages approve
+
+### Troubleshooting
+**Problem:** Code-review found issues, unsure whether to restart at Stage 1.
+**Solution:** Always restart at Stage 1 (feature-review) after developer fixes to ensure completeness maintained.
+
+**Problem:** Feature-review approved but developer made additional changes.
+**Solution:** Restart at Stage 1 to validate new changes haven't broken completeness.
+
+### Best Practices
+- Always read review reports before making decisions
+- Document context and files clearly when delegating
+- Add TODO items for incomplete or rejected implementations
+- Mark original task complete only after both reviews approve
+- Keep review reports for historical record and learning
+- Inform user of progress after each stage completion
+
 ### [Stage 1: Feature Review (Completeness)]()
 
 Validation phase that compares implemented code against original task requirements to ensure all specified endpoints, validations, fields and integrations are present and functional.
@@ -252,6 +344,36 @@ Quality validation phase that compares implemented code against project technica
 ## [Complete Execution Example]()
 
 Real-world walkthrough of implementing a Products CRUD feature through multiple rounds of development and review, demonstrating how the pipeline catches incompleteness and quality issues.
+
+### When to use?
+Reference this example when learning the review pipeline flow or when unclear about how to handle specific scenarios like incomplete implementations or code quality violations. Use as a training reference for new team members.
+
+### When NOT to use?
+Don't use this example as a template for actual tasks - it's illustrative only. Each real implementation will have different requirements and issues. Use the Review Pipeline section for actual workflow guidance.
+
+### Example
+See subsections below for Round 1 (incomplete implementation), Round 2 (complete but with quality issues), Round 3 (quality violations identified), and Round 4 (final approval) of a Products CRUD implementation.
+
+### Checklist
+- [ ] Example demonstrates complete flow through both review stages
+- [ ] Shows handling of incomplete implementation (Stage 1 rejection)
+- [ ] Shows handling of quality violations (Stage 2 rejection)
+- [ ] Demonstrates feedback loop back to developer
+- [ ] Shows successful completion after all fixes
+
+### Troubleshooting
+**Problem:** Real implementation doesn't match example flow exactly.
+**Solution:** This is normal - use the example for understanding patterns, not as exact template.
+
+**Problem:** Unsure how many rounds of review are normal.
+**Solution:** Varies by complexity - aim for completeness and quality on first attempt through thorough preparation.
+
+### Best Practices
+- Study this example to understand the review pipeline mechanics
+- Note how each review provides specific, actionable feedback
+- Observe how fixes can require restarting at Stage 1
+- Use this as reference for writing clear review reports
+- Learn from the progression: preparation reduces review rounds
 
 ### [Scenario: Implement Products CRUD]()
 
@@ -390,6 +512,36 @@ Code complies with technical standards!
 
 Essential guidelines and recommendations for each role in the pipeline to maximize effectiveness and maintain code quality standards throughout the development process.
 
+### When to use?
+Consult this section before starting any role in the pipeline (Scrum Master, Developer, or Reviewer) to ensure you follow established best practices and avoid common mistakes.
+
+### When NOT to use?
+Don't use this section for learning the review pipeline flow - use the Review Pipeline section instead. This section provides optimization tips, not core workflow instructions.
+
+### Example
+See subsections below for specific best practices for Scrum Master, Developers, and Reviewers with actionable guidelines for each role.
+
+### Checklist
+- [ ] Role-specific best practices understood before starting work
+- [ ] Scrum Master follows complete pipeline without skipping stages
+- [ ] Developers read complete task and consult .rules before implementing
+- [ ] Reviewers provide specific, actionable feedback with examples
+- [ ] All roles maintain clear communication and documentation
+
+### Troubleshooting
+**Problem:** Reviews keep finding same types of issues repeatedly.
+**Solution:** Developers should study .rules more thoroughly before implementation and learn from past review feedback.
+
+**Problem:** Review feedback is vague and difficult to action.
+**Solution:** Reviewers must cite specific rules, provide code examples, and be explicit about what needs to change.
+
+### Best Practices
+- Always consult role-specific guidelines before starting work
+- Learn from past reviews to improve future implementations
+- Maintain clear communication throughout the pipeline
+- Document decisions and rationale in review reports
+- Continuously update and refine best practices based on experience
+
 ### [For Scrum Master (/execute command)]()
 
 Guidelines for orchestrating the review pipeline, delegating tasks correctly, managing feedback loops and maintaining TODO list accuracy.
@@ -441,6 +593,37 @@ Guidance for both feature-review and code-review agents on how to provide action
 
 Documentation standards for review reports including location, naming conventions and context format examples to maintain consistency across all reviews.
 
+### When to use?
+Reference this section when saving review reports to ensure consistent naming and location. Use the context format guidelines when delegating to reviewers to specify report names.
+
+### When NOT to use?
+Don't use this section for understanding review content requirements - focus on agent-specific documentation for that. This section is purely about file naming and organization.
+
+### Example
+See examples below showing proper context format like "products-api", "user-authentication", "dashboard-analytics" using kebab-case to describe functionality.
+
+### Checklist
+- [ ] Review reports saved in ./todo/ directory
+- [ ] Filenames follow pattern: feature-review-<context>.md or code-review-<context>.md
+- [ ] Context uses kebab-case format
+- [ ] Context clearly describes the functionality being reviewed
+- [ ] Reports retained for audit trail and learning
+
+### Troubleshooting
+**Problem:** Difficulty finding review reports for specific features.
+**Solution:** Use descriptive context names that clearly identify the feature (e.g., "payment-integration" not "task-123").
+
+**Problem:** Review report naming inconsistent across team.
+**Solution:** Always use kebab-case and follow the pattern: [review-type]-[context].md
+
+### Best Practices
+- Use descriptive context names that identify the feature, not task numbers
+- Keep context concise but clear (2-4 words maximum)
+- Maintain consistent kebab-case formatting
+- Save all reports in ./todo/ for centralized access
+- Don't delete reports - they serve as audit trail and learning resource
+- Reference past reports when implementing similar features
+
 All reports are saved in `./todo/`:
 
 - `./todo/feature-review-<context>.md` - Completeness review
@@ -459,6 +642,36 @@ All reports are saved in `./todo/`:
 ## [Summary]()
 
 Quick reference table showing the complete pipeline flow with all possible outcomes and transitions between stages for rapid understanding of the process.
+
+### When to use?
+Use this summary table as a quick reference when making decisions about next steps during the review pipeline. Consult when unsure which stage to proceed to based on review results.
+
+### When NOT to use?
+Don't use this summary for learning the detailed review process - read the complete sections above first. This is a reference tool for those already familiar with the pipeline.
+
+### Example
+See table below mapping each stage, agent, validation type, possible results, and corresponding next steps for the complete review pipeline flow.
+
+### Checklist
+- [ ] Current stage identified in table
+- [ ] Review result/verdict determined
+- [ ] Next step clearly identified from table
+- [ ] Transition logic understood (when to loop back vs advance)
+- [ ] Final goal: both completeness and compliance achieved
+
+### Troubleshooting
+**Problem:** Table shows multiple possible next steps for current situation.
+**Solution:** Check the Result column carefully - next step depends on specific verdict (Complete/Incomplete, Approved/Rejected).
+
+**Problem:** Unsure whether to loop back to Stage 1 or continue to Stage 2.
+**Solution:** Only advance to Stage 2 if feature-review verdict is "Complete" (✅). All other cases return to developer.
+
+### Best Practices
+- Bookmark this summary for quick reference during reviews
+- Ensure you understand the detailed sections before relying on summary
+- Always verify verdict from actual review report, not assumptions
+- Remember the final goal: both reviews must approve
+- Use the summary to explain pipeline flow to stakeholders
 
 | Stage | Agent | Validates | Result | Next Step |
 |-------|-------|-----------|--------|-----------|

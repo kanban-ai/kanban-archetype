@@ -1,35 +1,27 @@
 # How to Create an API in the Backend
 
-> Step-by-step guide to create a complete REST API in NestJS with TypeORM entities, DTOs, services, controllers, and migrations.
+<document description: Step-by-step guide to create a complete REST API in NestJS with TypeORM entities, DTOs, services, controllers, and migrations following project standards.>
 
-## [Overview]()
+## [NestJS Resource Generation with CLI]()
 
-This section presents the complete workflow for creating a REST API in NestJS, from generating resources with CLI to implementing entities, DTOs, services, controllers and migrations following project standards.
+<section description: Using NestJS CLI to automatically generate complete module structure including controllers, services, entities, and DTOs saves development time and ensures framework convention compliance across the codebase.>
 
-This guide shows how to create a complete CRUD following project standards, including:
-- NestJS Module
-- Controller (HTTP routes) **with v1 versioning**
-- Service (business logic)
-- Entity (data model)
-- DTOs (validation)
-- Swagger Documentation
+### When to use?
 
-**IMPORTANT**: All APIs must start with `/v1/` versioning from the beginning. See [How to version API](./how-to-version-api-backend.md) to understand why.
+Use NestJS CLI resource generation when starting a new module or feature that requires standard CRUD operations. This approach is ideal for quickly scaffolding the basic structure of a REST API endpoint with all necessary files organized according to NestJS conventions.
 
-## [Step 1: Generate complete Resource using NestJS CLI]()
+### When NOT to use?
 
-This step shows how to use the NestJS CLI to automatically generate the entire file structure needed for a module, saving time and following framework conventions.
+Avoid using CLI generation when creating custom architectures that deviate from standard CRUD patterns, implementing specialized services without HTTP endpoints, or when the module requires complex custom structure that doesn't fit the generated template.
 
-The NestJS CLI automatically generates all the necessary structure:
+### Example
 
 ```bash
 cd back
 nest g resource module-name
 ```
 
-### Interactive options:
-
-During CLI command execution, you will be asked about module configurations. Choose the appropriate options to create a REST API with CRUD endpoints.
+**Interactive options:**
 
 1. **What transport layer?**
    - Select: `REST API`
@@ -37,7 +29,7 @@ During CLI command execution, you will be asked about module configurations. Cho
 2. **Generate CRUD entry points?**
    - Select: `Yes`
 
-This will create:
+This creates:
 ```
 src/modules/module-name/
   module-name.module.ts
@@ -50,9 +42,42 @@ src/modules/module-name/
     update-module-name.dto.ts
 ```
 
-## [Step 2: Create TypeORM Entity as data model]()
+### Checklist
 
-This step details the creation of the TypeORM entity that represents the database table, defining structure, column types, and relationships.
+- [ ] NestJS CLI installed globally or in project
+- [ ] Run command from backend root directory
+- [ ] Select REST API transport layer
+- [ ] Confirm CRUD entry point generation
+- [ ] Verify all files created successfully
+
+### Troubleshooting
+
+**CLI command not found**: Install NestJS CLI with `npm install -g @nestjs/cli` or use `npx @nestjs/cli` instead.
+
+**Module already exists**: Choose different name or delete existing module first to avoid conflicts.
+
+**Permission errors**: Run command with appropriate permissions or check directory write access.
+
+### Best Practices
+
+- Use descriptive, kebab-case module names that reflect business domain
+- Review generated code before implementing business logic
+- Remove unused files if certain operations aren't needed
+- Follow single responsibility principle when naming modules
+
+## [TypeORM Entity Definition as Data Model]()
+
+<section description: TypeORM entities define database table structure through TypeScript decorators, specifying columns, data types, relationships, and constraints while providing type-safe database access and automatic schema synchronization capabilities.>
+
+### When to use?
+
+Create TypeORM entities when defining new database tables or modifying existing table structures. Entities are the source of truth for your data model and should always extend SuperEntity to inherit standard fields like id, created_at, and updated_at.
+
+### When NOT to use?
+
+Avoid creating entities for temporary data structures, API response objects, view models, or database views that don't represent persistent tables. Use DTOs for API data transfer and interfaces for non-persistent type definitions.
+
+### Example
 
 **File**: `entities/module-name.entity.ts`
 
@@ -82,24 +107,48 @@ export class ModuleName extends SuperEntity {
 }
 ```
 
-### Important tips:
+### Checklist
 
-This section lists essential best practices when creating TypeORM entities, ensuring consistency and avoiding common errors in the project.
+- [ ] Entity extends SuperEntity
+- [ ] Table name uses snake_case convention
+- [ ] Column names use snake_case with explicit name attribute
+- [ ] Relationships use @JoinColumn with explicit name
+- [ ] Foreign key column defined separately for query efficiency
+- [ ] Data types match database column types
+- [ ] Nullable columns marked with nullable: true
 
-- **Always extend `SuperEntity`**: Includes id, created_at, updated_at
-- **Use snake_case for columns**: PostgreSQL convention
-- **Specify `name` in @JoinColumn**: Explicit control
-- **Add separate `userId`**: Facilitates queries
+### Troubleshooting
 
-## [Step 3: Create DTOs for API data validation]()
+**Synchronization errors**: Ensure database table exists via migration before using entity. TypeORM sync should be disabled in production.
 
-This step explains creating DTOs (Data Transfer Objects) using class-validator decorators to ensure data integrity received in requests.
+**Circular dependency errors**: Use lazy relations with arrow functions `() => RelatedEntity` to resolve circular import issues.
 
-### Create DTO
+**Foreign key constraint failures**: Verify referenced table exists and has correct primary key before adding relationship.
 
-The Create DTO defines the structure and validations for creating new records, specifying required fields, types, and business rules.
+### Best Practices
 
-**File**: `dto/create-module-name.dto.ts`
+- Always extend SuperEntity for id, created_at, updated_at fields
+- Use snake_case for database column names (PostgreSQL convention)
+- Specify explicit names in @JoinColumn for relationship clarity
+- Add separate userId columns to facilitate efficient queries
+- Use appropriate data types matching database capabilities
+- Document complex relationships with inline comments
+
+## [Data Transfer Objects with Validation]()
+
+<section description: DTOs define API request/response structure with class-validator decorators ensuring data integrity through automatic validation. They separate external API contracts from internal entity representations protecting database models from direct exposure.>
+
+### When to use?
+
+Create DTOs for all API endpoints accepting user input to validate data format, types, and constraints before processing. Use separate DTOs for create and update operations, with update DTOs typically extending create DTOs using PartialType to make fields optional.
+
+### When NOT to use?
+
+Skip DTOs for internal service-to-service communication, database query results, or when response data exactly matches entity structure without transformation. Don't create DTOs for GET endpoints that simply return entity data without modification.
+
+### Example
+
+**Create DTO** (`dto/create-module-name.dto.ts`):
 
 ```typescript
 import { IsString, IsNotEmpty, IsBoolean, IsOptional, MaxLength } from 'class-validator';
@@ -135,11 +184,7 @@ export class CreateModuleNameDto {
 }
 ```
 
-### Update DTO
-
-The Update DTO inherits from Create DTO making all fields optional, allowing partial updates of existing records.
-
-**File**: `dto/update-module-name.dto.ts`
+**Update DTO** (`dto/update-module-name.dto.ts`):
 
 ```typescript
 import { PartialType } from '@nestjs/swagger';
@@ -148,11 +193,46 @@ import { CreateModuleNameDto } from './create-module-name.dto';
 export class UpdateModuleNameDto extends PartialType(CreateModuleNameDto) {}
 ```
 
-> **Note**: `PartialType` makes all fields optional automatically.
+### Checklist
 
-## [Step 4: Implement Service with business logic and CRUD]()
+- [ ] All properties have validation decorators
+- [ ] Swagger @ApiProperty decorators added for documentation
+- [ ] String fields have MaxLength constraints
+- [ ] Required fields use @IsNotEmpty
+- [ ] Optional fields marked with ? and @IsOptional
+- [ ] Update DTO uses PartialType from @nestjs/swagger
+- [ ] Examples provided in ApiProperty decorators
 
-This step shows how to implement the Service containing all business logic and CRUD operations, injecting the TypeORM repository for database access.
+### Troubleshooting
+
+**Validation not triggering**: Ensure ValidationPipe is enabled globally in main.ts with `app.useGlobalPipes(new ValidationPipe())`.
+
+**Type mismatch errors**: Verify decorator types match property types and imported from correct packages.
+
+**Swagger not showing DTOs**: Import from @nestjs/swagger not @nestjs/mapped-types for PartialType in update DTOs.
+
+### Best Practices
+
+- Combine class-validator and Swagger decorators for validation and documentation
+- Use strict validation decorators to prevent malformed data
+- Provide clear examples in ApiProperty for API consumers
+- Keep DTOs focused on single operation context
+- Use PartialType for update DTOs to inherit validations
+- Validate nested objects with @ValidateNested and @Type decorators
+
+## [Service Implementation with Business Logic]()
+
+<section description: Services contain business logic, CRUD operations, and data access orchestration using injected TypeORM repositories. They implement security through user isolation, handle exceptions appropriately, and return processed data to controllers.>
+
+### When to use?
+
+Implement services for all business logic, data manipulation, and database operations. Services should be the single source of truth for how data is created, read, updated, and deleted ensuring consistent validation and access control across all application entry points.
+
+### When NOT to use?
+
+Avoid putting HTTP-specific logic, request/response transformation, or authentication/authorization logic in services. These concerns belong in controllers, guards, or interceptors. Don't create services for simple data pass-through without business logic.
+
+### Example
 
 **File**: `module-name.service.ts`
 
@@ -201,34 +281,58 @@ export class ModuleNameService {
 
   async update(id: number, updateDto: UpdateModuleNameDto, userId: number) {
     const item = await this.findOne(id, userId);
-
     Object.assign(item, updateDto);
-
     return await this.repository.save(item);
   }
 
   async remove(id: number, userId: number) {
     const item = await this.findOne(id, userId);
-
     await this.repository.remove(item);
-
     return { message: 'Item removed successfully' };
   }
 }
 ```
 
-### Service best practices:
+### Checklist
 
-List of essential best practices when implementing services, focusing on security, validation, and consistent data return.
+- [ ] Service decorated with @Injectable()
+- [ ] Repository injected with @InjectRepository
+- [ ] userId validation in all data operations
+- [ ] findOne called before update/delete operations
+- [ ] Appropriate exceptions thrown (NotFoundException, ForbiddenException)
+- [ ] Methods return updated entities for frontend use
+- [ ] Async/await used for all database operations
 
-1. **Always validate userId**: Ensures data isolation
-2. **Use `findOne` before update/delete**: Validates permissions
-3. **Throw appropriate exceptions**: NotFoundException, ForbiddenException
-4. **Always return the updated entity**: Facilitates frontend work
+### Troubleshooting
 
-## [Step 5: Implement Controller with versioned REST endpoints]()
+**Dependency injection errors**: Ensure entity is registered in TypeOrmModule.forFeature in module file.
 
-This step details the Controller implementation defining versioned HTTP routes, Swagger decorators, and Service integration.
+**Transaction errors**: Wrap multiple operations in queryRunner.startTransaction() for atomicity when needed.
+
+**Performance issues**: Add indexes via migrations for frequently queried fields and use select to limit returned columns.
+
+### Best Practices
+
+- Always validate userId to ensure data isolation between users
+- Use findOne before update/delete to validate permissions
+- Throw appropriate HTTP exceptions (NotFoundException, ForbiddenException)
+- Return updated entities after save operations for frontend state management
+- Use TypeORM's built-in methods (find, findOne, save) for standard operations
+- Implement pagination for list operations handling large datasets
+
+## [Controller with Versioned REST Endpoints]()
+
+<section description: Controllers define HTTP route handlers with versioning, Swagger documentation, and request/response transformation. They delegate business logic to services while handling HTTP-specific concerns like status codes, parameter parsing, and authentication context access.>
+
+### When to use?
+
+Create controllers for every module exposing REST API endpoints. Controllers should handle HTTP request routing, parameter extraction, DTO validation triggers, and response formatting while delegating all business logic to injected services for separation of concerns.
+
+### When NOT to use?
+
+Don't put business logic, database access, or complex calculations in controllers. Avoid creating controllers for internal modules, background jobs, or event handlers that don't require HTTP endpoints. Use services or specialized handlers instead.
+
+### Example
 
 **File**: `module-name.controller.ts`
 
@@ -294,20 +398,47 @@ export class ModuleNameController {
 }
 ```
 
-### Controller best practices:
+### Checklist
 
-Fundamental recommendations for robust controllers, including automatic documentation, type validation, and correct use of HTTP verbs.
+- [ ] Controller uses version: '1' in decorator
+- [ ] Swagger decorators added (@ApiTags, @ApiOperation)
+- [ ] Bearer authentication documented with @ApiBearerAuth
+- [ ] ParseIntPipe used for ID parameter validation
+- [ ] Request object injected to access authenticated user
+- [ ] Proper HTTP verbs (POST, GET, PATCH, DELETE) used
+- [ ] RESTful route structure followed
 
-1. **Use Swagger decorators**: Documents automatically
-2. **Use `ParseIntPipe`**: Validates and converts parameters
-3. **Inject `@Request() req`**: Accesses authenticated user data
-4. **Use correct HTTP verbs**: POST, GET, PATCH, DELETE
-5. **Organize RESTful routes**: `/resource`, `/resource/:id`
-6. **Always use versioning**: `@Controller({ path: 'resource', version: '1' })`
+### Troubleshooting
 
-## [Step 6: Configure NestJS Module with dependencies]()
+**Versioning not working**: Ensure version is enabled globally in main.ts with `app.enableVersioning({ type: VersioningType.URI })`.
 
-This step explains how to configure the NestJS module by registering controllers, providers, and importing necessary dependencies like TypeORM.
+**Request user undefined**: Verify JWT authentication guard is applied globally or on controller/route level.
+
+**Swagger not displaying**: Check that DocumentBuilder configuration includes the controller's API tags.
+
+### Best Practices
+
+- Use Swagger decorators for automatic API documentation
+- Apply ParseIntPipe for automatic ID validation and conversion
+- Inject @Request() to access authenticated user context
+- Use correct HTTP verbs following REST conventions
+- Structure routes RESTfully: /resource and /resource/:id
+- Always use versioning from the start: version: '1'
+- Document all possible response status codes
+
+## [NestJS Module Configuration and Registration]()
+
+<section description: NestJS modules organize application structure by grouping related controllers, services, and dependencies. Module registration with TypeORM establishes repository availability and enables dependency injection throughout the module scope while exports allow cross-module service sharing.>
+
+### When to use?
+
+Configure modules when creating new features or organizing related functionality. Register TypeORM entities in imports, declare controllers and providers, and export services that need to be used by other modules ensuring proper dependency injection throughout the application.
+
+### When NOT to use?
+
+Avoid creating modules for single utilities, helpers, or when functionality naturally fits into an existing module. Don't over-modularize by creating too many small modules that increase complexity without providing organizational benefits.
+
+### Example
 
 **File**: `module-name.module.ts`
 
@@ -329,11 +460,7 @@ import { ModuleName } from './entities/module-name.entity';
 export class ModuleNameModule {}
 ```
 
-## [Step 7: Register new module in root AppModule]()
-
-This step shows how to import the newly created module into the AppModule to make its functionality available in the application.
-
-**File**: `src/app.module.ts`
+**Register in AppModule** (`src/app.module.ts`):
 
 ```typescript
 import { ModuleNameModule } from './modules/module-name/module-name.module';
@@ -347,15 +474,51 @@ import { ModuleNameModule } from './modules/module-name/module-name.module';
 export class AppModule {}
 ```
 
-## [Step 8: Create TypeORM Migration for database schema]()
+### Checklist
 
-This step teaches how to create migrations for database schema versioning, allowing tables to be created, modified, or deleted in a controlled manner.
+- [ ] TypeOrmModule.forFeature includes all entities
+- [ ] Controllers array includes all module controllers
+- [ ] Providers array includes all services
+- [ ] Exports array includes services needed by other modules
+- [ ] Module imported in AppModule
+- [ ] No circular dependencies between modules
+
+### Troubleshooting
+
+**Repository not found**: Ensure entity is included in TypeOrmModule.forFeature array in module imports.
+
+**Circular dependency errors**: Restructure module relationships or use forwardRef to resolve circular imports.
+
+**Module not loaded**: Verify module is imported in AppModule imports array.
+
+### Best Practices
+
+- Register all entities the module uses in TypeOrmModule.forFeature
+- Only export services that other modules need to import
+- Keep module imports organized and grouped logically
+- Avoid circular dependencies between modules
+- Use feature modules to organize domain-specific functionality
+- Import shared modules when needed for cross-cutting concerns
+
+## [Database Migration Creation for Schema Changes]()
+
+<section description: TypeORM migrations provide version-controlled database schema evolution using pure SQL. They ensure consistent schema across environments, enable rollback capabilities, and maintain change history while supporting automated deployment and team synchronization through sequential timestamped files.>
+
+### When to use?
+
+Create migrations for all database schema changes including new tables, column modifications, index additions, and constraint updates. Migrations ensure database changes are version-controlled, reversible, and can be deployed consistently across development, staging, and production environments.
+
+### When NOT to use?
+
+Avoid migrations for temporary development changes, data seeding that varies by environment, or experimental schema modifications during early prototyping. Don't use migrations for data-only updates that should be handled by application logic or separate data scripts.
+
+### Example
 
 ```bash
 npm run typeorm -- migration:create src/database/migrations/CreateModuleNameTable
 ```
 
-Edit the migration to use **pure SQL**:
+**Edit migration to use pure SQL**:
 
 ```typescript
 import { MigrationInterface, QueryRunner } from 'typeorm';
@@ -393,27 +556,65 @@ export class CreateModuleNameTable1234567890000 implements MigrationInterface {
 }
 ```
 
-Run the migration:
+**Run migration**:
 
 ```bash
 npm run typeorm -- migration:run
 ```
 
-## [Step 9: Test REST API using Swagger or HTTP tools]()
+### Checklist
 
-This final step shows how to test the created endpoints using Swagger UI interface or command-line tools like curl.
+- [ ] Migration created with descriptive name
+- [ ] Up method implements schema changes
+- [ ] Down method reverts changes completely
+- [ ] Pure SQL used (not TypeORM schema builder)
+- [ ] Foreign key constraints defined
+- [ ] Indexes created for performance
+- [ ] Migration tested in development first
+- [ ] Migration executed successfully
 
-### Via Swagger
+### Troubleshooting
 
-Swagger UI provides an interactive visual interface to test all endpoints documented with @Api decorators.
+**Migration not detected**: Verify migrations path in database config matches actual file location.
+
+**Already executed error**: Check migration status with `npm run typeorm -- migration:show` before re-running.
+
+**Failed migration**: Revert with `npm run typeorm -- migration:revert`, fix the SQL, and run again.
+
+### Best Practices
+
+- Use pure SQL through queryRunner.query for explicit control
+- Always implement both up and down methods
+- Test migrations in development before production deployment
+- Use descriptive names indicating what changed
+- Create indexes for foreign keys and frequently queried columns
+- One responsibility per migration file
+- Document complex migrations with comments
+
+## [API Testing with Swagger and HTTP Tools]()
+
+<section description: Testing REST APIs using Swagger UI interactive documentation or command-line curl requests validates endpoint functionality, authentication, request/response formats, and error handling ensuring API contracts are correctly implemented and documented.>
+
+### When to use?
+
+Test APIs after implementation, before deployment, and when debugging issues. Use Swagger UI for interactive testing during development and curl for automated testing, CI/CD pipelines, or when documenting API usage for consumers.
+
+### When NOT to use?
+
+Don't rely solely on manual testing for production validation. Supplement with automated unit tests, integration tests, and end-to-end tests. Avoid using production databases for testing to prevent data corruption or accidental operations.
+
+### Example
+
+**Via Swagger UI**:
 
 1. Access: `http://localhost:3000/api/docs`
 2. Click "Authorize" and insert JWT token
-3. Test the created endpoints
+3. Expand endpoint section
+4. Click "Try it out"
+5. Fill request body/parameters
+6. Execute and view response
 
-### Via curl
-
-Examples of curl commands to test each CRUD operation of the API via command line, useful for automation and scripts.
+**Via curl**:
 
 ```bash
 # Create
@@ -441,13 +642,48 @@ curl -X DELETE http://localhost:3000/api/v1/module-name/1 \
   -H "Authorization: Bearer YOUR_TOKEN"
 ```
 
-## [Advanced Features for REST APIs in NestJS]()
+### Checklist
 
-This section presents advanced functionalities to make your APIs more robust, including pagination, filters, and relationship handling.
+- [ ] Swagger UI accessible at /api/docs
+- [ ] JWT authentication working via Authorize button
+- [ ] All endpoints visible in Swagger documentation
+- [ ] Request bodies validate according to DTOs
+- [ ] Response formats match expected structure
+- [ ] Error responses return appropriate status codes
+- [ ] curl commands tested for each operation
 
-### Pagination
+### Troubleshooting
 
-Implementation of pagination to list large volumes of data efficiently, returning navigation metadata.
+**Swagger not accessible**: Verify Swagger module configured in main.ts and app is running.
+
+**Authentication fails**: Check JWT token is valid, not expired, and includes Bearer prefix.
+
+**404 errors**: Verify route versioning matches (v1) and controller path is correct.
+
+### Best Practices
+
+- Test all CRUD operations in sequence (Create, Read, Update, Delete)
+- Verify authentication and authorization work correctly
+- Test edge cases like invalid IDs, missing fields, and unauthorized access
+- Check that error messages are clear and helpful
+- Validate response data types match API documentation
+- Test pagination, filtering, and sorting when implemented
+
+## [Advanced REST API Features]()
+
+<section description: Advanced API functionality including pagination for large datasets, filtering and search capabilities, and relationship loading strategies enhance API usability, performance, and flexibility while maintaining consistent patterns and efficient database queries.>
+
+### When to use?
+
+Implement pagination when endpoints return large datasets to improve performance and user experience. Add filtering and search when users need to narrow results by specific criteria. Include relationship loading when frontend needs related entity data to avoid multiple requests.
+
+### When NOT to use?
+
+Skip pagination for endpoints that always return small result sets (under 50 items). Avoid complex filtering for simple use cases where standard queries suffice. Don't eager load relationships when related data isn't needed to reduce query overhead and response size.
+
+### Example
+
+**Pagination**:
 
 ```typescript
 // Service
@@ -479,7 +715,7 @@ findAll(
 }
 ```
 
-### Filters and Search
+**Filters and Search**:
 
 ```typescript
 // DTO
@@ -509,14 +745,13 @@ async findAll(userId: number, filters: FilterModuleNameDto) {
 }
 ```
 
-### Relationships
+**Relationships**:
 
 ```typescript
-// Load with relationships
 async findOne(id: number, userId: number) {
   const item = await this.repository.findOne({
     where: { id, userId },
-    relations: ['user', 'otherRelationship'],
+    relations: ['user', 'category'],
   });
 
   if (!item) {
@@ -527,39 +762,112 @@ async findOne(id: number, userId: number) {
 }
 ```
 
-## [Complete REST API Implementation Checklist]()
+### Checklist
 
-- [ ] Resource generated with `nest g resource`
-- [ ] Entity created extending SuperEntity
-- [ ] DTOs created with validation
-- [ ] Service implemented with complete CRUD
-- [ ] Controller implemented with REST routes **and v1 versioning**
-- [ ] Module configured and imported in AppModule
-- [ ] Migration created and executed
-- [ ] Swagger documentation added
-- [ ] userId validation in all operations
-- [ ] Versioning configured (see [How to version API](./how-to-version-api-backend.md))
+- [ ] Pagination returns metadata (total, page, totalPages)
+- [ ] Default page size set to reasonable value
+- [ ] Filter DTO created with validation
+- [ ] Search uses LIKE operator for partial matching
+- [ ] Relationships loaded only when needed
+- [ ] Query performance tested with large datasets
+- [ ] API documentation includes pagination parameters
 
-## [File and class naming pattern in NestJS]()
+### Troubleshooting
 
-This section defines naming conventions for files, classes, and tables in the project following NestJS and TypeORM best practices.
+**Poor pagination performance**: Add database indexes on sorting columns and ensure proper query optimization.
+
+**Filter not working**: Verify TypeORM's Like operator imported from 'typeorm' and syntax is correct.
+
+**Relationship errors**: Check that relationship names match entity definitions and referenced entities exist.
+
+### Best Practices
+
+- Return pagination metadata for client-side pagination controls
+- Provide sensible defaults for page size (10-25 items)
+- Use separate DTO for filter parameters with validation
+- Implement search with case-insensitive LIKE queries
+- Load relationships selectively to optimize performance
+- Document advanced features clearly in Swagger
+
+## [Naming Conventions for NestJS Resources]()
+
+<section description: Consistent naming patterns across modules, entities, tables, DTOs, services, and controllers ensure code readability, maintainability, and alignment with NestJS and TypeORM conventions while facilitating team collaboration and automated tooling integration.>
+
+### When to use?
+
+Follow these naming conventions for all new resources, files, classes, and database objects. Apply these patterns consistently across the entire codebase to maintain uniformity and make code navigation intuitive for all team members.
+
+### When NOT to use?
+
+Maintain consistency with existing patterns when working on legacy code that uses different conventions. Don't retroactively rename existing resources unless performing systematic refactoring. Prioritize consistency within a module over strict adherence to new conventions.
+
+### Example
 
 | Type | Pattern | Rules | Example |
 |------|---------|-------|---------|
-| Module | kebab-case | - | `product-category` |
+| Module | kebab-case | Descriptive name | `product-category` |
 | Entity | PascalCase | Singular | `ProductCategory` |
 | Table | snake_case | Lowercase + Plural | `product_categories` |
-| DTO | PascalCase | - | `CreateProductCategoryDto` |
-| Service | PascalCase | - | `ProductCategoryService` |
-| Controller | PascalCase | - | `ProductCategoryController` |
+| DTO | PascalCase | Descriptive + Dto suffix | `CreateProductCategoryDto` |
+| Service | PascalCase | Name + Service suffix | `ProductCategoryService` |
+| Controller | PascalCase | Name + Controller suffix | `ProductCategoryController` |
 
 **Important**:
 - **Entity**: Always singular in PascalCase (e.g., `Product`, `User`)
 - **Table**: Always plural in lowercase snake_case (e.g., `products`, `users`)
 
-## [Official NestJS and TypeORM documentation references]()
+### Checklist
+
+- [ ] Module names use kebab-case
+- [ ] Entity classes use singular PascalCase
+- [ ] Database tables use plural snake_case
+- [ ] DTOs include operation prefix and Dto suffix
+- [ ] Services include Service suffix
+- [ ] Controllers include Controller suffix
+- [ ] File names match class names in kebab-case
+
+### Troubleshooting
+
+**NestJS CLI generates wrong names**: Manually rename files and classes after generation to match conventions.
+
+**TypeORM sync issues**: Ensure entity @Entity decorator specifies correct snake_case table name.
+
+**Import errors**: Verify file names match exported class names when converted to kebab-case.
+
+### Best Practices
+
+- Use kebab-case for all file and folder names
+- Keep entity class names singular and table names plural
+- Always use snake_case for database identifiers
+- Include descriptive prefixes in DTOs (Create, Update, Filter)
+- Maintain consistent suffixes (Service, Controller, Module)
+- Follow TypeScript naming conventions for classes and interfaces
+
+## [Complete API Implementation Checklist]()
+
+<section description: Comprehensive verification checklist ensuring all components of REST API implementation are complete including code generation, entity definition, DTO validation, service logic, controller routing, module configuration, database migration, documentation, security, and versioning.>
+
+- [ ] Resource generated with `nest g resource`
+- [ ] Entity created extending SuperEntity
+- [ ] DTOs created with class-validator decorators
+- [ ] Service implemented with complete CRUD operations
+- [ ] Controller implemented with REST routes and v1 versioning
+- [ ] Module configured with TypeORM and registered in AppModule
+- [ ] Migration created and executed successfully
+- [ ] Swagger documentation added with @Api decorators
+- [ ] userId validation implemented in all operations
+- [ ] API versioning configured (see [How to version API](./how-to-version-api-backend.md))
+- [ ] All endpoints tested via Swagger or curl
+- [ ] Error handling implemented with appropriate exceptions
+
+## [Official Documentation References]()
+
+<section description: Official framework and library documentation providing comprehensive reference for NestJS architecture patterns, TypeORM entity management, validation decorators, and advanced features beyond this guide's scope for deeper understanding and troubleshooting.>
 
 - [NestJS Controllers](https://docs.nestjs.com/controllers)
 - [NestJS Providers](https://docs.nestjs.com/providers)
+- [NestJS Modules](https://docs.nestjs.com/modules)
 - [TypeORM Entities](https://typeorm.io/entities)
+- [TypeORM Relations](https://typeorm.io/relations)
 - [class-validator Decorators](https://github.com/typestack/class-validator)
+- [Swagger Documentation](https://docs.nestjs.com/openapi/introduction)

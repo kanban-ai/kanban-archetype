@@ -133,6 +133,40 @@ export class ProductService {
 
 Proven design patterns for structuring scalable and maintainable code in NestJS applications including Use-Case Pattern for business logic, Repository Pattern for data access, DTO Pattern for validation, Strategy Pattern for multiple implementations, and Factory Pattern for object creation. These patterns provide clear separation of concerns and facilitate code reuse.
 
+### When to use?
+Apply these implementation patterns when building complex business features that require clear separation between business logic, data access, and validation. Use Use-Cases for complex multi-step operations, Repository for data access abstraction, DTOs for input validation, Strategy for switchable algorithms, and Factory for complex object creation.
+
+### When NOT to use?
+Avoid over-engineering simple CRUD operations that don't require complex business logic. For straightforward database reads/writes without processing, direct repository usage in services is acceptable. Don't introduce patterns that add unnecessary complexity without clear benefit.
+
+### Example
+See subsections below for specific pattern examples including Use-Case, Repository, DTO, Strategy, and Factory patterns with complete code demonstrations.
+
+### Checklist
+- [ ] Use-Cases implemented for complex business rules with multiple transactions
+- [ ] Repository pattern used for all data access operations
+- [ ] DTOs defined with class-validator decorators for all inputs
+- [ ] Strategy pattern applied when multiple algorithm implementations exist
+- [ ] Factory pattern used for complex object instantiation logic
+
+### Troubleshooting
+**Problem:** Business logic scattered across controllers and services.
+**Solution:** Extract complex operations into dedicated Use-Case classes with clear interfaces.
+
+**Problem:** Difficulty switching between different implementations.
+**Solution:** Apply Strategy pattern with interface-based dependency injection.
+
+**Problem:** Complex object creation logic cluttering business code.
+**Solution:** Move creation logic into dedicated Factory classes.
+
+### Best Practices
+- Prefer Use-Cases over fat services for complex operations
+- Keep Use-Cases thin with single responsibility (1 interface per use-case)
+- Always validate inputs with DTOs before processing
+- Use TypeORM repositories instead of custom data access code
+- Document pattern usage in code comments for clarity
+- Reference ./how-to-create-use-case-backend.md for Use-Case best practices
+
 ### [1. Use-Case Pattern (Main Pattern for Business Rules)]()
 
 **For complex business rules, ALWAYS use Use-Cases.**
@@ -329,6 +363,43 @@ export class ReportFactory {
 
 Code structuring in well-defined layers including HTTP, Business, and Data layers to facilitate system maintenance and evolution. Recommended folder structure separates controllers, services, use-cases, entities, DTOs and sub-services. This layered architecture ensures clear boundaries between components and enables independent development and testing of each layer.
 
+### When to use?
+Apply this layered organization structure to all NestJS modules to maintain consistency and scalability. Use the HTTP/Business/Data separation for clear responsibility boundaries. Organize complex modules with use-cases folder for business rules, entities for data models, and dto for validation.
+
+### When NOT to use?
+For extremely simple modules with only 1-2 files, strict folder separation may be overkill. Small utility modules or shared components may use a flatter structure. However, as modules grow, migrate to this organized structure before complexity becomes unmanageable.
+
+### Example
+See subsections below for detailed folder structure examples showing recommended organization with use-cases, entities, DTOs, and services properly separated.
+
+### Checklist
+- [ ] Controllers contain only HTTP routing logic, no business rules
+- [ ] Complex business logic implemented in use-cases folder
+- [ ] Simple CRUD operations remain in service layer
+- [ ] Entities folder contains TypeORM models
+- [ ] DTOs folder contains input/output validation classes
+- [ ] Services folder contains auxiliary sub-services
+- [ ] No circular dependencies between layers
+
+### Troubleshooting
+**Problem:** Module files exceeding 300 lines and becoming difficult to maintain.
+**Solution:** Extract business logic into separate use-cases and break services into smaller sub-services.
+
+**Problem:** Unclear where to place new functionality.
+**Solution:** Follow the layer rules: HTTP in controller, business in use-case/service, data in repository/entity.
+
+**Problem:** Difficulty testing due to mixed responsibilities.
+**Solution:** Ensure strict layer separation allowing isolated unit testing of each component.
+
+### Best Practices
+- Keep controllers thin - only routing and HTTP concerns
+- Place complex business rules in use-cases, not services
+- Use services for simple CRUD operations
+- Group related use-cases in the use-cases folder
+- Maintain consistent naming: module.controller.ts, module.service.ts
+- Document module structure in top-level comments
+- Refer to ./backend-module-folder-structure.md for complete structure guidelines
+
 ### [Layer Separation]()
 
 ```
@@ -419,6 +490,42 @@ export class ProductService {
 
 Strategies for consistent and informative error handling using NestJS built-in exceptions like NotFoundException, BadRequestException, ConflictException, and UnauthorizedException. Proper error handling provides meaningful feedback to clients and ensures robust API behavior. Always throw specific exceptions with descriptive messages to improve debugging and user experience.
 
+### When to use?
+Use NestJS built-in exceptions for all error scenarios in services, use-cases, and controllers. Throw NotFoundException when resources don't exist, BadRequestException for invalid inputs, ConflictException for constraint violations, UnauthorizedException for auth failures, and ForbiddenException for permission issues.
+
+### When NOT to use?
+Avoid creating custom exception classes unless you have very specific error handling requirements not covered by NestJS built-ins. Don't throw generic Error objects - always use the appropriate NestJS exception for consistent HTTP status codes and error response formatting.
+
+### Example
+See subsection below for complete examples of using NestJS exceptions including NotFoundException, ConflictException, and BadRequestException with proper error messages.
+
+### Checklist
+- [ ] All error scenarios throw appropriate NestJS exceptions
+- [ ] Exception messages are descriptive and include context (e.g., IDs, resource names)
+- [ ] NotFoundException used when resources are not found
+- [ ] BadRequestException used for validation failures
+- [ ] ConflictException used for uniqueness constraint violations
+- [ ] UnauthorizedException used for authentication failures
+- [ ] No generic Error objects thrown in business logic
+
+### Troubleshooting
+**Problem:** Clients receive 500 errors instead of specific HTTP status codes.
+**Solution:** Ensure you're throwing NestJS exceptions, not generic Error objects.
+
+**Problem:** Error messages expose sensitive implementation details.
+**Solution:** Keep messages user-friendly while logging detailed errors server-side with Logger.
+
+**Problem:** Inconsistent error response formats across endpoints.
+**Solution:** Use only NestJS built-in exceptions for automatic standardized formatting.
+
+### Best Practices
+- Always include resource identifiers in error messages (e.g., "Product 123 not found")
+- Use specific exceptions over generic ones (NotFoundException vs BadRequestException)
+- Log errors with stack traces using NestJS Logger before throwing
+- Validate business rules early and throw exceptions immediately
+- Document expected exceptions in Swagger with @ApiResponse decorators
+- Never expose database errors directly - wrap in appropriate exceptions
+
 ### [Use NestJS Exceptions]()
 
 ```typescript
@@ -463,6 +570,41 @@ export class ProductService {
 
 Security pattern that ensures users can only access resources they own by filtering database queries by userId. This prevents unauthorized access to data and is critical for multi-tenant applications. Always implement private helper methods to validate ownership before performing update or delete operations, throwing NotFoundException when resource does not belong to the authenticated user.
 
+### When to use?
+Apply ownership validation to all protected endpoints that operate on user-specific resources. Always filter database queries by userId for find, update, and delete operations. Critical for multi-tenant applications where users should only access their own data.
+
+### When NOT to use?
+Skip ownership validation only for public resources accessible to all users or admin endpoints that explicitly need cross-user access. System-level operations and unauthenticated public endpoints don't require userId filtering.
+
+### Example
+See code below demonstrating private helper method pattern for ownership validation with automatic NotFoundException when resource doesn't belong to authenticated user.
+
+### Checklist
+- [ ] All protected endpoints filter queries by userId from authenticated request
+- [ ] Private findOneOrFail helper method validates ownership
+- [ ] Update operations verify ownership before modification
+- [ ] Delete operations verify ownership before removal
+- [ ] NotFoundException thrown when resource not found or unauthorized
+- [ ] No direct access to resources without userId validation
+
+### Troubleshooting
+**Problem:** Users can access other users' data by guessing IDs.
+**Solution:** Ensure all database queries include userId filter from authenticated request.
+
+**Problem:** Ownership checks duplicated across multiple methods.
+**Solution:** Extract into private helper method (e.g., findOneOrFail) and reuse.
+
+**Problem:** Unclear whether 404 is "not found" or "not authorized".
+**Solution:** This is correct - return 404 for both to avoid leaking resource existence information.
+
+### Best Practices
+- Always include userId in where clause for protected resources
+- Create private helper methods for ownership validation to avoid duplication
+- Return 404 (NotFoundException) for both missing and unauthorized resources
+- Extract userId from authenticated request object, never from request body
+- Log unauthorized access attempts for security monitoring
+- Document ownership requirements in API documentation
+
 ```typescript
 @Injectable()
 export class ProductService {
@@ -497,6 +639,42 @@ export class ProductService {
 ## [Transactions]()
 
 Database transactions ensure atomicity of operations involving multiple tables or entities. Use TypeORM DataSource transaction method to wrap related database operations, ensuring that all succeed or all fail together. This prevents data inconsistency when creating orders with items, transferring funds between accounts, or performing any multi-step database operations that must be atomic.
+
+### When to use?
+Use database transactions when performing operations that involve multiple related database writes that must all succeed or all fail together. Essential for creating parent-child records (orders with items), transferring between accounts, updating inventory with orders, or any multi-step operation requiring atomicity.
+
+### When NOT to use?
+Avoid transactions for single database operations or read-only queries. Don't use for operations involving external APIs or long-running processes as transactions lock database resources. Skip for independent operations that don't need to be atomic.
+
+### Example
+See code below showing TypeORM DataSource transaction usage for creating order with multiple items, ensuring all records are saved together or rolled back on failure.
+
+### Checklist
+- [ ] All multi-table write operations wrapped in transactions
+- [ ] DataSource injected and used for transaction management
+- [ ] Transaction callback uses manager parameter for all operations
+- [ ] Related records created in correct order (parent before children)
+- [ ] Foreign keys properly set within transaction
+- [ ] No external API calls inside transaction blocks
+
+### Troubleshooting
+**Problem:** Partial data saved when operation fails midway.
+**Solution:** Wrap all related operations in a single transaction block to ensure atomicity.
+
+**Problem:** Transaction deadlocks under concurrent load.
+**Solution:** Keep transactions short, always acquire locks in same order, avoid external calls.
+
+**Problem:** Cannot access entities saved in transaction from outside.
+**Solution:** Return entities from transaction callback - they'll be available after commit.
+
+### Best Practices
+- Keep transaction blocks as short as possible to minimize lock duration
+- Always use the manager parameter inside transaction callback, not repositories
+- Create parent entities before children to satisfy foreign key constraints
+- Avoid calling external APIs inside transactions - do before or after
+- Handle errors appropriately - transaction automatically rolls back on exception
+- Log transaction start/end for debugging and monitoring
+- Consider using optimistic locking for concurrent updates
 
 ```typescript
 import { DataSource } from 'typeorm';
@@ -540,6 +718,45 @@ export class OrderService {
 
 Strategic logging at critical points using NestJS Logger service provides visibility into application behavior, facilitates debugging, and enables monitoring. Log at service level with appropriate log levels: log for informational messages, warn for non-critical issues, error for failures with stack traces. Include contextual information like userId, entityId, and operation names to enable effective troubleshooting in production environments.
 
+### When to use?
+Add logging to all critical operations including create/update/delete actions, external API calls, business rule validations, error scenarios, and performance-sensitive operations. Use log() for success cases, warn() for recoverable issues, and error() with stack traces for failures.
+
+### When NOT to use?
+Avoid logging in simple getters, trivial operations, or high-frequency read operations that would create excessive noise. Don't log sensitive data like passwords, tokens, or PII. Skip logging in private helper methods already covered by public method logs.
+
+### Example
+See code below demonstrating NestJS Logger usage with appropriate log levels, contextual information including userId and entityId, and error handling with stack traces.
+
+### Checklist
+- [ ] Logger instance created with class name for context
+- [ ] Critical operations logged with relevant details
+- [ ] Success cases use logger.log() with context
+- [ ] Warnings use logger.warn() for recoverable issues
+- [ ] Errors use logger.error() with message and stack trace
+- [ ] Logs include userId, entityId, and operation context
+- [ ] No sensitive data (passwords, tokens, PII) in logs
+
+### Troubleshooting
+**Problem:** Cannot identify which user triggered an error in production.
+**Solution:** Always include userId in log messages for user-specific operations.
+
+**Problem:** Log messages don't provide enough context to debug issues.
+**Solution:** Include entity IDs, operation names, and relevant state information.
+
+**Problem:** Too many logs making it hard to find important information.
+**Solution:** Use appropriate log levels and avoid logging trivial operations or loops.
+
+### Best Practices
+- Create Logger instance with class name for proper context identification
+- Include userId in all user-specific operation logs for traceability
+- Include entity IDs when operating on specific records
+- Use structured logging with consistent message formats
+- Log before and after critical state changes
+- Always include stack traces with error logs
+- Use log levels appropriately: log (info), warn (recoverable), error (failure)
+- Avoid logging in loops - summarize results instead
+- Never log sensitive information - mask or exclude from logs
+
 ```typescript
 import { Logger } from '@nestjs/common';
 
@@ -567,6 +784,18 @@ export class ProductService {
 
 ## [Scalability Checklist]()
 
+Comprehensive verification checklist to ensure all scalability best practices are applied including use-cases for complex logic, dependency injection, validation, error handling, transactions, logging, and documentation. Use this checklist before considering any implementation complete.
+
+### When to use?
+Apply this checklist before submitting any implementation for review. Use as final verification step to ensure all scalability patterns and best practices have been implemented. Review checklist when refactoring existing code to identify improvement opportunities.
+
+### When NOT to use?
+Don't use this checklist as a step-by-step implementation guide - refer to specific pattern sections above for that. This is a verification tool, not a tutorial.
+
+### Example
+See checklist items below covering use-cases, service responsibilities, dependency injection, validation, error handling, transactions, logging, documentation, and naming conventions.
+
+### Checklist
 - [ ] **Use-Cases for complex business rules** (see `./how-to-create-use-case-backend.md`)
 - [ ] One service = One responsibility (simple CRUD)
 - [ ] Interface segregation (Use-Case Pattern)
@@ -580,8 +809,51 @@ export class ProductService {
 - [ ] Type-safe code (TypeScript)
 - [ ] English naming for classes, interfaces and methods
 
+### Troubleshooting
+**Problem:** Checklist items unclear or ambiguous.
+**Solution:** Refer to corresponding sections above for detailed explanations of each item.
+
+**Problem:** Some checklist items don't apply to current implementation.
+**Solution:** Mark N/A with explanation, but ensure you're not skipping applicable best practices.
+
+### Best Practices
+- Review checklist before submitting for code review
+- Document any intentional deviations with rationale
+- Use checklist during peer code reviews
+- Update checklist based on project-specific requirements
+- Refer to detailed sections for implementation guidance on each item
+
 ## [Final Tips]()
 
+Quick reference collection of the most important recommendations distilled from all sections above to help developers maintain scalable, maintainable code. These tips represent the core principles that should guide all backend development decisions.
+
+### When to use?
+Reference these tips when making design decisions, during code reviews, or when unsure about best approach. Use as quick mental checklist before implementing new features or refactoring existing code.
+
+### When NOT to use?
+Don't rely solely on these tips without understanding the detailed sections above. Tips are reminders, not substitutes for comprehensive understanding of patterns and principles.
+
+### Example
+See numbered tips below covering use-cases, simplicity, refactoring, interfaces, controller design, testing, documentation, consistency, and naming conventions.
+
+### Checklist
+- [ ] Use-Cases implemented for complex business rules with multiple transactions
+- [ ] Code starts simple without premature optimization
+- [ ] Refactoring performed when files exceed 300 lines
+- [ ] Interfaces used to decouple implementations
+- [ ] Controllers kept thin with only routing logic
+- [ ] Tests written using mocked interfaces for isolation
+- [ ] Complex code documented with inline comments
+- [ ] English naming used consistently throughout
+
+### Troubleshooting
+**Problem:** Uncertain whether to create use-case or keep logic in service.
+**Solution:** If multiple transactions or complex business logic, use use-case. Simple CRUD stays in service.
+
+**Problem:** Code becoming difficult to maintain and test.
+**Solution:** Refactor into smaller, focused classes following Single Responsibility Principle.
+
+### Best Practices
 1. **Use Use-Cases for complex rules**: Whenever there are multiple transactions or complex business logic
 2. **Prefer thin Use-Cases**: 1 interface per use-case (see `./how-to-create-use-case-backend.md`)
 3. **Start simple**: Don't optimize prematurely
@@ -596,6 +868,32 @@ export class ProductService {
 
 ## [References]()
 
+Curated collection of internal documentation and external resources for deeper learning about scalable implementation patterns, clean architecture principles, and NestJS best practices. Use these references to expand understanding beyond this guide.
+
+### When to use?
+Consult these references when you need deeper understanding of specific patterns, want to learn theoretical foundations, or need official documentation for NestJS features. Use internal references for project-specific implementation details.
+
+### When NOT to use?
+Don't start with external references before reading this guide - they provide broader context but may not be project-specific. For immediate implementation guidance, always prioritize project documentation in .rules first.
+
+### Example
+See links below including internal documentation for use-cases and external resources for NestJS best practices, clean architecture, SOLID principles, and interface segregation.
+
+### Checklist
+- [ ] Internal project documentation consulted first (./how-to-create-use-case-backend.md)
+- [ ] NestJS official docs referenced for framework-specific questions
+- [ ] Clean Architecture principles understood for architectural decisions
+- [ ] SOLID principles reviewed for design decisions
+- [ ] Interface Segregation Principle applied for use-case design
+
+### Troubleshooting
+**Problem:** External resources contradict project patterns.
+**Solution:** Project documentation in .rules takes precedence - external resources provide general guidance.
+
+**Problem:** References seem outdated or no longer available.
+**Solution:** Focus on internal documentation which is maintained for this project specifically.
+
+### Best Practices
 - **[Use-Cases in Backend](./how-to-create-use-case-backend.md)** - Complete documentation on Use-Case Pattern
 - [NestJS Best Practices](https://docs.nestjs.com/techniques/performance)
 - [Clean Architecture](https://blog.cleancoder.com/uncle-bob/2012/08/13/the-clean-architecture.html)

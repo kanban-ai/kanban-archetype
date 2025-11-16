@@ -24,6 +24,52 @@ Add to `package.json`:
 }
 ```
 
+### When to use?
+
+Use these migration scripts when working with TypeORM in NestJS projects that require database schema management. These scripts are essential for any project that needs to track and version database changes through migrations instead of using auto-synchronization.
+
+### When NOT to use?
+
+Don't use TypeORM migration scripts for projects using Prisma, Sequelize, or other ORMs. Also avoid for quick prototypes where schema:sync is acceptable, or when using schema-less databases like MongoDB where migrations aren't typically needed.
+
+### Example
+
+```bash
+# Generate migration after creating/modifying entity
+npm run migration:generate src/database/migrations/AddEmailToUsers
+
+# Create empty migration for data seeding
+npm run migration:create src/database/migrations/SeedInitialRoles
+
+# Run pending migrations
+npm run migration:run
+
+# Revert last migration if error occurs
+npm run migration:revert
+```
+
+### Checklist
+
+- [ ] All migration scripts added to package.json
+- [ ] ts-node and tsconfig-paths installed as devDependencies
+- [ ] DataSource configuration file created at src/database/database.config.ts
+- [ ] Environment variables configured for database connection
+- [ ] Migration folder structure created
+
+### Troubleshooting
+
+**Issue**: "Cannot find module" error when running migration commands
+**Solution**: Install required dependencies: `npm install -D ts-node tsconfig-paths typescript`
+
+**Issue**: "No migrations found" error
+**Solution**: Verify migrations path in database.config.ts matches actual migration folder location. Ensure glob pattern includes both .ts and .js extensions.
+
+### Best Practices
+
+- Always review generated migrations before running them to ensure they match expected schema changes
+- Use migration:generate for entity changes and migration:create for data seeds or complex operations
+- Never modify executed migrations; create new ones for additional changes to maintain migration history integrity
+
 ## [Detailed Description of each Migration Command]()
 
 This section provides detailed documentation for each migration command including migration:generate for automatic schema synchronization based on entity changes, migration:create for manual data seeds and complex alterations, migration:run for executing pending migrations, migration:revert for rollback, migration:show for status listing, and db:drop for complete database reset. Each command includes practical usage examples, when to use guidelines, and expected behavior in development workflow.
@@ -186,6 +232,57 @@ npm run migration:revert
 # Execute again
 npm run migration:run
 ```
+
+### When to use?
+
+Follow this workflow whenever you need to modify database schema by creating or updating entities. This systematic approach ensures safe schema evolution with proper version control, allowing you to track all database changes and rollback if issues occur.
+
+### When NOT to use?
+
+Don't use this workflow for one-off data updates that don't change schema structure, quick prototypes where manual SQL is faster, or when working with NoSQL databases. Also skip for emergency hotfixes where direct SQL execution is necessary.
+
+### Example
+
+```bash
+# Complete workflow example: Adding age column to users
+# 1. Modify entity
+# Add: @Column() age: number; to User entity
+
+# 2. Generate migration
+npm run migration:generate src/database/migrations/AddAgeToUsers
+
+# 3. Review generated file to ensure it's correct
+
+# 4. Apply migration
+npm run migration:run
+
+# 5. Verify in database
+npm run typeorm -- query "SELECT column_name FROM information_schema.columns WHERE table_name='users'"
+```
+
+### Checklist
+
+- [ ] Entity changes completed and tested
+- [ ] Migration generated with descriptive name
+- [ ] Generated migration file reviewed for correctness
+- [ ] Down method properly implements rollback
+- [ ] Migration executed successfully
+- [ ] Database schema verified after execution
+
+### Troubleshooting
+
+**Issue**: Generated migration is empty or incomplete
+**Solution**: Ensure entities are properly decorated with TypeORM decorators and DataSource configuration includes correct entity paths. Check if synchronize is set to false.
+
+**Issue**: Migration fails during execution
+**Solution**: Review migration SQL for syntax errors, check database permissions, verify foreign key constraints are satisfied, and ensure referenced tables exist.
+
+### Best Practices
+
+- Always create descriptive migration names that clearly indicate what changed (AddEmailToUsers, not Migration1234)
+- Review generated migrations before executing them to catch issues early
+- Test migrations in development environment before applying to staging or production
+- Keep migrations small and focused on single logical changes for easier troubleshooting and rollback
 
 ## [DataSource Configuration for TypeORM CLI]()
 

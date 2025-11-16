@@ -2,11 +2,56 @@
 
 > Naming conventions with suffixes for quick identification of React component categories, improving code organization and search capabilities.
 
-## [Overview]()
+## [Component Naming System Overview]()
 
-This section introduces the component naming system used in the project, explaining how suffix patterns help identify component types at a glance.
+This section introduces the component naming system used in the project, explaining how suffix patterns help identify component types at a glance and improve code organization through consistent naming conventions.
 
 This document defines suffix patterns for React file and component naming, facilitating identification, search and code organization.
+
+### When to use?
+
+Use these naming conventions for all React components in production applications where code organization, maintainability, and team collaboration are priorities. Apply suffix patterns consistently across pages, forms, modals, cards, and other specialized component categories.
+
+### When NOT to use?
+
+Don't enforce strict suffix patterns for small personal projects with fewer than 10 components, quick prototypes, or learning projects where simplicity is preferred over organization. Also skip for legacy codebases where changing naming would break too many imports.
+
+### Example
+
+```typescript
+// Good: Clear suffix-based naming
+import { AssetListPage } from '@/pages/assets/AssetListPage';
+import { LoginForm } from '@/components/forms/LoginForm';
+import { ConfirmModal } from '@/components/common/ConfirmModal';
+import { MetricCard } from '@/components/common/MetricCard';
+
+// Bad: Ambiguous naming without suffixes
+import { AssetList } from '@/pages/AssetList'; // Is this a page or component?
+import { Login } from '@/components/Login'; // Is this a form or page?
+```
+
+### Checklist
+
+- [ ] All pages have Page suffix
+- [ ] All forms have Form suffix
+- [ ] All modals have Modal suffix
+- [ ] All specialized components use appropriate suffix
+- [ ] Base generic components have no suffix
+- [ ] Component files use PascalCase naming
+
+### Troubleshooting
+
+**Issue**: Confusion about which suffix to use
+**Solution**: Refer to the suffix table and ask: Is this a complete page? Use Page. Is it a form? Use Form. Is it reusable and generic? No suffix needed.
+
+**Issue**: Import paths become too long with suffixes
+**Solution**: Use path aliases configured in tsconfig.json to shorten imports. Example: `@/components/common/ConfirmModal` instead of relative paths.
+
+### Best Practices
+
+- Start with suffix patterns from project inception to avoid massive refactoring later
+- Use find/grep commands to locate all components of same category quickly
+- Keep suffix patterns consistent across team members by documenting in project README
 
 ## [Suffix Table by Category]()
 
@@ -49,9 +94,62 @@ Component that represents a **complete visual section** of a page:
 
 ## [Folder Structure: Minimal vs Complete]()
 
-This section explains the recommended folder organization evolution from a minimal structure for small projects to a complete modular structure for production applications.
+This section explains the recommended folder organization evolution from a minimal structure for small projects to a complete modular structure for production applications with specialized subfolders for different component categories.
 
 The project folder structure can start simple and evolve as complexity increases.
+
+### When to use?
+
+Start with minimal structure for new projects and MVPs with fewer than 10 components. Migrate to complete structure when project reaches 20+ components, requires multiple specialized folders, or has team members who need clear organization to find components quickly.
+
+### When NOT to use?
+
+Don't use complete structure with many subfolders for simple projects, prototypes, or single-page applications. Avoid over-organizing small codebases as it adds unnecessary complexity without benefit.
+
+### Example
+
+```
+# Minimal structure - good for starting projects
+src/
+├── components/common/     # All reusable components
+├── pages/                 # All pages
+├── services/              # API services
+└── hooks/                 # Custom hooks
+
+# Complete structure - good for production projects
+src/
+├── components/
+│   ├── common/           # Generic reusable components
+│   ├── forms/            # Form components
+│   ├── layouts/          # Layout components
+│   ├── sections/         # Section components
+│   └── guards/           # Route guards
+├── pages/                # Pages organized by feature
+├── services/             # API services
+└── hooks/                # Custom hooks
+```
+
+### Checklist
+
+- [ ] Folder structure matches project size and complexity
+- [ ] Components organized in appropriate subfolders
+- [ ] Imports use consistent path aliases
+- [ ] Team members can easily locate components
+- [ ] Migration plan exists if structure needs to scale
+
+### Troubleshooting
+
+**Issue**: Too many files in components/common folder becoming hard to navigate
+**Solution**: Create specialized subfolders like forms/, modals/, cards/ and move related components. Update all import statements.
+
+**Issue**: Unsure when to create new subfolder
+**Solution**: Create subfolder when you have 3+ components of same category (3+ forms, 3+ layouts, etc).
+
+### Best Practices
+
+- Start minimal and evolve structure as project grows rather than over-organizing from the start
+- Document folder structure conventions in project README for team alignment
+- Use automated tools or scripts to help migrate components when restructuring folders
 
 ### Minimal Structure (Initial Setup)
 
@@ -212,6 +310,59 @@ Generic base components don't need suffix:
 - ✅ `SubmitButton.tsx` (specific button)
 - ✅ `ConfirmModal.tsx` (specific modal)
 
+### When to use?
+
+Apply these naming rules consistently for all React components, custom hooks, and context providers in your project. Use PascalCase for component files, use prefix for hooks, and appropriate suffixes for specialized components.
+
+### When NOT to use?
+
+Don't apply React naming conventions to non-React files like utility functions (use camelCase), TypeScript types (use PascalCase for types but without component suffixes), or configuration files (use lowercase with hyphens or dots).
+
+### Example
+
+```typescript
+// Good naming examples
+// Component
+export function LoginForm() { /* ... */ }  // LoginForm.tsx
+
+// Hook
+export function useAuth() { /* ... */ }    // useAuth.ts
+
+// Provider
+export function AuthProvider() { /* ... */ } // AuthProvider.tsx
+
+// Base component
+export function Button() { /* ... */ }     // Button.tsx
+
+// Bad naming examples
+export function loginForm() { /* ... */ }  // Wrong: camelCase
+export function auth() { /* ... */ }       // Wrong: missing 'use' prefix
+export function Auth() { /* ... */ }       // Wrong: provider missing suffix
+```
+
+### Checklist
+
+- [ ] All component files use PascalCase
+- [ ] Component name matches file name exactly
+- [ ] Custom hooks have use prefix
+- [ ] Context providers have Provider suffix
+- [ ] Base components don't have redundant suffixes
+- [ ] File extensions are .tsx for components, .ts for hooks
+
+### Troubleshooting
+
+**Issue**: ESLint complaining about component naming
+**Solution**: Ensure component function name matches file name and uses PascalCase. Configure ESLint rules for React naming conventions.
+
+**Issue**: Import auto-completion not working
+**Solution**: Verify component is exported correctly and file name matches export name exactly. Check tsconfig paths are configured properly.
+
+### Best Practices
+
+- Export component with same name as file for better IDE autocomplete and refactoring support
+- Use named exports instead of default exports for easier code searching and refactoring
+- Keep one component per file with matching names to maintain clear file organization
+
 ## [Practical Naming Examples]()
 
 This section provides real-world examples of naming patterns applied to common component systems like modals, cards, pages and forms.
@@ -305,6 +456,56 @@ Code becomes self-documented by name:
   <ConfirmModal />
 </AssetListPage>
 ```
+
+### When to use?
+
+Use suffix patterns in all medium to large React projects where multiple developers collaborate, code needs to be maintained long-term, or component categories need to be quickly distinguishable. Apply consistently across the entire codebase for maximum benefit.
+
+### When NOT to use?
+
+Don't enforce suffix patterns in very small projects with fewer than 10 total components where the overhead of suffixes outweighs benefits, or in experimental prototypes where rapid iteration matters more than organization.
+
+### Example
+
+```bash
+# Example: Finding all forms in project for audit
+find src -name "*Form.tsx"
+# Output:
+# src/components/forms/LoginForm.tsx
+# src/components/forms/SignupForm.tsx
+# src/components/forms/AssetForm.tsx
+
+# Example: Self-documenting component tree
+<DashboardPage>          {/* Clearly a page */}
+  <MainLayout>           {/* Clearly a layout */}
+    <SearchForm />       {/* Clearly a form */}
+    <MetricCard />       {/* Clearly a card */}
+    <ConfirmModal />     {/* Clearly a modal */}
+  </MainLayout>
+</DashboardPage>
+```
+
+### Checklist
+
+- [ ] Suffix patterns documented and shared with team
+- [ ] All components follow suffix conventions
+- [ ] Team members understand which suffix to use for new components
+- [ ] Search scripts or tools leverage suffix patterns
+- [ ] Code reviews check for suffix compliance
+
+### Troubleshooting
+
+**Issue**: Team members forget to use suffixes
+**Solution**: Add ESLint custom rules or pre-commit hooks to enforce suffix patterns. Document patterns prominently in README.
+
+**Issue**: Refactoring existing code to add suffixes breaks many imports
+**Solution**: Use IDE refactoring tools to rename files and automatically update imports. Do it incrementally by folder or feature.
+
+### Best Practices
+
+- Establish suffix patterns at project start to avoid costly refactoring later
+- Use tooling to enforce patterns automatically through linting or pre-commit checks
+- Document suffix table in project README for easy team reference
 
 ## [When NOT to Use Suffix]()
 

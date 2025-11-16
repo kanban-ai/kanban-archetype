@@ -2,16 +2,63 @@
 
 > Comprehensive guide on implementing API Key authentication for service-to-service integrations, webhooks, and automated scripts as an alternative to JWT authentication.
 
-## [What is API Key?]()
+## [What is API Key Authentication?]()
 
 API Key is an alternative authentication mechanism to JWT, designed for service-to-service integrations, automated scripts, webhooks, and internal services that don't use user login. Unlike JWT which carries user identity and expires automatically, API Key is a long-lived secret token shared between services, validated by comparing header value against stored secret, commonly used for backend-to-backend communication and system integrations.
 
 ### When to use?
-Use API Key authentication for backend-to-backend integrations, cron jobs, webhooks, and automated scripts where there is no end-user login flow. Use JWT authentication for user-facing applications including frontend, mobile apps, and any scenario requiring user identity, session management, and automatic token expiration for security.
+Use API Key authentication for backend-to-backend integrations, cron jobs, webhooks, and automated scripts where there is no end-user login flow. Apply this pattern for server-to-server communication requiring simple authentication without session management or user context.
 
-## [Implementation]()
+### When NOT to use?
+Do not use API Key for user-facing applications including frontends and mobile apps where users login with credentials. Avoid API Keys for scenarios requiring automatic token expiration, user identity tracking, or session management. Use JWT authentication instead for these cases.
+
+### Example
+
+Simple API Key validation flow:
+```
+1. Service generates long random API Key
+2. Key stored in environment variable or database
+3. Client sends key in X-API-KEY header
+4. Backend validates key matches expected value
+5. Request proceeds if valid, 401 if invalid
+```
+
+### Checklist
+- [ ] API Key generated using cryptographically secure method (minimum 32 characters)
+- [ ] Key stored securely in environment variable never committed to git
+- [ ] ApiKeyAuthGuard created with Reflector for metadata-based protection
+- [ ] @ApiKeyAuth decorator available for marking endpoints requiring API Key
+- [ ] Guard registered globally in main.ts after JwtAuthGuard
+- [ ] Swagger documentation configured with @ApiSecurity decorator
+
+### Troubleshooting
+
+**API Key missing errors**: Check if X-API-KEY header is included in request. Verify header name matches guard implementation exactly.
+
+**Invalid API Key errors**: Confirm environment variable X_API_KEY is set correctly. Check for trailing spaces or encoding issues in key value.
+
+**Both JWT and API Key required unexpectedly**: Ensure @Public decorator is applied to endpoints that should only require API Key authentication.
+
+### Best Practices
+
+- Generate API Keys using openssl or crypto.randomBytes for cryptographic security
+- Rotate API Keys periodically especially if compromise is suspected
+- Store keys only in environment variables or encrypted secrets management systems
+- Use HTTPS in production to prevent API Key interception during transmission
+- Implement rate limiting on API Key authenticated endpoints to prevent abuse
+- Log API Key usage with timestamps for security auditing and monitoring
+
+## [API Key Authentication Implementation Steps]()
 
 This section presents the complete API Key authentication implementation process including environment variable configuration with secure key generation using openssl, custom guard creation with Reflector integration for metadata-based route protection, decorator creation for marking routes that require API Key, and global guard registration in main.ts. The implementation follows NestJS best practices for security and supports coexistence with JWT authentication.
+
+### When to use?
+Follow these implementation steps when adding API Key authentication to an existing NestJS application that already has JWT authentication. Use this approach to support both user authentication and service-to-service authentication simultaneously.
+
+### When NOT to use?
+Do not follow this exact implementation if you need only API Key without JWT, as the guard registration and decorator patterns can be simplified. Adapt the implementation for different frameworks beyond NestJS.
+
+### Example
 
 ### [1. Configure Environment Variable]()
 
@@ -100,6 +147,31 @@ async function bootstrap() {
 }
 ```
 
+### Checklist
+- [ ] X_API_KEY environment variable configured in .env file
+- [ ] API Key generated using secure method like openssl rand -hex 32
+- [ ] ApiKeyAuthGuard created in auth/guards/ folder
+- [ ] Guard checks API_KEY_AUTH metadata using Reflector
+- [ ] @ApiKeyAuth decorator created in auth/decorators/ folder
+- [ ] Both guards registered in main.ts in correct order
+- [ ] Guard exports API_KEY_AUTH constant for decorator use
+
+### Troubleshooting
+
+**Guard not protecting endpoints**: Verify guard is registered globally in main.ts and decorator is applied to endpoint. Check metadata key matches between guard and decorator.
+
+**ConfigService undefined**: Ensure ConfigModule is imported globally in app.module.ts and ConfigService is properly injected into guard constructor.
+
+**Both guards blocking requests**: Check guard order in main.ts. JwtAuthGuard should come before ApiKeyAuthGuard to try JWT first.
+
+### Best Practices
+
+- Use dependency injection for ConfigService rather than hardcoding keys in guard
+- Keep guard logic simple focusing only on API Key validation
+- Return true early if endpoint doesn't require API Key for performance
+- Use UnauthorizedException for consistent error responses
+- Document guard usage and decorator application in team documentation
+
 ## [How to Use]()
 
 Practical examples of how to apply API Key authentication to NestJS backend endpoints including webhook endpoints that require only API Key by combining @Public and @ApiKeyAuth decorators, and flexible endpoints that accept both JWT and API Key authentication by checking req.user presence. These patterns enable secure service-to-service communication while maintaining backward compatibility with existing JWT-authenticated clients.
@@ -147,9 +219,17 @@ export class DataController {
 }
 ```
 
-## [How to Call the Endpoint]()
+## [How to Call API Key Protected Endpoints]()
 
 Examples of HTTP requests using API Key authentication in different tools and programming languages including cURL for command-line testing, Axios for Node.js server-to-server integrations with environment variable support, and native fetch API for modern JavaScript applications. All examples demonstrate proper X-API-KEY header configuration and JSON content-type for API communication.
+
+### When to use?
+Use these examples when implementing client code that needs to call API Key protected endpoints. Reference these patterns for webhooks, scheduled jobs, or service-to-service integration code.
+
+### When NOT to use?
+Do not use API Key in frontend applications where keys would be exposed in client-side code. These examples are for backend services and trusted environments only.
+
+### Example
 
 ### [With cURL]()
 
@@ -189,6 +269,29 @@ const response = await fetch('http://localhost:3000/api/webhooks/process', {
   body: JSON.stringify({ event: 'test' }),
 });
 ```
+
+### Checklist
+- [ ] X-API-KEY header included in all requests to protected endpoints
+- [ ] API Key value matches server environment variable exactly
+- [ ] Content-Type header set to application/json for JSON payloads
+- [ ] HTTP method matches endpoint definition (POST, GET, etc.)
+- [ ] API Key stored securely in environment variables not hardcoded
+
+### Troubleshooting
+
+**401 Unauthorized responses**: Verify X-API-KEY header is present and value matches server configuration. Check for typos in header name (case-sensitive).
+
+**CORS errors**: Ensure X-API-KEY is allowed in Access-Control-Allow-Headers on server. Configure CORS properly in NestJS.
+
+**Request timeout**: Check API endpoint is reachable and server is running. Verify network connectivity between services.
+
+### Best Practices
+
+- Store API Keys in environment variables never commit to version control
+- Use HTTPS for all API Key authenticated requests in production
+- Implement retry logic with exponential backoff for failed requests
+- Log API requests for debugging but never log the API Key value itself
+- Rotate API Keys periodically and update client configurations accordingly
 
 ## [Advanced Implementation]()
 
@@ -287,9 +390,17 @@ async webhook() {
 }
 ```
 
-## [Document in Swagger]()
+## [Swagger Documentation for API Key Endpoints]()
 
 Swagger configuration to display and test API Key protected endpoints in interactive documentation using DocumentBuilder addApiKey method in main.ts for global configuration, and @ApiSecurity decorator on controller methods to indicate API Key requirement. This enables developers to test API Key authentication directly in Swagger UI by entering the key in the authorization dialog, improving developer experience and API discoverability.
+
+### When to use?
+Configure Swagger for API Key when exposing webhook or integration endpoints that require API Key authentication. Use @ApiSecurity decorator on all endpoints protected with @ApiKeyAuth for complete API documentation.
+
+### When NOT to use?
+Do not expose API Key configuration in public-facing Swagger documentation. Keep API Key protected endpoints in internal documentation only for security purposes.
+
+### Example
 
 ```typescript
 import { ApiHeader, ApiSecurity } from '@nestjs/swagger';
@@ -309,9 +420,37 @@ const config = new DocumentBuilder()
 async webhook() {}
 ```
 
-## [Security]()
+### Checklist
+- [ ] DocumentBuilder configured with addApiKey in main.ts setup
+- [ ] Security scheme named 'api-key' for consistency
+- [ ] @ApiSecurity('api-key') decorator applied to protected endpoints
+- [ ] Swagger UI shows lock icon on API Key protected endpoints
+- [ ] Testing API Key input field available in Swagger authorization dialog
+
+### Troubleshooting
+
+**Lock icon not showing**: Ensure @ApiSecurity decorator is applied along with @ApiKeyAuth on controller method.
+
+**Authorization not working in Swagger**: Check security scheme name matches between DocumentBuilder configuration and @ApiSecurity decorator.
+
+### Best Practices
+
+- Use consistent security scheme names across all API Key protected endpoints
+- Document API Key requirements and how to obtain keys in Swagger description
+- Provide example API Key format in Swagger documentation for developers
+- Consider separate Swagger instances for internal and external documentation
+
+## [API Key Security Best Practices]()
 
 Recommended practices for secure generation, storage and management of API Keys in production including using cryptographically secure random keys of minimum 32 characters, never committing keys to version control, storing keys only in environment variables, rotating keys periodically especially after suspected compromise, using HTTPS to prevent interception, logging API Key usage for auditing, implementing revocation mechanisms for compromised keys, and applying rate limiting to prevent abuse.
+
+### When to use?
+Apply these security practices in all production deployments using API Key authentication. Follow these guidelines when generating, storing, rotating, or revoking API Keys throughout their lifecycle.
+
+### When NOT to use?
+Development and testing environments may use simplified key management for convenience, but production systems must follow all security best practices without exception.
+
+### Example
 
 ### [Best Practices]()
 
@@ -333,9 +472,44 @@ openssl rand -hex 32
 node -e "console.log(require('crypto').randomBytes(32).toString('hex'))"
 ```
 
-## [Differences: JWT vs API Key]()
+### Checklist
+- [ ] API Keys generated with cryptographically secure random method
+- [ ] Keys minimum 32 characters long for adequate entropy
+- [ ] Keys stored only in environment variables never in code
+- [ ] .env file added to .gitignore to prevent accidental commits
+- [ ] HTTPS enforced in production for all API Key authenticated requests
+- [ ] API Key usage logged with timestamps for security auditing
+- [ ] Rate limiting implemented on API Key endpoints
+- [ ] Key rotation procedure documented and tested
+
+### Troubleshooting
+
+**API Key leaked in git history**: Immediately rotate the compromised key. Use git-secrets or similar tools to prevent future leaks.
+
+**Unauthorized API usage**: Check usage logs to identify compromised keys. Revoke affected keys and issue new ones to legitimate clients.
+
+**Rate limit exceeded**: Review rate limit thresholds. Consider per-client rate limiting if using multiple API Keys.
+
+### Best Practices
+
+- Rotate API Keys quarterly or immediately upon suspected compromise
+- Use separate API Keys for different integration clients for granular revocation
+- Implement API Key expiration dates for enhanced security posture
+- Monitor API Key usage patterns to detect anomalous behavior
+- Document API Key rotation procedures for operational continuity
+- Use secrets management systems like HashiCorp Vault in enterprise environments
+
+## [JWT vs API Key Authentication Comparison]()
 
 Detailed comparison between JWT and API Key authentication methods covering usage scenarios, expiration policies, rotation mechanisms, payload capabilities, revocation complexity, and performance characteristics. JWT is designed for end-user authentication with automatic expiration and user data payload but difficult revocation, while API Key is optimized for service integrations with no expiration, easy revocation through database updates, and faster validation but requiring database lookup for each request.
+
+### When to use?
+Reference this comparison when deciding which authentication method to implement for a new feature or integration. Use this table to explain authentication choices to team members or stakeholders.
+
+### When NOT to use?
+This comparison assumes standard implementations. Custom requirements may necessitate different trade-offs not reflected in this general comparison.
+
+### Example
 
 | Aspect | JWT | API Key |
 |---------|-----|---------|
@@ -346,9 +520,38 @@ Detailed comparison between JWT and API Key authentication methods covering usag
 | **Revocation** | Difficult | Easy |
 | **Performance** | Validates signature | DB lookup |
 
-## [Troubleshooting]()
+### Checklist
+- [ ] User-facing features use JWT for authentication with login flow
+- [ ] Service integrations use API Key for authentication without user context
+- [ ] Webhooks endpoints protected with API Key not JWT
+- [ ] Mobile and web apps use JWT for session management
+- [ ] Automated scripts and cron jobs use API Key for simplicity
+
+### Troubleshooting
+
+**Choosing between JWT and API Key**: If there is user login flow, use JWT. If service-to-service or automated, use API Key.
+
+**Need both on same endpoint**: Configure endpoint to accept either JWT or API Key by checking req.user presence.
+
+### Best Practices
+
+- Use JWT for all user authentication scenarios requiring identity and sessions
+- Use API Key for all service-to-service scenarios without user context
+- Never use API Key in frontend applications due to exposure risk
+- Implement both authentication methods in API for maximum flexibility
+- Document clearly which endpoints require which authentication type
+
+## [Common API Key Authentication Issues]()
 
 Solutions for common problems when implementing and using API Key authentication including API Key missing error caused by missing X-API-KEY header in request, Invalid API Key error due to incorrect key value or misconfigured environment variable, and conflicts with JWT authentication resolved by proper guard ordering in main.ts. Each problem includes root cause analysis and specific solutions for quick resolution.
+
+### When to use?
+Reference this section when debugging API Key authentication errors or investigating integration failures. Use these solutions as first-line troubleshooting steps before deeper investigation.
+
+### When NOT to use?
+These solutions address common implementation issues. Complex custom authentication logic may require different debugging approaches not covered here.
+
+### Example
 
 ### [Error: "API Key missing"]()
 
@@ -373,6 +576,29 @@ app.useGlobalGuards(
   new ApiKeyAuthGuard(configService, reflector),
 );
 ```
+
+### Checklist
+- [ ] X-API-KEY header spelled exactly correctly in requests
+- [ ] Environment variable X_API_KEY set in server .env file
+- [ ] API Key value has no leading or trailing whitespace
+- [ ] Guard order in main.ts allows both JWT and API Key authentication
+- [ ] @Public decorator applied to endpoints requiring only API Key
+
+### Troubleshooting
+
+**Intermittent authentication failures**: Check if environment variables are loaded correctly in all application instances. Verify load balancer configuration for header forwarding.
+
+**Works locally but fails in production**: Ensure production environment variables are configured correctly. Check deployment scripts copy .env file properly.
+
+**Authentication passes but business logic fails**: Verify req.user is checked for undefined when using API Key authentication without user context.
+
+### Best Practices
+
+- Test API Key authentication in isolation before combining with JWT
+- Use consistent error messages for security (don't reveal if key exists)
+- Implement comprehensive logging for authentication failures with context
+- Create integration tests covering both JWT and API Key authentication paths
+- Document expected behavior when both authentication methods are present
 
 ## [References]()
 

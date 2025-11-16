@@ -1,34 +1,82 @@
-# How to create common components in Frontend
+# How to Create Common Components in Frontend
 
-> Guide to create reusable components in React with TypeScript and Tailwind CSS
+<document description: Comprehensive guide to creating reusable React components with TypeScript and Tailwind CSS following component composition patterns, type safety principles, and project styling conventions.>
 
-## [Common Components Principles]()
+## [React Common Component Design Principles]()
 
-Common components should be:
-- **Reusable**: Work in different contexts
-- **Configurable**: Props for customization
-- **Typed**: TypeScript for type-safety
-- **Self-contained**: Don't depend on specific context
-- **Documented**: Well-described props
+<section description: Common components serve as foundational UI building blocks that work across different contexts through configurable props, strict TypeScript typing, and self-contained design ensuring consistency, reusability, and maintainability throughout the application.>
 
-## [Location]()
+### When to use?
 
-This section defines where common components should be stored in the React project structure.
+Create common components for UI elements used in multiple places across the application such as buttons, inputs, modals, cards, and other interface primitives. Common components provide consistency in design, behavior, and accessibility while reducing code duplication.
 
+### When NOT to use?
+
+Avoid creating common components for feature-specific or domain-specific UI that only appears in one context. Don't over-abstract components that are unlikely to be reused. Simple one-off elements should remain inline in their parent components.
+
+### Example
+
+**Common Component Characteristics**:
+- **Reusable**: Work in different contexts without modification
+- **Configurable**: Accept props for customization and variants
+- **Typed**: Strict TypeScript interfaces for type safety
+- **Self-contained**: No dependencies on specific application context
+- **Documented**: Clear prop descriptions and usage examples
+
+**File Location**:
 ```
 src/components/common/
   Button.tsx
   Modal.tsx
   Card.tsx
   Input.tsx
-  ...
+  Select.tsx
+  Spinner.tsx
+  Alert.tsx
+  Badge.tsx
+  index.ts
 ```
 
-## [Practical Examples]()
+### Checklist
 
-This section presents complete implementations of project common components, including TypeScript typing, Tailwind styles and React best practices.
+- [ ] Component is genuinely reusable across contexts
+- [ ] Props interface defined with TypeScript
+- [ ] Default values provided for optional props
+- [ ] Tailwind CSS used for styling
+- [ ] Component accepts className for customization
+- [ ] Exported through common/index.ts barrel file
+- [ ] No hard-coded business logic or context dependencies
 
-### [1. Button Component]()
+### Troubleshooting
+
+**Component too coupled to context**: Extract context-specific logic into parent components and pass data via props.
+
+**TypeScript errors with props**: Ensure interface extends appropriate HTML element attributes when wrapping native elements.
+
+**Styling conflicts**: Use Tailwind utility classes and allow className override for component customization.
+
+### Best Practices
+
+- Keep components focused on single UI responsibility
+- Extend native HTML element attributes for seamless integration
+- Provide sensible defaults for all optional props
+- Use forwardRef when components need to expose DOM refs
+- Document complex props with JSDoc comments
+- Test components in isolation with various prop combinations
+
+## [Button Component Implementation]()
+
+<section description: Configurable button component with variant styles (primary, secondary, danger), size options (sm, md, lg), loading state support, and full TypeScript typing extending native HTML button attributes for comprehensive customization and type safety.>
+
+### When to use?
+
+Use Button component for all clickable actions throughout the application including form submissions, modal confirmations, navigation triggers, and action buttons ensuring consistent styling, behavior, and accessibility across all user interactions.
+
+### When NOT to use?
+
+Don't use Button for navigation links that should be anchor tags for SEO and accessibility. Avoid using Button when a native HTML button with minimal styling is more appropriate or when building specialized button variants.
+
+### Example
 
 ```typescript
 import { ButtonHTMLAttributes } from 'react';
@@ -48,7 +96,7 @@ export function Button({
   className = '',
   ...props
 }: ButtonProps) {
-  const baseClasses = 'rounded font-medium transition-colors';
+  const baseClasses = 'rounded font-medium transition-colors disabled:opacity-50 disabled:cursor-not-allowed';
 
   const variantClasses = {
     primary: 'bg-blue-600 hover:bg-blue-700 text-white',
@@ -77,9 +125,51 @@ export function Button({
 <Button variant="primary" size="md" onClick={handleClick}>
   Save
 </Button>
+<Button variant="danger" loading={isSubmitting}>
+  Delete
+</Button>
 ```
 
-### [2. Modal Component]()
+### Checklist
+
+- [ ] Extends ButtonHTMLAttributes for type safety
+- [ ] Variant prop supports multiple color schemes
+- [ ] Size prop provides consistent sizing options
+- [ ] Loading state disables button and shows feedback
+- [ ] Disabled state handled with visual feedback
+- [ ] className prop allows style customization
+- [ ] Spread props pass through to native button element
+
+### Troubleshooting
+
+**onClick not firing**: Check if loading or disabled state is preventing interaction.
+
+**Styles not applying**: Verify Tailwind classes are valid and className concatenation includes spaces.
+
+**TypeScript errors**: Ensure component extends ButtonHTMLAttributes and all native props are spread.
+
+### Best Practices
+
+- Use semantic button variants that communicate intent
+- Provide loading state for asynchronous operations
+- Disable button during loading to prevent double submissions
+- Allow className override for one-off customizations
+- Use transition classes for smooth hover effects
+- Handle disabled state with visual and cursor feedback
+
+## [Modal Component Implementation]()
+
+<section description: Full-featured modal dialog component with overlay backdrop, header section, scrollable body content, optional footer area, and close functionality providing flexible container for forms, confirmations, and detailed content display.>
+
+### When to use?
+
+Use Modal for focused user interactions requiring attention such as confirmations, forms, detailed views, or any content that should temporarily overlay the main interface while maintaining context and providing escape mechanisms.
+
+### When NOT to use?
+
+Avoid Modal for simple tooltips, dropdowns, or content that should remain accessible while viewing other parts of the interface. Don't use for critical blocking operations without clear escape paths.
+
+### Example
 
 ```typescript
 import { ReactNode } from 'react';
@@ -110,7 +200,8 @@ export function Modal({ isOpen, onClose, title, children, footer }: ModalProps) 
           <h2 className="text-xl font-semibold">{title}</h2>
           <button
             onClick={onClose}
-            className="text-gray-500 hover:text-gray-700"
+            className="text-gray-500 hover:text-gray-700 transition-colors"
+            aria-label="Close modal"
           >
             ✕
           </button>
@@ -140,53 +231,57 @@ const [isOpen, setIsOpen] = useState(false);
   onClose={() => setIsOpen(false)}
   title="Confirm Action"
   footer={
-    <div className="flex gap-2">
-      <Button onClick={() => setIsOpen(false)}>Cancel</Button>
-      <Button variant="primary">Confirm</Button>
+    <div className="flex gap-2 justify-end">
+      <Button variant="secondary" onClick={() => setIsOpen(false)}>Cancel</Button>
+      <Button variant="primary" onClick={handleConfirm}>Confirm</Button>
     </div>
   }
 >
-  <p>Are you sure you want to continue?</p>
+  <p>Are you sure you want to continue with this action?</p>
 </Modal>
 ```
 
-### [3. Card Component]()
+### Checklist
 
-```typescript
-import { ReactNode } from 'react';
+- [ ] isOpen state controls visibility
+- [ ] onClose callback provided for closing
+- [ ] Overlay backdrop allows click-to-close
+- [ ] Close button in header for explicit closing
+- [ ] Content scrollable when exceeding viewport height
+- [ ] z-index ensures modal appears above content
+- [ ] Optional footer for action buttons
+- [ ] Responsive sizing with max-width and margins
 
-interface CardProps {
-  title?: string;
-  children: ReactNode;
-  className?: string;
-  footer?: ReactNode;
-}
+### Troubleshooting
 
-export function Card({ title, children, className = '', footer }: CardProps) {
-  return (
-    <div className={`bg-white rounded-lg shadow p-4 ${className}`}>
-      {title && (
-        <h3 className="text-lg font-semibold mb-3">{title}</h3>
-      )}
+**Modal not closing**: Verify onClose callback is properly wired to state setter.
 
-      <div>{children}</div>
+**Content overflow issues**: Check max-h and overflow-auto classes are applied to modal container.
 
-      {footer && (
-        <div className="mt-4 pt-4 border-t">
-          {footer}
-        </div>
-      )}
-    </div>
-  );
-}
+**Modal behind other content**: Ensure z-50 or higher z-index and verify no parent elements have stacking context issues.
 
-// Usage
-<Card title="Statistics" footer={<Button>View more</Button>}>
-  <p>Card content</p>
-</Card>
-```
+### Best Practices
 
-### [4. Input Component]()
+- Return null when not open for clean rendering
+- Use fixed positioning with centered flexbox alignment
+- Provide multiple close mechanisms (overlay, button, ESC key)
+- Limit modal width for optimal reading and form completion
+- Use overflow-auto for scrollable content when needed
+- Include semantic ARIA labels for accessibility
+
+## [Form Input Component Implementation]()
+
+<section description: Versatile input field component with integrated label, error message display, focus states, and validation feedback extending native HTML input attributes while providing consistent styling and user experience across all forms.>
+
+### When to use?
+
+Use Input component for all text-based form fields including text, email, password, number, and other input types ensuring consistent styling, label positioning, error display, and validation feedback throughout all forms in the application.
+
+### When NOT to use?
+
+Avoid Input for textarea, select, checkbox, or radio inputs which require specialized components. Don't use when building custom input types with significantly different interaction patterns or visual requirements.
+
+### Example
 
 ```typescript
 import { InputHTMLAttributes, forwardRef } from 'react';
@@ -201,7 +296,7 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
     return (
       <div className="mb-4">
         {label && (
-          <label className="block text-sm font-medium mb-1">
+          <label className="block text-sm font-medium mb-1 text-gray-700">
             {label}
           </label>
         )}
@@ -211,7 +306,8 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
           className={`
             w-full px-3 py-2 border rounded
             focus:outline-none focus:ring-2 focus:ring-blue-500
-            ${error ? 'border-red-500' : 'border-gray-300'}
+            disabled:bg-gray-100 disabled:cursor-not-allowed
+            ${error ? 'border-red-500 focus:ring-red-500' : 'border-gray-300'}
             ${className}
           `}
           {...props}
@@ -225,39 +321,90 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
   }
 );
 
+Input.displayName = 'Input';
+
 // Usage
 <Input
-  label="Name"
-  placeholder="Enter your name"
-  error={errors.name}
-  value={name}
-  onChange={(e) => setName(e.target.value)}
+  label="Email Address"
+  type="email"
+  placeholder="you@example.com"
+  error={errors.email}
+  value={email}
+  onChange={(e) => setEmail(e.target.value)}
 />
 ```
 
-### [5. Select Component]()
+### Checklist
+
+- [ ] Uses forwardRef for form library compatibility
+- [ ] Extends InputHTMLAttributes for type safety
+- [ ] Label prop for accessible field labeling
+- [ ] Error prop displays validation messages
+- [ ] Focus ring provides visual feedback
+- [ ] Error state changes border and ring color
+- [ ] Disabled state styled appropriately
+- [ ] displayName set for debugging
+
+### Troubleshooting
+
+**Ref not working with form libraries**: Ensure forwardRef is implemented and ref parameter is passed to input element.
+
+**Label not associated**: Consider using htmlFor attribute if label needs explicit association with input id.
+
+**Error styles not showing**: Verify error prop is being passed and className concatenation includes proper spacing.
+
+### Best Practices
+
+- Use forwardRef for compatibility with React Hook Form and similar libraries
+- Provide visual error feedback through border and ring colors
+- Display error messages below input for clear validation feedback
+- Handle disabled state with both visual styling and cursor changes
+- Set displayName for better debugging in React DevTools
+- Allow className override for custom styling needs
+
+## [Select Dropdown Component Implementation]()
+
+<section description: Dropdown selection component with label support, error display, dynamic option rendering from array, and full native select element functionality providing consistent styling and user experience for choice-based inputs.>
+
+### When to use?
+
+Use Select component for dropdown choice inputs where users select from predefined options including status dropdowns, category selection, filter controls, and any scenario requiring single-choice selection from a known set of values.
+
+### When NOT to use?
+
+Avoid Select for large option lists where search/autocomplete is needed, multi-select scenarios, or when building custom dropdown UI with advanced features like icons, images, or complex option rendering.
+
+### Example
 
 ```typescript
 import { SelectHTMLAttributes } from 'react';
 
+interface SelectOption {
+  value: string | number;
+  label: string;
+}
+
 interface SelectProps extends SelectHTMLAttributes<HTMLSelectElement> {
   label?: string;
   error?: string;
-  options: Array<{ value: string | number; label: string }>;
+  options: SelectOption[];
 }
 
 export function Select({ label, error, options, className = '', ...props }: SelectProps) {
   return (
     <div className="mb-4">
       {label && (
-        <label className="block text-sm font-medium mb-1">{label}</label>
+        <label className="block text-sm font-medium mb-1 text-gray-700">
+          {label}
+        </label>
       )}
 
       <select
         className={`
           w-full px-3 py-2 border rounded
           focus:outline-none focus:ring-2 focus:ring-blue-500
-          ${error ? 'border-red-500' : 'border-gray-300'}
+          disabled:bg-gray-100 disabled:cursor-not-allowed
+          ${error ? 'border-red-500 focus:ring-red-500' : 'border-gray-300'}
           ${className}
         `}
         {...props}
@@ -282,36 +429,212 @@ export function Select({ label, error, options, className = '', ...props }: Sele
   options={[
     { value: 'active', label: 'Active' },
     { value: 'inactive', label: 'Inactive' },
+    { value: 'pending', label: 'Pending' },
   ]}
   value={status}
   onChange={(e) => setStatus(e.target.value)}
+  error={errors.status}
 />
 ```
 
-### [6. Loading Spinner]()
+### Checklist
+
+- [ ] Extends SelectHTMLAttributes for type safety
+- [ ] Options prop accepts array of value/label objects
+- [ ] Label and error props for consistent form styling
+- [ ] Maps options with unique keys
+- [ ] Matches Input component styling for consistency
+- [ ] Error state changes border and ring colors
+- [ ] Disabled state handled appropriately
+
+### Troubleshooting
+
+**Wrong value selected**: Ensure option values match the format expected by controlled state (string vs number).
+
+**Missing options**: Verify options array is populated before rendering and map function has proper key.
+
+**Styling inconsistencies**: Ensure Select uses same base classes as Input component for visual consistency.
+
+### Best Practices
+
+- Define SelectOption interface for type-safe option arrays
+- Use meaningful value properties that work with backend data
+- Keep option labels concise and user-friendly
+- Match Input component styling for form consistency
+- Include empty/placeholder option when appropriate
+- Handle empty options array gracefully
+
+## [Card Container Component Implementation]()
+
+<section description: Versatile card container component with optional header, scrollable body content, and footer section providing consistent bordered, shadowed containers for grouping related content and creating visual hierarchy.>
+
+### When to use?
+
+Use Card component to group related content, create visual containers, display summaries, organize dashboard widgets, or wrap forms providing clear visual boundaries and consistent styling for content sections.
+
+### When NOT to use?
+
+Avoid Card for simple div wrappers without visual distinction needs, full-page layouts, or when simpler container elements are sufficient without the visual weight of borders and shadows.
+
+### Example
+
+```typescript
+import { ReactNode } from 'react';
+
+interface CardProps {
+  title?: string;
+  children: ReactNode;
+  className?: string;
+  footer?: ReactNode;
+}
+
+export function Card({ title, children, className = '', footer }: CardProps) {
+  return (
+    <div className={`bg-white rounded-lg shadow border border-gray-200 ${className}`}>
+      {title && (
+        <div className="px-4 py-3 border-b border-gray-200">
+          <h3 className="text-lg font-semibold text-gray-900">{title}</h3>
+        </div>
+      )}
+
+      <div className="p-4">{children}</div>
+
+      {footer && (
+        <div className="px-4 py-3 border-t border-gray-200 bg-gray-50">
+          {footer}
+        </div>
+      )}
+    </div>
+  );
+}
+
+// Usage
+<Card
+  title="User Statistics"
+  footer={<Button>View Details</Button>}
+>
+  <div className="space-y-2">
+    <p>Total Users: 1,234</p>
+    <p>Active Today: 567</p>
+  </div>
+</Card>
+```
+
+### Checklist
+
+- [ ] Optional title prop for header section
+- [ ] Children prop for main content
+- [ ] Optional footer prop for action area
+- [ ] className prop allows customization
+- [ ] Consistent padding and spacing
+- [ ] Border and shadow for visual separation
+- [ ] Conditional rendering for optional sections
+
+### Troubleshooting
+
+**Card not visible**: Ensure parent container has appropriate background color to contrast with white card background.
+
+**Content overflow**: Add overflow handling classes to card or content sections as needed.
+
+**Spacing issues**: Verify padding classes are consistent and not overridden by custom className.
+
+### Best Practices
+
+- Use title for card identification and context
+- Keep card content focused on related information
+- Use footer for actions related to card content
+- Allow className override for layout flexibility
+- Maintain consistent padding throughout sections
+- Use semantic HTML structure within card content
+
+## [Loading Spinner Component Implementation]()
+
+<section description: Animated loading indicator component with configurable sizes (sm, md, lg) using CSS animations and Tailwind utilities providing visual feedback during asynchronous operations and data loading states.>
+
+### When to use?
+
+Use Spinner component to indicate loading states during data fetching, form submission, page transitions, or any asynchronous operation where users should wait for completion providing clear visual feedback that prevents confusion.
+
+### When NOT to use?
+
+Avoid Spinner for very fast operations (under 200ms) where loading indicator would flash, or when more specific progress indicators like progress bars are more appropriate for long-running operations.
+
+### Example
 
 ```typescript
 interface SpinnerProps {
   size?: 'sm' | 'md' | 'lg';
+  className?: string;
 }
 
-export function Spinner({ size = 'md' }: SpinnerProps) {
+export function Spinner({ size = 'md', className = '' }: SpinnerProps) {
   const sizes = {
-    sm: 'w-4 h-4',
-    md: 'w-8 h-8',
-    lg: 'w-12 h-12',
+    sm: 'w-4 h-4 border-2',
+    md: 'w-8 h-8 border-2',
+    lg: 'w-12 h-12 border-4',
   };
 
   return (
-    <div className={`animate-spin rounded-full border-2 border-gray-300 border-t-blue-600 ${sizes[size]}`} />
+    <div
+      className={`
+        animate-spin rounded-full
+        border-gray-300 border-t-blue-600
+        ${sizes[size]}
+        ${className}
+      `}
+      role="status"
+      aria-label="Loading"
+    >
+      <span className="sr-only">Loading...</span>
+    </div>
   );
 }
 
 // Usage
 <Spinner size="lg" />
+<Spinner size="sm" className="mr-2" />
 ```
 
-### [7. Alert Component]()
+### Checklist
+
+- [ ] Size variants provide flexible scaling
+- [ ] Uses Tailwind animate-spin utility
+- [ ] Circular border with colored segment
+- [ ] ARIA role and label for accessibility
+- [ ] Screen reader text for context
+- [ ] className prop for positioning
+- [ ] Consistent with application color scheme
+
+### Troubleshooting
+
+**Animation not working**: Verify Tailwind CSS is configured and animate-spin utility is available.
+
+**Size not matching context**: Use appropriate size variant or custom className for specific use cases.
+
+**Screen readers not announcing**: Ensure role="status" and aria-label are present.
+
+### Best Practices
+
+- Use appropriate size for context (sm for buttons, lg for full-page loading)
+- Include aria-label and screen reader text for accessibility
+- Match spinner colors to application theme
+- Center spinner when used as full-page loading indicator
+- Combine with Button component for loading button states
+- Consider skeleton loaders for content-heavy loading states
+
+## [Alert Message Component Implementation]()
+
+<section description: Dismissible alert component with type variants (success, error, warning, info) providing color-coded user feedback messages with optional close functionality for confirmations, errors, warnings, and informational notices.>
+
+### When to use?
+
+Use Alert component to display user feedback messages including success confirmations, error notifications, warnings about actions, or informational notices ensuring consistent styling and behavior across all feedback scenarios.
+
+### When NOT to use?
+
+Avoid Alert for validation errors that should appear inline with form fields, toast notifications that should auto-dismiss, or critical blocking errors that require modal dialog treatment.
+
+### Example
 
 ```typescript
 interface AlertProps {
@@ -321,18 +644,22 @@ interface AlertProps {
 }
 
 export function Alert({ type, message, onClose }: AlertProps) {
-  const colors = {
-    success: 'bg-green-100 text-green-800 border-green-300',
-    error: 'bg-red-100 text-red-800 border-red-300',
-    warning: 'bg-yellow-100 text-yellow-800 border-yellow-300',
-    info: 'bg-blue-100 text-blue-800 border-blue-300',
+  const styles = {
+    success: 'bg-green-50 text-green-800 border-green-300',
+    error: 'bg-red-50 text-red-800 border-red-300',
+    warning: 'bg-yellow-50 text-yellow-800 border-yellow-300',
+    info: 'bg-blue-50 text-blue-800 border-blue-300',
   };
 
   return (
-    <div className={`p-4 rounded border ${colors[type]} flex items-center justify-between`}>
-      <span>{message}</span>
+    <div className={`p-4 rounded border ${styles[type]} flex items-start justify-between`}>
+      <span className="flex-1">{message}</span>
       {onClose && (
-        <button onClick={onClose} className="ml-4 font-bold">
+        <button
+          onClick={onClose}
+          className="ml-4 font-bold hover:opacity-70 transition-opacity flex-shrink-0"
+          aria-label="Close alert"
+        >
           ✕
         </button>
       )}
@@ -341,10 +668,52 @@ export function Alert({ type, message, onClose }: AlertProps) {
 }
 
 // Usage
-<Alert type="success" message="Operation completed successfully!" />
+<Alert type="success" message="Changes saved successfully!" onClose={() => setShowAlert(false)} />
+<Alert type="error" message="Failed to save changes. Please try again." />
+<Alert type="warning" message="This action cannot be undone." />
 ```
 
-### [8. Badge Component]()
+### Checklist
+
+- [ ] Type variants with distinct colors
+- [ ] Message prop for alert content
+- [ ] Optional onClose callback for dismissible alerts
+- [ ] Color-coded backgrounds and borders
+- [ ] Flex layout for message and close button
+- [ ] Close button with hover feedback
+- [ ] ARIA label on close button
+- [ ] Responsive text sizing
+
+### Troubleshooting
+
+**Colors not showing**: Verify Tailwind safelist includes all alert color variants or they're used elsewhere.
+
+**Close button not aligned**: Ensure flex layout and items-start alignment are applied to parent div.
+
+**Alert not dismissing**: Check onClose callback is properly wired to state management.
+
+### Best Practices
+
+- Use semantic type variants that match message intent
+- Keep messages concise and actionable
+- Provide onClose for non-critical alerts
+- Position alerts prominently but not blocking content
+- Consider auto-dismiss timeout for success messages
+- Use error type for validation and operation failures
+
+## [Badge Label Component Implementation]()
+
+<section description: Small inline label component with color variants (default, success, danger, warning) for displaying status indicators, tags, counts, and category labels with consistent sizing and color-coded meaning.>
+
+### When to use?
+
+Use Badge component for status indicators, tags, counts, labels, or any small inline text that needs visual distinction and color-coded meaning such as active/inactive status, notification counts, or category labels.
+
+### When NOT to use?
+
+Avoid Badge for large text blocks, primary navigation elements, or when full Button component is more appropriate for interactive elements. Don't overuse badges as they can create visual clutter.
+
+### Example
 
 ```typescript
 interface BadgeProps {
@@ -353,7 +722,7 @@ interface BadgeProps {
 }
 
 export function Badge({ children, variant = 'default' }: BadgeProps) {
-  const colors = {
+  const variants = {
     default: 'bg-gray-200 text-gray-800',
     success: 'bg-green-200 text-green-800',
     danger: 'bg-red-200 text-red-800',
@@ -361,7 +730,7 @@ export function Badge({ children, variant = 'default' }: BadgeProps) {
   };
 
   return (
-    <span className={`inline-block px-2 py-1 text-xs rounded ${colors[variant]}`}>
+    <span className={`inline-block px-2 py-1 text-xs font-medium rounded ${variants[variant]}`}>
       {children}
     </span>
   );
@@ -369,163 +738,250 @@ export function Badge({ children, variant = 'default' }: BadgeProps) {
 
 // Usage
 <Badge variant="success">Active</Badge>
+<Badge variant="danger">Expired</Badge>
+<Badge variant="warning">Pending</Badge>
+<Badge>Draft</Badge>
 ```
 
-## [Composition Patterns]()
+### Checklist
 
-This section demonstrates advanced component composition patterns to create flexible and expressive APIs.
+- [ ] Variant prop with color-coded options
+- [ ] Small, compact sizing
+- [ ] Inline-block display
+- [ ] Rounded corners for pill shape
+- [ ] Consistent with application color scheme
+- [ ] Text size appropriate for inline use
+- [ ] Children prop accepts any content
 
-### [Compound Components]()
+### Troubleshooting
 
-```typescript
-// Card.tsx
-export function Card({ children }: { children: React.ReactNode }) {
-  return <div className="bg-white rounded-lg shadow p-4">{children}</div>;
-}
+**Badge too large**: Verify text-xs class is applied and padding is minimal.
 
-Card.Header = function CardHeader({ children }: { children: React.ReactNode }) {
-  return <div className="border-b pb-2 mb-2">{children}</div>;
-};
+**Colors not distinct**: Ensure sufficient contrast between background and text colors.
 
-Card.Body = function CardBody({ children }: { children: React.ReactNode }) {
-  return <div>{children}</div>;
-};
+**Layout breaks**: Check parent container can accommodate inline-block elements.
 
-Card.Footer = function CardFooter({ children }: { children: React.ReactNode }) {
-  return <div className="border-t pt-2 mt-2">{children}</div>;
-};
+### Best Practices
 
-// Usage
-<Card>
-  <Card.Header>
-    <h3>Title</h3>
-  </Card.Header>
-  <Card.Body>
-    <p>Content</p>
-  </Card.Body>
-  <Card.Footer>
-    <Button>Action</Button>
-  </Card.Footer>
-</Card>
-```
+- Use semantic variant colors matching their meaning
+- Keep badge content short (single word or small number)
+- Use consistent variants across application for same meanings
+- Consider icon-only badges for very compact displays
+- Pair badges with descriptive text for accessibility
+- Don't rely solely on color to convey meaning
 
-## [Best Practices]()
+## [Component Organization and Export Strategy]()
 
-This section lists main recommended practices for creating robust, reusable and maintainable components.
+<section description: Centralized component organization with barrel export pattern enabling clean imports throughout application while maintaining clear file structure and reducing import statement complexity for common components.>
 
-### [1. Props with default values]()
+### When to use?
 
-```typescript
-interface ButtonProps {
-  variant?: 'primary' | 'secondary';
-  size?: 'sm' | 'md' | 'lg';
-}
+Organize all common components in dedicated directory with barrel export file enabling simplified imports throughout application. This pattern should be used for all shared UI components accessed across multiple features.
 
-export function Button({
-  variant = 'primary', // Default value
-  size = 'md',          // Default value
-  ...props
-}: ButtonProps) {
-  // ...
-}
-```
+### When NOT to use?
 
-### [2. Spread native props]()
+Avoid barrel exports for very large component libraries where tree-shaking may be impacted. Don't use for feature-specific components that should remain in their feature directories.
 
-```typescript
-interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
-  variant?: 'primary' | 'secondary';
-}
+### Example
 
-export function Button({ variant, ...props }: ButtonProps) {
-  return <button {...props} />; // Pass through onClick, disabled, etc
-}
-```
-
-### [3. forwardRef for refs]()
-
-```typescript
-export const Input = forwardRef<HTMLInputElement, InputProps>(
-  (props, ref) => {
-    return <input ref={ref} {...props} />;
-  }
-);
-```
-
-### [4. Strict typing]()
-
-```typescript
-// ❌ Bad
-interface ButtonProps {
-  variant?: string;
-}
-
-// ✅ Good
-interface ButtonProps {
-  variant?: 'primary' | 'secondary' | 'danger';
-}
-```
-
-### [5. Inline documentation]()
-
-```typescript
-interface ButtonProps {
-  /**
-   * Button visual variant
-   * @default 'primary'
-   */
-  variant?: 'primary' | 'secondary';
-
-  /**
-   * Show loading indicator
-   */
-  loading?: boolean;
-}
-```
-
-## [Organization]()
-
-This section explains how to organize common component files and create a centralized import point.
-
+**Directory Structure**:
 ```
 src/components/common/
   Button.tsx
   Input.tsx
   Modal.tsx
   Card.tsx
+  Select.tsx
   Alert.tsx
   Badge.tsx
   Spinner.tsx
-  Select.tsx
-  index.ts  # Re-export everything
+  index.ts
 ```
 
-**index.ts**:
+**Barrel Export File** (`index.ts`):
 ```typescript
 export { Button } from './Button';
 export { Input } from './Input';
 export { Modal } from './Modal';
 export { Card } from './Card';
-// ...
+export { Select } from './Select';
+export { Alert } from './Alert';
+export { Badge } from './Badge';
+export { Spinner } from './Spinner';
 ```
 
-**Usage**:
+**Usage in Application**:
 ```typescript
-import { Button, Input, Modal } from '@/components/common';
+// Clean single import statement
+import { Button, Input, Modal, Card } from '@/components/common';
+
+// Instead of multiple imports
+import { Button } from '@/components/common/Button';
+import { Input } from '@/components/common/Input';
+import { Modal } from '@/components/common/Modal';
 ```
 
-## [Checklist]()
+### Checklist
 
-- [ ] Component accepts className for customization
-- [ ] Props typed with TypeScript
-- [ ] Default values defined
-- [ ] Spread native props when applicable
-- [ ] forwardRef when needs to expose ref
-- [ ] Consistent Tailwind styles
-- [ ] Responsive (mobile-first)
-- [ ] Accessible (ARIA when necessary)
+- [ ] All common components in src/components/common directory
+- [ ] Each component in separate file with same name as export
+- [ ] index.ts barrel file exports all components
+- [ ] Path alias configured for @/components import
+- [ ] Component names use PascalCase
+- [ ] File names match component names
 
-## [References]()
+### Troubleshooting
+
+**Import path not resolving**: Verify tsconfig.json includes path alias for @/components.
+
+**Components not found**: Check barrel export file includes all component exports.
+
+**Circular dependency warnings**: Ensure components don't import each other creating circular references.
+
+### Best Practices
+
+- Use barrel exports for clean, maintainable imports
+- Keep component files focused on single component
+- Name files exactly as exported component
+- Document component usage in JSDoc comments
+- Group related components in subdirectories if needed
+- Maintain consistent export pattern across codebase
+
+## [TypeScript Patterns for Component Props]()
+
+<section description: TypeScript best practices for component props including extending native HTML attributes, providing default values, using strict type unions, implementing forwardRef, and documenting props with JSDoc ensuring type safety and developer experience.>
+
+### When to use?
+
+Apply these TypeScript patterns to all common components ensuring type safety, autocomplete support, proper ref forwarding, and clear documentation making components easier to use and maintain across development team.
+
+### When NOT to use?
+
+These patterns are universally applicable to all common components. However, overly complex generic types should be avoided when simpler interfaces suffice.
+
+### Example
+
+**1. Extending Native HTML Attributes**:
+```typescript
+// ✅ Good - Inherits all native button props
+interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
+  variant?: 'primary' | 'secondary';
+}
+
+// ❌ Bad - Missing native props
+interface ButtonProps {
+  variant?: 'primary' | 'secondary';
+  onClick?: () => void; // Incomplete type
+}
+```
+
+**2. Providing Default Values**:
+```typescript
+export function Button({
+  variant = 'primary',  // Default value
+  size = 'md',          // Default value
+  ...props
+}: ButtonProps) {
+  // Component implementation
+}
+```
+
+**3. Using Strict Type Unions**:
+```typescript
+// ✅ Good - Strict union type
+interface ButtonProps {
+  variant?: 'primary' | 'secondary' | 'danger';
+}
+
+// ❌ Bad - Loose string type
+interface ButtonProps {
+  variant?: string;
+}
+```
+
+**4. Implementing forwardRef**:
+```typescript
+export const Input = forwardRef<HTMLInputElement, InputProps>(
+  (props, ref) => {
+    return <input ref={ref} {...props} />;
+  }
+);
+
+Input.displayName = 'Input';
+```
+
+**5. Documenting with JSDoc**:
+```typescript
+interface ButtonProps {
+  /**
+   * Visual style variant of the button
+   * @default 'primary'
+   */
+  variant?: 'primary' | 'secondary' | 'danger';
+
+  /**
+   * Display loading spinner and disable interaction
+   */
+  loading?: boolean;
+}
+```
+
+### Checklist
+
+- [ ] Component props extend appropriate HTML element attributes
+- [ ] All optional props have default values or are marked optional
+- [ ] Use strict union types instead of loose string/number types
+- [ ] forwardRef implemented when component wraps native elements
+- [ ] displayName set for components using forwardRef
+- [ ] Complex props documented with JSDoc comments
+- [ ] Prop types exported for reuse if needed
+
+### Troubleshooting
+
+**Type errors with native props**: Ensure interface extends correct HTMLAttributes type for element being wrapped.
+
+**Ref not working**: Verify forwardRef is implemented and ref is passed to underlying DOM element.
+
+**Autocomplete not showing**: Check TypeScript server is running and prop types are properly exported.
+
+### Best Practices
+
+- Always extend native HTML attributes for wrapped elements
+- Use strict union types for better type checking and autocomplete
+- Provide sensible defaults for all optional props
+- Implement forwardRef for form components and DOM element wrappers
+- Set displayName on forwardRef components for debugging
+- Document complex or non-obvious props with JSDoc
+- Export prop interfaces when they might be reused
+
+## [Common Components Implementation Checklist]()
+
+<section description: Comprehensive verification checklist ensuring all common component implementations follow established patterns for type safety, styling consistency, accessibility, reusability, and project conventions.>
+
+- [ ] Component accepts className prop for customization
+- [ ] Props fully typed with TypeScript interfaces
+- [ ] Default values defined for all optional props
+- [ ] Native HTML attributes extended when wrapping elements
+- [ ] Spread props passed through to underlying elements
+- [ ] forwardRef implemented when ref access needed
+- [ ] displayName set for forwardRef components
+- [ ] Tailwind CSS used for all styling
+- [ ] Responsive design with mobile-first approach
+- [ ] Accessible with ARIA attributes where needed
+- [ ] Component exported through common/index.ts barrel file
+- [ ] No hard-coded business logic or context dependencies
+- [ ] Variants use semantic naming (primary, success, danger)
+- [ ] Size variants consistent across similar components
+- [ ] Loading and disabled states handled appropriately
+- [ ] Error states styled distinctly with appropriate colors
+
+## [Official Documentation References]()
+
+<section description: Official documentation and community resources for React, TypeScript, Tailwind CSS, and component design patterns providing comprehensive guidance beyond this guide's scope for advanced topics and framework-specific features.>
 
 - [React TypeScript Cheatsheet](https://react-typescript-cheatsheet.netlify.app/)
-- [Tailwind CSS Components](https://tailwindui.com/components)
+- [React forwardRef Documentation](https://react.dev/reference/react/forwardRef)
+- [TypeScript Handbook](https://www.typescriptlang.org/docs/handbook/intro.html)
+- [Tailwind CSS Documentation](https://tailwindcss.com/docs)
+- [Tailwind UI Components](https://tailwindui.com/components)
+- [ARIA Authoring Practices Guide](https://www.w3.org/WAI/ARIA/apg/)

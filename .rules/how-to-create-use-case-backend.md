@@ -1,10 +1,38 @@
 # How to Create Use-Cases in NestJS Backend
 
-> Comprehensive guide to implementing thin, focused Use-Cases following SOLID principles and interface segregation for scalable backend development.
+<document description: Comprehensive guide for implementing thin, focused Use-Cases following SOLID principles, interface segregation, and dependency injection for scalable NestJS backend development.>
 
-## [What is a Use-Case?]()
+## [What is a Use-Case and Core Philosophy]()
 
-A Use-Case is a class implementing one or more interfaces representing specific domain responsibilities. This design promotes high cohesion, low coupling, and facilitates comprehensive unit testing through dependency injection and interface segregation.
+A Use-Case is a class implementing one or more interfaces representing specific domain responsibilities. This design promotes high cohesion, low coupling, and facilitates comprehensive unit testing through dependency injection and interface segregation, with strong emphasis on keeping use-cases thin and focused.
+
+### When to use?
+Use Use-Cases when implementing complex business logic involving multiple database operations, external API integrations, sophisticated validation rules, or orchestration between multiple services requiring high testability and maintainability.
+
+### When NOT to use?
+Avoid Use-Cases for simple CRUD operations, direct database reads/writes without business logic, trivial endpoints, or basic transformations. In these cases, keep logic in the standard service layer.
+
+### Example
+See thin use-case example below demonstrating single interface implementation with private helper methods.
+
+### Checklist
+- [ ] Use-Case implements one interface (preferred) or max 2-3 related interfaces
+- [ ] Each interface has only one public method
+- [ ] Use-Case class is under 100-150 lines
+- [ ] Private helper methods organize internal logic
+- [ ] Dependencies injected through constructor
+- [ ] Named in English with UseCase suffix
+- [ ] Registered in module providers
+
+### Troubleshooting
+**Issue**: Use-Case becoming too large and complex
+**Solution**: Split into multiple thin use-cases, each implementing single interface. Better to have many small files than few large ones.
+
+**Issue**: Difficulty testing use-case
+**Solution**: Ensure dependencies are injected as interfaces, making them easy to mock. Keep use-cases focused on single responsibility.
+
+### Best Practices
+Prefer one use-case per interface for maximum simplicity and testability. Keep use-cases thin (under 100 lines). Use private methods to organize complex logic. Name all interfaces, classes, and methods in English. Follow Interface Segregation Principle religiously.
 
 **Main characteristics:**
 - Each interface has only one method (Interface Segregation Principle)
@@ -116,9 +144,36 @@ Notice that:
 - Uses **private methods** to organize internal logic
 - Easy to test each method in isolation
 
-## [When to Use Use-Cases?]()
+## [When to Use Use-Cases - Detailed Scenarios]()
 
 Use-Cases are recommended when business operations involve complex logic, multiple database transactions, or sophisticated rules requiring high testability and maintainability. They excel at isolating business rules from infrastructure concerns.
+
+### When to use?
+Implement Use-Cases for complex business rules involving multiple operations, sophisticated orchestration between services, external API integration requiring error handling and retry logic, or operations needing comprehensive unit testing and mocking.
+
+### When NOT to use?
+Skip Use-Cases for simple CRUD operations without business logic, basic database queries, direct read/write operations, or trivial transformations better handled in service methods.
+
+### Example
+See specific scenarios below (Complex Business Rules, Multiple Related Responsibilities, Flexibility and Testability needs).
+
+### Checklist
+- [ ] Operation involves complex business logic
+- [ ] Multiple database transactions required
+- [ ] External API integration needed
+- [ ] High testability requirement
+- [ ] Operation orchestrates multiple services
+- [ ] Business rules need isolation from infrastructure
+
+### Troubleshooting
+**Issue**: Unclear whether to use Use-Case or Service
+**Solution**: If operation is simple CRUD, use Service. If it involves complex logic, multiple steps, or needs extensive testing, use Use-Case.
+
+**Issue**: Use-Case vs multiple service methods
+**Solution**: Use-Case provides better interface segregation and testability. Choose Use-Case when isolation and mocking are priorities.
+
+### Best Practices
+Create Use-Cases for complex scenarios requiring isolation and testability. Keep simple operations in services. Don't over-engineer simple CRUD with use-cases. Document the reasoning for choosing use-case pattern.
 
 ### 1. Complex Business Rules
 When an operation involves multiple database transactions or complex business logic.
@@ -142,6 +197,33 @@ When you need to test each responsibility in isolation or easily swap implementa
 ## [File Structure: Thin Use-Cases in Separate Files]()
 
 File organization pattern for Use-Cases within modules, strongly favoring thin, focused files where each use-case implements a single interface. This approach maximizes reusability, testability, and code clarity by creating many small files rather than few large ones.
+
+### When to use?
+Always organize use-cases as separate thin files within the use-cases folder of each module. Create one file per use-case implementing one interface for optimal code organization, testability, and maintainability.
+
+### When NOT to use?
+Avoid this pattern only in legacy codebases where migration cost is prohibitive. Never create single large files containing multiple use-cases - this defeats the purpose of interface segregation.
+
+### Example
+See recommended folder structure below showing multiple thin use-case files versus old anti-pattern of single large file.
+
+### Checklist
+- [ ] use-cases folder exists in module
+- [ ] interfaces.ts file contains all interface definitions
+- [ ] Each use-case in separate file (kebab-case.usecase.ts)
+- [ ] Use-case class name is PascalCaseUseCase
+- [ ] Interface name is descriptive in English
+- [ ] No large multi-use-case files
+
+### Troubleshooting
+**Issue**: Too many files feels overwhelming
+**Solution**: This is intentional and correct. Many small focused files are easier to navigate, test, and maintain than few large files.
+
+**Issue**: Finding right use-case file
+**Solution**: Use descriptive names matching interface purpose. IDE search and barrel exports (index.ts) help navigation.
+
+### Best Practices
+Embrace many small files over few large files. Use consistent naming (kebab-case.usecase.ts). Keep interfaces.ts as single source of interface definitions per module. Export use-cases through barrel files for clean imports.
 
 ### Example: Structure with Thin Use-Cases (Recommended)
 
@@ -194,6 +276,34 @@ src/modules/financeiro/
 ## [Step-by-Step Use-Case Implementation]()
 
 Detailed implementation workflow covering interface definition, use-case creation, module registration, and dependency injection. Follow this systematic approach to ensure SOLID principles compliance and proper integration with NestJS framework.
+
+### When to use?
+Follow this step-by-step process every time you create a new use-case to ensure consistency, proper SOLID principles application, correct module integration, and maintainable code structure.
+
+### When NOT to use?
+These steps assume greenfield development. For legacy code refactoring, adapt steps to existing structure while moving towards this ideal pattern incrementally.
+
+### Example
+See detailed steps below (Step 1: Define Interfaces, Step 2: Create Use-Case, Step 3: Register in Module, Step 4: Inject in Service/Controller).
+
+### Checklist
+- [ ] Interfaces defined in interfaces.ts with descriptive English names
+- [ ] Each interface has one method
+- [ ] Use-Case implements one (preferred) or few related interfaces
+- [ ] Use-Case registered in module providers
+- [ ] Use-Case injected via dependency injection
+- [ ] All names in English following conventions
+- [ ] Private helper methods for complex logic
+
+### Troubleshooting
+**Issue**: Dependency injection fails
+**Solution**: Ensure use-case is registered in module providers array and @Injectable decorator is present.
+
+**Issue**: Cannot resolve interface dependency
+**Solution**: TypeScript interfaces don't exist at runtime. Inject concrete class or use type intersection.
+
+### Best Practices
+Follow steps sequentially. Define interfaces first to clarify responsibilities. Keep use-cases thin by implementing minimal interfaces. Always use English naming. Register in module immediately after creation. Test each step before proceeding.
 
 ### Step 1: Define the Interfaces
 
@@ -526,6 +636,32 @@ export class FinanceiroController {
 
 Practical demonstration of how Use-Cases implement each SOLID principle: Single Responsibility through interface segregation, Open-Closed through extension, Liskov Substitution through polymorphism, Interface Segregation through minimal contracts, and Dependency Inversion through abstraction.
 
+### When to use?
+Apply SOLID principles rigorously when designing interfaces and use-cases to ensure code is maintainable, testable, extensible, and follows industry best practices. Review these principles during code reviews and architectural decisions.
+
+### When NOT to use?
+SOLID principles are always applicable - there's no scenario where you should ignore them. However, don't over-engineer simple scenarios; apply principles pragmatically based on complexity.
+
+### Example
+See subsections below demonstrating each SOLID principle (S - Single Responsibility, O - Open/Closed, L - Liskov Substitution, I - Interface Segregation, D - Dependency Inversion).
+
+### Checklist
+- [ ] Each interface has single responsibility (S)
+- [ ] Use-cases open for extension, closed for modification (O)
+- [ ] Implementations substitutable via interfaces (L)
+- [ ] Interfaces segregated with minimal methods (I)
+- [ ] Dependencies on abstractions not concretions (D)
+
+### Troubleshooting
+**Issue**: Unclear which SOLID principle is violated
+**Solution**: Review symptoms - large interfaces violate I, mixed responsibilities violate S, concrete dependencies violate D.
+
+**Issue**: Applying SOLID feels over-engineered
+**Solution**: SOLID prevents future pain. Start with S and I principles, add others as complexity grows.
+
+### Best Practices
+Make SOLID principles non-negotiable in use-case design. Use interfaces for every responsibility. Keep interfaces minimal. Inject dependencies through constructors. Design for extension without modification. Enable substitutability through proper abstractions.
+
 ### S - Single Responsibility Principle
 Each interface represents a single responsibility. If a responsibility changes, only one method is affected.
 
@@ -629,6 +765,34 @@ export class FinanceiroService {
 
 Use-Cases require comprehensive unit tests with mocked dependencies to ensure isolated testing of business logic. Tests should cover success scenarios, edge cases, and error handling using Jest framework with arrange-act-assert pattern.
 
+### When to use?
+Write comprehensive unit tests for every use-case immediately after implementation, covering all public methods, edge cases, error scenarios, and ensuring 100% code coverage through proper mocking of dependencies.
+
+### When NOT to use?
+Never skip use-case testing. These are critical business logic components requiring thorough test coverage. Integration tests complement but don't replace unit tests.
+
+### Example
+See referenced guide for complete examples. Use Jest with mocked repositories, services, and external dependencies following arrange-act-assert pattern.
+
+### Checklist
+- [ ] Test file created (*.usecase.spec.ts)
+- [ ] All dependencies mocked
+- [ ] Success scenarios tested
+- [ ] Error cases tested
+- [ ] Edge cases covered
+- [ ] 100% code coverage achieved
+- [ ] Arrange-Act-Assert pattern followed
+
+### Troubleshooting
+**Issue**: Difficult to mock dependencies
+**Solution**: Ensure dependencies are injected as interfaces. Use Jest's jest.fn() and mockImplementation for clean mocks.
+
+**Issue**: Low code coverage
+**Solution**: Test all branches including error handling, edge cases, and private method logic paths.
+
+### Best Practices
+Test every use-case thoroughly. Mock all external dependencies. Follow AAA pattern. Test both success and failure paths. Aim for 100% coverage. Keep tests readable and maintainable.
+
 **📖 For complete Use-Case testing guide, see**: `./how-to-test-use-cases-jest-backend.md`
 
 The guide contains:
@@ -642,6 +806,31 @@ The guide contains:
 ## [Comparison: Traditional Service vs Use-Case]()
 
 Side-by-side analysis contrasting traditional service-based architecture with Use-Case-driven design, highlighting differences in responsibility distribution, coupling levels, testability, and dependency management. Use-Cases excel in complex scenarios while services suffice for simple CRUD.
+
+### When to use?
+Reference this comparison when deciding between traditional service methods and use-case pattern, explaining architecture to team members, or evaluating existing code for refactoring opportunities.
+
+### When NOT to use?
+Don't use this as absolute rules - both patterns have their place. Simple CRUD legitimately belongs in services. Complex business logic benefits from use-cases.
+
+### Example
+See comparison table and code examples below demonstrating both approaches.
+
+### Checklist
+- [ ] Simple CRUD remains in traditional service
+- [ ] Complex logic extracted to use-cases
+- [ ] Decision documented for each complex operation
+- [ ] Team aligned on when to use each pattern
+
+### Troubleshooting
+**Issue**: Everything becoming use-case (over-engineering)
+**Solution**: Keep simple CRUD in services. Use use-cases only for complex multi-step operations.
+
+**Issue**: Complex logic buried in services
+**Solution**: Refactor to use-cases for better testability and separation of concerns.
+
+### Best Practices
+Use traditional services for simple CRUD operations. Apply use-case pattern for complex business logic. Don't force everything into use-cases. Maintain consistent patterns across codebase. Document architectural decisions.
 
 | Aspect | Traditional Service | Use-Case |
 |--------|-------------------|----------|
@@ -688,6 +877,33 @@ export class BalanceController {
 ## [Best Practices for Thin and Focused Use-Cases]()
 
 Essential guidelines for creating maintainable Use-Cases: one interface per method, descriptive English naming, type aliases for combinations, and preferring single-interface use-cases. These practices ensure code remains modular, testable, and aligned with SOLID principles.
+
+### When to use?
+Apply these best practices universally when creating any use-case, during code reviews, when refactoring existing code, or establishing coding standards for the team.
+
+### When NOT to use?
+These are mandatory best practices, not optional guidelines. There are no scenarios where you should deviate from these standards.
+
+### Example
+See numbered best practices below with code examples demonstrating correct and incorrect patterns.
+
+### Checklist
+- [ ] One interface = one method
+- [ ] Names in English (interfaces, classes, methods)
+- [ ] Use-case implements 1 interface (preferred) or max 2-3
+- [ ] Type aliases used for interface combinations
+- [ ] Interfaces well-documented
+- [ ] Use-case file under 100-150 lines
+
+### Troubleshooting
+**Issue**: Team not following best practices
+**Solution**: Implement linting rules, code review checklist, and automated formatting. Reference this guide in PR templates.
+
+**Issue**: Legacy code doesn't follow standards
+**Solution**: Refactor incrementally. Apply standards to all new code. Plan migration sprints for legacy code.
+
+### Best Practices
+Treat these as non-negotiable standards. Enforce through code review and automation. Keep use-cases thin and focused. Use English naming universally. Document interfaces clearly. Prefer many small files over few large files.
 
 ### 1. One Interface = One Method
 ```typescript
@@ -846,6 +1062,28 @@ export interface CalculateCurrentBalance {
 
 Comprehensive verification checklist covering interface design, implementation quality, module registration, dependency injection, testing coverage, and adherence to SOLID principles. Use this to validate every use-case before deployment.
 
+### When to use?
+Use this checklist for every new use-case before committing code, during code reviews to ensure standards compliance, and when refactoring existing use-cases to verify completeness.
+
+### When NOT to use?
+This is a mandatory checklist for all use-cases. Do not skip or selectively apply - every item is important for code quality and maintainability.
+
+### Example
+See comprehensive checklist below covering all aspects of use-case implementation.
+
+### Checklist
+Use the detailed checklist items below (already provided in the section).
+
+### Troubleshooting
+**Issue**: Checklist too long and tedious
+**Solution**: Automate what's possible through linting and tests. Use as code review template. Becomes second nature with practice.
+
+**Issue**: Items unclear or ambiguous
+**Solution**: Reference specific sections in this guide for clarification. Update checklist wording if confusion persists.
+
+### Best Practices
+Review checklist before starting implementation to guide development. Use during code review as objective quality gate. Automate verification where possible. Keep checklist updated as patterns evolve.
+
 - [ ] `interfaces.ts` file created in `use-cases/`
 - [ ] Each interface has only one method
 - [ ] Interface names are descriptive (verb in infinitive) **in English**
@@ -862,6 +1100,28 @@ Comprehensive verification checklist covering interface design, implementation q
 ## [Troubleshooting: Common Use-Case Problems]()
 
 Solutions for frequent implementation challenges including dependency resolution errors, circular dependencies, and oversized use-cases. These troubleshooting patterns help resolve common NestJS and TypeScript issues when working with use-cases.
+
+### When to use?
+Reference this section when encountering errors during use-case implementation, dependency injection failures, circular dependency warnings, or when use-cases become too large and unwieldy.
+
+### When NOT to use?
+If issue is not listed here, consult NestJS official documentation, TypeScript documentation, or project-specific troubleshooting guides. Add new patterns here as they're discovered.
+
+### Example
+See specific error scenarios and solutions below (Dependency Resolution, Circular Dependency, Oversized Use-Cases).
+
+### Checklist
+- [ ] Error message identified and matched to scenario
+- [ ] Solution applied correctly
+- [ ] Root cause understood to prevent recurrence
+- [ ] Similar patterns checked across codebase
+- [ ] Documentation updated if new pattern discovered
+
+### Troubleshooting
+This is the troubleshooting section itself - see specific scenarios below.
+
+### Best Practices
+Document new error patterns as discovered. Share solutions with team. Address root causes, not just symptoms. Refactor to prevent recurring issues. Keep this section updated with team's learnings.
 
 ### Error: "Cannot resolve dependency"
 
@@ -934,6 +1194,34 @@ export class ReportRulesUseCase
 ## [Complete Example: Orders Module with Use-Cases]()
 
 End-to-end implementation demonstrating real-world use-case pattern in an orders module, including interface definitions, use-case implementation with multiple responsibilities, and controller integration showcasing practical application of all concepts.
+
+### When to use?
+Reference this complete example when setting up new modules with use-cases, as template for consistent implementation across project, or when teaching use-case pattern to team members.
+
+### When NOT to use?
+Don't blindly copy this example - adapt to your specific domain and requirements. This demonstrates multi-interface use-case; prefer single-interface use-cases when possible.
+
+### Example
+See complete implementation below showing Interfaces, Use-Case, and Controller integration for an orders module.
+
+### Checklist
+- [ ] Interfaces clearly defined with single methods
+- [ ] Use-case implements all required interfaces
+- [ ] Dependencies injected via constructor
+- [ ] Business logic well-organized
+- [ ] Controller delegates to use-case
+- [ ] All names in English
+- [ ] Follows project conventions
+
+### Troubleshooting
+**Issue**: Example doesn't match my use case
+**Solution**: Adapt pattern to your domain. Focus on principles (interface segregation, dependency injection) rather than specific implementation.
+
+**Issue**: Example has multiple interfaces per use-case
+**Solution**: This shows it's acceptable for related interfaces. However, prefer splitting into multiple single-interface use-cases when feasible.
+
+### Best Practices
+Use as reference, not rigid template. Adapt to specific domain needs. Prefer simpler single-interface use-cases when possible. Ensure all implementations follow project standards. Keep examples updated as patterns evolve.
 
 ### Interfaces
 
@@ -1076,7 +1364,32 @@ export class OrderController {
 
 Curated external resources including NestJS providers documentation, SOLID principles explanations, Clean Architecture guidance, and Interface Segregation Principle references for deepening understanding of use-case patterns and architectural best practices.
 
+### When to use?
+Consult these references when deepening understanding of SOLID principles, learning Clean Architecture concepts, understanding NestJS dependency injection, or researching advanced use-case patterns.
+
+### When NOT to use?
+Start with this guide before diving into external resources. Use references for deeper understanding, not as replacement for project-specific patterns documented here.
+
+### Example
+External documentation and learning resources:
 - [NestJS Providers](https://docs.nestjs.com/providers)
 - [SOLID Principles](https://en.wikipedia.org/wiki/SOLID)
 - [Clean Architecture](https://blog.cleancoder.com/uncle-bob/2012/08/13/the-clean-architecture.html)
 - [Interface Segregation Principle](https://en.wikipedia.org/wiki/Interface_segregation_principle)
+
+### Checklist
+- [ ] Project guide reviewed first
+- [ ] Specific question or topic identified
+- [ ] Reference material matches technology stack
+- [ ] Patterns adapted to project conventions
+- [ ] New learnings documented and shared
+
+### Troubleshooting
+**Issue**: External patterns don't match project conventions
+**Solution**: Always adapt external examples to follow project standards. When in doubt, follow this guide.
+
+**Issue**: Conflicting advice between sources
+**Solution**: Prioritize project-specific patterns in this guide. Discuss with team before adopting conflicting external patterns.
+
+### Best Practices
+Use references for foundational understanding. Always filter through project-specific requirements. Share useful references with team. Contribute back learnings to this guide. Keep reference list updated and relevant.

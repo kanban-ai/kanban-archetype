@@ -14,6 +14,55 @@ REST API versioning in NestJS is **essential** to avoid breaking integrations an
 4. **Gradual migration**: Give clients time to migrate
 5. **Professionalism**: Demonstrates development maturity
 
+### When to use?
+
+Use API versioning from the start when building production REST APIs that external clients or frontend applications will consume. Always implement versioning when you expect the API to evolve over time with potential breaking changes to contracts, data structures, or business logic.
+
+### When NOT to use?
+
+Don't use API versioning for internal microservices that communicate within the same deployment boundary, throwaway prototypes, or single-use scripts. Also avoid versioning for APIs that will never have external consumers or when complete control over all clients exists.
+
+### Example
+
+```typescript
+// main.ts - Enable versioning globally
+import { VersioningType } from '@nestjs/common';
+
+async function bootstrap() {
+  const app = await NestFactory.create(AppModule);
+  app.setGlobalPrefix('api');
+
+  app.enableVersioning({
+    type: VersioningType.URI,
+    defaultVersion: '1',
+  });
+
+  await app.listen(3000);
+}
+```
+
+### Checklist
+
+- [ ] Versioning enabled in main.ts with VersioningType.URI
+- [ ] All controllers have explicit version decorators
+- [ ] Folder structure organized by version (v1/, v2/)
+- [ ] Swagger documentation separated by version
+- [ ] CHANGELOG documenting API changes between versions
+
+### Troubleshooting
+
+**Issue**: Routes not accessible after enabling versioning
+**Solution**: Ensure all controllers have explicit `@Version()` decorator or set defaultVersion in enableVersioning configuration.
+
+**Issue**: Swagger documentation not showing versioned routes
+**Solution**: Create separate DocumentBuilder configurations for each version and use the include option to specify controllers per version.
+
+### Best Practices
+
+- Always start with v1 even for the first version to establish versioning pattern from the beginning
+- Use URL versioning (VersioningType.URI) for clarity and ease of debugging over header or query parameter versioning
+- Maintain at least two versions simultaneously during transition periods with minimum 6-month deprecation window
+
 ## [When to create a new REST API version]()
 
 Criteria to decide when to increment the API version in NestJS:
@@ -31,6 +80,59 @@ Criteria to decide when to increment the API version in NestJS:
 - **Adding new endpoints**: Doesn't affect existing routes
 - **Bug fixes**: Maintains the contract
 - **Performance improvements**: Doesn't change external behavior
+
+### When to use?
+
+Create a new API version when introducing breaking changes such as removing or renaming fields, changing response structures, modifying authentication mechanisms, or altering business logic that affects existing endpoints. Version increment is necessary when backward compatibility cannot be maintained.
+
+### When NOT to use?
+
+Don't increment version when adding optional fields, creating new endpoints, fixing bugs, improving performance, or making internal refactoring that doesn't affect external API contracts. These changes are backward compatible and can be safely deployed without versioning.
+
+### Example
+
+```typescript
+// Scenario requiring new version: Changing response structure
+// V1: Returns array directly
+@Controller({ path: 'users', version: '1' })
+export class UsersV1Controller {
+  @Get()
+  findAll() {
+    return [{ id: 1, name: 'John' }];
+  }
+}
+
+// V2: Returns with pagination (breaking change)
+@Controller({ path: 'users', version: '2' })
+export class UsersV2Controller {
+  @Get()
+  findAll() {
+    return { data: [{ id: 1, name: 'John' }], pagination: { page: 1 } };
+  }
+}
+```
+
+### Checklist
+
+- [ ] Identified breaking changes requiring new version
+- [ ] Verified if changes can be made backward compatible
+- [ ] Documented changes in CHANGELOG with migration guide
+- [ ] Both versions tested and working simultaneously
+- [ ] Deprecation notice added to old version
+
+### Troubleshooting
+
+**Issue**: Unsure if change requires new version
+**Solution**: If existing clients will break or need code changes to work, it's a breaking change requiring new version. Test with actual client integration.
+
+**Issue**: Too many versions accumulating
+**Solution**: Establish deprecation policy with sunset dates. Remove versions after 6-12 month transition period once client migration is complete.
+
+### Best Practices
+
+- Document all breaking changes with before/after examples in CHANGELOG
+- Provide migration guides showing how to upgrade from old version to new version
+- Communicate version changes to API consumers well in advance with clear deprecation timeline
 
 ## [REST API Versioning Strategies]()
 

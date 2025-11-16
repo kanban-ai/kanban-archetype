@@ -2,13 +2,53 @@
 
 > Complete guide explaining JWT-based authentication system, token validation, user isolation, and secure request handling in the project.
 
-## [Overview]()
+## [JWT-Based Authentication System Overview]()
 
 The project implements JWT-based authentication providing secure, stateless user verification with automatic token refresh, global route protection via opt-out decorators, and complete data isolation ensuring users can only access their own resources.
 
-## [Authentication Flow]()
+### When to use?
+Use JWT authentication for all user-facing applications including web frontends, mobile apps, and single-page applications where users need to login with credentials. Apply this pattern when you need stateless authentication with automatic session management and user identity tracking across requests.
+
+### When NOT to use?
+Do not use JWT for service-to-service integrations, webhooks, or automated scripts where there is no end-user login flow. For these scenarios, use API Key authentication instead. Avoid JWT for public endpoints that should be accessible without authentication.
+
+### Checklist
+- [ ] User entity with email, passwordHash, and active fields properly configured
+- [ ] JWT_SECRET and JWT_EXPIRATION environment variables set in .env file
+- [ ] JWT Strategy validates token and checks user active status
+- [ ] Local Strategy validates login credentials with bcrypt comparison
+- [ ] Auth Service implements signup, login, and validateUser methods
+- [ ] Auth Controller exposes public /login and /signup endpoints
+- [ ] Global JwtAuthGuard registered in main.ts with Reflector
+- [ ] Public decorator applied to login and signup routes
+
+### Troubleshooting
+
+**401 Unauthorized errors**: Check if token is being sent in Authorization header with Bearer prefix. Verify JWT_SECRET matches between signup and validation. Ensure user account is active in database.
+
+**Token expired errors**: User needs to login again to get a new token. Consider implementing refresh token mechanism for better UX.
+
+**Password validation failing**: Ensure bcrypt is used for both hashing during signup and comparison during login. Check password is not being hashed twice.
+
+### Best Practices
+
+- Use bcrypt with salt rounds of 10 or higher for password hashing security
+- Set appropriate JWT expiration times balancing security and user experience
+- Never expose passwordHash in API responses by using @Exclude decorator
+- Implement global guards with opt-out pattern using Public decorator for better security
+- Always filter database queries by userId to ensure data isolation between users
+
+## [Authentication Flow Sequence]()
 
 Step-by-step authentication process from user signup through credential validation to JWT token generation and verification. The flow ensures secure password hashing, token-based session management, and automatic user data injection into request context for authorization.
+
+### When to use?
+Follow this flow for implementing complete authentication lifecycle in new applications or when adding authentication to existing projects. Use this sequence to understand request/response patterns for signup, login, and authenticated endpoint access.
+
+### When NOT to use?
+This flow does not apply to public endpoints marked with @Public decorator, API Key authenticated endpoints, or server-to-server communications that bypass user authentication entirely.
+
+### Example
 
 ```
 1. User signs up → Hash password → Save in DB
@@ -16,6 +56,29 @@ Step-by-step authentication process from user signup through credential validati
 3. Client stores token → Send in all requests
 4. Backend validates token → Extract userId → Authorize access
 ```
+
+### Checklist
+- [ ] Signup endpoint hashes password with bcrypt before saving to database
+- [ ] Login endpoint validates credentials and returns JWT token with user data
+- [ ] Frontend stores JWT token in localStorage or secure cookie
+- [ ] Frontend includes Authorization Bearer token in all authenticated requests
+- [ ] Backend validates JWT on each request and injects user data into req.user
+- [ ] Expired tokens trigger 401 response and redirect to login
+
+### Troubleshooting
+
+**Signup fails with duplicate key error**: Email already exists in database. Return user-friendly error message about duplicate email.
+
+**Login returns 401 even with correct password**: Check if user.active is false in database. Inactive users should not be able to login.
+
+**Token validation fails intermittently**: Ensure JWT_SECRET is consistent across all application instances and not changing between deployments.
+
+### Best Practices
+
+- Return user data along with access_token in login response for immediate use
+- Implement token expiration handling on frontend with automatic redirect to login
+- Use HTTPS in production to prevent token interception during transmission
+- Consider implementing refresh token mechanism for improved user experience
 
 ## [System Components]()
 
@@ -258,9 +321,17 @@ async login(@Body() loginDto: LoginDto) {
 }
 ```
 
-## [How to Use in Controller]()
+## [How to Access Authenticated User in Controllers]()
 
 Practical patterns for accessing authenticated user data in controllers and services using Request object injection. The framework automatically injects user information after successful JWT validation, enabling secure data isolation and user-specific operations throughout the application.
+
+### When to use?
+Access req.user in controllers whenever you need to identify which user is making the request for data isolation, authorization checks, or audit logging. Use this pattern in all protected endpoints that require user-specific operations.
+
+### When NOT to use?
+Do not access req.user in public endpoints marked with @Public decorator as it will be undefined. Do not use req.user for API Key authenticated endpoints where user context may not exist.
+
+### Example
 
 ### [Access Logged User]()
 
@@ -291,9 +362,36 @@ Automatically injected after JWT validation:
 }
 ```
 
-## [Data Isolation per User]()
+### Checklist
+- [ ] Controller method includes @Request() req parameter to access user data
+- [ ] Pass req.user.userId to service methods for data filtering
+- [ ] Validate user ownership before update or delete operations
+- [ ] Use req.user for audit logging of user actions
+
+### Troubleshooting
+
+**req.user is undefined**: Endpoint may be marked as @Public or JWT validation failed. Check if token is being sent correctly.
+
+**TypeScript errors with req.user**: Create a proper type definition extending Request interface with user property.
+
+### Best Practices
+
+- Always pass userId to service methods explicitly rather than passing entire req object
+- Create custom decorators like @CurrentUser() to extract user data cleanly
+- Validate resource ownership in service layer before performing operations
+- Use req.user.userId for all database queries to enforce data isolation
+
+## [Data Isolation per User Implementation]()
 
 Critical security pattern ensuring all database queries are filtered by authenticated userId to prevent unauthorized data access. This isolation layer guarantees users can only view, modify, or delete their own resources, implementing proper multi-tenant security architecture.
+
+### When to use?
+Implement data isolation in all service methods that access user-specific resources to prevent unauthorized cross-user data access. Apply this pattern in multi-tenant applications where each user should only see their own data.
+
+### When NOT to use?
+Do not apply user filtering to admin endpoints that need to access all users' data, or to shared resources that are intentionally accessible across users. Public data that is not user-specific does not require userId filtering.
+
+### Example
 
 ### [Service Example]()
 
@@ -327,6 +425,29 @@ export class ProductService {
   }
 }
 ```
+
+### Checklist
+- [ ] All find operations include userId in where clause
+- [ ] Update operations validate ownership before modifying data
+- [ ] Delete operations confirm user owns the resource being deleted
+- [ ] Service methods accept userId as parameter from controller
+- [ ] Related entities are filtered by userId through proper joins
+
+### Troubleshooting
+
+**User can see other users' data**: Missing userId filter in repository query. Always include userId in where clause.
+
+**404 errors for valid resources**: User trying to access resource that belongs to another user. This is correct behavior for data isolation.
+
+**Performance issues with userId filtering**: Ensure database index exists on userId column for efficient queries.
+
+### Best Practices
+
+- Always validate ownership before update or delete operations to prevent unauthorized modifications
+- Include userId in all database indexes for columns frequently queried together
+- Create custom repository methods that automatically include userId filtering
+- Use TypeORM query builder with andWhere for complex queries requiring userId filtering
+- Throw NotFoundException instead of Unauthorized when resource not found for user to avoid information disclosure
 
 ## [Complete Request Flow]()
 
@@ -399,9 +520,17 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
 ]
 ```
 
-## [Frontend: How to Implement]()
+## [Frontend JWT Authentication Implementation]()
 
 Frontend integration guide covering token storage, automatic token injection via Axios interceptors, error handling for expired tokens, and protected route implementation with React Router. These patterns ensure seamless client-side authentication experience.
+
+### When to use?
+Implement these frontend patterns in React applications consuming JWT-authenticated APIs. Use Axios interceptors for automatic token injection in all requests and protected routes for securing authenticated pages.
+
+### When NOT to use?
+Do not store JWT tokens in localStorage for highly sensitive applications requiring enhanced security. Consider secure HTTP-only cookies instead. These patterns are specific to React Router and Axios; adapt for other frameworks.
+
+### Example
 
 ### [1. Store Token]()
 
@@ -475,6 +604,30 @@ const PrivateRoute = ({ children }) => {
   }
 />
 ```
+
+### Checklist
+- [ ] Axios instance configured with baseURL from environment variable
+- [ ] Request interceptor adds Authorization Bearer token to all requests
+- [ ] Response interceptor handles 401 errors by clearing token and redirecting
+- [ ] Login response stores both access_token and user data in localStorage
+- [ ] PrivateRoute component checks for token before rendering protected pages
+- [ ] Logout function clears token from localStorage and redirects to login
+
+### Troubleshooting
+
+**Token not being sent in requests**: Check if Axios interceptor is registered before making API calls. Verify token is stored correctly in localStorage.
+
+**Infinite redirect loop on login page**: PrivateRoute should not wrap the login page itself. Only protect authenticated routes.
+
+**401 errors after token expires**: Implement token refresh mechanism or show user-friendly message to login again.
+
+### Best Practices
+
+- Clear token and user data immediately on 401 response to prevent stale authentication state
+- Use environment variables for API URL to support different environments
+- Implement loading state while checking authentication in PrivateRoute
+- Consider using React Context for sharing authentication state across components
+- Add token expiration check on frontend before making requests to improve UX
 
 ## [Environment Variables]()
 
