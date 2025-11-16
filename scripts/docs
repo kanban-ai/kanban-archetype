@@ -560,12 +560,8 @@ async function queryDocuments(queryText, nResults = 5) {
 
     log(`${colors.yellow}Seção:${colors.reset} ${metadata.header}`);
     log(`${colors.yellow}Linhas:${colors.reset} ${metadata.start_line}-${metadata.end_line}`);
-    log('\n' + colors.yellow + 'Conteúdo:' + colors.reset);
-    log('────────────────────────────────────────────────────────────────', 'blue');
-
-    // Exibir conteúdo completo
-    console.log(doc);
-    console.log('');
+    log(`\n${colors.cyan}📍 O conteúdo completo pode ser encontrado em:${colors.reset}`);
+    log(`   ${colors.green}${metadata.filepath}:${metadata.start_line}-${metadata.end_line}${colors.reset}\n`);
   }
 }
 
@@ -631,7 +627,7 @@ async function queryDocumentsStructured(queryText, nResults = 5) {
       title: metadata.title || null,
       section: metadata.header,
       lines: `${metadata.start_line}-${metadata.end_line}`,
-      content: doc
+      location: `${metadata.filepath}:${metadata.start_line}-${metadata.end_line}`
     };
   });
 

@@ -7,12 +7,16 @@ Complete guide on correct date handling in backend and frontend using ISODate UT
 Essential concepts for storing dates in PostgreSQL using TIMESTAMPTZ type ensuring UTC storage, TypeORM entity configuration with timestamptz column type, and migration setup for timestamp with timezone support across distributed systems avoiding daylight saving issues.
 
 ### When to use?
+
 Use this pattern when storing any date or timestamp data in PostgreSQL database including event dates, user activity timestamps, scheduled tasks, audit logs, or any time-sensitive data requiring consistency across different timezones and servers in distributed environments.
 
 ### When NOT to use?
+
 Do not use this pattern for date-only fields without time component where timezone is irrelevant such as birthdate or anniversary where only the calendar date matters regardless of timezone. For these cases use DATE type instead of TIMESTAMPTZ.
 
 ### Example
+
+TypeORM entity with TIMESTAMPTZ configuration and PostgreSQL migration for proper UTC storage.
 
 **TypeORM Entity with TIMESTAMPTZ:**
 
@@ -60,6 +64,7 @@ export class CreateEventsTable1234567890123 implements MigrationInterface {
 ```
 
 ### Checklist
+
 - [ ] Use `{ type: 'timestamptz' }` in TypeORM entity decorators
 - [ ] Use `TIMESTAMPTZ` (uppercase) in SQL migration queries
 - [ ] Set `synchronize: false` in TypeORM config to rely on migrations
@@ -78,6 +83,7 @@ export class CreateEventsTable1234567890123 implements MigrationInterface {
 - **Solution**: Use uppercase `TIMESTAMPTZ` in raw SQL queries, ensure PostgreSQL version supports timestamptz (9.1+)
 
 ### Best Practices
+
 - Always use `timestamptz` in TypeORM entities and `TIMESTAMPTZ` in SQL migrations
 - PostgreSQL stores all timestamptz values internally in UTC regardless of server timezone
 - Never rely on synchronize in production, always use migrations for schema changes
@@ -88,12 +94,16 @@ export class CreateEventsTable1234567890123 implements MigrationInterface {
 Implementation of UTC date manipulation in NestJS backend using dayjs library including DTO validation with ISO8601 format, service layer date conversion from ISO strings to Date objects, and query operations maintaining UTC consistency throughout the application lifecycle.
 
 ### When to use?
+
 Use dayjs with UTC plugin for all backend date operations including parsing ISO date strings from frontend, calculating date differences, adding or subtracting time periods, formatting dates for logs, comparing dates, and converting to Date objects before database persistence.
 
 ### When NOT to use?
+
 Do not use dayjs for simple current timestamp retrieval where `new Date()` suffices, do not use for timezone conversion in backend as all backend operations must remain in UTC, and avoid using dayjs format for API responses as TypeORM automatically serializes Date to ISO UTC string.
 
 ### Example
+
+DTO validation with ISO8601 format and service implementation with dayjs UTC operations.
 
 **DTO with ISO8601 Validation:**
 
@@ -197,6 +207,7 @@ export class EventsService {
 ```
 
 ### Checklist
+
 - [ ] Install dayjs and utc plugin: `npm install dayjs`
 - [ ] Always extend dayjs with utc plugin before using
 - [ ] Use `@IsISO8601()` validator in all DTOs receiving dates
@@ -217,6 +228,7 @@ export class EventsService {
 - **Solution**: Confirm both dates use `dayjs.utc()` for parsing, check dayjs plugins are loaded correctly
 
 ### Best Practices
+
 - Always parse ISO strings from DTOs using `dayjs.utc(string).toDate()` before database operations
 - Use dayjs for date arithmetic (add, subtract, diff) instead of native Date methods
 - Keep all backend date manipulations in UTC, never convert to local timezone
@@ -228,12 +240,16 @@ export class EventsService {
 Converting UTC dates from backend API to user's local timezone for display in React applications using dayjs with timezone plugin, creating reusable formatting utilities, implementing DateDisplay component, and handling datetime-local inputs with proper UTC conversion.
 
 ### When to use?
+
 Use this pattern for displaying any date or timestamp from backend API to users including event schedules, creation timestamps, activity logs, deadline displays, or any date requiring user-local timezone presentation while maintaining accurate relative time calculations.
 
 ### When NOT to use?
+
 Do not use for dates that should remain timezone-agnostic like birthdates or anniversaries, do not convert to local timezone when sending data back to backend (always send UTC), and avoid timezone conversion for date-only displays where time component is irrelevant.
 
 ### Example
+
+Timezone utility functions, reusable DateDisplay component, and form with datetime-local input.
 
 **Timezone Utility Functions:**
 
@@ -369,6 +385,7 @@ export const EventForm: React.FC = () => {
 ```
 
 ### Checklist
+
 - [ ] Install dayjs with plugins: `npm install dayjs`
 - [ ] Configure dayjs with utc, timezone, and relativeTime plugins
 - [ ] Set locale to pt-br or desired language
@@ -390,6 +407,7 @@ export const EventForm: React.FC = () => {
 - **Solution**: Confirm dayjs.locale() is called with correct locale code, check locale import is included
 
 ### Best Practices
+
 - Detect user timezone automatically using Intl.DateTimeFormat for accuracy
 - Create centralized date utility file to ensure consistent formatting across application
 - Use DateDisplay component for all date presentations to maintain consistency
@@ -403,12 +421,16 @@ export const EventForm: React.FC = () => {
 Complete data flow demonstrating how dates travel from user input in browser through frontend conversion to UTC, backend validation and storage in PostgreSQL, retrieval from database, and final display back to user in their local timezone maintaining accuracy throughout entire lifecycle.
 
 ### When to use?
+
 Reference this flow when implementing any feature involving date input, storage, and display to ensure proper timezone handling at each layer, when debugging date-related issues to identify where timezone conversion fails, or when onboarding new developers to explain date handling architecture.
 
 ### When NOT to use?
+
 Do not use this as implementation guide for simple read-only date displays without user input, or for dates that never involve user interaction such as system-generated audit timestamps that remain in UTC throughout their lifecycle.
 
 ### Example
+
+Complete flow from user input through database storage to display.
 
 **Create Event Flow:**
 
@@ -438,6 +460,7 @@ Do not use this as implementation guide for simple read-only date displays witho
 8. **Frontend**: Displays formatted dates in user's local time
 
 ### Checklist
+
 - [ ] Verify datetime-local input provides local time without timezone
 - [ ] Confirm convertToUTC properly detects browser timezone
 - [ ] Check backend DTO has @IsISO8601 validation
@@ -459,6 +482,7 @@ Do not use this as implementation guide for simple read-only date displays witho
 - **Solution**: Verify getUserTimezone uses Intl.DateTimeFormat, check dayjs timezone data is loaded for all required zones
 
 ### Best Practices
+
 - Document complete date flow in API documentation for frontend consumers
 - Test date handling with users in different timezones (GMT-8, GMT+0, GMT+8)
 - Validate dates remain consistent through create-read cycle in automated tests
@@ -471,12 +495,16 @@ Do not use this as implementation guide for simple read-only date displays witho
 Frequent errors developers make when handling dates including using new Date() directly in backend creating server timezone dependency, saving ISO strings to database instead of Date objects, sending Date objects from frontend instead of ISO UTC strings, and displaying UTC dates directly without timezone conversion.
 
 ### When to use?
+
 Reference this section during code review to identify date handling antipatterns, when debugging timezone-related bugs to find common mistakes, or when training developers on proper date handling to show concrete examples of what to avoid.
 
 ### When NOT to use?
+
 Do not use incorrect examples in production code, do not copy "Don't Do" code blocks as they demonstrate antipatterns, and do not assume these are the only possible mistakes as date handling has many edge cases.
 
 ### Example
+
+Comparison of common mistakes and correct implementations.
 
 **DON'T DO - Common Mistakes:**
 
@@ -519,6 +547,7 @@ await api.post('/api/events', {
 ```
 
 ### Checklist
+
 - [ ] Never use `new Date()` in backend, always use `dayjs.utc().toDate()`
 - [ ] Never save ISO strings directly to database, convert to Date first
 - [ ] Never send Date objects from frontend, always convert to ISO UTC string
@@ -539,6 +568,7 @@ await api.post('/api/events', {
 - **Solution**: Add comprehensive logging of date conversions, implement monitoring for timezone-related errors
 
 ### Best Practices
+
 - Establish team coding standards prohibiting direct Date usage in backend
 - Create ESLint rules to detect common date handling antipatterns
 - Use TypeScript strict mode to catch type mismatches between string and Date
@@ -551,12 +581,16 @@ await api.post('/api/events', {
 Comprehensive verification list covering all aspects of date handling implementation across backend and frontend ensuring UTC consistency, proper timezone conversion, validation, and documentation for production-ready date functionality.
 
 ### When to use?
+
 Use this checklist before merging any feature involving date handling, during code review of date-related pull requests, when setting up new backend or frontend project to ensure date infrastructure is correct, or during bug investigation to verify all date handling requirements are met.
 
 ### When NOT to use?
+
 Do not use for features without any date handling, do not skip checklist items without documented justification, and do not consider implementation complete until all applicable items are checked.
 
 ### Example
+
+Complete verification checklist for backend, frontend, and testing.
 
 **Backend Implementation:**
 
@@ -594,6 +628,7 @@ Do not use for features without any date handling, do not skip checklist items w
 - [ ] Document timezone handling in README or wiki
 
 ### Checklist
+
 - [ ] Review backend checklist and verify all applicable items
 - [ ] Review frontend checklist and verify all applicable items
 - [ ] Review testing checklist and ensure coverage
@@ -609,6 +644,7 @@ Do not use for features without any date handling, do not skip checklist items w
 - **Solution**: All items are mandatory unless feature genuinely doesn't involve that aspect (e.g., read-only API doesn't need DTO validation)
 
 ### Best Practices
+
 - Integrate checklist into pull request template for date-related features
 - Require explicit confirmation of checklist completion before merge approval
 - Update checklist based on team learnings and new edge cases discovered
@@ -619,14 +655,19 @@ Do not use for features without any date handling, do not skip checklist items w
 Links to official documentation and resources for dayjs library, PostgreSQL datetime types, ISO 8601 standard, TypeORM date handling, and timezone database information supporting proper implementation of date handling patterns described in this guide.
 
 ### When to use?
+
 Reference these links when needing detailed documentation beyond this guide, when troubleshooting edge cases not covered here, when learning advanced dayjs features like custom plugins, or when validating PostgreSQL timezone behavior and configuration.
 
 ### When NOT to use?
+
 Do not use as primary implementation guide, always follow patterns in this document first, do not assume external documentation reflects this project's specific standards, and do not spend excessive time reading documentation before attempting implementation.
 
 ### Example
 
+Primary documentation references for date handling implementation.
+
 **Primary References:**
+
 - [dayjs Documentation](https://day.js.org/docs/en/installation/installation) - Complete API reference and plugin guide
 - [dayjs UTC Plugin](https://day.js.org/docs/en/plugin/utc) - UTC parsing and manipulation methods
 - [dayjs Timezone Plugin](https://day.js.org/docs/en/plugin/timezone) - Timezone conversion and detection
@@ -635,6 +676,7 @@ Do not use as primary implementation guide, always follow patterns in this docum
 - [TypeORM Date Handling](https://typeorm.io/entities#column-types-for-postgres) - Column types and date operations
 
 ### Checklist
+
 - [ ] Bookmark dayjs documentation for quick API reference
 - [ ] Review PostgreSQL timezone behavior documentation
 - [ ] Understand ISO 8601 format requirements for API design
@@ -649,6 +691,7 @@ Do not use as primary implementation guide, always follow patterns in this docum
 - **Solution**: Consult MDN for JavaScript Date API, check IANA timezone database for timezone data
 
 ### Best Practices
+
 - Keep reference links updated with latest documentation versions
 - Add new references as team discovers helpful resources
 - Share relevant documentation sections during code review for educational purposes

@@ -1,20 +1,22 @@
-# How to consume the API in Frontend
+# How to Consume API in Frontend
 
-Complete guide on how to make HTTP requests to the API using Axios in React, including configuration, service patterns, error handling, and advanced techniques for robust API integration.
+Complete guide on consuming REST APIs in React applications using Axios, including instance configuration with interceptors, service layer patterns, error handling strategies, and advanced techniques for robust client-server integration.
 
-## [Axios Configuration and Setup]()
+## [Axios Instance Configuration with Interceptors]()
 
-Axios centralized configuration creates a reusable HTTP client instance with base URL, default headers, and interceptors for authentication and error handling. This eliminates repetition and ensures consistent API communication across the entire application.
+Centralized Axios configuration creates a reusable HTTP client instance with base URL, default headers, request/response interceptors for authentication, and global error handling. This pattern eliminates code duplication and ensures consistent API communication across the entire application with automatic token injection and version management.
 
 ### When to use?
 
-Use centralized Axios configuration in every React application consuming a REST API. Essential for adding authentication tokens automatically, handling API versioning, managing base URLs across environments, and implementing global error handling with interceptors.
+Use centralized Axios configuration in every React application consuming a REST API. Essential for automatically attaching authentication tokens to requests, managing API versioning centrally, handling base URLs across different environments (dev, staging, production), and implementing global error handling with request/response interceptors for consistent behavior.
 
 ### When NOT to use?
 
-Do not use centralized Axios if you only make one or two API calls (use fetch instead), if different endpoints require completely different configurations, or if using GraphQL (use Apollo Client or similar). However, most REST API projects benefit from this pattern.
+Do not use centralized Axios configuration if you only make one or two isolated API calls in your entire application (use native fetch API instead), if completely different endpoints require mutually incompatible configurations, or if using GraphQL exclusively (use Apollo Client, urql, or similar GraphQL-specific clients instead). However, most REST API projects benefit significantly from this pattern.
 
 ### Example
+
+Axios instance with environment-based configuration and authentication interceptors.
 
 **File**: `src/services/api.ts`
 
@@ -70,48 +72,53 @@ VITE_API_URL=http://localhost:3000/api
 
 ### Checklist
 
-- [ ] Axios installed via npm/yarn
-- [ ] api.ts file created with centralized instance
-- [ ] Base URL uses environment variable
-- [ ] API version centralized in constant
-- [ ] Request interceptor adds JWT token
-- [ ] Response interceptor handles 401 errors
-- [ ] Content-Type header set to application/json
-- [ ] Environment variables configured in .env
+- [ ] Axios installed via npm/yarn (`npm install axios`)
+- [ ] `api.ts` file created with centralized instance
+- [ ] Base URL configured using environment variable
+- [ ] API version centralized in constant for easy updates
+- [ ] Request interceptor adds JWT token from localStorage
+- [ ] Response interceptor handles 401 unauthorized errors
+- [ ] Content-Type header set to `application/json` by default
+- [ ] Environment variables properly configured in `.env` file
 
 ### Troubleshooting
 
-**CORS errors**: Verify backend CORS configuration allows your frontend origin
+**CORS errors on all requests**: Verify backend CORS configuration allows your frontend origin (protocol, domain, and port must match)
 
-**401 on all requests**: Check that token is stored correctly in localStorage
+**401 Unauthorized on all requests**: Check that authentication token is stored correctly in localStorage with the exact key name expected
 
-**Base URL incorrect**: Verify VITE_API_URL in .env matches backend URL exactly
+**Base URL incorrect or not found**: Verify `VITE_API_URL` in `.env` file matches backend URL exactly including protocol and port
 
-**Interceptors not firing**: Ensure you're using the configured instance not axios directly
+**Interceptors not firing**: Ensure you're importing and using the configured `api` instance, not the base `axios` object directly
+
+**Token not automatically added**: Verify request interceptor is configured before any requests are made and localStorage key is correct
 
 ### Best Practices
 
-1. Centralize API version for easy updates
-2. Use environment variables for different environments
-3. Add token in interceptor not per request
-4. Handle 401 globally but let components decide redirect
-5. Export single configured instance
-6. Keep api.ts focused on configuration only
-7. Document interceptor behavior clearly
+1. Centralize API version constant for seamless updates across application
+2. Use environment variables for configuration across different deployment environments
+3. Add authentication token in request interceptor, not in individual service methods
+4. Handle 401 errors globally in interceptor but delegate navigation to React components
+5. Export single configured instance to ensure consistency across all API calls
+6. Keep `api.ts` focused solely on HTTP client configuration, not business logic
+7. Document interceptor behavior and side effects clearly with comments
+8. Consider adding request/response logging interceptors for debugging in development mode
 
-## [Service Layer Pattern]()
+## [Domain-Specific Service Layer Pattern]()
 
-Service layer organizes API calls into domain-specific modules with TypeScript interfaces for type safety. Each service encapsulates all HTTP operations for a specific resource, providing a clean separation between API communication and UI components.
+Service layer organizes API calls into domain-specific modules with strongly-typed TypeScript interfaces for compile-time safety. Each service file encapsulates all HTTP operations for a specific resource (users, products, orders), providing clean separation between API communication logic and React UI components with reusable, testable abstractions.
 
 ### When to use?
 
-Use service layer pattern for every API resource in your application (users, products, orders, etc.). Essential for organizing complex applications, enabling code reuse, providing consistent API interfaces, and facilitating testing with mock services.
+Use service layer pattern for every distinct API resource or domain entity in your application (users, products, orders, categories, etc.). Essential for organizing complex applications with multiple endpoints, enabling code reuse across components, providing consistent API interfaces throughout the codebase, and facilitating unit testing with mock service implementations without touching actual HTTP layer.
 
 ### When NOT to use?
 
-Do not create services for one-off API calls that won't be reused, for extremely simple applications with 2-3 total API calls, or when using data-fetching libraries like React Query that handle this differently. Start with services as complexity grows.
+Do not create dedicated service files for one-off API calls that will never be reused elsewhere in the application, for extremely simple applications with only 2-3 total API endpoints across the entire project, or when using advanced data-fetching libraries like React Query or SWR that provide their own abstraction patterns. Services add value as application complexity and endpoint count grow beyond trivial levels.
 
 ### Example
+
+TypeScript service with complete CRUD operations and type-safe interfaces.
 
 **File**: `src/services/product.service.ts`
 
@@ -135,31 +142,31 @@ export interface CreateProductDto {
 }
 
 export const ProductService = {
-  // List all
+  // List all products
   async findAll(): Promise<Product[]> {
     const response = await api.get<Product[]>('/products');
     return response.data;
   },
 
-  // Find by ID
+  // Find product by ID
   async findOne(id: number): Promise<Product> {
     const response = await api.get<Product>(`/products/${id}`);
     return response.data;
   },
 
-  // Create
+  // Create new product
   async create(data: CreateProductDto): Promise<Product> {
     const response = await api.post<Product>('/products', data);
     return response.data;
   },
 
-  // Update
+  // Update existing product
   async update(id: number, data: Partial<CreateProductDto>): Promise<Product> {
     const response = await api.patch<Product>(`/products/${id}`, data);
     return response.data;
   },
 
-  // Delete
+  // Delete product
   async remove(id: number): Promise<void> {
     await api.delete(`/products/${id}`);
   },
@@ -171,48 +178,53 @@ export const ProductService = {
 
 ### Checklist
 
-- [ ] Service file created per resource
-- [ ] TypeScript interfaces for entities
-- [ ] DTOs defined for create/update operations
-- [ ] All CRUD operations implemented
-- [ ] Async/await used consistently
-- [ ] Response types specified with generics
-- [ ] Service exported as object with methods
-- [ ] Consistent naming convention (findAll, findOne, create, update, remove)
+- [ ] Dedicated service file created per domain resource
+- [ ] TypeScript interfaces defined for all entity shapes
+- [ ] DTOs (Data Transfer Objects) defined for create/update operations
+- [ ] All necessary CRUD operations implemented (findAll, findOne, create, update, remove)
+- [ ] Async/await used consistently throughout service methods
+- [ ] Response types specified using TypeScript generics (`<Product>`, `<Product[]>`)
+- [ ] Service exported as object with methods for easy importing
+- [ ] Consistent naming convention followed (findAll, findOne, create, update, remove)
 
 ### Troubleshooting
 
-**Type errors**: Ensure interfaces match backend response structure exactly
+**TypeScript type errors**: Ensure interface properties match backend response structure exactly (case-sensitive field names)
 
-**Response undefined**: Check that you're returning response.data not response
+**Response data undefined**: Check that you're returning `response.data`, not the entire `response` object
 
-**Method not found**: Verify service is exported and imported correctly
+**Service method not found**: Verify service is exported correctly and imported with proper destructuring syntax
 
-**Stale TypeScript types**: Regenerate types when backend changes
+**Stale TypeScript types after backend changes**: Regenerate or update interfaces when backend modifies response structure
+
+**Type inference not working**: Explicitly specify generic types on axios calls for proper IDE autocomplete
 
 ### Best Practices
 
-1. One service per resource/domain
-2. Define TypeScript interfaces matching backend
-3. Use descriptive method names (findAll, findOne, etc.)
-4. Type all parameters and return values
-5. Export interfaces for use in components
-6. Keep services pure - no UI logic
-7. Document complex operations with comments
+1. Create one service file per distinct resource or bounded domain context
+2. Define TypeScript interfaces that accurately mirror backend response schemas
+3. Use descriptive, conventional method names (findAll, findOne, create, update, remove)
+4. Explicitly type all method parameters and return values for compile-time safety
+5. Export interfaces alongside services for reuse in components and other services
+6. Keep services pure and stateless with no UI logic, navigation, or side effects
+7. Document complex operations, business rules, or non-obvious behaviors with comments
+8. Group related operations together (e.g., all user profile operations in UserService)
 
-## [Using Services in React Components]()
+## [Consuming Services in Functional React Components]()
 
-Consuming services in React components involves managing loading states, data, and errors using hooks like useState and useEffect. This pattern provides consistent UX through proper state management and user feedback during API operations.
+Consuming API services in React functional components involves managing asynchronous data fetching with loading states, error boundaries, and data persistence using built-in hooks like useState and useEffect. This pattern provides consistent user experience through proper state management, loading indicators, error messages, and user feedback during all API operations across the application lifecycle.
 
 ### When to use?
 
-Use this pattern when consuming any API service in functional React components. Essential for list pages, detail views, forms, or any component that needs to fetch, create, update, or delete data from the backend.
+Use this pattern when consuming any API service method within functional React components for standard data operations. Essential for list/index pages displaying collections, detail/show views fetching single resources, create/edit forms submitting data, delete confirmations, or any component requiring server data to render properly. Applies to standard CRUD operations without advanced caching needs.
 
 ### When NOT to use?
 
-Do not use this basic pattern when you need advanced features like caching, automatic refetching, or optimistic updates (use React Query/SWR instead). Consider custom hooks for reusable data fetching logic.
+Do not use this basic useState/useEffect pattern when you need advanced features like automatic background refetching, intelligent caching strategies, request deduplication, optimistic updates, or complex cache invalidation (use React Query, SWR, or Apollo Client instead). Also consider extracting reusable custom hooks when identical data-fetching logic repeats across multiple components to reduce duplication.
 
 ### Example
+
+Complete examples covering list views, forms, updates, and deletions with proper state management.
 
 **List View with Loading States**:
 
@@ -397,48 +409,53 @@ const handleDelete = async (id: number) => {
 
 ### Checklist
 
-- [ ] useState for data, loading, and error states
-- [ ] useEffect for initial data loading
-- [ ] Try/catch for error handling
-- [ ] Finally block to always stop loading
-- [ ] Loading indicator displayed
-- [ ] Error messages shown to user
-- [ ] Success feedback provided
-- [ ] Form validation implemented
+- [ ] useState hooks declared for data, loading, and error states
+- [ ] useEffect hook used for initial data loading on component mount
+- [ ] Try/catch blocks wrap all async API calls for error handling
+- [ ] Finally block ensures loading state is always reset after operation
+- [ ] Loading indicator displayed to user during async operations
+- [ ] Error messages rendered and shown to user when errors occur
+- [ ] Success feedback provided after successful mutations (create/update/delete)
+- [ ] Client-side form validation implemented before API submission
 
 ### Troubleshooting
 
-**Infinite loops**: Ensure useEffect has proper dependency array
+**Infinite render loops**: Ensure useEffect has proper dependency array that doesn't change on every render
 
-**State not updating**: Check that setState is called with new values not mutations
+**State not updating after API call**: Check that setState is called with new values, not mutated references
 
-**Memory leaks**: Clean up async operations in useEffect return function
+**Memory leak warnings in console**: Clean up async operations in useEffect return function, especially when component unmounts
 
-**Stale closures**: Include all dependencies in useEffect array
+**Stale closure capturing old state**: Include all dependencies that the effect uses in the useEffect dependency array
+
+**Data not refetching after mutations**: Manually call fetch functions after successful create/update/delete operations
 
 ### Best Practices
 
-1. Always manage loading, data, and error states
-2. Show loading indicators during async operations
-3. Display clear error messages to users
-4. Use try/catch/finally for consistent error handling
-5. Reset form fields after successful submission
-6. Disable submit buttons during loading
-7. Provide visual feedback for all user actions
+1. Always manage three critical states: loading (boolean), data (typed entity), and error (string/object)
+2. Show visual loading indicators (spinners, skeletons) during all asynchronous operations
+3. Display clear, actionable error messages to users, not technical stack traces
+4. Use try/catch/finally pattern for consistent error handling and cleanup across all async operations
+5. Reset form fields to initial values after successful submission for better UX
+6. Disable submit buttons during loading state to prevent duplicate submissions
+7. Provide clear visual feedback for all user actions (success messages, toasts, confirmations)
+8. Extract repeated data-fetching logic into custom hooks for reusability across components
 
-## [Error Handling and User Feedback]()
+## [Structured Error Handling with User-Friendly Feedback]()
 
-Consistent error handling extracts meaningful messages from API responses and provides clear user feedback. Backend validation errors may return arrays of messages that need proper formatting for display.
+Consistent error handling extracts meaningful, user-friendly messages from various API error response formats and provides clear visual feedback to users. Backend validation errors often return arrays of field-specific messages that require proper parsing, formatting, and display near relevant form inputs for optimal user experience and debugging capabilities.
 
 ### When to use?
 
-Use structured error handling in every component that makes API calls. Essential for form validation feedback, handling network errors, processing backend error responses, and providing users with actionable error information.
+Use structured error handling in every component that makes API calls or submits forms to the backend. Essential for displaying backend validation error messages near form fields, handling network connectivity errors gracefully, processing and formatting backend error response arrays, providing users with clear actionable information about what went wrong, and maintaining consistent error messaging patterns across the entire application.
 
 ### When NOT to use?
 
-Do not skip error handling even for simple operations. However, you may simplify for prototypes or internal tools where detailed error messages aren't critical. Production applications always need robust error handling.
+Do not skip error handling even for simple operations or internal tools, as errors will occur in production. However, you may simplify error display for rapid prototypes or developer-only tools where detailed user-friendly messages aren't critical for the target audience. Production-facing applications always require robust, user-friendly error handling with proper message extraction and display logic.
 
 ### Example
+
+Helper functions for extracting and formatting error messages from various API response structures.
 
 **API Error Structure**:
 
@@ -479,47 +496,53 @@ try {
 
 ### Checklist
 
-- [ ] Error helper function created
-- [ ] Array messages joined for display
-- [ ] Default error message for unknown errors
-- [ ] Error responses properly typed
-- [ ] Network errors handled
-- [ ] User-friendly messages shown
-- [ ] Technical errors logged for debugging
+- [ ] Error extraction helper function created and exported
+- [ ] Array error messages joined with separators for readable display
+- [ ] Default fallback error message provided for unknown error structures
+- [ ] Error response interfaces properly typed with TypeScript
+- [ ] Network connectivity errors handled separately from API errors
+- [ ] User-friendly error messages displayed prominently in UI
+- [ ] Technical error details logged to console for developer debugging
+- [ ] Field-specific validation errors shown near relevant form inputs
 
 ### Troubleshooting
 
-**Undefined error messages**: Check that backend returns consistent error structure
+**Undefined error messages displayed**: Check that backend consistently returns error structure with `message` property
 
-**Array not joining**: Verify Array.isArray check before calling join
+**Array errors not joining properly**: Verify `Array.isArray()` check executes before calling `.join()` method
 
-**Generic errors**: Ensure backend provides descriptive error messages
+**Generic unhelpful error messages**: Ensure backend provides descriptive, user-facing error messages in responses
 
-**Missing validation errors**: Check that all validation errors are in message array
+**Missing field-specific validation errors**: Check that all validation errors are included in backend response `message` array
+
+**Network errors not caught**: Add specific handling for `error.request` (no response) vs `error.response` (HTTP error)
 
 ### Best Practices
 
-1. Create helper function for consistent error extraction
-2. Handle both string and array error messages
-3. Provide user-friendly fallback messages
-4. Log technical errors to console for debugging
-5. Show validation errors near relevant form fields
-6. Consider toast notifications for better UX
-7. Handle network errors separately from API errors
+1. Create centralized helper function for consistent error message extraction across application
+2. Handle both string and array error message formats from backend responses
+3. Provide user-friendly fallback messages for unexpected error structures or network failures
+4. Log full technical error objects to console in development for debugging purposes
+5. Display validation errors near relevant form fields, not just globally at top of form
+6. Consider using toast/snackbar notifications for better non-intrusive error UX
+7. Handle network errors (offline, timeout) separately from backend API errors with appropriate messaging
+8. Include error codes or IDs when available to help support teams diagnose user-reported issues
 
-## [Custom Hooks for Reusable API Logic]()
+## [Custom Hooks for Reusable Data Fetching Logic]()
 
-Custom hooks encapsulate reusable data fetching logic, reducing boilerplate and providing consistent patterns for loading states, error handling, and data management across components.
+Custom React hooks encapsulate reusable data fetching patterns, eliminating boilerplate code duplication and providing consistent interfaces for loading states, error handling, and asynchronous data management across multiple components. These abstraction layers standardize how components interact with API services while maintaining flexibility through generic typing and configurable execution patterns.
 
 ### When to use?
 
-Use custom hooks when the same data fetching pattern repeats across multiple components, when you need reusable loading/error state management, or when building a data fetching abstraction layer. Ideal for reducing component code duplication.
+Use custom data fetching hooks when identical or similar API consumption patterns repeat across multiple components throughout the application, when you need standardized loading/error state management without reimplementing useState/useEffect every time, or when building a lightweight data fetching abstraction layer without adopting full libraries. Ideal for reducing component code duplication and enforcing consistent patterns.
 
 ### When NOT to use?
 
-Do not create custom hooks for one-time use cases, when using data fetching libraries like React Query (they provide hooks), or when the abstraction adds more complexity than it removes. Start with simple patterns first.
+Do not create custom hooks for truly one-time, unique use cases that will never be reused elsewhere in the codebase, when already using comprehensive data fetching libraries like React Query or SWR that provide battle-tested hooks with advanced features, or when the abstraction introduces more complexity and cognitive overhead than it eliminates. Start with simple patterns first and extract hooks only when duplication becomes apparent.
 
 ### Example
+
+Generic custom hook with loading, error, and data state management for any async API function.
 
 ```typescript
 import { useState } from 'react';
@@ -573,47 +596,53 @@ function ProductList() {
 
 ### Checklist
 
-- [ ] Custom hook created with "use" prefix
-- [ ] Generic type parameter for flexibility
-- [ ] Loading, data, and error states managed
-- [ ] Execute function returns promise
-- [ ] Error handling consistent
-- [ ] TypeScript types properly defined
-- [ ] Hook reused across components
+- [ ] Custom hook function created with "use" prefix following React conventions
+- [ ] Generic type parameter `<T>` for flexibility across different data shapes
+- [ ] Loading state, data state, and error state managed internally
+- [ ] Execute function exposed for manual triggering of API calls
+- [ ] Error handling implemented consistently within hook logic
+- [ ] TypeScript types properly defined for parameters and return values
+- [ ] Hook successfully reused across multiple components
+- [ ] Documentation added explaining hook parameters and return interface
 
 ### Troubleshooting
 
-**Type errors**: Ensure generic type T matches API response
+**TypeScript type errors**: Ensure generic type parameter `T` matches the actual API response structure
 
-**Stale data**: Reset data state when changing API function
+**Stale data persisting**: Reset data state to null when changing the API function reference
 
-**Multiple executions**: Use useEffect dependencies correctly
+**Execute function triggers multiple times**: Use useEffect dependencies correctly to prevent unnecessary calls
 
-**Memory leaks**: Clean up async operations in useEffect
+**Memory leak warnings**: Clean up pending async operations in useEffect cleanup function when component unmounts
+
+**Hook not triggering refetch**: Ensure dependencies change properly or call execute function manually
 
 ### Best Practices
 
-1. Use "use" prefix for custom hook naming
-2. Make hooks generic with TypeScript
-3. Provide execute function for manual triggering
-4. Return consistent interface (data, loading, error, execute)
-5. Handle errors within the hook
-6. Document hook parameters and return values
-7. Consider adding refetch and reset capabilities
+1. Always use "use" prefix for custom hook naming to follow React conventions and enable linting rules
+2. Make hooks generic with TypeScript to work with any data type without code duplication
+3. Provide manual execute function for on-demand triggering beyond automatic useEffect calls
+4. Return consistent, predictable interface (data, loading, error, execute) across all similar hooks
+5. Handle errors within the hook but also rethrow for component-level handling when needed
+6. Document hook parameters, return values, and usage examples in code comments or docstrings
+7. Consider adding additional capabilities like refetch, reset, and manual error clearing functions
+8. Keep hooks focused on single responsibility - don't mix multiple unrelated concerns
 
-## [Pagination Implementation]()
+## [Server-Side Pagination with Navigation Controls]()
 
-Pagination manages large datasets by loading data in chunks, improving performance and user experience. Query parameters control current page and page size, enabling navigation through result sets.
+Pagination divides large datasets into manageable chunks loaded on demand, dramatically improving application performance and user experience by limiting data transfer and rendering overhead. Query parameters control current page number and items per page, enabling efficient navigation through potentially massive result sets without overwhelming client or server resources with unnecessary data.
 
 ### When to use?
 
-Use pagination for any list that can grow beyond 20-50 items, for search results, for data tables, or when backend provides paginated endpoints. Essential for performance with large datasets and providing users with navigable data.
+Use pagination for any API endpoint returning lists that can realistically grow beyond 20-50 items over time, for search results with potentially hundreds of matches, for data tables displaying user-generated content, or whenever backend provides paginated endpoints with page/limit parameters. Essential for maintaining performance with large datasets while providing users with navigable, digestible chunks of information.
 
 ### When NOT to use?
 
-Do not use pagination for small fixed-size lists (under 20 items), when infinite scroll is more appropriate, or when you need to show all data at once. Consider virtual scrolling for very large lists instead.
+Do not implement pagination for small, fixed-size lists guaranteed to remain under 20 items forever, when infinite scroll UX pattern is more appropriate for continuous content consumption (social feeds), or when specific requirements mandate displaying all data simultaneously in single view. Consider virtual scrolling libraries like react-window for rendering thousands of items without pagination.
 
 ### Example
+
+Service method with pagination parameters and component state management for page navigation.
 
 ```typescript
 export const ProductService = {
@@ -625,7 +654,7 @@ export const ProductService = {
   },
 };
 
-// Usage
+// Usage in component
 const [page, setPage] = useState(1);
 const [products, setProducts] = useState([]);
 
@@ -641,48 +670,53 @@ const loadProducts = async () => {
 
 ### Checklist
 
-- [ ] Page and pageSize parameters in service
-- [ ] Query params passed to backend
-- [ ] Current page tracked in state
-- [ ] Previous/Next navigation implemented
-- [ ] Disable Previous on first page
-- [ ] Disable Next on last page
-- [ ] Total count displayed if available
-- [ ] Page number indicator shown
+- [ ] Page number and pageSize parameters added to service methods
+- [ ] Query params object properly passed to backend via axios config
+- [ ] Current page number tracked in component state
+- [ ] Previous/Next navigation buttons implemented and functional
+- [ ] Previous button disabled when on first page (page === 1)
+- [ ] Next button disabled when on last page (calculated from total count)
+- [ ] Total item count or total pages displayed if backend provides it
+- [ ] Current page number indicator shown to user for context
 
 ### Troubleshooting
 
-**Wrong page loaded**: Ensure page state updates trigger useEffect
+**Wrong page data loads**: Ensure page state changes properly trigger useEffect with page in dependency array
 
-**Params not sent**: Verify params object in axios request
+**Query params not sent to backend**: Verify `params` object is correctly placed in axios request config
 
-**Off-by-one errors**: Check if backend uses 0-based or 1-based indexing
+**Off-by-one pagination errors**: Check whether backend uses 0-based or 1-based page indexing and adjust accordingly
 
-**Total pages incorrect**: Verify backend returns total count correctly
+**Total pages calculation incorrect**: Verify backend returns accurate total count and calculate `Math.ceil(total / pageSize)` correctly
+
+**Navigation buttons don't update**: Ensure page state is actually changing and not being blocked by logic errors
 
 ### Best Practices
 
-1. Use query parameters not route params for pagination
-2. Default to reasonable page size (10-20 items)
-3. Show current page and total pages
-4. Disable navigation buttons at boundaries
-5. Persist pagination in URL for shareability
-6. Reset to page 1 when filters change
-7. Show loading state during page changes
+1. Use query parameters (params object) not route path parameters for pagination configuration
+2. Default to reasonable page size between 10-20 items for optimal loading and scrolling balance
+3. Display current page number and total available pages for user orientation and context
+4. Disable navigation buttons at boundaries (first/last page) to prevent invalid requests
+5. Persist pagination state in URL query params for shareable, bookmarkable links
+6. Reset to page 1 automatically whenever filters, search terms, or sort order changes
+7. Show loading state or skeleton UI during page transitions for responsive feel
+8. Consider adding page size selector to let users control items per page density
 
-## [File Upload Implementation]()
+## [Multipart Form Data for File Upload]()
 
-File uploads use FormData to send multipart form data to the backend. Axios automatically handles the correct Content-Type header when provided with FormData, enabling image and document uploads.
+File uploads require FormData API to construct multipart/form-data requests that browsers send to backend servers. Axios automatically detects FormData instances and sets appropriate Content-Type headers with boundary markers, enabling seamless transmission of binary files (images, documents, videos) alongside optional JSON metadata through standard HTTP POST/PUT requests.
 
 ### When to use?
 
-Use file upload for profile pictures, document attachments, image galleries, CSV imports, or any feature requiring users to upload files. Essential for applications handling user-generated content or document management.
+Use file upload implementation for user profile pictures, document attachments in applications, image galleries with user-uploaded content, CSV/Excel file imports for data processing, or any feature requiring users to submit files from their local filesystem. Essential for applications handling user-generated content, document management systems, media platforms, or data import workflows requiring file processing.
 
 ### When NOT to use?
 
-Do not implement file upload for very large files without chunking/resumable upload, when files can be provided via URL instead, or without proper backend validation. Consider cloud upload services for large-scale file handling.
+Do not implement basic file upload for very large files exceeding 100MB without chunking/resumable upload mechanisms to handle network interruptions, when files can be efficiently provided via direct URL references instead of upload, or without proper backend validation of file types, sizes, and content. Consider specialized cloud upload services (AWS S3, Cloudinary) for large-scale file handling requirements.
 
 ### Example
+
+Service method creating FormData and component handling file input change events.
 
 ```typescript
 export const ProductService = {
@@ -700,7 +734,7 @@ export const ProductService = {
   },
 };
 
-// Usage
+// Usage in component
 const handleFileChange = async (e: ChangeEvent<HTMLInputElement>) => {
   const file = e.target.files?.[0];
   if (!file) return;
@@ -716,48 +750,53 @@ const handleFileChange = async (e: ChangeEvent<HTMLInputElement>) => {
 
 ### Checklist
 
-- [ ] FormData created for file upload
-- [ ] File appended to FormData
-- [ ] Content-Type set to multipart/form-data
-- [ ] File input accepts correct file types
-- [ ] File size validation implemented
-- [ ] Upload progress shown to user
-- [ ] Success/error feedback provided
-- [ ] Preview shown before upload
+- [ ] FormData instance created for file upload request
+- [ ] File appended to FormData with correct field name
+- [ ] Content-Type header explicitly set to multipart/form-data
+- [ ] File input element accepts only correct file types (accept attribute)
+- [ ] Client-side file size validation implemented before upload
+- [ ] Upload progress indicator shown to user during long uploads
+- [ ] Success/error feedback provided after upload completes
+- [ ] Image/file preview shown before final upload submission
 
 ### Troubleshooting
 
-**File not received**: Verify FormData field name matches backend expectation
+**File not received by backend**: Verify FormData field name exactly matches backend's expected parameter name
 
-**Type errors**: Check file type validation matches backend
+**Invalid file type errors**: Check client-side `accept` attribute and backend MIME type validation match
 
-**Large files failing**: Implement chunked upload or increase backend limit
+**Large files failing or timing out**: Implement chunked upload mechanism or increase backend body size limit configuration
 
-**Progress not showing**: Add onUploadProgress handler to axios config
+**Upload progress not displaying**: Add `onUploadProgress` callback handler to axios request config object
+
+**Multiple files not working**: Use `formData.append('files', file)` multiple times or send array depending on backend expectations
 
 ### Best Practices
 
-1. Validate file type and size on client before upload
-2. Show upload progress for better UX
-3. Provide image preview before uploading
-4. Handle upload errors gracefully
-5. Clear file input after successful upload
-6. Limit file sizes appropriately
-7. Support multiple file uploads when needed
+1. Validate file type and size on client-side before upload to provide immediate feedback
+2. Show upload progress bar or percentage for better UX during slow uploads over network
+3. Provide image/document preview before final upload submission for user confirmation
+4. Handle upload errors gracefully with retry options for network failures
+5. Clear file input field after successful upload to allow selecting same file again
+6. Limit file sizes appropriately based on use case (profile pics: 5MB, documents: 10MB, videos: 100MB)
+7. Support multiple concurrent file uploads when user needs to upload several files at once
+8. Implement drag-and-drop file upload interface for enhanced user experience
 
-## [Query Parameters for Filtering]()
+## [Query Parameters for Filtering and Search]()
 
-Query parameters enable flexible filtering, searching, and sorting without affecting route structure. Axios params property automatically serializes parameters and appends them to the URL.
+Query parameters enable flexible filtering, searching, sorting, and optional configuration without modifying route structure or requiring multiple endpoint variants. Axios params property automatically serializes JavaScript objects into properly URL-encoded query strings, appending them to request URLs with correct formatting and special character handling for robust server-side processing.
 
 ### When to use?
 
-Use query parameters for search terms, filters (status, category, date range), sorting options, pagination, or any optional parameters that should persist in URL. Essential for list pages with filtering capabilities.
+Use query parameters for search terms entered by users, filter options (status, category, price range, date range), sorting configuration (field, direction), pagination parameters (page, limit), or any optional parameters that should persist in shareable URLs. Essential for list pages with filtering capabilities, search results pages, data tables with column sorting, and any interface requiring flexible data querying.
 
 ### When NOT to use?
 
-Do not use query params for required resource identifiers (use route params), for sensitive data that shouldn't appear in URLs, or for complex nested objects (consider POST with request body). Keep URLs clean and readable.
+Do not use query params for required resource identifiers that define the endpoint itself (use route path parameters like `/products/:id` instead), for sensitive data that shouldn't appear in URLs and browser history (use POST with request body), or for deeply nested complex object structures that create unreadable URLs (consider POST with JSON body). Keep URLs clean, readable, and bookmarkable.
 
 ### Example
+
+Service method accepting filter parameters and axios automatically serializing them to query string.
 
 ```typescript
 export const ProductService = {
@@ -777,37 +816,41 @@ export const ProductService = {
 
 ### Checklist
 
-- [ ] Params object passed to axios request
-- [ ] Optional parameters properly handled
-- [ ] URL reflects current filters
-- [ ] Filters persist on page refresh
-- [ ] Clear filters option provided
-- [ ] Query params typed correctly
-- [ ] Default values set for missing params
+- [ ] Params object properly passed to axios request config
+- [ ] Optional parameters handled correctly (undefined values excluded)
+- [ ] URL query string reflects current active filters
+- [ ] Filter state persists on page refresh via URL sync
+- [ ] Clear filters button resets all params to defaults
+- [ ] Query parameter types defined correctly in TypeScript
+- [ ] Default values set for missing/undefined params
+- [ ] Parameter validation before sending to prevent invalid requests
 
 ### Troubleshooting
 
-**Params not sent**: Ensure params object is in axios config
+**Params not sent to backend**: Ensure `params` object is in second argument (axios config), not request body
 
-**Undefined params sent**: Filter out undefined values before sending
+**Undefined params sent as strings**: Filter out undefined/null values before passing to axios params object
 
-**Encoding issues**: Let axios handle encoding, don't manually encode
+**URL encoding issues**: Let axios handle encoding automatically, don't manually encode with `encodeURIComponent`
 
-**Type conversion**: Backend receives strings, convert as needed
+**Type conversion problems**: Backend receives all params as strings, convert to numbers/booleans server-side
+
+**Arrays not serialized correctly**: Use axios `paramsSerializer` config for custom array format (brackets, commas, repeat)
 
 ### Best Practices
 
-1. Use descriptive parameter names
-2. Filter out undefined/null values before sending
-3. Provide clear filters button to reset
-4. Sync URL params with component state
-5. Validate parameter values before sending
-6. Document expected parameter formats
-7. Use consistent naming across endpoints
+1. Use descriptive, semantic parameter names that clearly indicate their purpose (search, status, sortBy)
+2. Filter out undefined, null, or empty string values before sending to keep URLs clean
+3. Provide prominent "Clear filters" button to reset all parameters to default state
+4. Synchronize URL query params with component state for shareable, bookmarkable URLs
+5. Validate parameter values client-side before sending to prevent invalid backend requests
+6. Document expected parameter formats, allowed values, and defaults in service comments
+7. Use consistent naming conventions across all endpoints (camelCase or snake_case, not mixed)
+8. Consider using URL state management libraries like `use-query-params` for complex filter state
 
 ## [References]()
 
-Links to official documentation of used technologies.
+Official documentation and learning resources for technologies covered in this guide.
 
 - [Axios Documentation](https://axios-http.com/docs/intro)
 - [React + Axios Best Practices](https://blog.logrocket.com/how-to-make-http-requests-like-a-pro-with-axios/)

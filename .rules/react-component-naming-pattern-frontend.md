@@ -1,12 +1,10 @@
-# React component naming pattern in Frontend
+# React Component Naming Pattern in Frontend
 
-> Naming conventions with suffixes for quick identification of React component categories, improving code organization and search capabilities.
+Naming conventions with suffixes for quick identification of React component categories, improving code organization and search capabilities.
 
-## [Component Naming System Overview]()
+## [Component Naming System - Suffix-Based Pattern for Type Identification]()
 
-This section introduces the component naming system used in the project, explaining how suffix patterns help identify component types at a glance and improve code organization through consistent naming conventions.
-
-This document defines suffix patterns for React file and component naming, facilitating identification, search and code organization.
+Defines a systematic approach to naming React components using suffix patterns that instantly identify component types, improving code organization, searchability, and team collaboration through consistent naming conventions across the entire codebase.
 
 ### When to use?
 
@@ -53,9 +51,9 @@ import { Login } from '@/components/Login'; // Is this a form or page?
 - Use find/grep commands to locate all components of same category quickly
 - Keep suffix patterns consistent across team members by documenting in project README
 
-## [Suffix Table by Category]()
+## [Suffix Table by Category - Component Types and Location Mapping]()
 
-This section presents a comprehensive table mapping component categories to their corresponding suffix patterns, with examples and recommended locations in the project structure.
+Comprehensive mapping table showing all component categories with their corresponding suffix patterns, practical examples, and recommended file system locations in the project structure for proper organization.
 
 | Category | Suffix | Example | Location |
 |-----------|--------|---------|-------------|
@@ -76,27 +74,108 @@ This section presents a comprehensive table mapping component categories to thei
 | **Guards** | `Route` | `PrivateRoute.tsx` | `src/components/guards/` |
 | **Base Components** | no suffix | `Button.tsx`, `Input.tsx` | `src/components/common/` |
 
-## [Differentiation: Section vs Common Component]()
+### When to use?
 
-This section clarifies the distinction between Section components (page-specific visual blocks) and Common components (reusable generic elements) to ensure proper categorization.
+Reference this table when creating new components to determine the correct suffix based on component type and purpose. Use it during code reviews to ensure consistency across the codebase.
 
-### Section
-Component that represents a **complete visual section** of a page:
-- Usually used once per page
-- Contains specific structure and layout
-- Examples: `HeaderSection`, `HeroSection`, `FeaturesSection`, `FooterSection`
+### When NOT to use?
 
-### Common Component
-**Reusable generic** component used in multiple places:
-- Highly reusable
-- Configurable via props
-- Examples: `Button`, `Card`, `Modal`, `Input`
+Don't use this table as strict enforcement for components with highly specific names that already clearly indicate their purpose (like Sidebar, Header, Footer, Tooltip).
 
-## [Folder Structure: Minimal vs Complete]()
+### Example
 
-This section explains the recommended folder organization evolution from a minimal structure for small projects to a complete modular structure for production applications with specialized subfolders for different component categories.
+```typescript
+// Applying suffix table in practice
+import { MainLayout } from '@/components/layouts/MainLayout';        // Layout suffix
+import { LoginForm } from '@/components/forms/LoginForm';            // Form suffix
+import { MetricCard } from '@/components/common/MetricCard';         // Card suffix
+import { useAuth } from '@/hooks/useAuth';                           // use prefix
+import { AuthProvider } from '@/contexts/AuthProvider';              // Provider suffix
+```
 
-The project folder structure can start simple and evolve as complexity increases.
+### Checklist
+
+- [ ] New component category identified correctly
+- [ ] Appropriate suffix applied from table
+- [ ] Component placed in correct folder location
+- [ ] Naming convention documented if new category added
+
+### Troubleshooting
+
+**Issue**: Component doesn't fit any existing category
+**Solution**: If component is truly unique, either extend table with new category or use descriptive name without suffix if highly specific.
+
+**Issue**: Uncertainty between two categories (e.g., Card vs Section)
+**Solution**: Ask: Is it reusable across multiple pages (Card) or page-specific visual block (Section)?
+
+### Best Practices
+
+- Keep table updated when introducing new component categories
+- Share table with all team members for consistent application
+- Use table as reference during onboarding of new developers
+
+## [Section vs Common Component - Distinguishing Page-Specific from Reusable Elements]()
+
+Clarifies the critical distinction between Section components that represent complete page-specific visual blocks used once per page, and Common components that are highly reusable generic elements configurable through props.
+
+### When to use?
+
+Use Section components when building page-specific visual blocks like headers, heroes, features sections, or footers that contain specific structure and layout. Use Common components for highly reusable elements like buttons, inputs, cards, modals that appear multiple times across different pages.
+
+### When NOT to use?
+
+Don't create Section components for small reusable elements that could be Common components. Don't create Common components for highly page-specific layouts that won't be reused elsewhere.
+
+### Example
+
+```typescript
+// Section: Page-specific visual block
+// src/components/sections/HeroSection.tsx
+export function HeroSection() {
+  return (
+    <section className="hero">
+      <h1>Welcome to Our Platform</h1>
+      <p>Specific layout and content for homepage hero</p>
+    </section>
+  );
+}
+
+// Common: Reusable generic component
+// src/components/common/Button.tsx
+export function Button({ children, onClick, variant }: ButtonProps) {
+  return (
+    <button className={`btn btn-${variant}`} onClick={onClick}>
+      {children}
+    </button>
+  );
+}
+```
+
+### Checklist
+
+- [ ] Section components are page-specific visual blocks
+- [ ] Section components typically used once per page
+- [ ] Common components are highly reusable
+- [ ] Common components are configurable via props
+- [ ] Clear distinction maintained in folder structure
+
+### Troubleshooting
+
+**Issue**: Unclear if component should be Section or Common
+**Solution**: Ask: Will this be used on multiple pages with different content? If yes, make it Common. Is it a specific page layout block? Make it Section.
+
+**Issue**: Section becoming too generic and reusable
+**Solution**: Refactor into Common component by extracting configurable parts into props.
+
+### Best Practices
+
+- Keep Sections page-specific and layout-focused
+- Keep Common components generic and prop-driven
+- Refactor Sections into Common when reuse pattern emerges across multiple pages
+
+## [Folder Structure Evolution - From Minimal Setup to Production Architecture]()
+
+Explains the recommended folder organization evolution from a minimal structure suitable for small projects and MVPs to a complete modular structure for production applications with specialized subfolders for different component categories and clear migration path.
 
 ### When to use?
 
@@ -151,9 +230,9 @@ src/
 - Document folder structure conventions in project README for team alignment
 - Use automated tools or scripts to help migrate components when restructuring folders
 
-### Minimal Structure (Initial Setup)
+## [Minimal Structure - Initial Setup for Small Projects]()
 
-For new or small projects, start with simplified structure:
+Simplified folder structure suitable for new projects, small applications with fewer than 10 components, and MVPs where quick iteration and simplicity matter more than extensive organization.
 
 ```
 src/
@@ -178,11 +257,49 @@ src/
 └── utils/                   # Utility functions
 ```
 
-**When to use:** Initial setup, small projects (<10 components), MVPs
+### When to use?
 
-### Complete Structure (Production Project)
+Use minimal structure during initial setup, for small projects with fewer than 10 components, for MVPs requiring rapid development, or when starting a new project where complexity hasn't yet emerged.
 
-As project grows, organize components in specialized subfolders:
+### When NOT to use?
+
+Don't use minimal structure for projects with more than 20 components, production applications with multiple feature modules, or teams with more than 3 developers working on frontend simultaneously.
+
+### Example
+
+```typescript
+// Minimal structure import example
+import { Button } from '@/components/common/Button';
+import { LoginPage } from '@/pages/LoginPage';
+import { useAuth } from '@/hooks/useAuth';
+import { authService } from '@/services/auth.service';
+```
+
+### Checklist
+
+- [ ] Project has fewer than 10 total components
+- [ ] All components fit logically in common/ folder
+- [ ] Team size is small (1-3 developers)
+- [ ] No specialized component categories needed yet
+- [ ] Import paths remain simple and clear
+
+### Troubleshooting
+
+**Issue**: Components/common folder becoming cluttered with many files
+**Solution**: Time to migrate to complete structure. Start by moving forms to dedicated forms/ folder.
+
+**Issue**: Difficulty finding specific components
+**Solution**: Consider creating specialized subfolders for categories with 3+ components.
+
+### Best Practices
+
+- Keep structure flat and simple until complexity demands organization
+- Monitor component count and restructure when approaching 15-20 components
+- Document when to migrate to complete structure in project README
+
+## [Complete Structure - Production-Ready Modular Architecture]()
+
+Comprehensive folder structure with specialized subfolders for different component categories, organized for production applications with 20+ components, multiple feature modules, and teams requiring clear organization and maintainability.
 
 ```
 src/
@@ -251,11 +368,52 @@ src/
     └── routes.config.tsx
 ```
 
-**When to use:** Production project, >20 components, multiple modules
+### When to use?
 
-### Migration: Minimal → Complete
+Use complete structure for production projects with more than 20 components, applications with multiple feature modules, teams with 3+ developers, or when code organization and discoverability become critical for productivity.
 
-**When to migrate subfolders:**
+### When NOT to use?
+
+Don't use complete structure for small projects, prototypes, or MVPs where the overhead of many folders creates unnecessary complexity without tangible benefits.
+
+### Example
+
+```typescript
+// Complete structure import example
+import { MainLayout } from '@/components/layouts/MainLayout';
+import { LoginForm } from '@/components/forms/LoginForm';
+import { HeaderSection } from '@/components/sections/HeaderSection';
+import { PrivateRoute } from '@/components/guards/PrivateRoute';
+import { MetricCard } from '@/components/common/MetricCard';
+```
+
+### Checklist
+
+- [ ] Project has 20+ components
+- [ ] Multiple component categories exist (forms, layouts, sections)
+- [ ] Team has 3+ developers working on frontend
+- [ ] Clear separation of concerns needed
+- [ ] Component discoverability is important
+
+### Troubleshooting
+
+**Issue**: Too many folders making navigation complex
+**Solution**: Only create folders for categories with 3+ components. Consolidate if some folders have only 1-2 files.
+
+**Issue**: Uncertainty about which folder for new component
+**Solution**: Follow suffix table - suffix determines folder. No suffix base components go in common/.
+
+### Best Practices
+
+- Create specialized folders only when you have 3+ components of that category
+- Keep folder structure documented in project README
+- Use consistent path aliases to simplify imports across deep folder structure
+
+## [Migration Path - From Minimal to Complete Structure]()
+
+Step-by-step migration strategy for evolving folder structure from minimal to complete as project complexity grows, with clear triggers for when to create specialized subfolders and practical commands for reorganization.
+
+**When to create specialized subfolders:**
 
 1. **`forms/`**: When you have 3+ specific forms
 2. **`layouts/`**: When you have 2+ different layouts (ex: auth + dashboard)
@@ -263,7 +421,7 @@ src/
 4. **`guards/`**: When implementing access control (ex: PrivateRoute, AdminRoute)
 5. **`containers/`**: When you have components with complex state logic
 
-**How to migrate:**
+**Migration commands:**
 ```bash
 # Create new folders
 mkdir -p src/components/{forms,layouts,sections,guards,containers}
@@ -273,81 +431,106 @@ mv src/components/common/LoginForm.tsx src/components/forms/
 mv src/components/common/MainLayout.tsx src/components/layouts/
 mv src/components/common/HeaderSection.tsx src/components/sections/
 
-# Update imports in components
+# Update imports in components (use IDE find-and-replace)
 ```
-
-## [Naming Rules]()
-
-This section defines the mandatory naming conventions for components, hooks, providers and base components to maintain consistency across the codebase.
-
-### PascalCase for Components
-All React components must use PascalCase:
-- ✅ `MetricCard.tsx`
-- ✅ `AssetListPage.tsx`
-- ✅ `LoginForm.tsx`
-- ❌ `metricCard.tsx`
-- ❌ `asset-list-page.tsx`
-
-### Hooks with use Prefix
-Custom hooks must always have `use` prefix:
-- ✅ `useAuth.ts`
-- ✅ `useNotifications.ts`
-- ✅ `useDebounce.ts`
-- ❌ `auth.ts`
-- ❌ `notifications.ts`
-
-### Providers with Provider Suffix
-Context providers must have `Provider` suffix:
-- ✅ `AuthProvider.tsx`
-- ✅ `ToastProvider.tsx`
-- ❌ `AuthContext.tsx` (Context is the context, not the Provider)
-
-### Base Components without Suffix
-Generic base components don't need suffix:
-- ✅ `Button.tsx` (base component)
-- ✅ `Input.tsx` (base component)
-- ✅ `Modal.tsx` (base component)
-- ✅ `SubmitButton.tsx` (specific button)
-- ✅ `ConfirmModal.tsx` (specific modal)
 
 ### When to use?
 
-Apply these naming rules consistently for all React components, custom hooks, and context providers in your project. Use PascalCase for component files, use prefix for hooks, and appropriate suffixes for specialized components.
+Migrate when you have 3+ components in a category, when components/common folder exceeds 15-20 files, or when team members report difficulty finding components.
 
 ### When NOT to use?
 
-Don't apply React naming conventions to non-React files like utility functions (use camelCase), TypeScript types (use PascalCase for types but without component suffixes), or configuration files (use lowercase with hyphens or dots).
+Don't migrate prematurely before reaching thresholds. Don't create folders for categories with only 1-2 components.
+
+### Example
+
+```bash
+# Before migration - all in common/
+src/components/common/
+├── Button.tsx
+├── LoginForm.tsx
+├── SignupForm.tsx
+├── AssetForm.tsx
+├── MainLayout.tsx
+└── HeaderSection.tsx
+
+# After migration - organized by category
+src/components/
+├── common/
+│   └── Button.tsx
+├── forms/
+│   ├── LoginForm.tsx
+│   ├── SignupForm.tsx
+│   └── AssetForm.tsx
+├── layouts/
+│   └── MainLayout.tsx
+└── sections/
+    └── HeaderSection.tsx
+```
+
+### Checklist
+
+- [ ] Identified components to migrate based on category count
+- [ ] Created new specialized folders
+- [ ] Moved component files to new locations
+- [ ] Updated all import statements across codebase
+- [ ] Verified application still builds and runs
+- [ ] Updated documentation to reflect new structure
+
+### Troubleshooting
+
+**Issue**: Many broken imports after moving files
+**Solution**: Use IDE refactoring feature to move files and automatically update imports. Or use find-and-replace across project.
+
+**Issue**: Unsure if it's time to migrate
+**Solution**: Use "rule of 3" - create subfolder when you have 3+ components of same category.
+
+### Best Practices
+
+- Migrate incrementally by category rather than all at once
+- Use version control to track migration and enable easy rollback if needed
+- Communicate migration plan with team before making widespread changes
+
+## [PascalCase Naming Convention - Component File and Function Names]()
+
+Mandatory naming convention requiring all React components to use PascalCase for both file names and function names, ensuring exact matching between file name and exported component name for consistency and tooling support.
+
+### When to use?
+
+Apply PascalCase naming consistently for all React component files and their exported function names. Use for all .tsx component files throughout the project.
+
+### When NOT to use?
+
+Don't use PascalCase for non-React files like utility functions (use camelCase), TypeScript type files (types use PascalCase but files can be lowercase), or configuration files (use lowercase with hyphens or dots).
 
 ### Example
 
 ```typescript
-// Good naming examples
-// Component
-export function LoginForm() { /* ... */ }  // LoginForm.tsx
+// Good: PascalCase component naming
+// File: MetricCard.tsx
+export function MetricCard() { /* ... */ }
 
-// Hook
-export function useAuth() { /* ... */ }    // useAuth.ts
+// File: AssetListPage.tsx
+export function AssetListPage() { /* ... */ }
 
-// Provider
-export function AuthProvider() { /* ... */ } // AuthProvider.tsx
+// File: LoginForm.tsx
+export function LoginForm() { /* ... */ }
 
-// Base component
-export function Button() { /* ... */ }     // Button.tsx
+// Bad: Incorrect casing
+// File: metricCard.tsx (wrong: camelCase)
+export function metricCard() { /* ... */ }
 
-// Bad naming examples
-export function loginForm() { /* ... */ }  // Wrong: camelCase
-export function auth() { /* ... */ }       // Wrong: missing 'use' prefix
-export function Auth() { /* ... */ }       // Wrong: provider missing suffix
+// File: asset-list-page.tsx (wrong: kebab-case)
+export function AssetListPage() { /* ... */ }
 ```
 
 ### Checklist
 
 - [ ] All component files use PascalCase
 - [ ] Component name matches file name exactly
-- [ ] Custom hooks have use prefix
-- [ ] Context providers have Provider suffix
-- [ ] Base components don't have redundant suffixes
-- [ ] File extensions are .tsx for components, .ts for hooks
+- [ ] File extensions are .tsx for components
+- [ ] No camelCase or kebab-case in component names
+- [ ] Exported function name matches file name
 
 ### Troubleshooting
 
@@ -363,9 +546,189 @@ export function Auth() { /* ... */ }       // Wrong: provider missing suffix
 - Use named exports instead of default exports for easier code searching and refactoring
 - Keep one component per file with matching names to maintain clear file organization
 
-## [Practical Naming Examples]()
+## [Hook Naming Convention - use Prefix for Custom Hooks]()
 
-This section provides real-world examples of naming patterns applied to common component systems like modals, cards, pages and forms.
+Mandatory naming convention requiring all custom React hooks to have "use" prefix in both file name and function name, following React's hook naming rules and enabling React to enforce hook rules correctly.
+
+### When to use?
+
+Apply "use" prefix to all custom hooks that use React hooks internally (useState, useEffect, etc.) or other custom hooks. Use for all hook files in src/hooks/ directory.
+
+### When NOT to use?
+
+Don't use "use" prefix for regular utility functions that don't use React hooks internally. Don't apply to services, helpers, or pure functions that aren't hooks.
+
+### Example
+
+```typescript
+// Good: Correct use prefix
+// File: useAuth.ts
+export function useAuth() {
+  const [user, setUser] = useState<User | null>(null);
+  return { user };
+}
+
+// File: useNotifications.ts
+export function useNotifications() { /* ... */ }
+
+// File: useDebounce.ts
+export function useDebounce(value: string, delay: number) { /* ... */ }
+
+// Bad: Missing use prefix
+// File: auth.ts (wrong: no prefix)
+export function auth() { /* ... */ }
+
+// File: notifications.ts (wrong: no prefix)
+export function notifications() { /* ... */ }
+```
+
+### Checklist
+
+- [ ] All custom hooks have "use" prefix
+- [ ] Hook file name matches function name
+- [ ] Hooks placed in src/hooks/ directory
+- [ ] File extensions are .ts (unless returning JSX, then .tsx)
+- [ ] Only functions using React hooks have "use" prefix
+
+### Troubleshooting
+
+**Issue**: ESLint warning about hooks called incorrectly
+**Solution**: Ensure hook function starts with "use" prefix. React enforces hook rules only for functions named with "use".
+
+**Issue**: TypeScript errors when importing hook
+**Solution**: Verify hook is exported with "use" prefix and file name matches exactly.
+
+### Best Practices
+
+- Always start custom hook names with "use" to follow React conventions
+- Place all custom hooks in dedicated src/hooks/ folder
+- Export hooks with named exports for better refactoring support
+
+## [Provider Naming Convention - Provider Suffix for Context Providers]()
+
+Naming convention requiring all React Context providers to have "Provider" suffix in both file name and function name, distinguishing providers from contexts and maintaining clarity in component hierarchy.
+
+### When to use?
+
+Apply "Provider" suffix to all React Context provider components that wrap part of the component tree and provide context values. Use for all provider files in src/contexts/ directory.
+
+### When NOT to use?
+
+Don't use "Provider" suffix for the Context itself (use plain name like AuthContext). Don't apply to hooks that consume context (use "use" prefix instead).
+
+### Example
+
+```typescript
+// Good: Correct Provider suffix
+// File: AuthProvider.tsx
+import { createContext } from 'react';
+
+export const AuthContext = createContext(null);
+
+export function AuthProvider({ children }) {
+  return (
+    <AuthContext.Provider value={/* ... */}>
+      {children}
+    </AuthContext.Provider>
+  );
+}
+
+// File: ToastProvider.tsx
+export function ToastProvider({ children }) { /* ... */ }
+
+// Bad: Incorrect naming
+// File: AuthContext.tsx (wrong: Context instead of Provider)
+export function AuthContext() { /* ... */ }
+
+// File: Auth.tsx (wrong: missing Provider suffix)
+export function Auth() { /* ... */ }
+```
+
+### Checklist
+
+- [ ] All context providers have "Provider" suffix
+- [ ] Provider file name matches function name
+- [ ] Providers placed in src/contexts/ directory
+- [ ] Context object uses separate naming (e.g., AuthContext)
+- [ ] File extensions are .tsx
+
+### Troubleshooting
+
+**Issue**: Confusion between Context and Provider naming
+**Solution**: Context is the object created with createContext(). Provider is the component that wraps tree. Use "Provider" suffix only for component.
+
+**Issue**: Import conflicts between Context and Provider
+**Solution**: Export both from same file but with clear names: AuthContext (object) and AuthProvider (component).
+
+### Best Practices
+
+- Export both Context object and Provider component from same file
+- Name Context without suffix (AuthContext) and Provider with suffix (AuthProvider)
+- Place all providers in src/contexts/ folder for easy discovery
+
+## [Base Component Naming - No Suffix for Primitive Generic Components]()
+
+Naming exception for primitive base components that are highly generic and reusable, allowing them to omit suffixes since their names alone clearly indicate their purpose and function.
+
+### When to use?
+
+Use no suffix for primitive generic base components like Button, Input, Modal, Card that serve as foundation for more specific variants. Apply to highly reusable components in src/components/common/.
+
+### When NOT to use?
+
+Don't omit suffix for specialized variants of base components (use SubmitButton, not Submit). Don't skip suffix for page-specific or category-specific components.
+
+### Example
+
+```typescript
+// Good: Base components without suffix
+// File: Button.tsx
+export function Button() { /* ... */ }
+
+// File: Input.tsx
+export function Input() { /* ... */ }
+
+// File: Modal.tsx
+export function Modal() { /* ... */ }
+
+// File: Card.tsx
+export function Card() { /* ... */ }
+
+// Good: Specialized variants with suffix
+// File: SubmitButton.tsx
+export function SubmitButton() { /* ... */ }
+
+// File: ConfirmModal.tsx
+export function ConfirmModal() { /* ... */ }
+
+// File: MetricCard.tsx
+export function MetricCard() { /* ... */ }
+```
+
+### Checklist
+
+- [ ] Base primitive components have no suffix
+- [ ] Specialized variants of base components have suffix
+- [ ] Base components are truly generic and reusable
+- [ ] Clear distinction between base and specialized variants
+
+### Troubleshooting
+
+**Issue**: Confusion about when to omit suffix
+**Solution**: Ask: Is this the most basic, generic version? If yes, no suffix. Is it specialized or specific variant? Add suffix.
+
+**Issue**: Base component becoming too specific
+**Solution**: Extract specific logic into new specialized component with suffix. Keep base component truly generic.
+
+### Best Practices
+
+- Keep base components minimal and generic
+- Create specialized variants with suffixes for specific use cases
+- Use base components as foundation for more complex components
+
+## [Practical Naming Examples - Real-World Component Systems]()
+
+Real-world examples showing how naming patterns are applied to common component systems like modals, cards, pages and forms, demonstrating consistency and practical implementation.
 
 ### Example 1: Modal System
 ```
@@ -406,9 +769,49 @@ src/components/forms/
 └── FilterForm.tsx         # Filter form
 ```
 
-## [Advantages of Suffix Pattern]()
+### When to use?
 
-This section explains the key benefits of using suffix patterns in component naming, including quick identification, easier search, collision avoidance and self-documentation.
+Use these examples as templates when creating new component systems. Follow the pattern of base component without suffix plus specialized variants with suffixes.
+
+### When NOT to use?
+
+Don't blindly copy patterns without considering your specific needs. Adapt patterns to match your application's domain and component requirements.
+
+### Example
+
+```typescript
+// Following modal system pattern for notification system
+src/components/common/
+├── Notification.tsx         // Base component
+├── SuccessNotification.tsx  // Success variant
+├── ErrorNotification.tsx    // Error variant
+└── WarningNotification.tsx  // Warning variant
+```
+
+### Checklist
+
+- [ ] Base component without suffix exists
+- [ ] Specialized variants use consistent suffix
+- [ ] All variants follow same pattern
+- [ ] System is easy to extend with new variants
+
+### Troubleshooting
+
+**Issue**: Too many specialized variants cluttering folder
+**Solution**: Consider if all variants are necessary or if some can be consolidated with props configuration.
+
+**Issue**: Unclear naming for new variant
+**Solution**: Follow pattern of existing variants and use descriptive prefix with consistent suffix.
+
+### Best Practices
+
+- Start with base component and add specialized variants as needed
+- Keep consistent naming pattern across all variants in a system
+- Document the pattern when creating new component systems for team reference
+
+## [Advantages of Suffix Pattern - Benefits for Code Organization]()
+
+Explains the key benefits of using suffix patterns in component naming including quick visual identification, easier search capabilities, name collision avoidance, and self-documenting code that improves developer productivity.
 
 ### Quick Visual Identification
 Suffix allows immediate identification of component type when reading code:
@@ -507,27 +910,9 @@ find src -name "*Form.tsx"
 - Use tooling to enforce patterns automatically through linting or pre-commit checks
 - Document suffix table in project README for easy team reference
 
-## [When NOT to Use Suffix]()
+## [Import Organization - Standard Import Order Convention]()
 
-This section defines exceptions to the suffix rule, identifying component types where suffixes are unnecessary or redundant due to highly specific or primitive nature.
-
-### Primitive Base Components
-Generic base components don't need suffix:
-- `Button.tsx` (not `BaseButton.tsx`)
-- `Input.tsx` (not `BaseInput.tsx`)
-- `Modal.tsx` (not `BaseModal.tsx`)
-- `Card.tsx` (not `BaseCard.tsx`)
-
-### Very Specific Components
-Components with already very specific names can omit suffix:
-- `Sidebar.tsx` (already clear it's a section)
-- `Header.tsx` (already clear it's a section)
-- `Footer.tsx` (already clear it's a section)
-- `Tooltip.tsx` (already clear it's a UI component)
-
-## [Import Organization]()
-
-This section presents the standard import order convention to maintain clean and organized code, grouping imports by type and dependency level.
+Defines the standard import order convention to maintain clean and organized code by grouping imports into categories ordered by dependency level from external libraries to internal application code.
 
 Keep imports organized by category:
 
@@ -566,9 +951,65 @@ import type { Asset } from '@/types/models/asset';
 import styles from './AssetListPage.module.css';
 ```
 
-## [Naming Checklist]()
+### When to use?
 
-This section provides a quick reference checklist to verify that new components follow all naming conventions and organizational standards.
+Apply this import order convention to all component files for consistency. Use blank lines to separate import categories and improve readability.
+
+### When NOT to use?
+
+Don't enforce strict import ordering in very small files with only 2-3 imports where organization adds no value.
+
+### Example
+
+```typescript
+// Good: Organized imports by category
+import { useState } from 'react';
+
+import { MainLayout } from '@/components/layouts/MainLayout';
+
+import { LoginForm } from '@/components/forms/LoginForm';
+import { Button } from '@/components/common/Button';
+
+import { useAuth } from '@/hooks/useAuth';
+
+import { authService } from '@/services/auth.service';
+
+import type { User } from '@/types/models/user';
+
+// Bad: Mixed import order
+import { authService } from '@/services/auth.service';
+import type { User } from '@/types/models/user';
+import { useState } from 'react';
+import { LoginForm } from '@/components/forms/LoginForm';
+import { useAuth } from '@/hooks/useAuth';
+```
+
+### Checklist
+
+- [ ] Imports grouped by category
+- [ ] Blank lines separate categories
+- [ ] React and external libraries first
+- [ ] Internal imports ordered by dependency level
+- [ ] Types imported with type keyword
+- [ ] Styles imported last
+
+### Troubleshooting
+
+**Issue**: Auto-import adding imports in wrong order
+**Solution**: Configure IDE/editor to follow import order rules. Use ESLint plugin like eslint-plugin-import to enforce ordering.
+
+**Issue**: Too many imports making file header cluttered
+**Solution**: Consider if component is doing too much and should be split. Use barrel exports to group related imports.
+
+### Best Practices
+
+- Use ESLint with import ordering rules to automate organization
+- Configure IDE to auto-sort imports on save
+- Keep import categories documented for team consistency
+
+## [Component Naming Checklist - Quick Reference for New Components]()
+
+Quick reference checklist to verify that new components follow all naming conventions and organizational standards before committing code, ensuring consistency and catching errors early.
 
 When creating a new component, check:
 
@@ -581,9 +1022,55 @@ When creating a new component, check:
 - [ ] Primitive base components without suffix
 - [ ] Import/export follow project convention
 
-## [Complete Examples]()
+### When to use?
 
-This section presents complete implementation examples showing how naming patterns are applied in real component code with proper TypeScript typing.
+Use this checklist before committing any new component to repository. Apply during code reviews to verify naming conventions are followed.
+
+### When NOT to use?
+
+Don't use checklist for non-component files like utilities, services, or types that have different naming conventions.
+
+### Example
+
+```typescript
+// Component creation checklist in practice
+
+// ✅ Checklist passed
+// File: LoginForm.tsx (PascalCase ✓)
+// Location: src/components/forms/ (appropriate folder ✓)
+// Export matches file name ✓
+export function LoginForm() { /* ... */ }
+
+// ❌ Checklist failed
+// File: loginform.tsx (not PascalCase ✗)
+// Location: src/components/common/ (wrong folder, should be forms/ ✗)
+export function LoginFormComponent() { /* ... */ } // name mismatch ✗
+```
+
+### Checklist
+
+- [ ] All new components reviewed against naming checklist
+- [ ] Code reviews include checklist verification
+- [ ] Team members familiar with checklist requirements
+- [ ] Automated checks where possible (ESLint, pre-commit hooks)
+
+### Troubleshooting
+
+**Issue**: Forgetting to use checklist before committing
+**Solution**: Add checklist to pull request template or pre-commit hooks to remind developers.
+
+**Issue**: Checklist items unclear or ambiguous
+**Solution**: Reference suffix table and naming rules sections for detailed explanations.
+
+### Best Practices
+
+- Review checklist before every component creation
+- Include checklist in code review process
+- Automate checklist items where possible with linting tools
+
+## [Complete Implementation Examples - Full Component Code Samples]()
+
+Complete implementation examples showing how naming patterns are applied in real component code with proper TypeScript typing, props interfaces, and export conventions.
 
 ### Complete Example: Modal
 ```typescript
@@ -663,11 +1150,115 @@ export function useAuth() {
 }
 ```
 
-## [References]()
+### When to use?
 
-This section lists related documentation files and external resources for deeper understanding of React naming conventions and TypeScript best practices.
+Use these complete examples as templates when creating new components. Follow the structure of imports, interfaces, and export patterns shown.
+
+### When NOT to use?
+
+Don't copy examples verbatim without adapting to your specific component requirements and business logic.
+
+### Example
+
+```typescript
+// Following pattern for new form component
+// src/components/forms/SearchForm.tsx
+interface SearchFormProps {
+  onSearch: (query: string) => void;
+  placeholder?: string;
+}
+
+export function SearchForm({ onSearch, placeholder = "Search..." }: SearchFormProps) {
+  const [query, setQuery] = useState('');
+
+  const handleSubmit = (e: FormEvent) => {
+    e.preventDefault();
+    onSearch(query);
+  };
+
+  return (
+    <form onSubmit={handleSubmit}>
+      <input
+        type="text"
+        value={query}
+        onChange={(e) => setQuery(e.target.value)}
+        placeholder={placeholder}
+      />
+      <button type="submit">Search</button>
+    </form>
+  );
+}
+```
+
+### Checklist
+
+- [ ] Component follows naming convention
+- [ ] Props interface defined with descriptive name
+- [ ] Proper TypeScript typing throughout
+- [ ] Named export matches file name
+- [ ] Imports organized by convention
+
+### Troubleshooting
+
+**Issue**: TypeScript errors with props interface
+**Solution**: Ensure interface name matches component name with "Props" suffix. Export interface if used externally.
+
+**Issue**: Import paths not resolving
+**Solution**: Verify tsconfig.json path aliases are configured correctly for @ imports.
+
+### Best Practices
+
+- Define props interface with component name + "Props" suffix
+- Use named exports for better refactoring support
+- Keep TypeScript typing strict for better type safety
+
+## [References - Related Documentation and Resources]()
+
+Lists related documentation files and external resources for deeper understanding of React naming conventions, TypeScript best practices, and project-specific architecture patterns.
 
 - File: `.rules/frontend-technology-stack.md` - Technology stack
 - File: `.rules/how-to-create-common-components-frontend.md` - Component creation
 - [React Naming Conventions](https://react.dev/learn/thinking-in-react)
 - [TypeScript Style Guide](https://google.github.io/styleguide/tsguide.html)
+
+### When to use?
+
+Reference these resources when you need deeper understanding of concepts mentioned in this document or when facing complex scenarios not covered here.
+
+### When NOT to use?
+
+Don't use external references as primary source of truth for this project. Always follow project-specific conventions documented here first.
+
+### Example
+
+```typescript
+// For component creation patterns, reference:
+// .rules/how-to-create-common-components-frontend.md
+
+// For TypeScript best practices, reference:
+// https://google.github.io/styleguide/tsguide.html
+
+// For React patterns, reference:
+// https://react.dev/learn/thinking-in-react
+```
+
+### Checklist
+
+- [ ] Team familiar with related documentation files
+- [ ] External resources bookmarked for reference
+- [ ] Project-specific rules take precedence over external guides
+- [ ] References kept up to date as project evolves
+
+### Troubleshooting
+
+**Issue**: Conflicting guidance between project docs and external resources
+**Solution**: Always follow project-specific documentation in .rules/ folder. External resources are for general guidance only.
+
+**Issue**: Referenced documentation file not found
+**Solution**: Check if file was moved or renamed. Update references to reflect current structure.
+
+### Best Practices
+
+- Keep references section updated as new documentation is added
+- Prioritize project-specific documentation over external resources
+- Share important external resources with team through this section

@@ -1,44 +1,20 @@
-# [How the Agent Review Pipeline Works]()
+# Agent Review Pipeline
 
-> Complete guide to the two-stage review pipeline used in SDD to ensure implementation completeness and code quality compliance with technical standards.
+Complete guide to the two-stage review pipeline ensuring implementation completeness and code quality compliance with technical standards in the SDD project.
 
-## [Overview]()
+## [Two-Stage Pipeline Architecture]()
 
-This section provides a high-level view of the two-stage review pipeline architecture, showing how developer-fullstack, feature-review and code-reviewer agents interact sequentially to validate both completeness and quality of implementations.
+The SDD system uses a sequential two-stage review pipeline where every implementation passes through completeness validation (Stage 1) before quality validation (Stage 2), ensuring both functional requirements and technical standards are met before task completion.
 
 ### When to use?
+
 Apply this review pipeline for all feature implementations, bug fixes, and code changes before marking tasks as complete. Use Stage 1 (feature-review) to validate completeness against requirements, then Stage 2 (code-review) to validate quality against technical standards.
 
 ### When NOT to use?
-Skip the formal review pipeline only for trivial documentation updates, configuration changes, or emergency hotfixes that require immediate deployment. However, these should still undergo review asynchronously after deployment.
 
-### Example
-See the Complete Flow diagram above showing the sequential progression from developer-fullstack through feature-review and code-review stages with feedback loops for corrections.
+Skip the formal review pipeline only for trivial documentation updates, configuration changes, or emergency hotfixes that require immediate deployment. However, these should still undergo review asynchronously after deployment to maintain quality standards.
 
-### Checklist
-- [ ] All implementations go through Stage 1 (feature-review) first
-- [ ] Only complete implementations proceed to Stage 2 (code-review)
-- [ ] Incomplete or rejected implementations return to developer
-- [ ] Both reviews must approve before marking task complete
-- [ ] Review reports saved in ./todo/ folder with proper naming
-
-### Troubleshooting
-**Problem:** Unclear which stage to start at for bug fixes.
-**Solution:** Always start at developer-fullstack, then proceed to Stage 1 (feature-review).
-
-**Problem:** Code-review rejected but feature-review was complete.
-**Solution:** Return to developer to fix violations, then restart at Stage 1 to ensure fixes maintain completeness.
-
-### Best Practices
-- Never skip stages - both completeness and quality validation are essential
-- Keep review reports for audit trail and learning purposes
-- Document context clearly when delegating to reviewers
-- Use consistent naming for review reports (e.g., feature-review-products-api.md)
-- Ensure developers read and understand review feedback before fixing
-
-The SDD system uses a **two-stage review pipeline** to ensure that every implementation is complete and complies with the project's technical standards.
-
-### Complete Flow
+### Example: Complete Pipeline Flow Diagram
 
 ```
 ┌─────────────────────┐
@@ -71,45 +47,78 @@ INCOMPLETE    COMPLETE
 └─────────────┘
 ```
 
----
-
-## [Agents Involved]()
-
-Detailed description of each specialized agent's role, responsibilities, tools, workflow steps and use cases within the review pipeline.
-
-### When to use?
-Reference this section when delegating tasks to understand which agent handles which responsibility. Use developer-fullstack for implementation, feature-review for completeness validation, and code-reviewer for quality validation.
-
-### When NOT to use?
-Don't consult this section for understanding the review flow itself - use the Overview and Review Pipeline sections instead. This section is purely for understanding individual agent capabilities and responsibilities.
-
-### Example
-See subsections below for detailed specifications of developer-fullstack, feature-review, and code-reviewer agents including their tools, workflows, and verdict criteria.
-
 ### Checklist
-- [ ] Correct agent selected based on task type
-- [ ] Agent has access to required tools (MCP, file operations)
-- [ ] Agent location (.claude/agents/) known for reference
-- [ ] Agent workflow understood before delegation
-- [ ] Expected outputs and verdict criteria clear
+
+- [ ] All implementations go through Stage 1 (feature-review) first
+- [ ] Only complete implementations proceed to Stage 2 (code-review)
+- [ ] Incomplete or rejected implementations return to developer
+- [ ] Both reviews must approve before marking task complete
+- [ ] Review reports saved in ./todo/ folder with proper naming
 
 ### Troubleshooting
-**Problem:** Agent doesn't have necessary tools for validation.
-**Solution:** Check agent specification - may need to use different agent or manual validation.
 
-**Problem:** Unclear which agent should handle a specific task.
-**Solution:** developer-fullstack for coding, feature-review for completeness, code-reviewer for quality.
+**Problem:** Unclear which stage to start at for bug fixes.
+**Solution:** Always start at developer-fullstack, then proceed to Stage 1 (feature-review).
+
+**Problem:** Code-review rejected but feature-review was complete.
+**Solution:** Return to developer to fix violations, then restart at Stage 1 to ensure fixes maintain completeness.
 
 ### Best Practices
-- Always specify context and files when delegating to agents
-- Provide task file path to feature-review for requirement comparison
-- List all modified files clearly for both review agents
-- Reference agent documentation files when in doubt about capabilities
-- Ensure agents have completed their workflow before reading reports
 
-### [1. developer-fullstack]()
+- Never skip stages - both completeness and quality validation are essential
+- Keep review reports for audit trail and learning purposes
+- Document context clearly when delegating to reviewers
+- Use consistent naming for review reports (e.g., feature-review-products-api.md)
+- Ensure developers read and understand review feedback before fixing
 
-**Responsibility:** Implement complete features (backend + frontend).
+---
+
+## [Developer-Fullstack Agent: Implementation Specialist]()
+
+Responsible for implementing complete features including both backend and frontend components, following technical standards from .rules documentation, running builds and tests, and validating implementations with database and cache queries before submission.
+
+### When to use?
+
+Use developer-fullstack agent when you need to create new features, fix bugs, complete incomplete implementations identified by feature-review, or fix code quality violations identified by code-reviewer. This agent handles all coding tasks requiring both backend and frontend work.
+
+### When NOT to use?
+
+Don't use developer-fullstack for review tasks, documentation updates, or validation activities. Use feature-review for completeness validation and code-reviewer for quality validation. Developer-fullstack focuses solely on implementation, not review or validation.
+
+### Example: Developer-Fullstack Workflow for Products API
+
+1. Analyzes task requirements in ./todo/task-products.md
+2. Searches technical rules using MCP Docs Search for "API patterns", "validation standards"
+3. Implements backend (entities, DTOs, use-cases, controllers) and frontend (components, forms)
+4. Runs npm build for both backend and frontend
+5. Validates with curl commands and PostgreSQL/Redis queries
+
+### Checklist
+
+- [ ] Agent location verified: .claude/agents/developer-fullstack.md
+- [ ] Task requirements fully analyzed before implementation
+- [ ] Technical rules consulted via MCP Docs Search
+- [ ] Both backend and frontend implemented
+- [ ] Build executed without errors
+- [ ] Database and cache validated with MCP tools
+- [ ] Implementation ready for feature-review
+
+### Troubleshooting
+
+**Problem:** Build fails with TypeScript errors after implementation.
+**Solution:** Developer must fix all compilation errors before submitting to review. Run npm run build and address each error.
+
+**Problem:** Unclear which technical rules apply to current task.
+**Solution:** Use MCP Docs Search with queries like "how to create API", "validation patterns", "component structure" to find relevant rules.
+
+### Best Practices
+
+- Read complete task requirements before starting implementation
+- Consult .rules documentation early and often during development
+- Validate database/cache state using MCP tools before finishing
+- Run builds and tests before marking implementation ready
+- Keep files small and focused (under 300 lines)
+- Write clear multi-line comments explaining file purpose
 
 **Location:** `.claude/agents/developer-fullstack.md`
 
@@ -126,17 +135,53 @@ See subsections below for detailed specifications of developer-fullstack, featur
 4. Runs build and tests
 5. Validates with curl and database/cache queries
 
-**When to use:**
-- Create new features
-- Fix bugs
-- Complete incomplete implementations
-- Fix code review violations
-
 ---
 
-### [2. feature-review]()
+## [Feature-Review Agent: Completeness Validator]()
 
-**Responsibility:** Validate if implementation is **complete** and meets **task requirements**.
+Validates whether implementation is complete and meets all task requirements by comparing code against original task specifications, checking for missing endpoints, validations, fields, and integrations to ensure 100% requirement coverage before quality review.
+
+### When to use?
+
+Use feature-review agent immediately after developer-fullstack completes implementation, and again after any fixes are made to incomplete implementations. Always run feature-review before code-review to ensure completeness before checking quality standards.
+
+### When NOT to use?
+
+Don't use feature-review for validating code quality, architecture compliance, or technical standards - that's code-reviewer's responsibility. Feature-review only compares implementation against task requirements, not against .rules documentation.
+
+### Example: Feature-Review Validation for Products CRUD
+
+Task required: GET, POST, PUT, DELETE endpoints with fields (name, description, price, category, stock), validations (name required, price > 0, stock ≥ 0), and Redis caching.
+
+Feature-review checks: All 4 endpoints present? All 5 fields implemented? All 3 validations working? Cache implemented with correct TTL? Generates verdict based on completeness percentage and critical gaps.
+
+### Checklist
+
+- [ ] Agent location verified: .claude/agents/feature-review.md
+- [ ] Task file path provided to agent
+- [ ] All implemented files listed for review
+- [ ] Agent reads original task requirements
+- [ ] Agent compares requirements vs implementation
+- [ ] Database/cache validation performed if applicable
+- [ ] Report written to ./todo/feature-review-<context>.md
+- [ ] Verdict clearly stated (Complete/Incomplete)
+
+### Troubleshooting
+
+**Problem:** Feature-review marks implementation complete but some requirements seem missing.
+**Solution:** Check if task file was updated after implementation. Feature-review compares against task file provided, so ensure correct version.
+
+**Problem:** Completeness percentage seems incorrect.
+**Solution:** Review the detailed findings in report - percentage is calculated from critical, high, and medium priority requirements.
+
+### Best Practices
+
+- Always provide complete task file path when delegating
+- List all implemented files clearly to avoid missed reviews
+- Read complete report, not just verdict - details matter
+- Return to developer immediately if incomplete
+- Ensure database/cache validation happens when applicable
+- Keep feature-review reports for tracking requirement evolution
 
 **Location:** `.claude/agents/feature-review.md`
 
@@ -176,9 +221,51 @@ See subsections below for detailed specifications of developer-fullstack, featur
 
 ---
 
-### [3. code-reviewer]()
+## [Code-Reviewer Agent: Quality Enforcer]()
 
-**Responsibility:** Validate if code follows **technical rules, architecture patterns, code style and best practices** defined in `.rules`.
+Validates code compliance with technical rules, architecture patterns, code style and best practices defined in .rules documentation, identifying critical security issues, high-priority quality violations, and opportunities for improvement to ensure maintainable and standardized code.
+
+### When to use?
+
+Use code-reviewer agent only after feature-review approves with ✅ COMPLETE verdict. Code-review validates quality and compliance with technical standards, so completeness must be verified first. Always run code-review before marking any task as complete.
+
+### When NOT to use?
+
+Don't use code-reviewer before feature-review approves - incomplete implementations will waste review effort. Don't use for validating requirement completeness - that's feature-review's job. Code-reviewer focuses solely on quality, not functional completeness.
+
+### Example: Code-Review Quality Validation
+
+Code-reviewer identifies: missing /v1/ API versioning (CRITICAL), missing userId validation on protected endpoints (CRITICAL), incomplete Swagger documentation (HIGH), N+1 database queries (HIGH), inconsistent naming conventions (MEDIUM), and unnecessary comments (LOW).
+
+### Checklist
+
+- [ ] Agent location verified: .claude/agents/code-reviewer.md
+- [ ] Feature-review approved before starting code-review
+- [ ] All implemented files listed for review
+- [ ] Agent searches .rules for applicable technical standards
+- [ ] Code compared against architecture patterns and best practices
+- [ ] Database/cache usage validated if applicable
+- [ ] Report written to ./todo/code-review-<context>.md
+- [ ] Verdict clearly stated (Approved/Rejected)
+- [ ] Violations cite specific .rules file paths and line numbers
+
+### Troubleshooting
+
+**Problem:** Code-review keeps rejecting for same violation types.
+**Solution:** Developer needs to study relevant .rules sections before implementing. Use MCP Docs Search to find applicable standards early.
+
+**Problem:** Code-review feedback too vague to action.
+**Solution:** Reviewers must cite specific .rules paths, provide code examples, and explain exactly what needs to change.
+
+### Best Practices
+
+- Only run after feature-review approves
+- Provide complete list of modified files
+- Read full report including all severity levels
+- Return to developer for critical or excessive high violations
+- Always restart at Stage 1 after fixes
+- Learn from violations to improve future implementations
+- Reference specific .rules documentation when fixing violations
 
 **Location:** `.claude/agents/code-reviewer.md`
 
@@ -204,7 +291,7 @@ See subsections below for detailed specifications of developer-fullstack, featur
 | ⚠️ **APPROVED WITH REMARKS** | 0 critical, 3-5 high |
 | ❌ **REJECTED** | ≥ 1 critical OR > 5 high |
 
-**Severities:**
+**Severity Levels:**
 
 **🔴 CRITICAL:**
 - API without versioning `/v1/`
@@ -233,45 +320,51 @@ See subsections below for detailed specifications of developer-fullstack, featur
 
 ---
 
-## [Review Pipeline: Detailed Flow]()
+## [Stage 1: Feature-Review Process for Completeness]()
 
-Step-by-step breakdown of the complete review process from implementation through both stages of validation, including decision trees and feedback loops for corrections.
+First validation stage that ensures implementation includes all required endpoints, fields, validations and integrations specified in task requirements, with feedback loops returning incomplete work to developer until 95%+ completeness achieved before advancing to quality review.
 
 ### When to use?
-Follow this detailed flow for every feature implementation to ensure systematic progression through both validation stages. Use as a checklist when orchestrating reviews as Scrum Master to ensure no steps are skipped.
+
+Execute Stage 1 immediately after developer-fullstack completes implementation, and again after developer fixes any incompleteness issues. Always complete Stage 1 before proceeding to Stage 2 (code-review) to ensure efficient use of review resources.
 
 ### When NOT to use?
-Don't follow this flow for understanding individual agent responsibilities - use the Agents Involved section instead. This flow is specifically for understanding the complete end-to-end review process.
 
-### Example
-See subsections below for Stage 1 (Feature Review) and Stage 2 (Code Review) detailed processes including delegation steps, validation criteria, and decision trees.
+Don't skip Stage 1 even for "small fixes" or "obvious changes" - completeness validation catches missing requirements that aren't obvious. Don't proceed to Stage 2 if Stage 1 shows incomplete - fix incompleteness first.
+
+### Example: Stage 1 Process for Products API Implementation
+
+Scrum Master delegates to feature-review with context "products-api", task file "./todo/task-products.md", and file list. Feature-review executes complete workflow and generates report. Scrum Master reads verdict: if ❌ INCOMPLETE, adds TODO and delegates back to developer; if ✅ COMPLETE, advances to Stage 2.
 
 ### Checklist
-- [ ] Stage 1 completed before proceeding to Stage 2
-- [ ] Feature-review report read and verdict identified
-- [ ] Incomplete implementations return to developer
-- [ ] Code-review only runs after feature-review approval
-- [ ] Rejected code returns to developer then restarts at Stage 1
-- [ ] Tasks marked complete only after both stages approve
+
+- [ ] Developer-fullstack finished implementation
+- [ ] Context name chosen (descriptive, kebab-case)
+- [ ] Task file path ready for delegation
+- [ ] Complete list of modified files prepared
+- [ ] Feature-review agent delegated with all information
+- [ ] Report read at ./todo/feature-review-<context>.md
+- [ ] Verdict identified (Complete/Incomplete/Review Needed)
+- [ ] Decision made: advance to Stage 2 or return to developer
+- [ ] TODO updated with correction task if incomplete
 
 ### Troubleshooting
-**Problem:** Code-review found issues, unsure whether to restart at Stage 1.
-**Solution:** Always restart at Stage 1 (feature-review) after developer fixes to ensure completeness maintained.
 
-**Problem:** Feature-review approved but developer made additional changes.
-**Solution:** Restart at Stage 1 to validate new changes haven't broken completeness.
+**Problem:** Feature-review reports incomplete but developer believes it's complete.
+**Solution:** Review detailed findings in report - often reveals requirement misunderstandings or overlooked task details.
+
+**Problem:** Multiple rounds of incompleteness corrections taking too long.
+**Solution:** Developer should read complete task and consult .rules thoroughly before implementing to reduce review rounds.
 
 ### Best Practices
-- Always read review reports before making decisions
-- Document context and files clearly when delegating
-- Add TODO items for incomplete or rejected implementations
-- Mark original task complete only after both reviews approve
-- Keep review reports for historical record and learning
-- Inform user of progress after each stage completion
 
-### [Stage 1: Feature Review (Completeness)]()
-
-Validation phase that compares implemented code against original task requirements to ensure all specified endpoints, validations, fields and integrations are present and functional.
+- Always provide clear context when delegating
+- Include complete task file path for accurate comparison
+- List all modified files to ensure complete review
+- Read full report details, not just verdict
+- Add specific TODO items referencing report for incomplete work
+- Inform user of progress after completion
+- Advance to Stage 2 only with ✅ COMPLETE verdict
 
 **When:** After developer-fullstack completes implementation.
 
@@ -305,9 +398,52 @@ Validation phase that compares implemented code against original task requiremen
 
 ---
 
-### [Stage 2: Code Review (Technical Quality)]()
+## [Stage 2: Code-Review Process for Quality]()
 
-Quality validation phase that compares implemented code against project technical standards, architecture patterns and best practices defined in .rules to ensure compliance and maintainability.
+Second validation stage that ensures implementation follows technical rules, architecture patterns and best practices from .rules documentation, identifying security vulnerabilities, quality violations and improvement opportunities with feedback loops requiring fixes to restart at Stage 1.
+
+### When to use?
+
+Execute Stage 2 only after feature-review approves with ✅ COMPLETE verdict. Code-review validates quality compliance after completeness is confirmed. Always complete Stage 2 before marking task complete in TODO list.
+
+### When NOT to use?
+
+Don't run Stage 2 if feature-review showed incomplete - fix completeness first. Don't skip Stage 2 even if developer is confident about quality - objective validation against .rules catches violations that may not be obvious.
+
+### Example: Stage 2 Process for Products API Quality Check
+
+After Stage 1 approves, Scrum Master delegates to code-reviewer with context "products-api" and file list. Code-reviewer searches .rules, validates code quality, generates report. Scrum Master reads verdict: if ❌ REJECTED, adds TODO and delegates to developer then restarts at Stage 1; if ✅ APPROVED, marks task complete.
+
+### Checklist
+
+- [ ] Feature-review approved with ✅ COMPLETE verdict
+- [ ] Context name matches Stage 1 for consistency
+- [ ] Complete list of modified files prepared
+- [ ] Code-reviewer agent delegated with all information
+- [ ] Report read at ./todo/code-review-<context>.md
+- [ ] Verdict identified (Approved/Approved with Remarks/Rejected)
+- [ ] Decision made: mark complete or return to developer
+- [ ] TODO updated with correction task if rejected
+- [ ] Task marked complete in TODO list only if approved
+
+### Troubleshooting
+
+**Problem:** Code-review rejected, unclear if should restart at Stage 1.
+**Solution:** Always restart at Stage 1 (feature-review) after developer fixes to ensure changes didn't break completeness.
+
+**Problem:** Code-review found violations not caught in previous reviews.
+**Solution:** Normal - code-review uses different validation criteria (.rules compliance vs task requirements). Fix violations and restart at Stage 1.
+
+### Best Practices
+
+- Only run after feature-review approval
+- Use same context name as Stage 1 for traceability
+- Read full report including all severity levels
+- Return to developer for critical or excessive high violations
+- Always restart at Stage 1 after developer fixes
+- Mark task complete only after ✅ APPROVED verdict
+- Inform user of final status
+- Keep reports for historical reference
 
 **When:** After feature-review approves (✅ COMPLETE).
 
@@ -341,43 +477,58 @@ Quality validation phase that compares implemented code against project technica
 
 ---
 
-## [Complete Execution Example]()
+## [Example: Products CRUD Implementation Journey]()
 
-Real-world walkthrough of implementing a Products CRUD feature through multiple rounds of development and review, demonstrating how the pipeline catches incompleteness and quality issues.
+Real-world walkthrough demonstrating complete pipeline execution through four rounds: initial incomplete implementation, completeness fixes achieving Stage 1 approval, quality violations requiring corrections, and final successful completion passing both review stages.
 
 ### When to use?
-Reference this example when learning the review pipeline flow or when unclear about how to handle specific scenarios like incomplete implementations or code quality violations. Use as a training reference for new team members.
+
+Reference this example when learning the review pipeline mechanics, training new team members, or clarifying how to handle specific scenarios like incomplete implementations or quality rejections. Use as educational material to understand review feedback patterns.
 
 ### When NOT to use?
-Don't use this example as a template for actual tasks - it's illustrative only. Each real implementation will have different requirements and issues. Use the Review Pipeline section for actual workflow guidance.
 
-### Example
-See subsections below for Round 1 (incomplete implementation), Round 2 (complete but with quality issues), Round 3 (quality violations identified), and Round 4 (final approval) of a Products CRUD implementation.
+Don't use this example as a template for actual implementations - each feature has unique requirements and issues. Don't expect your implementation to follow exactly the same number of rounds - complexity varies by task.
+
+### Example: Four-Round Implementation Journey
+
+Round 1: Developer implements 60% (missing PUT/DELETE, fields, validations) → feature-review rejects ❌ INCOMPLETE
+Round 2: Developer completes missing items → feature-review approves ✅ COMPLETE → advances to code-review
+Round 3: Code-review finds 3 high violations (userId, Swagger, cache) → ⚠️ APPROVED WITH REMARKS → return to developer
+Round 4: Developer fixes violations → feature-review ✅ → code-review ✅ APPROVED → task complete
 
 ### Checklist
-- [ ] Example demonstrates complete flow through both review stages
-- [ ] Shows handling of incomplete implementation (Stage 1 rejection)
-- [ ] Shows handling of quality violations (Stage 2 rejection)
-- [ ] Demonstrates feedback loop back to developer
-- [ ] Shows successful completion after all fixes
+
+- [ ] Example demonstrates incomplete first implementation
+- [ ] Shows feature-review rejection with specific feedback
+- [ ] Demonstrates developer fixing incompleteness
+- [ ] Shows feature-review approval advancing to Stage 2
+- [ ] Demonstrates code-review finding quality violations
+- [ ] Shows feedback loop returning to developer
+- [ ] Demonstrates restart at Stage 1 after fixes
+- [ ] Shows final approval after all corrections
 
 ### Troubleshooting
-**Problem:** Real implementation doesn't match example flow exactly.
-**Solution:** This is normal - use the example for understanding patterns, not as exact template.
 
-**Problem:** Unsure how many rounds of review are normal.
-**Solution:** Varies by complexity - aim for completeness and quality on first attempt through thorough preparation.
+**Problem:** Real implementation requires more rounds than example.
+**Solution:** Normal variation - focus on understanding the feedback and improvement patterns, not matching exact round count.
+
+**Problem:** Example violations don't match those found in real implementation.
+**Solution:** Expected - this example illustrates process, not exhaustive violation list. Consult .rules for comprehensive standards.
 
 ### Best Practices
-- Study this example to understand the review pipeline mechanics
-- Note how each review provides specific, actionable feedback
-- Observe how fixes can require restarting at Stage 1
-- Use this as reference for writing clear review reports
-- Learn from the progression: preparation reduces review rounds
 
-### [Scenario: Implement Products CRUD]()
+- Study example to understand pipeline mechanics
+- Note how specific, actionable feedback accelerates fixes
+- Observe feedback loop pattern: developer → Stage 1 → Stage 2 → developer → Stage 1...
+- Learn from progression: thorough preparation reduces review rounds
+- Use example to explain pipeline to stakeholders
+- Reference when writing clear review reports
 
-Practical example showing the complete lifecycle of a CRUD implementation including initial attempt, completeness validation failures, fixes, and quality review corrections.
+### [Round 1: Incomplete First Implementation]()
+
+Initial development attempt showing common incompleteness issues including missing PUT and DELETE endpoints, missing required fields (description, category, stock), and missing price and stock validations, resulting in feature-review rejection at 60% completeness.
+
+**Scenario:** Implement Products CRUD
 
 **Task:** `./todo/task-products.md`
 
@@ -387,12 +538,6 @@ Practical example showing the complete lifecycle of a CRUD implementation includ
 - Validations: name required, price > 0, stock ≥ 0
 - Save to PostgreSQL
 - List caching in Redis (5 min TTL)
-
----
-
-### [Round 1: First Implementation]()
-
-First development attempt showing common incompleteness issues like missing endpoints and fields, followed by feature-review rejection with detailed feedback.
 
 **1. Developer-fullstack implements:**
 - ✅ GET /v1/products
@@ -425,9 +570,9 @@ Critical Incompatibilities:
 
 ---
 
-### [Round 2: Complete Implementation]()
+### [Round 2: Completeness Achieved]()
 
-Developer addresses completeness issues by implementing all missing endpoints, fields and validations, achieving full task coverage and passing feature-review.
+Developer addresses all incompleteness feedback by implementing missing PUT and DELETE endpoints, adding required fields (description, category, stock), and implementing price and stock validations, achieving 100% completeness and advancing to quality review.
 
 **4. Developer-fullstack completes:**
 - ✅ PUT /v1/products/:id (ADDED)
@@ -452,9 +597,9 @@ All requirements implemented!
 
 ---
 
-### [Round 3: Code Review (First Review)]()
+### [Round 3: Quality Violations Identified]()
 
-First code-review attempt identifies quality violations like missing userId validation, incomplete Swagger documentation and cache invalidation issues.
+First code-review identifies quality issues including missing userId validation on protected endpoints (HIGH), incomplete Swagger documentation (HIGH), and missing cache invalidation on mutations (HIGH), resulting in ⚠️ APPROVED WITH REMARKS verdict requiring corrections.
 
 **7. Code-reviewer validates:**
 
@@ -478,9 +623,9 @@ High Violations:
 
 ---
 
-### [Round 4: Quality Fixes]()
+### [Round 4: Final Approval Success]()
 
-Final round where developer implements all quality improvements, passing both feature-review validation and code-review approval to complete the task successfully.
+Developer implements all quality improvements (userId validation, Swagger documentation, cache invalidation), passing feature-review validation maintaining completeness, and achieving code-review ✅ APPROVED verdict with zero violations, resulting in task completion.
 
 **9. Developer-fullstack fixes:**
 - ✅ Adds userId validation on all endpoints
@@ -508,43 +653,55 @@ Code complies with technical standards!
 
 ---
 
-## [Best Practices]()
+## [Scrum Master Best Practices for Pipeline Orchestration]()
 
-Essential guidelines and recommendations for each role in the pipeline to maximize effectiveness and maintain code quality standards throughout the development process.
+Guidelines for Scrum Master role using /execute command to orchestrate review pipeline correctly, including mandatory stage sequencing, correction loop handling, TODO list maintenance, and delegation protocols to ensure consistent quality and completeness validation.
 
 ### When to use?
-Consult this section before starting any role in the pipeline (Scrum Master, Developer, or Reviewer) to ensure you follow established best practices and avoid common mistakes.
+
+Consult these guidelines before starting any task orchestration, when delegating to agents, when making decisions based on review verdicts, and when updating TODO lists to ensure consistent pipeline execution following established patterns.
 
 ### When NOT to use?
-Don't use this section for learning the review pipeline flow - use the Review Pipeline section instead. This section provides optimization tips, not core workflow instructions.
 
-### Example
-See subsections below for specific best practices for Scrum Master, Developers, and Reviewers with actionable guidelines for each role.
+Don't use these guidelines when acting as developer or reviewer - see role-specific sections instead. These practices are specifically for the orchestration and management role, not for implementation or validation roles.
+
+### Example: Scrum Master Orchestration Flow
+
+User requests feature → Scrum Master delegates to developer-fullstack → Developer implements → Scrum Master delegates to feature-review → Reads report → If incomplete, adds TODO and delegates back to developer → If complete, delegates to code-reviewer → Reads report → If rejected, adds TODO and delegates to developer → If approved, marks task complete and informs user.
 
 ### Checklist
-- [ ] Role-specific best practices understood before starting work
-- [ ] Scrum Master follows complete pipeline without skipping stages
-- [ ] Developers read complete task and consult .rules before implementing
-- [ ] Reviewers provide specific, actionable feedback with examples
-- [ ] All roles maintain clear communication and documentation
+
+- [ ] Always follow complete pipeline: developer → feature-review → code-review
+- [ ] Never skip stages even for "small fixes"
+- [ ] Read complete reports before making decisions
+- [ ] Add specific TODO items referencing review reports
+- [ ] Delegate correction tasks immediately after review rejection
+- [ ] Restart at Stage 1 after any code changes
+- [ ] Mark task complete only after both reviews approve
+- [ ] Keep TODO list updated and accurate
+- [ ] Inform user of progress at key milestones
 
 ### Troubleshooting
-**Problem:** Reviews keep finding same types of issues repeatedly.
-**Solution:** Developers should study .rules more thoroughly before implementation and learn from past review feedback.
 
-**Problem:** Review feedback is vague and difficult to action.
-**Solution:** Reviewers must cite specific rules, provide code examples, and be explicit about what needs to change.
+**Problem:** Unclear whether to restart at Stage 1 after code-review rejection.
+**Solution:** Always restart at Stage 1 - code changes can break completeness, so revalidation is required.
+
+**Problem:** TODO list getting cluttered with correction tasks.
+**Solution:** Update correction tasks as completed, keep review reports for history, archive old reports if needed.
 
 ### Best Practices
-- Always consult role-specific guidelines before starting work
-- Learn from past reviews to improve future implementations
-- Maintain clear communication throughout the pipeline
-- Document decisions and rationale in review reports
-- Continuously update and refine best practices based on experience
 
-### [For Scrum Master (/execute command)]()
+- Always follow complete pipeline without skipping stages
+- Read full review reports, not just verdicts
+- Add correction tasks to TODO with report references
+- Delegate correction tasks immediately after review rejection
+- Ensure correction loops properly restart at Stage 1
+- Mark tasks complete only after both reviews approve
+- Keep TODO list clean and updated
+- Inform user of progress and blockers
+- Maintain consistent context naming across stages
 
-Guidelines for orchestrating the review pipeline, delegating tasks correctly, managing feedback loops and maintaining TODO list accuracy.
+**Guidelines:**
 
 1. **Always follow the complete pipeline:**
    - developer → feature-review → code-review
@@ -562,9 +719,58 @@ Guidelines for orchestrating the review pipeline, delegating tasks correctly, ma
 
 ---
 
-### [For Developers]()
+## [Developer Best Practices for First-Pass Success]()
 
-Best practices for implementing features to pass both review stages on first attempt, including thorough requirement analysis and technical rule consultation.
+Guidelines for developers to maximize chances of passing both review stages on first attempt through thorough requirement analysis, comprehensive .rules consultation, proactive database and cache validation, and complete build and test execution before submission.
+
+### When to use?
+
+Follow these practices before starting any implementation, during development to stay aligned with standards, and before marking work ready for review to catch issues early and reduce review rounds.
+
+### When NOT to use?
+
+Don't use these practices to replace actual review stages - even with perfect preparation, objective validation is required. These practices improve quality, they don't eliminate the need for formal review.
+
+### Example: Developer Preparation Workflow
+
+Before coding: Read complete task-products.md requirements → Search .rules for "API patterns", "validation standards", "cache usage" → Review example implementations in codebase
+During coding: Reference .rules frequently → Keep files small and focused → Add clear comments
+Before submission: Run npm run build (backend + frontend) → Test all endpoints with curl → Validate database with MCP Postgres queries → Check cache with MCP Redis queries
+
+### Checklist
+
+- [ ] Complete task file read and understood
+- [ ] .rules documentation consulted for applicable standards
+- [ ] Backend implementation following architecture patterns
+- [ ] Frontend implementation following component standards
+- [ ] All validations implemented as specified
+- [ ] Database state validated with MCP Postgres queries
+- [ ] Cache state validated with MCP Redis queries if applicable
+- [ ] Build executed without errors (npm run build)
+- [ ] Tests executed successfully
+- [ ] Files kept under 300 lines with clear structure
+
+### Troubleshooting
+
+**Problem:** Unclear which .rules apply to current task.
+**Solution:** Use MCP Docs Search with queries describing your task: "API creation", "form validation", "data caching", etc.
+
+**Problem:** Build keeps failing with similar errors.
+**Solution:** Study common TypeScript patterns in .rules, review existing codebase examples, ensure proper typing throughout.
+
+### Best Practices
+
+- Read complete task requirements before writing any code
+- Search .rules early using MCP Docs Search for relevant patterns
+- Reference .rules frequently during implementation
+- Keep files small, focused, and well-commented
+- Validate database and cache state before finishing
+- Run builds and tests before marking ready
+- Test all endpoints with curl commands
+- Review own code against .rules before submission
+- Learn from review feedback to improve future work
+
+**Guidelines:**
 
 1. **Read the COMPLETE task before implementing**
 2. **Consult `.rules` for technical rules, architecture patterns and best practices**
@@ -573,9 +779,55 @@ Best practices for implementing features to pass both review stages on first att
 
 ---
 
-### [For Reviewers]()
+## [Reviewer Best Practices for Actionable Feedback]()
 
-Guidance for both feature-review and code-review agents on how to provide actionable feedback with specific examples and rule references.
+Guidelines for feature-review and code-review agents to provide specific, actionable feedback with clear examples, rule references with file paths and line numbers, and concrete fix instructions to enable efficient corrections and learning.
+
+### When to use?
+
+Follow these practices when writing review reports, documenting violations, providing feedback to developers, and creating verdict decisions to ensure reviews are educational, actionable, and drive continuous improvement.
+
+### When NOT to use?
+
+Don't use these practices when implementing code - these are specifically for review activities. Don't apply feature-review criteria to code-review or vice versa - each has distinct validation focus.
+
+### Example: Actionable Review Feedback
+
+Bad feedback: "Missing implementation"
+Good feedback: "Missing DELETE /v1/products/:id endpoint - task requires full CRUD including delete operation"
+
+Bad feedback: "Code quality issues"
+Good feedback: "Missing userId validation on protected endpoints - violates .rules/how-to-create-api-backend.md:145 - example: add @UseGuards(UserIdGuard) decorator"
+
+### Checklist
+
+- [ ] Feedback is specific, not vague or general
+- [ ] Missing items explicitly identified
+- [ ] Violated rules cited with .rules file path and line number
+- [ ] Code examples provided showing correct implementation
+- [ ] Severity levels assigned correctly
+- [ ] Verdict matches criteria (completeness % or violation counts)
+- [ ] Report written to correct location with proper naming
+- [ ] Actionable next steps clear for developer
+
+### Troubleshooting
+
+**Problem:** Developer unclear how to fix review feedback.
+**Solution:** Provide specific file paths, line numbers, code examples, and references to .rules documentation showing correct approach.
+
+**Problem:** Same violations appearing across multiple reviews.
+**Solution:** Ensure feedback includes educational component explaining why violation matters and referencing .rules for deeper understanding.
+
+### Best Practices
+
+- Be specific: identify exact missing items or violations
+- Always cite violated rules with .rules file paths and line numbers
+- Provide correct code examples following standards
+- Explain why violations matter for developer learning
+- Use appropriate severity levels consistently
+- Compare code against correct validation scope (task vs .rules)
+- Write reports with clear structure and actionable items
+- Focus on helping developers improve, not just finding faults
 
 **Feature Review:**
 - Compare code vs task (not vs technical rules)
@@ -589,39 +841,59 @@ Guidance for both feature-review and code-review agents on how to provide action
 
 ---
 
-## [Output Files]()
+## [Review Report Standards and File Organization]()
 
-Documentation standards for review reports including location, naming conventions and context format examples to maintain consistency across all reviews.
+Standardized documentation for review reports including mandatory ./todo/ location, naming convention pattern using kebab-case context descriptors, and consistent report structure to maintain organization and traceability across all reviews.
 
 ### When to use?
-Reference this section when saving review reports to ensure consistent naming and location. Use the context format guidelines when delegating to reviewers to specify report names.
+
+Reference these standards when saving review reports to ensure consistent naming and location, when delegating to reviewers to specify report names using proper context format, and when searching for historical review reports.
 
 ### When NOT to use?
-Don't use this section for understanding review content requirements - focus on agent-specific documentation for that. This section is purely about file naming and organization.
 
-### Example
-See examples below showing proper context format like "products-api", "user-authentication", "dashboard-analytics" using kebab-case to describe functionality.
+Don't use these standards for understanding review content requirements - consult agent-specific documentation for that. This section purely addresses file naming, location, and organizational conventions, not review methodology.
+
+### Example: Report Naming Convention
+
+Context format: descriptive, kebab-case, 2-4 words identifying functionality
+
+Good examples:
+- products-api
+- user-authentication
+- payment-integration
+- dashboard-analytics
+
+Bad examples:
+- task-123 (not descriptive)
+- ProductsAPI (not kebab-case)
+- implement-the-complete-products-crud-with-caching (too long)
 
 ### Checklist
+
 - [ ] Review reports saved in ./todo/ directory
 - [ ] Filenames follow pattern: feature-review-<context>.md or code-review-<context>.md
 - [ ] Context uses kebab-case format
-- [ ] Context clearly describes the functionality being reviewed
-- [ ] Reports retained for audit trail and learning
+- [ ] Context clearly describes functionality (not task numbers)
+- [ ] Context concise (2-4 words maximum)
+- [ ] Same context used across both review stages for traceability
+- [ ] Reports retained for audit trail
 
 ### Troubleshooting
-**Problem:** Difficulty finding review reports for specific features.
-**Solution:** Use descriptive context names that clearly identify the feature (e.g., "payment-integration" not "task-123").
 
-**Problem:** Review report naming inconsistent across team.
-**Solution:** Always use kebab-case and follow the pattern: [review-type]-[context].md
+**Problem:** Difficulty finding review reports for specific features.
+**Solution:** Use descriptive context names identifying the feature (e.g., "payment-integration" not "task-123"), maintain consistent naming.
+
+**Problem:** Report naming inconsistent across team.
+**Solution:** Always use kebab-case and follow the pattern: [review-type]-[context].md where context is 2-4 descriptive words.
 
 ### Best Practices
-- Use descriptive context names that identify the feature, not task numbers
+
+- Use descriptive context names identifying the feature, not task numbers
 - Keep context concise but clear (2-4 words maximum)
-- Maintain consistent kebab-case formatting
+- Maintain consistent kebab-case formatting across all reports
 - Save all reports in ./todo/ for centralized access
 - Don't delete reports - they serve as audit trail and learning resource
+- Use same context across both review stages for traceability
 - Reference past reports when implementing similar features
 
 All reports are saved in `./todo/`:
@@ -639,27 +911,34 @@ All reports are saved in `./todo/`:
 
 ---
 
-## [Summary]()
+## [Pipeline Summary: Quick Reference Table]()
 
-Quick reference table showing the complete pipeline flow with all possible outcomes and transitions between stages for rapid understanding of the process.
+Quick reference table mapping each pipeline stage to its responsible agent, validation type, possible results, and corresponding next steps for rapid decision-making during review orchestration and workflow management.
 
 ### When to use?
-Use this summary table as a quick reference when making decisions about next steps during the review pipeline. Consult when unsure which stage to proceed to based on review results.
+
+Use this summary table as quick reference when making decisions about next steps during pipeline execution, when unsure which stage to proceed to based on review results, or when explaining pipeline flow to stakeholders.
 
 ### When NOT to use?
-Don't use this summary for learning the detailed review process - read the complete sections above first. This is a reference tool for those already familiar with the pipeline.
 
-### Example
-See table below mapping each stage, agent, validation type, possible results, and corresponding next steps for the complete review pipeline flow.
+Don't use this summary for learning the detailed review process - read the complete sections first for comprehensive understanding. This is a reference tool for those already familiar with pipeline mechanics.
+
+### Example: Using the Summary Table
+
+Current situation: Code-review returned ❌ REJECTED verdict
+Look up in table: Stage 2 → code-review → Quality vs rules → ❌ Rejected → Developer fixes → Stage 1
+Action: Return to developer, then restart at feature-review after fixes complete
 
 ### Checklist
+
 - [ ] Current stage identified in table
-- [ ] Review result/verdict determined
+- [ ] Review result/verdict determined from report
 - [ ] Next step clearly identified from table
-- [ ] Transition logic understood (when to loop back vs advance)
-- [ ] Final goal: both completeness and compliance achieved
+- [ ] Transition logic understood (loop back vs advance)
+- [ ] Final goal clear: both reviews must approve
 
 ### Troubleshooting
+
 **Problem:** Table shows multiple possible next steps for current situation.
 **Solution:** Check the Result column carefully - next step depends on specific verdict (Complete/Incomplete, Approved/Rejected).
 
@@ -667,11 +946,12 @@ See table below mapping each stage, agent, validation type, possible results, an
 **Solution:** Only advance to Stage 2 if feature-review verdict is "Complete" (✅). All other cases return to developer.
 
 ### Best Practices
+
 - Bookmark this summary for quick reference during reviews
-- Ensure you understand the detailed sections before relying on summary
+- Ensure you understand detailed sections before relying on summary
 - Always verify verdict from actual review report, not assumptions
 - Remember the final goal: both reviews must approve
-- Use the summary to explain pipeline flow to stakeholders
+- Use summary to explain pipeline flow to stakeholders concisely
 
 | Stage | Agent | Validates | Result | Next Step |
 |-------|-------|-----------|--------|-----------|

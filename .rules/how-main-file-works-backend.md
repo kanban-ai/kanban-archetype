@@ -1,18 +1,18 @@
-# How the main Backend file works?
+# How the Main Backend File Works
 
-Comprehensive guide about the main.ts file, NestJS application entry point, covering configuration, middlewares, guards, Swagger, and production setup.
+Comprehensive guide about the main.ts file, NestJS application entry point, covering configuration, middlewares, guards, Swagger, and production setup for building robust backend applications.
 
-## [What is main.ts?]()
+## [NestJS Main.ts Entry Point - Application Initialization File]()
 
-The main.ts file is the NestJS application entry point that initializes the server, configures global middlewares, validation pipes, guards, Swagger documentation, CORS, and static file serving. This file centralizes all critical application configurations before starting the HTTP server.
+The main.ts file is the NestJS application entry point that initializes the server, configures global middlewares, validation pipes, guards, Swagger documentation, CORS, and static file serving. This file centralizes all critical application configurations before starting the HTTP server, establishing the foundation for your entire backend architecture.
 
 ### When to use?
 
-Use main.ts when you need to configure global application behavior such as adding middlewares, enabling CORS, setting up authentication guards, configuring API versioning, integrating Swagger documentation, or serving static frontend files. Every NestJS project requires this file.
+Use main.ts when you need to configure global application behavior such as adding middlewares, enabling CORS, setting up authentication guards, configuring API versioning, integrating Swagger documentation, or serving static frontend files. Every NestJS project requires this file as the bootstrap entry point where the application lifecycle begins and core configurations are established.
 
 ### When NOT to use?
 
-Do not use main.ts for module-specific configurations, business logic, database configurations, or feature-specific setup. These should be handled in their respective modules, services, or configuration files. Main.ts should only contain application-level configurations.
+Do not use main.ts for module-specific configurations, business logic, database configurations, or feature-specific setup. These should be handled in their respective modules, services, or configuration files. Main.ts should only contain application-level configurations that affect the entire application globally, not individual features or modules.
 
 ### Example
 
@@ -66,17 +66,17 @@ bootstrap();
 6. Use helmet in production - increases security headers
 7. Configure rate limiting - prevents API abuse and DDoS attacks
 
-## [Complete Project Configuration]()
+## [Complete Production-Ready Configuration - Full Stack Application Setup]()
 
-Complete production-ready configuration including CORS, global validation, guards, Swagger and serving frontend static files. This example demonstrates all recommended configurations for a professional NestJS application ready for deployment.
+Complete production-ready configuration including CORS, global validation, guards, Swagger and serving frontend static files. This example demonstrates all recommended configurations for a professional NestJS application ready for deployment with JWT authentication, API versioning, comprehensive documentation, and seamless frontend integration for full-stack projects.
 
 ### When to use?
 
-Use this complete configuration when setting up a production-ready NestJS application that requires JWT authentication, API versioning, Swagger documentation, serves a React frontend, and needs robust validation and security features. Ideal for full-stack projects.
+Use this complete configuration when setting up a production-ready NestJS application that requires JWT authentication, API versioning, Swagger documentation, serves a React frontend, and needs robust validation and security features. Ideal for full-stack projects where backend serves both API endpoints and frontend static files from a single deployment unit.
 
 ### When NOT to use?
 
-Do not use this complete setup for simple microservices, API-only projects that don't serve frontend, prototypes where minimal configuration is sufficient, or when you need custom authentication strategies beyond JWT. Start simple and add configurations as needed.
+Do not use this complete setup for simple microservices, API-only projects that don't serve frontend, prototypes where minimal configuration is sufficient, or when you need custom authentication strategies beyond JWT. Start simple and add configurations as needed based on your specific requirements and architecture decisions rather than copying everything blindly.
 
 ### Example
 
@@ -221,17 +221,17 @@ bootstrap();
 6. Add console logs to confirm URLs after server starts
 7. Test all configurations in both development and production environments
 
-## [NestFactory.create Configuration]()
+## [NestFactory.create Configuration - Application Instance Creation]()
 
-Creates the NestJS application instance with optional configurations for logging, CORS, and other startup behaviors. The NestExpressApplication typing provides access to Express-specific methods like useStaticAssets.
+Creates the NestJS application instance with optional configurations for logging, CORS, and other startup behaviors. The NestExpressApplication typing provides access to Express-specific methods like useStaticAssets and enables full control over the underlying Express server for advanced HTTP configurations and middleware management.
 
 ### When to use?
 
-Use NestFactory.create at the start of bootstrap function to initialize your application. Use NestExpressApplication typing when you need Express methods. Use options parameter to configure logging levels or enable simple CORS during development.
+Use NestFactory.create at the start of bootstrap function to initialize your application. Use NestExpressApplication typing when you need Express methods like serving static files or custom middleware. Use options parameter to configure logging levels or enable simple CORS during development when detailed configuration is not required.
 
 ### When NOT to use?
 
-Do not create multiple application instances in the same process. Do not use NestExpressApplication if using a different platform (like Fastify). Do not configure complex CORS here - use app.enableCors() instead.
+Do not create multiple application instances in the same process as this causes port conflicts and resource issues. Do not use NestExpressApplication if using a different platform adapter like Fastify. Do not configure complex CORS here - use app.enableCors() instead for production-grade CORS configuration with detailed options and security controls.
 
 ### Example
 
@@ -272,17 +272,17 @@ const app = await NestFactory.create(AppModule, {
 3. Use custom logger implementation for production environments
 4. Keep bootstrap function clean and readable
 
-## [Global Prefix Configuration]()
+## [Global Prefix Configuration - API Route Namespace]()
 
-Adds a URL prefix to all routes in the application. Using /api prefix keeps API routes organized and separated from static files or frontend routes, making it easier to configure reverse proxies and routing rules.
+Adds a URL prefix to all routes in the application. Using /api prefix keeps API routes organized and separated from static files or frontend routes, making it easier to configure reverse proxies and routing rules while providing clear distinction between API endpoints and static content for better architecture organization.
 
 ### When to use?
 
-Use global prefix when you want all API endpoints to start with a common path like /api. This is essential when serving both API and static frontend files, or when deploying behind a reverse proxy that routes based on path prefixes.
+Use global prefix when you want all API endpoints to start with a common path like /api. This is essential when serving both API and static frontend files from the same server, or when deploying behind a reverse proxy that routes based on path prefixes, or when you need clear separation between different application concerns for better maintainability.
 
 ### When NOT to use?
 
-Do not use global prefix if you need different prefixes for different modules (use module-level prefixes instead), or if your API is standalone and doesn't need path separation. Avoid if you have legacy clients expecting root-level endpoints.
+Do not use global prefix if you need different prefixes for different modules (use module-level prefixes instead), or if your API is standalone and doesn't need path separation from other content. Avoid if you have legacy clients expecting root-level endpoints and cannot update them, or if migration complexity outweighs the organizational benefits.
 
 ### Example
 
@@ -324,17 +324,17 @@ app.setGlobalPrefix('api', {
 3. Configure prefix before enabling versioning
 4. Document the prefix clearly for API consumers
 
-## [API Versioning Configuration]()
+## [API Versioning Configuration - Breaking Change Management]()
 
-Enables URL-based API versioning allowing multiple API versions to coexist. This is critical for evolving APIs without breaking existing clients, supporting gradual migration, and maintaining backward compatibility while introducing new features or breaking changes.
+Enables URL-based API versioning allowing multiple API versions to coexist. This is critical for evolving APIs without breaking existing clients, supporting gradual migration, and maintaining backward compatibility while introducing new features or breaking changes, ensuring smooth transitions for all consumers without service disruption.
 
 ### When to use?
 
-Use API versioning from the start of every project, before the first release. It's essential when you need to make breaking changes while supporting existing clients, when building public APIs, or when you have multiple client applications with different update schedules.
+Use API versioning from the start of every project, before the first release. It's essential when you need to make breaking changes while supporting existing clients, when building public APIs consumed by external parties, or when you have multiple client applications with different update schedules that cannot all migrate simultaneously to new API versions.
 
 ### When NOT to use?
 
-Do not use versioning for internal microservices that communicate via events, or for simple prototypes that won't have external consumers. However, for production applications, always prefer to include versioning even if you only have v1 initially.
+Do not use versioning for internal microservices that communicate via events where contracts are managed differently, or for simple prototypes that won't have external consumers and will never be released. However, for production applications, always prefer to include versioning even if you only have v1 initially to avoid painful migrations later.
 
 ### Example
 
@@ -381,17 +381,17 @@ See more at: [How to version API](./how-to-version-api-backend.md)
 4. Support previous versions for reasonable deprecation period
 5. Use semantic versioning principles for version numbers
 
-## [CORS Configuration]()
+## [CORS Configuration - Enable Cross-Origin Requests]()
 
-Enables cross-origin resource sharing allowing frontend applications from different origins to access the API. Essential for modern web applications where frontend and backend are served from different domains or ports during development and production.
+Enables cross-origin resource sharing allowing frontend applications from different origins to access the API. Essential for modern web applications where frontend and backend are served from different domains or ports during development and production, enabling secure communication between separate services while maintaining browser security policies.
 
 ### When to use?
 
-Use CORS when your frontend runs on a different domain or port than your backend (e.g., frontend on localhost:5173, backend on localhost:3000). Required for almost all modern web applications, mobile app backends, and third-party API integrations.
+Use CORS when your frontend runs on a different domain or port than your backend (e.g., frontend on localhost:5173, backend on localhost:3000). Required for almost all modern web applications, mobile app backends that serve web interfaces, and third-party API integrations where external services need to access your API from browser environments.
 
 ### When NOT to use?
 
-Do not use CORS if your API serves only server-to-server communications, if frontend is served from the same origin (using static file serving), or for internal microservices behind API gateway. However, most web applications will need CORS.
+Do not use CORS if your API serves only server-to-server communications where browsers are not involved, if frontend is served from the same origin using static file serving from the same server, or for internal microservices behind API gateway. However, most web applications will need CORS for development and often for production deployments.
 
 ### Example
 
@@ -438,17 +438,17 @@ app.enableCors({
 5. Monitor and log CORS errors for security incidents
 6. Consider using CORS middleware for complex scenarios
 
-## [Serving Static Files]()
+## [Serving Static Files - Frontend Asset Delivery]()
 
-Configures NestJS to serve static frontend files built by React or other frontend frameworks. This allows deploying frontend and backend as a single application, simplifying deployment architecture and reducing infrastructure complexity.
+Configures NestJS to serve static frontend files built by React or other frontend frameworks. This allows deploying frontend and backend as a single application, simplifying deployment architecture and reducing infrastructure complexity by eliminating the need for separate web servers or CDN configurations for small to medium applications.
 
 ### When to use?
 
-Use static file serving when deploying a monorepo with frontend and backend together, when you want to serve React build files from the same server, or when simplifying deployment to a single container or server. Common in small to medium applications.
+Use static file serving when deploying a monorepo with frontend and backend together, when you want to serve React build files from the same server as the API, or when simplifying deployment to a single container or server instance. Common in small to medium applications where deployment simplicity outweighs the benefits of separate infrastructure for frontend assets.
 
 ### When NOT to use?
 
-Do not use when frontend is deployed separately (on CDN or different server), when using microservices architecture with separate frontend deployment, or when you need CDN caching and edge delivery for frontend assets. Large-scale applications typically separate concerns.
+Do not use when frontend is deployed separately on CDN or different server for better performance, when using microservices architecture with separate frontend deployment for scalability, or when you need CDN caching and edge delivery for frontend assets. Large-scale applications typically separate concerns for better scalability and global content distribution.
 
 ### Example
 
@@ -508,17 +508,17 @@ project/
 4. Consider using CDN for production if serving heavy assets
 5. Document the folder structure clearly for team members
 
-## [SPA Fallback Configuration]()
+## [SPA Fallback Configuration - Client-Side Routing Support]()
 
-Implements fallback routing to serve index.html for all non-API routes, enabling React Router and other SPA frameworks to handle client-side routing. Without this, refreshing on a React route would return 404 from the backend.
+Implements fallback routing to serve index.html for all non-API routes, enabling React Router and other SPA frameworks to handle client-side routing. Without this, refreshing on a React route would return 404 from the backend because the server doesn't know about client-side routes, breaking the single-page application user experience.
 
 ### When to use?
 
-Use SPA fallback when serving a React, Vue, or Angular application that uses client-side routing (React Router, Vue Router, etc.). Essential when users can refresh the page on any route or share deep links to specific application pages.
+Use SPA fallback when serving a React, Vue, or Angular application that uses client-side routing libraries like React Router, Vue Router, or Angular Router. Essential when users can refresh the page on any route or share deep links to specific application pages, ensuring seamless navigation throughout the single-page application.
 
 ### When NOT to use?
 
-Do not use if you're not serving a frontend, if using server-side rendering (SSR), or if all routing is handled by the backend. Skip this for API-only applications or traditional multi-page applications.
+Do not use if you're not serving a frontend application, if using server-side rendering (SSR) where the server handles routing, or if all routing is handled by the backend with traditional multi-page application architecture. Skip this for API-only applications or when frontend is deployed separately from the backend.
 
 ### Example
 
@@ -563,17 +563,17 @@ app.use((req: any, res: any, next: any) => {
 4. Configure React Router with BrowserRouter not HashRouter
 5. Document this pattern for team members unfamiliar with SPAs
 
-## [Global Validation Pipe]()
+## [Global Validation Pipe - Automatic Request Validation]()
 
-Configures automatic validation for all incoming requests using class-validator decorators on DTOs. This centralizes validation logic, ensures data integrity, prevents invalid data from reaching business logic, and provides consistent error responses.
+Configures automatic validation for all incoming requests using class-validator decorators on DTOs. This centralizes validation logic, ensures data integrity, prevents invalid data from reaching business logic, and provides consistent error responses to clients with clear validation messages that improve API usability and developer experience.
 
 ### When to use?
 
-Use global validation pipe in every NestJS application that accepts user input via DTOs. Essential for data integrity, security, and providing clear validation error messages to clients. Should be configured before any routes handle requests.
+Use global validation pipe in every NestJS application that accepts user input via DTOs and HTTP requests. Essential for data integrity, security by preventing injection attacks, and providing clear validation error messages to clients. Should be configured before any routes handle requests to ensure all incoming data is validated consistently across the application.
 
 ### When NOT to use?
 
-Do not disable global validation unless you have specific routes that need custom validation. However, in practice, global validation should be used in nearly all applications - use validation groups or conditional validation for exceptions instead of disabling it.
+Do not disable global validation unless you have specific routes that need custom validation logic beyond class-validator capabilities. However, in practice, global validation should be used in nearly all applications - use validation groups or conditional validation for exceptions instead of disabling it globally, maintaining consistent validation approach throughout the application.
 
 ### Example
 
@@ -624,17 +624,17 @@ app.useGlobalPipes(
 5. Return clear, user-friendly validation error messages
 6. Test validation thoroughly with invalid inputs
 
-## [Global Guards Configuration]()
+## [Global Guards Configuration - Default Authentication Protection]()
 
-Configures global authentication guards that protect all routes by default, requiring JWT tokens for access unless explicitly marked with @Public() decorator. This implements security-by-default pattern, reducing the risk of accidentally exposing protected endpoints.
+Configures global authentication guards that protect all routes by default, requiring JWT tokens for access unless explicitly marked with @Public() decorator. This implements security-by-default pattern, reducing the risk of accidentally exposing protected endpoints and ensuring consistent authentication enforcement across the entire application.
 
 ### When to use?
 
-Use global guards when most of your application requires authentication and you want to protect all routes by default. Ideal for applications where public endpoints are the exception rather than the rule. Reduces boilerplate code and improves security.
+Use global guards when most of your application requires authentication and you want to protect all routes by default with explicit opt-out for public endpoints. Ideal for applications where public endpoints are the exception rather than the rule. Reduces boilerplate code and improves security by making authentication the default behavior.
 
 ### When NOT to use?
 
-Do not use global guards if most endpoints are public, if you need different authentication strategies per module, or if you're building a public API. In these cases, apply guards at controller or route level instead.
+Do not use global guards if most endpoints are public and authentication is the exception, if you need different authentication strategies per module requiring multiple guard types, or if you're building a public API where most endpoints should be accessible without authentication. In these cases, apply guards at controller or route level instead.
 
 ### Example
 
@@ -671,17 +671,17 @@ app.useGlobalGuards(new JwtAuthGuard(reflector));
 5. Return consistent 401 responses for unauthorized access
 6. Test both authenticated and public routes thoroughly
 
-## [Swagger Documentation Configuration]()
+## [Swagger Documentation Configuration - Interactive API Documentation]()
 
-Configures automated API documentation using Swagger/OpenAPI, providing interactive documentation interface for developers to explore and test endpoints. Supports both JWT Bearer authentication and API Key authentication methods.
+Configures automated API documentation using Swagger/OpenAPI, providing interactive documentation interface for developers to explore and test endpoints directly in the browser. Supports both JWT Bearer authentication and API Key authentication methods, enabling comprehensive testing and exploration of all API endpoints with security controls.
 
 ### When to use?
 
-Use Swagger in every API project to document endpoints, request/response schemas, and authentication methods. Essential for public APIs, team collaboration, API consumers, and reducing support overhead. Configure during initial project setup.
+Use Swagger in every API project to document endpoints, request/response schemas, and authentication methods for all consumers. Essential for public APIs consumed by external developers, team collaboration across frontend and backend teams, reducing support overhead by providing self-service documentation, and improving onboarding for new developers joining the project.
 
 ### When NOT to use?
 
-Do not skip Swagger unless building internal microservices with private communication only, or prototypes that won't be consumed by others. However, even internal APIs benefit from documentation, so this is rare.
+Do not skip Swagger unless building internal microservices with private communication only where service-to-service contracts are managed through code, or prototypes that won't be consumed by others and have no external integrations. However, even internal APIs benefit from documentation for maintenance and knowledge transfer, so skipping Swagger should be rare.
 
 ### Example
 
@@ -755,17 +755,17 @@ SwaggerModule.setup('api/docs', app, document, {
 6. Include example responses with @ApiResponse decorator
 7. Keep Swagger documentation synchronized with code changes
 
-## [Environment Variables]()
+## [Environment Variables - Configuration Management]()
 
-Environment variables configuration for the NestJS application including server settings, database connection, JWT configuration, and external service credentials. Using environment variables enables different configurations per environment without code changes.
+Environment variables configuration for the NestJS application including server settings, database connection, JWT configuration, and external service credentials. Using environment variables enables different configurations per environment without code changes, following twelve-factor app methodology for portable and secure deployments.
 
 ### When to use?
 
-Use environment variables for all configuration that changes between environments (development, staging, production), for sensitive data like secrets and passwords, for feature flags, and for any value that should not be committed to source control.
+Use environment variables for all configuration that changes between environments (development, staging, production), for sensitive data like secrets and passwords that must not be committed to repositories, for feature flags enabling conditional behavior, and for any value that should not be hardcoded or committed to source control for security and portability.
 
 ### When NOT to use?
 
-Do not use environment variables for static configuration that never changes, for complex object configurations (use config files instead), or for values that need to be computed dynamically at runtime.
+Do not use environment variables for static configuration that never changes across environments, for complex object configurations that are better suited for config files with structure, or for values that need to be computed dynamically at runtime based on application state. Use configuration files or constants for truly static values.
 
 ### Example
 
@@ -824,17 +824,17 @@ X_API_KEY=your_secret_api_key
 6. Document all environment variables in README
 7. Use uppercase with underscores for variable names
 
-## [Optional Security and Performance Configurations]()
+## [Optional Security and Performance Configurations - Production Hardening]()
 
-Additional middlewares and features to increase security, performance and application monitoring including Helmet for security headers, compression for response optimization, rate limiting for abuse prevention, and custom logging solutions.
+Additional middlewares and features to increase security, performance and application monitoring including Helmet for security headers, compression for response optimization, rate limiting for abuse prevention, and custom logging solutions for better observability in production environments.
 
 ### When to use?
 
-Use these optional configurations in production environments to enhance security and performance. Helmet should be used in all production APIs, compression for APIs with large responses, rate limiting for public APIs, and custom loggers for better observability.
+Use these optional configurations in production environments to enhance security and performance where they provide clear value. Helmet should be used in all production APIs for security headers, compression for APIs with large responses to reduce bandwidth, rate limiting for public APIs to prevent abuse, and custom loggers for better observability and debugging in production.
 
 ### When NOT to use?
 
-Do not add all optional features to simple prototypes or development environments where they add complexity without benefit. Add them incrementally based on actual needs - use rate limiting only if abuse is a concern, compression only if response sizes are large.
+Do not add all optional features to simple prototypes or development environments where they add complexity without benefit and slow down development. Add them incrementally based on actual needs - use rate limiting only if abuse is a concern, compression only if response sizes are large, and custom loggers only when default logging is insufficient.
 
 ### Example
 

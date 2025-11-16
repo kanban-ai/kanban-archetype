@@ -1,8 +1,8 @@
-# [What technologies does the Frontend use?]()
+# Frontend Technology Stack
 
-> This document describes all technologies, frameworks and libraries used in the frontend of the project.
+Complete documentation of technologies, frameworks, and libraries used in the frontend application including React, TypeScript, Vite, styling, routing, HTTP client, and development tools.
 
-## [Main Stack Technologies]()
+## [Main Stack - React TypeScript Vite SWC]()
 
 Core technologies used in the frontend including React framework, Vite build tool and TypeScript language. React provides component-based UI architecture, TypeScript ensures type safety, Vite delivers ultra-fast development experience with HMR, and SWC handles lightning-fast JavaScript/TypeScript compilation written in Rust.
 
@@ -15,6 +15,8 @@ Use this stack for building modern single-page applications (SPAs), interactive 
 Avoid this stack for simple static websites better served by static site generators, SEO-critical content sites requiring server-side rendering (use Next.js instead), applications with no interactivity, or when team lacks JavaScript/TypeScript expertise. Not suitable for native mobile apps (use React Native) or when bundle size is extremely critical.
 
 ### Example
+
+React component with TypeScript and hooks demonstrating state management, API calls, and conditional rendering
 
 ```typescript
 // React component with TypeScript and hooks
@@ -82,7 +84,7 @@ export function UserProfile({ userId }: { userId: number }) {
 - Use environment variables with VITE_ prefix for configuration
 - Keep components small and focused on single responsibility
 
-## [Styling with Tailwind CSS]()
+## [Styling - Tailwind CSS v4 Utility-First Framework]()
 
 Utility-first CSS framework providing pre-defined classes for rapid UI development. Tailwind CSS v4 integrates natively with Vite, supports dark mode by default, uses modern CSS syntax, and eliminates configuration files for zero-setup styling with maximum performance and developer productivity.
 
@@ -95,6 +97,8 @@ Use Tailwind CSS for rapid prototyping and development, consistent design system
 Avoid Tailwind for highly customized designs requiring extensive custom CSS, teams unfamiliar with utility-first methodology, projects with strict CSS naming conventions like BEM, legacy codebases with existing CSS frameworks, or when design requires complex animations better handled by CSS-in-JS libraries like styled-components.
 
 ### Example
+
+Tailwind utility classes in React components demonstrating variants, responsive design and dark mode
 
 ```tsx
 // Tailwind utility classes in React components
@@ -158,7 +162,7 @@ export function Button({ variant = 'primary', children }) {
 - Use @apply in CSS files only for complex repeated patterns
 - Configure purge properly to remove unused styles in production
 
-## [Routing with React Router]()
+## [Routing - React Router DOM Client-Side Navigation]()
 
 Client-side routing system enabling navigation without page reloads, supporting dynamic and nested routes, authentication guards, and centralized route configuration. React Router DOM provides declarative routing for single-page applications with URL synchronization, browser history management, and component-based route definitions.
 
@@ -171,6 +175,8 @@ Use React Router for single-page applications requiring multiple views, client-s
 Avoid React Router for simple single-page sites without navigation, static websites where anchor tags suffice, server-side rendered applications using Next.js routing, or when all content fits in one view. Not needed for embedded widgets or components that don't control browser URL.
 
 ### Example
+
+Router configuration with protected routes, authentication guards and programmatic navigation
 
 ```typescript
 // Router configuration with protected routes
@@ -247,7 +253,7 @@ function LoginForm() {
 - Implement loading states during route transitions
 - Add 404 catch-all route at the end of route definitions
 
-## [HTTP Client with Axios]()
+## [HTTP Client - Axios Promise-Based API]()
 
 HTTP client for making REST API requests with interceptors for authentication, centralized error handling, and request cancellation support. Axios provides a promise-based API for HTTP operations with automatic JSON transformation, request/response interceptors, and better error handling compared to native fetch.
 
@@ -260,6 +266,8 @@ Use Axios for all API communication in React applications requiring automatic JS
 Avoid Axios for simple GET requests where native fetch suffices, applications targeting extremely small bundle sizes (fetch is native), GraphQL clients better served by Apollo Client, or when streaming responses require fetch API. Not needed for server-side rendering where native fetch is preferred.
 
 ### Example
+
+Configured Axios instance with interceptors for authentication and error handling
 
 ```typescript
 // Configured Axios instance
@@ -339,206 +347,493 @@ export const userService = {
 - Configure appropriate timeout values (5-10 seconds typical)
 - Log errors in interceptors for debugging in development
 
-## [Data Visualization]()
+## [Data Visualization - Charts Tooltips Date Formatting]()
 
-Libraries for rendering charts, tooltips and visual date formatting.
+Libraries for rendering charts, tooltips and visual date formatting including Chart.js for canvas-based charting, Tippy.js for tooltips and popovers, and timeago.js for relative date formatting. These tools provide performant, customizable data visualization components integrated with React.
 
-### [Charts]()
+### When to use?
 
-- **Chart.js**: Charting library
-  - Line, bar, doughnut charts
-  - Customizable and responsive
-  - Canvas-based for performance
+Use Chart.js for data-heavy dashboards requiring line, bar, doughnut charts with responsive design, Tippy.js for contextual tooltips and popovers with smart positioning, and timeago.js for displaying relative dates like "5 minutes ago" in feeds and timelines. Essential for financial dashboards, analytics platforms, and data-rich applications.
 
-- **react-chartjs-2**: React wrapper
-  - Chart.js integration with React
-  - React components for charts
-  - TypeScript typing
+### When NOT to use?
 
-- **chartjs-plugin-annotation**: Annotation plugin
-  - Adds lines and annotations to charts
-  - Custom markers
+Avoid Chart.js for extremely complex custom visualizations better served by D3.js, interactive network graphs requiring force-directed layouts, or 3D visualizations. Skip Tippy.js if simple title attributes suffice. Avoid timeago.js when precise timestamps are required instead of relative times.
 
-### [UI Components]()
+### Example
 
-- **Tippy.js**: Tooltips and popovers
-  - Lightweight and performant library
-  - Smart automatic positioning
-  - Customizable
+Chart.js configuration with React integration and Tippy.js tooltip implementation
 
-- **@tippyjs/react**: React integration
-  - React component for Tippy.js
-  - Typed props
+```tsx
+// Chart.js with react-chartjs-2
+import { Line } from 'react-chartjs-2';
+import { Chart as ChartJS, LineElement, CategoryScale, LinearScale } from 'chart.js';
 
-### [Utilities]()
+ChartJS.register(LineElement, CategoryScale, LinearScale);
 
-- **timeago.js**: Date formatting
-  - Relative dates (e.g. "5 minutes ago")
-  - Internationalization support
-  - Lightweight with no dependencies
+export function LineChart({ data }) {
+  const chartData = {
+    labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May'],
+    datasets: [{
+      label: 'Revenue',
+      data: [12, 19, 3, 5, 2],
+      borderColor: 'rgb(59, 130, 246)',
+      backgroundColor: 'rgba(59, 130, 246, 0.1)',
+    }],
+  };
 
-## [State Management]()
+  return <Line data={chartData} options={{ responsive: true }} />;
+}
 
-Global state management solution using React's native Context API without external libraries.
+// Tippy.js tooltip
+import Tippy from '@tippyjs/react';
+import 'tippy.js/dist/tippy.css';
 
-### [Context API (Native React)]()
+export function InfoButton() {
+  return (
+    <Tippy content="This is helpful information" placement="top">
+      <button className="text-blue-600">ℹ️</button>
+    </Tippy>
+  );
+}
 
-The project uses React's native Context API, without external libraries:
+// timeago.js relative dates
+import { format } from 'timeago.js';
 
-1. **AuthContext**: Global authentication
-   - State: user, token, isLoading
-   - Methods: login, logout
-   - localStorage persistence
+export function CommentTimestamp({ createdAt }) {
+  return <span className="text-gray-500">{format(createdAt)}</span>;
+}
+```
 
-2. **ToastContext**: Notifications
-   - Toast/snackbar system
-   - Configurable auto-dismiss
-   - Types: success, error, info, warning
+### Checklist
 
-3. **PageInfoContext**: Page information
-   - Current page metadata
-   - Breadcrumbs and title
+- [ ] Chart.js and react-chartjs-2 installed for charts
+- [ ] Required Chart.js components registered (scales, elements)
+- [ ] Tippy.js and @tippyjs/react installed for tooltips
+- [ ] Tippy CSS imported in application
+- [ ] timeago.js installed for relative dates
+- [ ] Chart responsiveness configured
+- [ ] Tooltip positioning tested on mobile and desktop
 
-## [Development Tools]()
+### Troubleshooting
 
-Tools for TypeScript development, linting and code validation.
+**Problem**: Charts not rendering or showing blank canvas
+**Solution**: Verify Chart.js components are registered (CategoryScale, LinearScale, etc.), check data format matches chart type requirements, ensure canvas has proper width/height, inspect console for Chart.js errors
 
-### [TypeScript]()
+**Problem**: Tooltips not appearing or positioning incorrectly
+**Solution**: Verify Tippy CSS is imported, check z-index conflicts with other elements, ensure trigger element is interactive, test different placement options (top, bottom, left, right)
 
-- **typescript**
-- **@types/react**: React typings
-- **@types/react-dom**: React DOM typings
-- **@types/node**: Node.js typings
+**Problem**: Relative dates showing incorrect times
+**Solution**: Check date format passed to timeago.js is valid ISO string or Date object, verify timezone handling, ensure dates are in consistent format
 
-### [Linting and Formatting]()
+### Best Practices
 
-- **ESLint**: JavaScript/TypeScript linter
-  - Static code analysis
-  - Problem detection
-  - Custom rules
+- Register only required Chart.js components to reduce bundle size
+- Use canvas-based Chart.js for performance over SVG libraries
+- Implement chart memoization to prevent unnecessary re-renders
+- Configure responsive options for charts on mobile devices
+- Use Tippy.js interactive mode for tooltips with clickable content
+- Implement custom Tippy themes for consistent design
+- Use timeago.js with internationalization for multi-language support
+- Update relative dates periodically with intervals for accuracy
 
-- **@eslint/js**: Base ESLint configuration
+## [State Management - React Context API]()
 
-- **typescript-eslint**: TypeScript plugin
-  - TypeScript-specific rules
-  - TypeScript parser
+Global state management solution using React's native Context API without external libraries. Provides centralized state for authentication, notifications, and page metadata with custom hooks for easy consumption across components.
 
-- **eslint-plugin-react-hooks**: Hooks validation
-  - React Hooks rules
-  - Prevents common bugs
+### When to use?
 
-- **eslint-plugin-react-refresh**: Fast Refresh
-  - Component validation for HMR
-  - Maintains state during hot reload
+Use React Context API for global state shared across multiple components, authentication state management, theme preferences, notification systems, and user preferences. Ideal for small to medium applications without complex state synchronization needs. Perfect when avoiding external dependencies like Redux or Zustand.
 
-- **globals**: Global definitions
-  - Browser global variables
-  - ESLint compatibility
+### When NOT to use?
 
-## [Component Structure]()
+Avoid Context API for highly complex state with frequent updates causing performance issues, applications requiring time-travel debugging and devtools, state requiring middleware like sagas or thunks, or when server state synchronization needs specialized libraries like React Query or SWR.
 
-Organization of reusable components categorized by type and functionality.
+### Example
 
-### [Common Components (src/components/common/)]()
+Authentication context implementation with custom hook and localStorage persistence
 
-- **Modals**: Modal, AlertModal, ConfirmModal, CommentModal, SelectWalletModal
-- **Charts**: LineChart, BarChart, DoughnutChart, EvolutionBarChart
-- **Cards**: MetricCard, StatCard
-- **Dropdowns**: AlertsDropdown, AssetAlertsDropdown
-- **Popovers**: AssetPopover, CommentPopover
-- **Form Elements**: DatePicker
-- **UI**: ActionButtonBar, AllocationBar, TreeView, MiniPerfil
+```tsx
+// AuthContext implementation
+import { createContext, useContext, useState, useEffect } from 'react';
 
-### [Authentication Components]()
+interface AuthContextValue {
+  user: User | null;
+  token: string | null;
+  isLoading: boolean;
+  login: (email: string, password: string) => Promise<void>;
+  logout: () => void;
+}
 
-- **AuthBanner**: Authentication banner
-- **PrivateRoute**: Private route guard
+const AuthContext = createContext<AuthContextValue | undefined>(undefined);
 
-### [Layout Components]()
+export function AuthProvider({ children }) {
+  const [user, setUser] = useState<User | null>(null);
+  const [token, setToken] = useState<string | null>(null);
+  const [isLoading, setIsLoading] = useState(true);
 
-- **Layout**: Main layout with navigation
-- **ToastContainer**: Notification container
+  useEffect(() => {
+    // Load from localStorage on mount
+    const savedToken = localStorage.getItem('access_token');
+    if (savedToken) {
+      setToken(savedToken);
+      // Fetch user data
+    }
+    setIsLoading(false);
+  }, []);
 
-## [Pages (src/pages/)]()
+  const login = async (email: string, password: string) => {
+    const response = await authService.login({ email, password });
+    setToken(response.token);
+    setUser(response.user);
+    localStorage.setItem('access_token', response.token);
+  };
 
-Complete list of application pages organized by functional module.
+  const logout = () => {
+    setToken(null);
+    setUser(null);
+    localStorage.removeItem('access_token');
+  };
 
-### [Authentication]()
-- Login
-- Signup
-- ChangePassword
+  return (
+    <AuthContext.Provider value={{ user, token, isLoading, login, logout }}>
+      {children}
+    </AuthContext.Provider>
+  );
+}
 
-### [Dashboard/Views]()
-- OverviewPage
-- AllocationPage
-- PerformancePage
-- ProgressPage
-- AlertsPage
-- CommentsPage
-- ConfigsPage
-- SettingsPage
-- NotificationsPage
+// Custom hook for consuming context
+export function useAuth() {
+  const context = useContext(AuthContext);
+  if (!context) {
+    throw new Error('useAuth must be used within AuthProvider');
+  }
+  return context;
+}
+```
 
-### [Asset Management]()
-- AssetListPage
-- AssetFormPage
-- AssetProfilePage (with tabs)
+### Checklist
 
-### [Rebalancing]()
-- RebalancePage
-- RebalanceDetailPage
-- RebalanceAnalyzePage
+- [ ] Context created with createContext and proper TypeScript types
+- [ ] Provider component wraps application at appropriate level
+- [ ] Custom hook created for context consumption (useAuth, useToast, etc.)
+- [ ] Error handling in custom hook for missing provider
+- [ ] State persistence with localStorage where appropriate
+- [ ] Loading states managed for async operations
+- [ ] Context value memoized to prevent unnecessary re-renders
 
-### [Registrations]()
-- SectorListPage, SectorFormPage
-- CurrencyListPage, CurrencyFormPage
-- WalletListPage, WalletFormPage, WalletDashboardPage
+### Troubleshooting
 
-### [Errors]()
-- Forbidden
+**Problem**: Components not receiving context updates
+**Solution**: Verify Provider wraps all consuming components, check context value is not memoized incorrectly, ensure useState is triggering re-renders, inspect React DevTools for provider hierarchy
 
-## [Services (src/services/)]()
+**Problem**: "useContext must be used within Provider" error
+**Solution**: Ensure Provider wraps the component tree, check custom hook is called inside functional component, verify Provider is not conditionally rendered
 
-- **api.ts**: Configured Axios instance
-- **auth.service.ts**: Authentication service
-- **alert.service.ts**: Alert service
-- **comment.service.ts**: Comment service
-- **config.service.ts**: Configuration service
+**Problem**: Performance issues with Context causing too many re-renders
+**Solution**: Split contexts by concern (auth, theme, notifications separately), memoize context value with useMemo, implement code splitting to reduce component tree size
 
-## [Utilities (src/utils/)]()
+### Best Practices
 
-Helper functions for currency formatting and date manipulation.
+- Create separate contexts for different concerns (auth, theme, notifications)
+- Always provide custom hooks for context consumption
+- Memoize context values with useMemo when containing objects or functions
+- Implement error boundaries around context providers
+- Use TypeScript for type-safe context values
+- Persist authentication state in localStorage or sessionStorage
+- Implement loading states for async context initialization
+- Document context structure and available methods
 
-- **currency.utils.ts**: Currency formatting
-- **date.utils.ts**: Date manipulation
+## [Development Tools - TypeScript ESLint Formatting]()
 
-## [TypeScript Types (src/types/)]()
+Tools for TypeScript development, linting and code validation including TypeScript compiler, ESLint for static analysis, and plugins for React-specific rules. These tools ensure code quality, catch errors early, and maintain consistent coding standards across the project.
 
-TypeScript type and interface definitions for authentication and data models.
+### When to use?
 
-- **auth.ts**: Authentication types
-- **models/user.ts**: User model
+Use TypeScript for all frontend code requiring type safety, ESLint for enforcing coding standards and catching common bugs, typescript-eslint for TypeScript-specific linting rules, and React-specific plugins for enforcing Hooks rules and Fast Refresh compatibility. Essential for maintaining code quality in team environments.
 
-## [Configuration]()
+### When NOT to use?
 
-Project configuration files including Vite, TypeScript and Tailwind.
+Avoid TypeScript strict mode for rapid prototyping where flexibility is needed, ESLint auto-fix for untrusted code that might introduce bugs, or excessive linting rules that slow down development. Skip TypeScript entirely for simple scripts where type safety provides minimal value.
 
-### [Vite (vite.config.ts)]()
+### Example
+
+ESLint configuration with TypeScript and React plugins
+
+```javascript
+// eslint.config.js
+import js from '@eslint/js';
+import typescript from 'typescript-eslint';
+import reactHooks from 'eslint-plugin-react-hooks';
+import reactRefresh from 'eslint-plugin-react-refresh';
+import globals from 'globals';
+
+export default [
+  js.configs.recommended,
+  ...typescript.configs.recommended,
+  {
+    files: ['**/*.{ts,tsx}'],
+    languageOptions: {
+      globals: globals.browser,
+    },
+    plugins: {
+      'react-hooks': reactHooks,
+      'react-refresh': reactRefresh,
+    },
+    rules: {
+      ...reactHooks.configs.recommended.rules,
+      'react-refresh/only-export-components': 'warn',
+      '@typescript-eslint/no-unused-vars': ['error', { argsIgnorePattern: '^_' }],
+    },
+  },
+];
+```
+
+### Checklist
+
+- [ ] TypeScript installed with @types packages for React and Node
+- [ ] tsconfig.json configured with strict mode enabled
+- [ ] ESLint installed with JavaScript and TypeScript configs
+- [ ] typescript-eslint plugin configured for TypeScript rules
+- [ ] eslint-plugin-react-hooks installed for Hooks validation
+- [ ] eslint-plugin-react-refresh for Fast Refresh compatibility
+- [ ] npm script configured for linting (npm run lint)
+
+### Troubleshooting
+
+**Problem**: ESLint showing TypeScript errors incorrectly
+**Solution**: Verify typescript-eslint parser is configured, check tsconfig.json is properly referenced in ESLint config, ensure TypeScript version matches eslint plugin requirements, restart IDE TypeScript server
+
+**Problem**: React Hooks lint errors not appearing
+**Solution**: Verify eslint-plugin-react-hooks is installed and configured, check rules are enabled in ESLint config, ensure plugin version is compatible with React version
+
+**Problem**: ESLint performance issues in large projects
+**Solution**: Configure ESLint to ignore node_modules and build directories, use ESLint cache option, disable expensive rules, consider running linting in CI instead of IDE
+
+### Best Practices
+
+- Enable TypeScript strict mode for maximum type safety
+- Configure ESLint to run on pre-commit hooks
+- Use typescript-eslint recommended config as baseline
+- Enable react-hooks/exhaustive-deps rule to catch missing dependencies
+- Configure no-unused-vars with ignore patterns for prefixed variables
+- Use ESLint auto-fix carefully and review changes
+- Document custom ESLint rules in project README
+- Keep ESLint and TypeScript versions up to date
+
+## [Component Architecture - Organization and Structure]()
+
+Organization of reusable components categorized by type and functionality including common components, authentication guards, layout components, and complete application pages. This structure promotes reusability, maintainability, and clear separation of concerns.
+
+### When to use?
+
+Use this component structure for organizing medium to large React applications with multiple pages, reusable UI components, layout patterns, and business logic components. Separate common components (buttons, modals, charts) from page-specific components for maximum reusability and maintainability.
+
+### When NOT to use?
+
+Avoid over-structuring simple applications with few components, creating unnecessary folder hierarchies for prototypes, or premature abstraction before patterns emerge. Not suitable for micro-frontends requiring different organization patterns or component libraries with different export structures.
+
+### Example
+
+Component structure demonstrating common components, pages, and services organization
 
 ```typescript
-{
+// src/components/common/Modal.tsx - Reusable modal component
+interface ModalProps {
+  isOpen: boolean;
+  onClose: () => void;
+  title: string;
+  children: React.ReactNode;
+}
+
+export function Modal({ isOpen, onClose, title, children }: ModalProps) {
+  if (!isOpen) return null;
+
+  return (
+    <div className="fixed inset-0 bg-black/50 flex items-center justify-center">
+      <div className="bg-white dark:bg-gray-800 rounded-lg p-6 max-w-lg w-full">
+        <div className="flex justify-between items-center mb-4">
+          <h2 className="text-xl font-bold">{title}</h2>
+          <button onClick={onClose}>×</button>
+        </div>
+        {children}
+      </div>
+    </div>
+  );
+}
+
+// src/pages/UserListPage.tsx - Page component using common components
+import { Modal } from '@/components/common/Modal';
+import { useUsers } from '@/hooks/useUsers';
+
+export function UserListPage() {
+  const { users, loading } = useUsers();
+  const [modalOpen, setModalOpen] = useState(false);
+
+  return (
+    <div className="p-6">
+      <h1 className="text-2xl mb-4">Users</h1>
+      <button onClick={() => setModalOpen(true)}>Add User</button>
+
+      <Modal isOpen={modalOpen} onClose={() => setModalOpen(false)} title="Add User">
+        <UserForm />
+      </Modal>
+
+      <UserTable users={users} loading={loading} />
+    </div>
+  );
+}
+```
+
+### Checklist
+
+- [ ] Common components in src/components/common/
+- [ ] Page components in src/pages/ with Page suffix
+- [ ] Layout components separated from business logic
+- [ ] Authentication guards (PrivateRoute) implemented
+- [ ] Services separated in src/services/
+- [ ] Custom hooks in src/hooks/
+- [ ] Types/interfaces in src/types/
+- [ ] Utilities in src/utils/
+
+### Troubleshooting
+
+**Problem**: Import path resolution errors
+**Solution**: Verify path aliases configured in vite.config.ts and tsconfig.json, check @ alias points to src directory, restart TypeScript server in IDE
+
+**Problem**: Circular dependency warnings
+**Solution**: Review import structure to avoid circular references, extract shared types to separate files, use dependency injection or context instead of direct imports
+
+**Problem**: Component naming conflicts
+**Solution**: Follow naming conventions with suffixes (Page, Form, Modal), use more specific names for business components, organize by feature instead of type if conflicts persist
+
+### Best Practices
+
+- Use PascalCase for component files (MetricCard.tsx)
+- Add suffixes to identify component type (Page, Form, Modal, Provider)
+- Separate common/reusable components from page-specific ones
+- Keep component files focused and under 300 lines
+- Use index.ts files sparingly to avoid barrel file performance issues
+- Organize imports: React, external libraries, local components, services, types
+- Create custom hooks (useAuth, useUsers) for shared logic
+- Document complex components with JSDoc comments
+
+## [Naming Conventions - Component File Patterns]()
+
+Naming conventions and patterns for React components, files, hooks, and services ensuring consistent identification and organization across the codebase. Uses suffixes and prefixes to quickly identify component categories and purposes.
+
+### When to use?
+
+Use these naming conventions for all React components, pages, forms, modals, providers, hooks, and services throughout the application. Apply consistently across team to enable quick file identification, improve code navigation, and maintain organizational clarity in large codebases.
+
+### When NOT to use?
+
+Avoid enforcing strict conventions in experimental prototypes where flexibility speeds development, legacy code migrations where gradual adoption is safer, or when integrating third-party libraries with different conventions. Not applicable to non-React files like utilities or configuration.
+
+### Example
+
+Component naming patterns demonstrating suffixes, prefixes, and file structure conventions
+
+```typescript
+// Pages: suffix "Page"
+// src/pages/UserListPage.tsx
+export function UserListPage() { /* ... */ }
+
+// Forms: suffix "Form"
+// src/components/UserForm.tsx
+export function UserForm() { /* ... */ }
+
+// Modals: suffix "Modal"
+// src/components/common/ConfirmModal.tsx
+export function ConfirmModal() { /* ... */ }
+
+// Providers: suffix "Provider"
+// src/contexts/AuthProvider.tsx
+export function AuthProvider({ children }) { /* ... */ }
+
+// Hooks: prefix "use"
+// src/hooks/useAuth.ts
+export function useAuth() { /* ... */ }
+
+// Services: kebab-case with .service.ts suffix
+// src/services/auth.service.ts
+export const authService = { /* ... */ };
+
+// Utilities: kebab-case with .utils.ts suffix
+// src/utils/currency.utils.ts
+export function formatCurrency(value: number) { /* ... */ }
+
+// Base components: no suffix
+// src/components/common/Button.tsx
+export function Button({ children }) { /* ... */ }
+```
+
+### Checklist
+
+- [ ] Pages use Page suffix (UserListPage.tsx)
+- [ ] Forms use Form suffix (LoginForm.tsx)
+- [ ] Modals use Modal suffix (ConfirmModal.tsx)
+- [ ] Providers use Provider suffix (AuthProvider.tsx)
+- [ ] Hooks use use prefix (useAuth.ts, useUsers.ts)
+- [ ] Services use kebab-case with .service.ts suffix
+- [ ] Utilities use kebab-case with .utils.ts suffix
+- [ ] Base components use PascalCase without suffix (Button.tsx)
+
+### Troubleshooting
+
+**Problem**: Inconsistent naming causing confusion in codebase
+**Solution**: Document naming conventions in project README, enforce with ESLint custom rules, conduct code review focused on naming, use IDE templates for new files
+
+**Problem**: Difficulty finding specific component types
+**Solution**: Use IDE file search with glob patterns (e.g., **/*Page.tsx), organize by feature when type-based structure becomes unwieldy, implement consistent folder structure
+
+**Problem**: Naming conflicts between similar components
+**Solution**: Add more context to component names (UserListPage vs AdminUserListPage), organize by feature/module, avoid generic names like Data or Info
+
+### Best Practices
+
+- Component files use PascalCase (MetricCard.tsx, UserForm.tsx)
+- Utility files use kebab-case (currency.utils.ts, date.utils.ts)
+- Service files use kebab-case with .service.ts suffix
+- Prefix hooks with "use" (useAuth, useToast, useDebounce)
+- Suffix pages with "Page" for quick identification
+- Suffix providers with "Provider" matching context name
+- Keep file names descriptive and specific
+- Document conventions in .rules directory for reference
+
+## [Configuration - Vite TypeScript Tailwind Setup]()
+
+Project configuration files including Vite for build tooling, TypeScript for type checking, and Tailwind CSS for styling. These configurations define build behavior, type checking rules, styling system, and development environment settings.
+
+### When to use?
+
+Use these configurations as foundation for all React TypeScript Vite projects with Tailwind CSS. Customize baseURL for API endpoints, adjust TypeScript strictness based on project needs, extend Tailwind theme for custom design system, and configure path aliases for cleaner imports.
+
+### When NOT to use?
+
+Avoid modifying Vite config for SSR projects better served by Next.js or Remix, changing TypeScript strict mode off without team consensus, removing Tailwind purge configuration risking bloated CSS bundles, or adding unnecessary plugins degrading build performance.
+
+### Example
+
+Configuration files for Vite, TypeScript, and Tailwind CSS demonstrating standard setup
+
+```typescript
+// vite.config.ts
+import { defineConfig } from 'vite';
+import react from '@vitejs/plugin-react-swc';
+
+export default defineConfig({
   plugins: [react()],
   resolve: {
     alias: {
       '@': './src'
     }
+  },
+  server: {
+    port: 5173
   }
-}
-```
+});
 
-### [TypeScript (tsconfig.app.json)]()
-
-```json
+// tsconfig.app.json
 {
   "compilerOptions": {
     "target": "ES2022",
@@ -546,250 +841,167 @@ Project configuration files including Vite, TypeScript and Tailwind.
     "jsx": "react-jsx",
     "strict": true,
     "noUnusedLocals": true,
-    "noUnusedParameters": true
+    "noUnusedParameters": true,
+    "baseUrl": ".",
+    "paths": {
+      "@/*": ["./src/*"]
+    }
   }
 }
-```
 
-### [Tailwind (tailwind.config.js)]()
-
-```javascript
-{
+// tailwind.config.js
+export default {
   darkMode: 'class',
+  content: ['./index.html', './src/**/*.{js,ts,jsx,tsx}'],
   theme: {
     extend: {
       colors: {
-        blue: { portifolio: '#3b82f6' }
+        blue: {
+          portifolio: '#3b82f6'
+        }
       }
     }
   }
 }
 ```
 
-## [NPM Scripts]()
+### Checklist
 
-Available commands in package.json for development, build and code verification.
+- [ ] Vite config includes React plugin with SWC
+- [ ] Path alias @ configured in both vite.config.ts and tsconfig.json
+- [ ] TypeScript strict mode enabled
+- [ ] Tailwind content paths include all component files
+- [ ] Dark mode strategy configured in Tailwind
+- [ ] Custom theme colors defined if needed
+- [ ] Environment variables configured with VITE_ prefix
+
+### Troubleshooting
+
+**Problem**: Path alias imports not resolving
+**Solution**: Verify @ alias in both vite.config.ts and tsconfig.json, ensure baseUrl is set to ".", restart TypeScript server in IDE, check paths configuration matches directory structure
+
+**Problem**: Tailwind classes not being purged in production
+**Solution**: Verify content paths in tailwind.config.js include all component files, check build output for CSS size, ensure glob patterns match file extensions
+
+**Problem**: Vite build failing with TypeScript errors
+**Solution**: Run tsc --noEmit to see full type errors, fix type issues before building, ensure all dependencies have proper type definitions, check tsconfig.json targets supported browsers
+
+### Best Practices
+
+- Keep Vite config minimal, only add necessary plugins
+- Enable TypeScript strict mode for maximum type safety
+- Configure path aliases for cleaner imports (@ for src)
+- Define custom Tailwind colors in theme extension
+- Use VITE_ prefix for all environment variables
+- Document custom configuration in project README
+- Version control all config files
+- Review Tailwind purge output to minimize CSS bundle size
+
+## [Environment Configuration - Variables and Scripts]()
+
+Environment variable configuration with VITE_ prefix for client-side usage and NPM scripts for development, build, and code verification. Environment variables enable configuration without code changes, while scripts automate common development tasks.
+
+### When to use?
+
+Use environment variables for API URLs, feature flags, public keys, and configuration varying between development, staging, and production. Use NPM scripts for automating development server, production builds, linting, and preview. Essential for maintaining different configurations across environments.
+
+### When NOT to use?
+
+Avoid environment variables for sensitive data exposed to client (use backend instead), configuration that rarely changes better suited as constants, or complex logic requiring code. Don't create excessive NPM scripts for tasks better handled by dedicated tools or CI/CD pipelines.
+
+### Example
+
+Environment variables and NPM scripts configuration for development and production
+
+```bash
+# .env.development
+VITE_API_URL=http://localhost:3000/api
+VITE_FEATURE_ANALYTICS=false
+
+# .env.production
+VITE_API_URL=https://api.production.com
+VITE_FEATURE_ANALYTICS=true
+
+# Accessing in code
+const apiUrl = import.meta.env.VITE_API_URL;
+const analyticsEnabled = import.meta.env.VITE_FEATURE_ANALYTICS === 'true';
+```
 
 ```json
+// package.json scripts
 {
-  "dev": "vite",
-  "build": "tsc -b && vite build",
-  "lint": "eslint .",
-  "preview": "vite preview"
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc -b && vite build",
+    "lint": "eslint .",
+    "preview": "vite preview"
+  }
 }
 ```
 
-## [Environment Variables]()
+### Checklist
 
-Environment variable configuration with VITE_ prefix for use in client code.
+- [ ] Environment variables prefixed with VITE_
+- [ ] .env files for different environments (development, production)
+- [ ] .env.example committed to version control
+- [ ] .env files added to .gitignore
+- [ ] Environment variables accessed via import.meta.env
+- [ ] NPM scripts for dev, build, lint, and preview configured
+- [ ] Type definitions for environment variables if using TypeScript
 
-```env
-VITE_API_URL=http://localhost:3000/api
-```
+### Troubleshooting
 
-Accessible in code via:
-```typescript
-import.meta.env.VITE_API_URL
-```
+**Problem**: Environment variables not accessible in code
+**Solution**: Verify VITE_ prefix is used, restart Vite dev server after changing .env, check variables are not commented out, ensure .env file is in project root
 
-## [Patterns and Conventions]()
+**Problem**: Different environments using wrong variables
+**Solution**: Verify correct .env file is loaded, check Vite mode matches environment (development/production), ensure .env.production overrides are working, inspect import.meta.env in browser console
 
-Naming conventions, code organization and best practices adopted in the project.
+**Problem**: NPM script not working as expected
+**Solution**: Check script syntax in package.json, verify dependencies are installed, ensure proper command chaining with && or ;, test commands individually before combining
 
-### [Component Naming]()
+### Best Practices
 
-The project uses suffixes for quick identification of component categories.
+- Always prefix client-side variables with VITE_
+- Never commit .env files containing secrets to version control
+- Provide .env.example with dummy values for documentation
+- Use descriptive variable names (VITE_API_URL not VITE_URL)
+- Access environment variables through import.meta.env object
+- Keep NPM scripts simple and composable
+- Document all environment variables in README
+- Validate required environment variables at application startup
 
-**Complete naming documentation**: See `.rules/react-component-naming-pattern-frontend.md`
+## [Responsive Design - Mobile-First Tailwind Breakpoints]()
 
-**Main examples:**
-- Pages: suffix `Page` (e.g. `AssetListPage.tsx`)
-- Forms: suffix `Form` (e.g. `LoginForm.tsx`)
-- Modals: suffix `Modal` (e.g. `ConfirmModal.tsx`)
-- Providers: suffix `Provider` (e.g. `AuthProvider.tsx`)
-- Hooks: prefix `use` (e.g. `useAuth.ts`)
-- Base components: no suffix (e.g. `Button.tsx`, `Input.tsx`)
+Patterns and practices for creating layouts that adapt to different screen sizes using Tailwind CSS mobile-first breakpoints. Implements fluid layouts with Grid and Flexbox, responsive spacing, typography, and conditional visibility for optimal user experience across devices.
 
-### [File Structure]()
-- Components: PascalCase (e.g. MetricCard.tsx)
-- Utilities: kebab-case (e.g. currency.utils.ts)
-- Services: kebab-case with `.service.ts` suffix (e.g. auth.service.ts)
+### When to use?
 
-### [Import Organization]()
-1. React and external libraries
-2. Local components
-3. Services and utils
-4. Types
-5. Styles
+Use mobile-first responsive design for all web applications accessed from multiple device types, especially dashboards, admin panels, and content-heavy sites. Apply responsive breakpoints when layouts need to reorganize for different screen sizes, navigation requires mobile menus, or content density varies by device.
 
-### [Custom Hooks]()
-- Prefix `use` (e.g. useNotifications, useAuth)
-- Located in `src/hooks/`
+### When NOT to use?
 
-### [Context API]()
-- File/Component: Suffix `Provider` (e.g. AuthProvider.tsx)
-- Internal context: Suffix `Context` (e.g. AuthContext)
-- Corresponding hook: `use[Name]` (e.g. useAuth)
-- Located in `src/contexts/`
+Avoid responsive design for desktop-only internal tools used exclusively on large screens, print stylesheets requiring fixed layouts, or native mobile apps using React Native. Skip complex responsive patterns for simple landing pages or when progressive enhancement isn't priority.
 
-**Complete documentation**: See `.rules/react-component-naming-pattern-frontend.md`
+### Example
 
-## [Project Features]()
-
-Functionalities and design decisions implemented in the frontend project.
-
-### [Dark Mode]()
-- Dark theme by default
-- Background: gray-900
-- Text: gray-100
-- Accents: blue portifolio
-
-### [Responsiveness]()
-- Mobile-first approach
-- Default Tailwind breakpoints
-- Adaptive components
-
-### [Accessibility]()
-- Proper HTML semantics
-- ARIA labels when necessary
-- Adequate contrast (dark mode)
-
-### [Performance]()
-- Automatic code splitting (Vite)
-- Lazy loading of routes
-- Heavy component memoization
-- Chart.js with Canvas (performance)
-
-## [Responsive and Fluid Layout]()
-
-Patterns and practices for creating layouts that adapt to different screen sizes and devices.
-
-### [Tailwind Breakpoints]()
-
-The project uses Tailwind CSS default breakpoints:
-
-| Breakpoint | Minimum Width | Device |
-|------------|---------------|--------|
-| `sm` | 640px | Large phone (landscape) |
-| `md` | 768px | Tablet |
-| `lg` | 1024px | Small desktop |
-| `xl` | 1280px | Desktop |
-| `2xl` | 1536px | Large desktop |
-
-### [Mobile-First Approach]()
-
-All Tailwind classes are applied mobile-first, meaning the base style is for mobile and breakpoints add styles for larger screens.
+Responsive layout patterns demonstrating mobile-first approach with Tailwind breakpoints
 
 ```tsx
-// ❌ Desktop-first (WRONG)
-<div className="grid-cols-3 md:grid-cols-1">
-
-// ✅ Mobile-first (CORRECT)
-<div className="grid-cols-1 md:grid-cols-3">
-```
-
-**Correct order:**
-1. Base style (mobile)
-2. `sm:` - phone landscape
-3. `md:` - tablet
-4. `lg:` - desktop
-5. `xl:` - large desktop
-
-### [Fluid Layouts with Grid and Flexbox]()
-
-Use Grid and Flexbox for layouts that adapt automatically:
-
-```tsx
-// Responsive grid that adjusts number of columns
-<div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+// Responsive grid layout - mobile-first approach
+<div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 p-4">
   <Card />
   <Card />
   <Card />
 </div>
 
-// Flexbox with automatic wrap
-<div className="flex flex-wrap gap-4">
-  <div className="flex-1 min-w-[300px]">Content 1</div>
-  <div className="flex-1 min-w-[300px]">Content 2</div>
-</div>
-
-// Centered container with max-width
-<div className="container mx-auto px-4 max-w-7xl">
-  {/* Centered and responsive content */}
-</div>
-```
-
-### [Responsive Spacing]()
-
-Adjust padding, margin and gaps for different screens:
-
-```tsx
-// Padding that increases on larger screens
-<div className="p-4 md:p-6 lg:p-8">
-
-// Gap that adjusts per breakpoint
-<div className="flex gap-2 md:gap-4 lg:gap-6">
-
-// Responsive margin
-<div className="my-4 md:my-6 lg:my-8">
-```
-
-### [Responsive Typography]()
-
-Use text classes that scale with viewport:
-
-```tsx
-// Responsive headings
-<h1 className="text-2xl md:text-3xl lg:text-4xl">
-  Main Title
-</h1>
-
-// Body text
-<p className="text-sm md:text-base lg:text-lg">
-  Content
-</p>
-```
-
-### [Conditional Visibility]()
-
-Hide or show elements based on screen size:
-
-```tsx
-// Hamburger menu mobile only
-<button className="md:hidden">
-  <MenuIcon />
-</button>
-
-// Desktop menu
-<nav className="hidden md:flex">
-  <Link to="/">Home</Link>
-</nav>
-
-// Different layouts for mobile and desktop
-<div>
-  {/* Mobile: vertical list */}
-  <div className="md:hidden">
-    <VerticalList />
-  </div>
-
-  {/* Desktop: horizontal grid */}
-  <div className="hidden md:grid md:grid-cols-3">
-    <GridLayout />
-  </div>
-</div>
-```
-
-### [Responsive Sidebar]()
-
-Pattern for sidebar that transforms into mobile menu:
-
-```tsx
+// Responsive sidebar with mobile overlay
 export function Layout() {
   const [sidebarOpen, setSidebarOpen] = useState(false);
 
   return (
     <div className="flex h-screen">
-      {/* Mobile sidebar: overlay */}
+      {/* Mobile: overlay sidebar, Desktop: always visible */}
       <aside className={`
         fixed inset-y-0 left-0 z-50 w-64 bg-gray-900
         transform transition-transform
@@ -799,7 +1011,6 @@ export function Layout() {
         <Sidebar />
       </aside>
 
-      {/* Main content */}
       <main className="flex-1 overflow-auto">
         {/* Mobile menu button */}
         <button
@@ -816,119 +1027,308 @@ export function Layout() {
     </div>
   );
 }
-```
 
-### [Responsive Cards]()
+// Responsive typography and spacing
+<div className="p-4 md:p-6 lg:p-8">
+  <h1 className="text-2xl md:text-3xl lg:text-4xl mb-4">
+    Responsive Title
+  </h1>
+  <p className="text-sm md:text-base lg:text-lg">
+    Content that scales with viewport
+  </p>
+</div>
 
-Cards that adapt to available space:
+// Conditional visibility by breakpoint
+<div>
+  {/* Mobile only */}
+  <button className="md:hidden">
+    <MenuIcon />
+  </button>
 
-```tsx
-// Card that takes full width mobile and half desktop
-<div className="w-full md:w-1/2 lg:w-1/3 p-4">
-  <Card>
-    {/* Internal content also responsive */}
-    <div className="flex flex-col md:flex-row gap-4">
-      <img className="w-full md:w-32 h-32 object-cover" />
-      <div className="flex-1">
-        <h3 className="text-lg md:text-xl">Title</h3>
-        <p className="text-sm md:text-base">Description</p>
-      </div>
-    </div>
-  </Card>
+  {/* Desktop only */}
+  <nav className="hidden md:flex gap-4">
+    <Link to="/">Home</Link>
+    <Link to="/about">About</Link>
+  </nav>
 </div>
 ```
 
-### [Responsive Forms]()
+### Checklist
 
-Forms that reorganize on different screens:
-
-```tsx
-// Grid of 1 column mobile, 2 columns desktop
-<form className="space-y-4">
-  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-    <Input label="Name" />
-    <Input label="Email" />
-  </div>
-
-  {/* Full-width field on all screens */}
-  <Input label="Address" className="col-span-full" />
-
-  {/* Buttons: stacked mobile, side by side desktop */}
-  <div className="flex flex-col md:flex-row gap-2 md:gap-4">
-    <Button variant="primary" className="w-full md:w-auto">
-      Save
-    </Button>
-    <Button variant="secondary" className="w-full md:w-auto">
-      Cancel
-    </Button>
-  </div>
-</form>
-```
-
-### [Responsive Tables]()
-
-Strategies for tables on small screens:
-
-```tsx
-// Option 1: Horizontal scroll
-<div className="overflow-x-auto">
-  <table className="min-w-full">
-    {/* Normal table */}
-  </table>
-</div>
-
-// Option 2: Cards on mobile
-<div className="hidden md:block">
-  <Table /> {/* Normal table desktop */}
-</div>
-
-<div className="md:hidden space-y-4">
-  {items.map(item => (
-    <Card key={item.id}>
-      {/* Each row becomes a card on mobile */}
-      <div><strong>Name:</strong> {item.name}</div>
-      <div><strong>Email:</strong> {item.email}</div>
-    </Card>
-  ))}
-</div>
-```
-
-### [Responsiveness Checklist]()
-
-- [ ] Mobile-first: base style is for mobile
-- [ ] Breakpoints applied in order: `sm`, `md`, `lg`, `xl`
-- [ ] Fluid layouts with Grid or Flexbox
+- [ ] Mobile-first: base styles target mobile devices
+- [ ] Breakpoints applied in order: sm, md, lg, xl, 2xl
+- [ ] Fluid layouts use Grid or Flexbox
 - [ ] Responsive spacing (padding, margin, gap)
-- [ ] Typography that scales with viewport
-- [ ] Images with `object-fit` and responsive width
-- [ ] Navigation adapts between mobile menu and desktop
-- [ ] Forms reorganize fields on small screens
-- [ ] Tables with scroll or transformed into cards on mobile
-- [ ] Tested at different sizes: 320px, 768px, 1024px, 1920px
+- [ ] Typography scales with viewport size
+- [ ] Images use responsive widths and object-fit
+- [ ] Navigation transforms between mobile menu and desktop nav
+- [ ] Forms reorganize fields for small screens
+- [ ] Tables use scroll or card layouts on mobile
+- [ ] Tested at breakpoints: 320px, 768px, 1024px, 1920px
 
-## [Main Technologies]()
+### Troubleshooting
 
-- React
-- TypeScript
-- Vite
-- React Router DOM
-- Tailwind CSS v4
-- @tailwindcss/vite (Vite plugin)
-- Axios
-- Chart.js
-- Tippy.js
-- ESLint
+**Problem**: Desktop styles applying on mobile devices
+**Solution**: Verify mobile-first approach - base classes without breakpoint prefix should target mobile, add breakpoint prefixes (md:, lg:) for larger screens, check viewport meta tag in HTML
 
-## [System Requirements]()
+**Problem**: Layout breaking at specific screen sizes
+**Solution**: Test at exact Tailwind breakpoints (640px, 768px, 1024px, 1280px, 1536px), check for fixed widths conflicting with responsive classes, ensure min-width patterns used correctly
 
-- Node.js >= 18.x
-- npm >= 9.x or pnpm >= 8.x
-- Modern browsers (Chrome, Firefox, Safari, Edge)
+**Problem**: Content overflow on mobile devices
+**Solution**: Use overflow-x-auto for tables, set max-width constraints, ensure images use w-full with max-w-*, check for absolute positioning breaking layout
 
-## [References]()
+### Best Practices
 
-- [React Documentation](https://react.dev)
-- [Vite Documentation](https://vitejs.dev)
-- [Tailwind CSS Documentation](https://tailwindcss.com)
-- [React Router Documentation](https://reactrouter.com)
-- [Chart.js Documentation](https://www.chartjs.org)
+- Always use mobile-first approach: base class for mobile, prefix for larger
+- Test at all standard breakpoints: 320px, 640px, 768px, 1024px, 1280px
+- Use Grid for two-dimensional layouts, Flexbox for one-dimensional
+- Apply responsive padding and margin (p-4 md:p-6 lg:p-8)
+- Scale typography with breakpoints (text-base md:text-lg lg:text-xl)
+- Use conditional visibility sparingly to avoid duplicate markup
+- Implement responsive images with appropriate object-fit
+- Transform navigation patterns between mobile and desktop
+- Prefer fluid layouts over fixed widths when possible
+- Test touch interactions on actual mobile devices, not just browser resize
+
+## [Project Features - Dark Mode Performance Accessibility]()
+
+Functionalities and design decisions implemented in the frontend including dark mode by default, mobile-first responsive design, semantic HTML accessibility, and performance optimizations with code splitting and lazy loading. These features enhance user experience and application performance.
+
+### When to use?
+
+Implement dark mode for applications used in low-light environments or all-day usage, code splitting for large applications with multiple routes, lazy loading for heavy components not needed on initial load, and accessibility features for compliant, inclusive applications. Apply these patterns to all modern web applications.
+
+### When NOT to use?
+
+Skip dark mode for brand-specific designs requiring fixed color schemes, code splitting for tiny applications where overhead outweighs benefits, lazy loading for above-the-fold critical content, or accessibility features when automatically handled by component libraries (though still verify compliance).
+
+### Example
+
+Dark mode, code splitting, and accessibility implementation patterns
+
+```tsx
+// Dark mode with Tailwind classes
+<div className="bg-white dark:bg-gray-900 text-gray-900 dark:text-gray-100">
+  <h1 className="text-2xl dark:text-gray-100">
+    Content adapts to theme
+  </h1>
+  <div className="bg-gray-100 dark:bg-gray-800 p-4">
+    Card background
+  </div>
+</div>
+
+// Theme toggle component
+export function ThemeToggle() {
+  const [isDark, setIsDark] = useState(false);
+
+  useEffect(() => {
+    if (isDark) {
+      document.documentElement.classList.add('dark');
+    } else {
+      document.documentElement.classList.remove('dark');
+    }
+  }, [isDark]);
+
+  return (
+    <button
+      onClick={() => setIsDark(!isDark)}
+      aria-label="Toggle dark mode"
+    >
+      {isDark ? '☀️' : '🌙'}
+    </button>
+  );
+}
+
+// Code splitting with React.lazy
+import { lazy, Suspense } from 'react';
+
+const HeavyComponent = lazy(() => import('./HeavyComponent'));
+
+export function App() {
+  return (
+    <Suspense fallback={<div>Loading...</div>}>
+      <HeavyComponent />
+    </Suspense>
+  );
+}
+
+// Accessibility with semantic HTML and ARIA
+<nav aria-label="Main navigation">
+  <ul>
+    <li><a href="/">Home</a></li>
+  </ul>
+</nav>
+
+<button
+  aria-label="Close modal"
+  aria-pressed={isOpen}
+  onClick={handleClose}
+>
+  ×
+</button>
+```
+
+### Checklist
+
+- [ ] Dark mode configured with Tailwind class strategy
+- [ ] Dark mode toggle implemented with localStorage persistence
+- [ ] Route-based code splitting with React.lazy
+- [ ] Heavy components lazy loaded with Suspense boundaries
+- [ ] Semantic HTML used (nav, main, section, article)
+- [ ] ARIA labels on interactive elements
+- [ ] Keyboard navigation supported
+- [ ] Color contrast meets WCAG AA standards
+
+### Troubleshooting
+
+**Problem**: Dark mode not persisting across page reloads
+**Solution**: Save theme preference to localStorage, load on app initialization, ensure dark class is applied to html element before first render
+
+**Problem**: Code splitting causing blank page or errors
+**Solution**: Verify Suspense wraps lazy components, check fallback is provided, ensure dynamic import paths are correct, test with network throttling
+
+**Problem**: Accessibility violations reported by audits
+**Solution**: Run Lighthouse or axe DevTools, add ARIA labels to interactive elements without text, ensure proper heading hierarchy, test keyboard navigation
+
+### Best Practices
+
+- Default to dark mode for developer tools and productivity apps
+- Persist theme preference in localStorage
+- Use Tailwind dark: variant for all color-related classes
+- Implement code splitting at route level first
+- Lazy load below-the-fold content and modal components
+- Use semantic HTML elements over div soup
+- Provide ARIA labels for icon-only buttons
+- Ensure minimum 4.5:1 color contrast ratio
+- Test keyboard navigation for all interactive features
+- Run accessibility audits regularly with Lighthouse
+
+## [Technology Summary - Dependencies and Requirements]()
+
+Complete list of main technologies, system requirements, and official documentation references for the frontend stack including React, TypeScript, Vite, Tailwind CSS, React Router, Axios, Chart.js, and development tools.
+
+### When to use?
+
+Reference this section when onboarding new developers, verifying system requirements before setup, checking compatible versions for updates, or linking to official documentation for deep dives. Use as single source of truth for technology stack decisions.
+
+### When NOT to use?
+
+Avoid treating this as exhaustive implementation guide (use specific sections instead), relying on versions without checking latest compatibility, or using as replacement for official documentation when troubleshooting complex issues.
+
+### Example
+
+Technology stack overview with versions and documentation links
+
+```json
+// Main dependencies (package.json excerpt)
+{
+  "dependencies": {
+    "react": "^18.3.0",
+    "react-dom": "^18.3.0",
+    "react-router-dom": "^6.22.0",
+    "axios": "^1.6.7",
+    "chart.js": "^4.4.1",
+    "react-chartjs-2": "^5.2.0",
+    "@tippyjs/react": "^4.2.6",
+    "timeago.js": "^4.0.2"
+  },
+  "devDependencies": {
+    "typescript": "^5.3.3",
+    "@vitejs/plugin-react-swc": "^3.5.0",
+    "vite": "^5.1.0",
+    "@tailwindcss/vite": "^4.0.0",
+    "tailwindcss": "^4.0.0",
+    "eslint": "^8.56.0",
+    "typescript-eslint": "^7.0.0"
+  }
+}
+```
+
+### Checklist
+
+- [ ] Node.js >= 18.x installed
+- [ ] npm >= 9.x or pnpm >= 8.x installed
+- [ ] Modern browser (Chrome, Firefox, Safari, Edge latest versions)
+- [ ] Git for version control
+- [ ] Code editor with TypeScript support (VS Code recommended)
+- [ ] All dependencies installed via npm install
+- [ ] Development server running on port 5173
+
+### Troubleshooting
+
+**Problem**: Dependency installation failures
+**Solution**: Clear npm cache with npm cache clean --force, delete node_modules and package-lock.json, ensure Node version matches requirements (>= 18.x), check network connectivity
+
+**Problem**: Version conflicts between dependencies
+**Solution**: Check peer dependencies warnings, update to compatible versions, use npm list to inspect dependency tree, consider npm overrides for resolving conflicts
+
+**Problem**: Browser compatibility issues
+**Solution**: Verify browserslist configuration targets appropriate browsers, check Vite build output for transpilation, use polyfills for unsupported features, test in actual target browsers
+
+### Best Practices
+
+- Keep Node.js version up to date (LTS recommended)
+- Use package-lock.json or pnpm-lock.yaml for reproducible builds
+- Update dependencies regularly but test thoroughly
+- Review breaking changes before major version updates
+- Document minimum browser versions in README
+- Use exact versions for critical dependencies
+- Audit dependencies for security vulnerabilities regularly
+- Refer to official documentation for version-specific features
+
+## [Documentation References - Official Links]()
+
+Official documentation links for all major technologies used in the frontend stack. These resources provide authoritative information for learning, troubleshooting, and staying updated with latest features and best practices.
+
+### When to use?
+
+Reference official documentation when learning new features, troubleshooting issues beyond this guide, implementing advanced patterns, checking API references, or staying current with framework updates. Use as primary source for version-specific information.
+
+### When NOT to use?
+
+Avoid using documentation as only learning resource without hands-on practice, relying on outdated cached versions, or substituting for project-specific patterns documented in .rules directory. Don't use generic tutorials over official docs for accurate information.
+
+### Example
+
+Documentation link references for quick access
+
+- **React**: https://react.dev - Official React documentation with hooks, components, and best practices
+- **Vite**: https://vitejs.dev - Fast build tool documentation and configuration guide
+- **TypeScript**: https://www.typescriptlang.org/docs - TypeScript handbook and language reference
+- **Tailwind CSS**: https://tailwindcss.com - Utility-first CSS framework documentation
+- **React Router**: https://reactrouter.com - Client-side routing documentation and API reference
+- **Axios**: https://axios-http.com - HTTP client documentation with examples and interceptors
+- **Chart.js**: https://www.chartjs.org - Chart documentation with examples and configuration
+- **Tippy.js**: https://atomiks.github.io/tippyjs - Tooltip library documentation
+
+### Checklist
+
+- [ ] Bookmarked relevant documentation sites
+- [ ] Subscribed to release notes for major dependencies
+- [ ] Familiar with documentation structure for quick lookup
+- [ ] Know where to find API references vs guides
+- [ ] Aware of version-specific documentation pages
+- [ ] Can access documentation offline when needed
+- [ ] Follow official blogs and changelogs for updates
+
+### Troubleshooting
+
+**Problem**: Documentation version doesn't match installed package
+**Solution**: Check package.json for installed version, navigate to correct documentation version, use version switcher in docs, consider upgrading if using outdated version
+
+**Problem**: Can't find specific feature in documentation
+**Solution**: Use documentation search functionality, check API reference section, review migration guides for moved features, search GitHub issues for discussions
+
+**Problem**: Examples in documentation not working in project
+**Solution**: Verify versions match between docs and project, check for required peer dependencies, review project-specific configuration differences, test example in isolation
+
+### Best Practices
+
+- Always check documentation version matches installed package version
+- Start with Getting Started guides for new technologies
+- Bookmark frequently referenced API documentation pages
+- Use official examples as starting point for implementation
+- Check migration guides before major version upgrades
+- Follow official GitHub repositories for issues and discussions
+- Subscribe to release notes and changelogs
+- Contribute documentation improvements when finding gaps

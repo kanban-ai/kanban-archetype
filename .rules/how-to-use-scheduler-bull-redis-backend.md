@@ -1,33 +1,22 @@
-# How to use Scheduler with Bull in Backend
+# How to Use Bull Scheduler in Backend
 
-> Complete guide to schedule tasks with cron using Bull and @Cron decorator that encapsulates all complexity for distributed scheduled jobs
+Complete guide to schedule tasks with cron using Bull and custom @Cron decorator that encapsulates all complexity for distributed scheduled jobs.
 
-## [Setting up Bull Scheduler with Custom @Cron Decorator]()
+## [Bull Scheduler Setup with Custom @Cron Decorator]()
 
-This section covers the complete setup process for Bull-based job scheduling in NestJS, including package installation, global module configuration, custom @Cron decorator implementation, and automatic job registration for distributed cron tasks.
+Complete setup process for Bull-based job scheduling in NestJS, including package installation, global module configuration, custom @Cron decorator implementation, and automatic job registration for distributed cron tasks across multiple instances.
 
 ### When to use?
 
-Use Bull Scheduler when you need:
-- ✅ Distributed scheduled tasks across multiple application instances without duplication
-- ✅ Horizontal scalability where scheduler works correctly with multiple instances
-- ✅ Job persistence where scheduled tasks survive server restarts
-- ✅ Automatic retry mechanisms for failed scheduled jobs
-- ✅ Monitoring dashboard (Bull Board) to visualize and manage schedules
-- ✅ Redis coordination to guarantee single execution even with multiple instances
-- ✅ Timezone support for different scheduled tasks
+Use Bull Scheduler when you need distributed scheduled tasks across multiple application instances without duplication, horizontal scalability where scheduler works correctly with multiple instances, job persistence where scheduled tasks survive server restarts, automatic retry mechanisms for failed scheduled jobs, monitoring dashboard (Bull Board) to visualize and manage schedules, Redis coordination to guarantee single execution even with multiple instances, or timezone support for different scheduled tasks.
 
 ### When NOT to use?
 
-Avoid Bull Scheduler when:
-- ❌ You need task queues and asynchronous message processing (use RabbitMQ instead)
-- ❌ You need simple one-time delayed jobs (use setTimeout or agenda)
-- ❌ You don't need distributed coordination (use @nestjs/schedule for single instance)
-- ❌ You need real-time event processing (use RabbitMQ)
+Avoid Bull Scheduler when you need task queues and asynchronous message processing (use RabbitMQ instead), simple one-time delayed jobs (use setTimeout or agenda), don't need distributed coordination (use @nestjs/schedule for single instance), or need real-time event processing (use RabbitMQ).
 
 ### Example
 
-**Installation:**
+**Package Installation:**
 
 ```bash
 npm install bull @nestjs/bull
@@ -118,6 +107,7 @@ REDIS_DB=0
 - [ ] `scheduler` queue registered in AppModule
 - [ ] `DiscoveryModule` imported in AppModule
 - [ ] `CronSchedulerRegistry` added to AppModule providers
+- [ ] Environment variables configured
 
 ### Troubleshooting
 
@@ -138,6 +128,15 @@ Diagnosis:
 3. Check if `CronSchedulerRegistry` is in AppModule `providers`
 4. Check logs to see if providers were found
 
+**Error "Cannot find module @nestjs/core":**
+
+Cause: Package `@nestjs/core` not installed or incompatible version.
+
+Solution:
+```bash
+npm install @nestjs/core
+```
+
 ### Best Practices
 
 - ✅ Configure Bull as a global module
@@ -146,26 +145,22 @@ Diagnosis:
 - ✅ Keep completed jobs limited (removeOnComplete)
 - ✅ Import DiscoveryModule for automatic registration
 - ✅ Use Bull Board for monitoring in development
+- ✅ Configure proper environment variables
 - ❌ Never use for message queues (use RabbitMQ)
 - ❌ Never expose Bull Board without authentication in production
+- ❌ Don't hardcode configuration values
 
-## [Creating Custom @Cron Decorator]()
+## [Custom @Cron Decorator Implementation]()
 
-This section demonstrates how to create a custom @Cron decorator that automatically discovers and registers all decorated methods as scheduled jobs in Bull, eliminating boilerplate code and simplifying scheduler implementation.
+Implementation of a custom @Cron decorator that automatically discovers and registers all decorated methods as scheduled jobs in Bull, eliminating boilerplate code and simplifying scheduler implementation with metadata-based configuration.
 
 ### When to use?
 
-Use the custom @Cron decorator when:
-- ✅ You want to simplify scheduler creation with minimal code
-- ✅ You need automatic job discovery and registration
-- ✅ You want consistent timezone and retry configuration
-- ✅ You need to eliminate Bull boilerplate from business code
+Use the custom @Cron decorator when you want to simplify scheduler creation with minimal code, need automatic job discovery and registration, want consistent timezone and retry configuration, or need to eliminate Bull boilerplate from business code.
 
 ### When NOT to use?
 
-Avoid custom decorator when:
-- ❌ You need fine-grained control over each job configuration
-- ❌ You want to register jobs dynamically at runtime
+Avoid custom decorator when you need fine-grained control over each job configuration or want to register jobs dynamically at runtime.
 
 ### Example
 
@@ -301,19 +296,11 @@ export class CronSchedulerRegistry implements OnModuleInit {
 - [ ] Registry added to AppModule providers
 - [ ] Metadata scanner configured
 - [ ] Job processors registered dynamically
+- [ ] Proper error logging implemented
 
 ### Troubleshooting
 
-**Error "Cannot find module @nestjs/core":**
-
-Cause: Package `@nestjs/core` not installed or incompatible version.
-
-Solution:
-```bash
-npm install @nestjs/core
-```
-
-**CronSchedulerRegistry is not discovering schedulers:**
+**CronSchedulerRegistry not discovering schedulers:**
 
 Cause: `DiscoveryModule` is not imported.
 
@@ -326,6 +313,18 @@ import { DiscoveryModule } from '@nestjs/core';
 })
 ```
 
+**Scheduler executing multiple times:**
+
+Problem: Job duplicated in each application instance.
+
+Cause: `jobId` is not configured correctly.
+
+Solution: The decorator already configures `jobId: 'cron:${jobName}'` automatically. Check if there are multiple registrations.
+
+**Metadata not found:**
+
+Check if `reflect-metadata` is imported in your main.ts before any other imports.
+
 ### Best Practices
 
 - ✅ Use metadata for decorator configuration
@@ -333,26 +332,22 @@ import { DiscoveryModule } from '@nestjs/core';
 - ✅ Handle errors during registration
 - ✅ Use unique jobId to prevent duplicates
 - ✅ Register processors dynamically
+- ✅ Implement proper TypeScript typing
 - ❌ Don't hardcode queue names
 - ❌ Don't skip error handling
+- ❌ Don't ignore registration failures
 
 ## [Using @Cron Decorator in Schedulers]()
 
-This section demonstrates how to use the custom @Cron decorator to create scheduled tasks with minimal boilerplate, including common cron patterns and timezone configuration.
+Practical usage of the custom @Cron decorator to create scheduled tasks with minimal boilerplate, including common cron patterns, timezone configuration, and error handling strategies.
 
 ### When to use?
 
-Use @Cron decorator when:
-- ✅ You need to schedule recurring tasks
-- ✅ You want clean, declarative scheduler code
-- ✅ You need timezone-specific scheduling
-- ✅ You want automatic error handling and retry
+Use @Cron decorator when you need to schedule recurring tasks, want clean declarative scheduler code, need timezone-specific scheduling, or want automatic error handling and retry mechanisms.
 
 ### When NOT to use?
 
-Avoid @Cron when:
-- ❌ You need one-time delayed jobs
-- ❌ You need dynamic scheduling (runtime changes)
+Avoid @Cron when you need one-time delayed jobs or need dynamic scheduling with runtime changes to cron expressions.
 
 ### Example
 
@@ -469,22 +464,30 @@ export class ReportsModule {}
 - [ ] Error handling implemented
 - [ ] Logging added for monitoring
 - [ ] Scheduler registered in module providers
+- [ ] Documentation added to complex schedules
 
 ### Troubleshooting
-
-**Scheduler executing multiple times:**
-
-Problem: Job duplicated in each application instance.
-
-Cause: `jobId` is not configured correctly.
-
-Solution: The decorator already configures `jobId: 'cron:${jobName}'` automatically. Check if there are multiple registrations.
 
 **Wrong execution time:**
 
 1. Verify cron expression at https://crontab.guru
 2. Check timezone configuration
 3. Verify server time: `date`
+4. Check if timezone database is updated
+
+**Scheduler not executing:**
+
+1. Check logs for registration messages
+2. Verify scheduler is in module providers
+3. Check Redis connection
+4. Verify cron expression syntax
+
+**Jobs running in wrong timezone:**
+
+Explicitly set timezone in options:
+```typescript
+@Cron('0 9 * * *', { timezone: 'America/Sao_Paulo' })
+```
 
 ### Best Practices
 
@@ -494,26 +497,22 @@ Solution: The decorator already configures `jobId: 'cron:${jobName}'` automatica
 - ✅ Implement proper error handling
 - ✅ Log execution start and completion
 - ✅ Throw errors to trigger Bull retry
+- ✅ Keep scheduler methods focused and simple
 - ❌ Don't add heavy logic in scheduler methods
 - ❌ Don't ignore timezone differences
+- ❌ Don't use generic job names
 
 ## [Bull Board Dashboard for Monitoring]()
 
-This section explains how to integrate Bull Board, a web-based UI for monitoring and managing Bull queues and scheduled jobs in real-time during development.
+Integration of Bull Board, a web-based UI for monitoring and managing Bull queues and scheduled jobs in real-time during development, providing visual insights into job execution, failures, and statistics.
 
 ### When to use?
 
-Use Bull Board when:
-- ✅ You need to monitor scheduled jobs in development
-- ✅ You want to debug job execution and failures
-- ✅ You need to manually trigger jobs for testing
-- ✅ You want to see job history and statistics
+Use Bull Board when you need to monitor scheduled jobs in development, want to debug job execution and failures, need to manually trigger jobs for testing, or want to see job history and statistics.
 
 ### When NOT to use?
 
-Avoid Bull Board when:
-- ❌ You're in production without authentication (security risk)
-- ❌ You don't need visual monitoring (use logs instead)
+Avoid Bull Board when you're in production without authentication (security risk) or don't need visual monitoring (use logs instead).
 
 ### Example
 
@@ -577,6 +576,7 @@ http://localhost:3000/admin/queues
 - [ ] Dashboard accessible in development
 - [ ] Authentication added for production
 - [ ] Routes protected with guards
+- [ ] All queues registered with Bull Board
 
 ### Troubleshooting
 
@@ -586,12 +586,21 @@ http://localhost:3000/admin/queues
 2. Check if application is running
 3. Check for port conflicts
 4. Verify no authentication blocking access in dev
+5. Check if BullBoardConfigModule is imported
 
 **Dashboard shows no queues:**
 
 1. Verify queue name matches
 2. Check if jobs are registered
 3. Restart application
+4. Verify BullBoardModule.forFeature configuration
+
+**Authentication not working in production:**
+
+Implement a guard:
+```typescript
+@UseGuards(ApiKeyGuard)
+```
 
 ### Best Practices
 
@@ -600,35 +609,33 @@ http://localhost:3000/admin/queues
 - ✅ Use API Key or JWT guards
 - ✅ Monitor job failures and retries
 - ✅ Use dashboard to manually test jobs
+- ✅ Configure different routes for dev/prod
 - ❌ Never expose publicly without auth
 - ❌ Don't rely solely on dashboard (use logging)
+- ❌ Don't skip production security
 
 ## [Testing Schedulers]()
 
-This section demonstrates how to unit test scheduler methods independently of Bull infrastructure, ensuring business logic correctness without depending on scheduled execution.
+Unit testing scheduler methods independently of Bull infrastructure, ensuring business logic correctness without depending on scheduled execution or cron timing.
 
 ### When to use?
 
-Test schedulers when:
-- ✅ You need to verify business logic
-- ✅ You want to test without waiting for cron
-- ✅ You need fast, isolated unit tests
-- ✅ You want to mock dependencies
+Test schedulers when you need to verify business logic, want to test without waiting for cron execution, need fast isolated unit tests, or want to mock dependencies.
 
 ### When NOT to use?
 
-Skip testing when:
-- ❌ Methods are trivial (just logging)
-- ❌ Logic is fully covered by service tests
+Skip testing when methods are trivial (just logging) or logic is fully covered by service tests.
 
 ### Example
 
 **Unit Test:**
 
+`src/modules/reports/schedulers/reports.scheduler.spec.ts`
+
 ```typescript
 import { Test } from '@nestjs/testing';
 import { ReportsScheduler } from './reports.scheduler';
-import { ReportsService } from './reports.service';
+import { ReportsService } from '../reports.service';
 
 describe('ReportsScheduler', () => {
   let scheduler: ReportsScheduler;
@@ -680,6 +687,7 @@ describe('ReportsScheduler', () => {
 - [ ] Error handling tested
 - [ ] Success cases covered
 - [ ] Edge cases considered
+- [ ] Retry behavior validated
 
 ### Troubleshooting
 
@@ -688,12 +696,20 @@ describe('ReportsScheduler', () => {
 1. Verify mocks are properly configured
 2. Check async/await usage
 3. Verify method signatures match
+4. Check for missing dependencies
 
 **Cannot inject dependencies:**
 
 1. Add all dependencies to providers
 2. Use proper mock values
 3. Verify imports
+4. Check provider configuration
+
+**Mock not being called:**
+
+1. Verify spy setup
+2. Check method name spelling
+3. Ensure await is used for async methods
 
 ### Best Practices
 
@@ -702,27 +718,22 @@ describe('ReportsScheduler', () => {
 - ✅ Test error handling and retry behavior
 - ✅ Use descriptive test names
 - ✅ Cover both success and failure cases
+- ✅ Test error propagation for retry
 - ❌ Don't test Bull internals
 - ❌ Don't rely on actual cron execution
+- ❌ Don't skip edge cases
 
 ## [Manual Job Triggering via API]()
 
-This section shows how to create API endpoints to manually trigger scheduled jobs, useful for testing, debugging, and allowing administrators to run jobs on demand.
+Creating API endpoints to manually trigger scheduled jobs for testing, debugging, and allowing administrators to run jobs on demand outside their regular schedule.
 
 ### When to use?
 
-Use manual triggering when:
-- ✅ You need to test jobs without waiting
-- ✅ Admins need to run jobs on demand
-- ✅ You want to debug job execution
-- ✅ You need to recover from failures
+Use manual triggering when you need to test jobs without waiting, admins need to run jobs on demand, you want to debug job execution, or need to recover from failures.
 
 ### When NOT to use?
 
-Avoid manual triggering when:
-- ❌ Jobs contain sensitive operations
-- ❌ No authentication/authorization in place
-- ❌ Jobs are resource-intensive (avoid abuse)
+Avoid manual triggering when jobs contain sensitive operations without proper authorization, no authentication/authorization is in place, or jobs are resource-intensive (to avoid abuse).
 
 ### Example
 
@@ -780,6 +791,7 @@ curl -X POST http://localhost:3000/reports/trigger/daily-report \
 - [ ] Error handling for unknown jobs
 - [ ] Response messages clear and informative
 - [ ] Endpoint documented
+- [ ] Audit logging implemented
 
 ### Troubleshooting
 
@@ -788,12 +800,20 @@ curl -X POST http://localhost:3000/reports/trigger/daily-report \
 1. Verify API key is correct
 2. Check guard configuration
 3. Verify headers are sent
+4. Check guard order in decorators
 
 **Job not found:**
 
 1. Check job name matches exactly
 2. Verify mapping in jobMethods
 3. Check for typos
+4. Verify scheduler method exists
+
+**Job execution fails:**
+
+1. Check job logs
+2. Verify dependencies are available
+3. Check service method implementation
 
 ### Best Practices
 
@@ -802,26 +822,22 @@ curl -X POST http://localhost:3000/reports/trigger/daily-report \
 - ✅ Log manual executions for audit
 - ✅ Return clear success/error messages
 - ✅ Use guards to restrict access
+- ✅ Implement rate limiting
 - ❌ Never expose publicly without auth
 - ❌ Don't allow arbitrary code execution
+- ❌ Don't skip validation
 
 ## [Verifying Scheduler Registration]()
 
-This section explains how to verify that schedulers are being correctly discovered and registered when the application starts, including log messages and diagnostic steps.
+How to verify that schedulers are being correctly discovered and registered when the application starts, including expected log messages and diagnostic steps for troubleshooting.
 
 ### When to use?
 
-Verify registration when:
-- ✅ Setting up schedulers for the first time
-- ✅ Debugging why jobs aren't executing
-- ✅ After configuration changes
-- ✅ When troubleshooting issues
+Verify registration when setting up schedulers for the first time, debugging why jobs aren't executing, after configuration changes, or when troubleshooting issues.
 
 ### When NOT to use?
 
-Skip verification when:
-- ❌ Schedulers are working correctly
-- ❌ No changes have been made
+Skip verification when schedulers are working correctly or no changes have been made to scheduler configuration.
 
 ### Example
 
@@ -864,12 +880,21 @@ Skip verification when:
 1. Verify `CronSchedulerRegistry` is in AppModule
 2. Check if `OnModuleInit` is being called
 3. Verify logger is configured
+4. Check log level settings
 
 **Wrong number of schedulers:**
 
 1. Count @Cron decorated methods
 2. Verify all scheduler classes are in providers
 3. Check for conditional imports
+4. Verify module imports
+
+**Registration errors in logs:**
+
+1. Check error stack trace
+2. Verify Redis connection
+3. Check queue configuration
+4. Verify cron expression syntax
 
 ### Best Practices
 
@@ -878,26 +903,22 @@ Skip verification when:
 - ✅ Check Bull Board for visual confirmation
 - ✅ Document expected scheduler count
 - ✅ Set up alerts for registration failures
+- ✅ Implement health checks
 - ❌ Don't ignore registration errors
 - ❌ Don't skip log verification
+- ❌ Don't assume silent success
 
 ## [Folder Structure and Organization]()
 
-This section provides the recommended folder structure for organizing schedulers within your NestJS application modules.
+Recommended folder structure for organizing schedulers within your NestJS application modules, ensuring maintainability, scalability, and consistency across the codebase.
 
 ### When to use?
 
-Follow this structure when:
-- ✅ Creating new schedulers
-- ✅ Organizing existing schedulers
-- ✅ Maintaining consistency across modules
-- ✅ Scaling scheduler count
+Follow this structure when creating new schedulers, organizing existing schedulers, maintaining consistency across modules, or scaling scheduler count.
 
 ### When NOT to use?
 
-Deviate from structure when:
-- ❌ Your project has established different conventions
-- ❌ Single scheduler doesn't need subfolder
+Deviate from structure when your project has established different conventions or a single scheduler doesn't need a subfolder.
 
 ### Example
 
@@ -932,6 +953,7 @@ src/
 - [ ] Clear naming convention
 - [ ] All schedulers registered in module
 - [ ] Common decorator in shared location
+- [ ] Consistent structure across modules
 
 ### Troubleshooting
 
@@ -940,6 +962,13 @@ src/
 1. Check import path is correct
 2. Verify decorator is exported
 3. Use path alias if configured
+4. Check tsconfig.json paths
+
+**Module resolution errors:**
+
+1. Verify folder structure matches imports
+2. Check module exports
+3. Verify barrel exports if used
 
 ### Best Practices
 
@@ -947,15 +976,17 @@ src/
 - ✅ One scheduler class per file
 - ✅ Use clear, descriptive names
 - ✅ Keep schedulers close to related services
+- ✅ Follow consistent naming patterns
 - ❌ Don't mix schedulers with other code
 - ❌ Don't create monolithic scheduler files
+- ❌ Don't scatter schedulers across modules
 
-## [Implementation Checklist]()
+## [Complete Implementation Checklist]()
 
-Complete checklist for implementing Bull Scheduler with @Cron decorator in your NestJS application.
+Comprehensive checklist for implementing Bull Scheduler with custom @Cron decorator in your NestJS application from start to finish.
 
 - [ ] Redis installed and running
-- [ ] Bull packages installed (`@nestjs/bull`, `bull`)
+- [ ] Bull packages installed (`@nestjs/bull`, `bull`, `@types/bull`)
 - [ ] `SchedulerModule` created in `src/common/scheduler/`
 - [ ] `CronSchedulerRegistry` created in `src/common/decorators/cron.decorator.ts`
 - [ ] `@Cron` decorator exported
@@ -966,20 +997,22 @@ Complete checklist for implementing Bull Scheduler with @Cron decorator in your 
 - [ ] Schedulers added to module providers
 - [ ] Environment variables configured (`.env`)
 - [ ] Bull Board configured for development
+- [ ] Bull Board authentication added for production
 - [ ] Logs appear showing registered schedulers
 - [ ] Unit tests for schedulers
 - [ ] Timezone defined in each `@Cron`
 - [ ] Proper logging in all schedulers
 - [ ] Error handling implemented
 - [ ] Manual trigger endpoints created (optional)
-- [ ] Authentication added to Bull Board
+- [ ] Documentation updated
 
 ## [References and Documentation]()
 
-Official documentation and resources for Bull and NestJS integration.
+Official documentation and resources for Bull, NestJS integration, and related tools.
 
 - [NestJS Bull](https://docs.nestjs.com/techniques/queues)
 - [Bull Documentation](https://github.com/OptimalBits/bull)
 - [Bull Board](https://github.com/felixmosh/bull-board)
 - [Cron Expression Tester](https://crontab.guru)
 - [Redis Documentation](https://redis.io/documentation)
+- [NestJS Discovery Module](https://docs.nestjs.com/fundamentals/execution-context#reflection-and-metadata)

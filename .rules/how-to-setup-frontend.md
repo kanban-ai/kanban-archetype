@@ -4,7 +4,7 @@ Complete guide to configure a React + TypeScript + Vite + Tailwind CSS project f
 
 ## [Project Initialization with Vite and React]()
 
-This section covers the complete initial setup for creating a modern frontend project using React v19+, TypeScript, Vite as build tool, and the SWC transpiler for maximum performance.
+Complete initial setup for creating a modern frontend project using React v19+, TypeScript, Vite as build tool, and the SWC transpiler for maximum performance and fast development builds.
 
 ### When to use?
 
@@ -15,6 +15,8 @@ Use this setup when starting a new frontend project from scratch that requires m
 Do not use this setup when working with an existing project, when the project requires Next.js for SSR/SSG, or when the team has strict requirements for alternative frameworks like Vue or Angular.
 
 ### Example
+
+Create a new React project with Vite and TypeScript template.
 
 ```bash
 # Create project with React + TypeScript template
@@ -51,7 +53,7 @@ npm install
 
 ## [Tailwind CSS v4 Installation and Configuration]()
 
-This section provides comprehensive instructions for installing and configuring Tailwind CSS v4 using the native Vite plugin, which replaces the traditional PostCSS approach for maximum performance and zero configuration.
+Comprehensive instructions for installing and configuring Tailwind CSS v4 using the native Vite plugin, which replaces the traditional PostCSS approach for maximum performance and zero configuration.
 
 ### When to use?
 
@@ -62,6 +64,8 @@ Use Tailwind CSS v4 when you need a utility-first CSS framework with Vite integr
 Do not use Tailwind v4 if your project requires compatibility with older build tools without Vite, if the team prefers traditional CSS-in-JS solutions like styled-components, or if Tailwind v3 is mandated by existing project constraints.
 
 ### Example
+
+Install Tailwind CSS v4 and configure Vite plugin.
 
 ```bash
 # Install dependencies
@@ -123,7 +127,7 @@ export default defineConfig({
 
 ## [React Router and Axios Installation]()
 
-This section explains how to install React Router DOM for client-side routing and Axios for HTTP requests, providing the foundation for navigation and backend communication in your application.
+How to install React Router DOM for client-side routing and Axios for HTTP requests, providing the foundation for navigation and backend communication in your application.
 
 ### When to use?
 
@@ -134,6 +138,8 @@ Install React Router when you need multiple pages with client-side navigation, p
 Skip React Router if building a single-page application without multiple routes. Skip Axios if using alternative HTTP clients like fetch API directly, react-query with built-in fetching, or GraphQL clients like Apollo.
 
 ### Example
+
+Install routing and HTTP client libraries.
 
 ```bash
 # Install React Router
@@ -209,7 +215,7 @@ export default api;
 
 ## [TypeScript Configuration with Path Aliases]()
 
-This section details TypeScript compiler configuration including path aliases to improve import statements, development experience, and code organization with cleaner import paths throughout the application.
+TypeScript compiler configuration including path aliases to improve import statements, development experience, and code organization with cleaner import paths throughout the application.
 
 ### When to use?
 
@@ -220,6 +226,8 @@ Configure path aliases when you want cleaner imports (using `@/` instead of `../
 Skip path aliases if working on a very small project with shallow folder structure, when team members are unfamiliar with TypeScript configurations, or if existing conventions prohibit custom paths.
 
 ### Example
+
+Configure TypeScript and Vite for path aliases.
 
 **File**: `tsconfig.json`
 
@@ -297,7 +305,7 @@ export default defineConfig({
 
 ## [Project Folder Structure Organization]()
 
-This section presents the recommended project folder structure for organizing components, pages, services, utilities, and configuration files to maintain a scalable and maintainable codebase as the application grows.
+Recommended project folder structure for organizing components, pages, services, utilities, and configuration files to maintain a scalable and maintainable codebase as the application grows.
 
 ### When to use?
 
@@ -308,6 +316,8 @@ Implement this folder structure when starting a new project, when organizing an 
 Do not use this exact structure if your project already has an established folder convention that works well, or if specific framework requirements (like Next.js app directory) dictate a different organization.
 
 ### Example
+
+Create organized folder structure for scalable React applications.
 
 ```
 frontend/
@@ -372,7 +382,7 @@ mkdir -p src/utils
 
 ## [Environment Variables Configuration]()
 
-This section demonstrates how to configure environment variables using .env files to store API URLs, feature flags, and environment-specific settings securely without committing sensitive data to version control.
+How to configure environment variables using .env files to store API URLs, feature flags, and environment-specific settings securely without committing sensitive data to version control.
 
 ### When to use?
 
@@ -383,6 +393,8 @@ Use environment variables for API URLs, feature flags, third-party API keys, or 
 Do not use .env files for truly secret values in frontend code (they are exposed to browsers). Do not commit .env files to version control. Do not use for runtime configuration that needs to change without rebuilding.
 
 ### Example
+
+Configure environment variables for different environments.
 
 **File**: `.env`
 
@@ -438,7 +450,7 @@ const apiUrl = import.meta.env.VITE_API_URL;
 
 ## [Route Configuration with React Router]()
 
-This section shows how to set up centralized route configuration, implement React Router in the main App component, and organize navigation for clean and maintainable routing management throughout the application.
+How to set up centralized route configuration, implement React Router in the main App component, and organize navigation for clean and maintainable routing management throughout the application.
 
 ### When to use?
 
@@ -449,6 +461,8 @@ Use centralized route configuration when you need multiple pages, want to keep r
 Skip route configuration for true single-page applications without navigation, when using alternative routing solutions, or when framework conventions (like Next.js file-based routing) dictate different routing approaches.
 
 ### Example
+
+Configure centralized routing with React Router.
 
 **File**: `src/config/routes.config.tsx`
 
@@ -517,7 +531,7 @@ export default App;
 
 ## [Development Scripts and Dependencies]()
 
-This section lists all available npm scripts for development server, production builds, preview, linting, type checking, and provides the complete package.json with all required dependencies and devDependencies.
+All available npm scripts for development server, production builds, preview, linting, type checking, and the complete package.json with all required dependencies and devDependencies.
 
 ### When to use?
 
@@ -528,6 +542,8 @@ Reference this section when setting up npm scripts for the first time, updating 
 Do not modify these scripts without understanding their purpose. Do not remove dependencies without verifying they are unused. Do not update all dependencies at once without testing thoroughly.
 
 ### Example
+
+Complete package.json with all scripts and dependencies.
 
 **File**: `package.json`
 
@@ -616,7 +632,7 @@ npm run lint
 
 ## [Testing the Setup]()
 
-This section provides a sample HomePage component and testing procedures to verify that the entire frontend setup is working correctly, including React rendering, TypeScript compilation, Tailwind CSS styling, and Vite build process.
+Sample HomePage component and testing procedures to verify that the entire frontend setup is working correctly, including React rendering, TypeScript compilation, Tailwind CSS styling, and Vite build process.
 
 ### When to use?
 
@@ -627,6 +643,8 @@ Use this test after completing initial setup to verify everything works correctl
 Skip this test if you have already created production pages and components. Do not use this minimal HomePage in production applications. Do not rely solely on this test for comprehensive application testing.
 
 ### Example
+
+Create test page and verify all setup components work.
 
 **File**: `src/pages/HomePage.tsx`
 
@@ -696,7 +714,7 @@ npm run type-check
 
 ## [Optional Code Quality Tools]()
 
-This section presents optional but recommended configurations for Prettier code formatting, ESLint with Prettier integration, and useful VS Code extensions to enhance development workflow and maintain consistent code style.
+Optional but recommended configurations for Prettier code formatting, ESLint with Prettier integration, and useful VS Code extensions to enhance development workflow and maintain consistent code style.
 
 ### When to use?
 
@@ -707,6 +725,8 @@ Use these tools when working in teams to ensure consistent code formatting, when
 Skip these tools for quick prototypes or personal projects where code consistency is not critical. Do not use if your team already has different established tooling or if company policies mandate alternative solutions.
 
 ### Example
+
+Configure Prettier and ESLint for code quality.
 
 ```bash
 npm install -D prettier eslint-config-prettier eslint-plugin-prettier
@@ -773,7 +793,7 @@ npm install -D prettier eslint-config-prettier eslint-plugin-prettier
 
 ## [Next Steps After Setup]()
 
-This section suggests recommended next steps after completing the basic frontend setup, including implementing authentication, creating component library, setting up protected routes, and integrating with backend APIs.
+Recommended next steps after completing the basic frontend setup, including implementing authentication, creating component library, setting up protected routes, and integrating with backend APIs.
 
 ### When to use?
 
@@ -785,7 +805,7 @@ Do not follow these steps if your project has different priorities or requiremen
 
 ### Example
 
-Recommended order:
+Recommended implementation order for next features.
 
 1. **Authentication System**
    - Implement login/logout functionality
@@ -832,7 +852,7 @@ Recommended order:
 
 ## [Migration from Tailwind v3 to v4]()
 
-This section highlights the key differences between Tailwind CSS v3 and v4 for developers migrating from the previous version, focusing on installation changes, configuration syntax, and performance improvements with the native Vite plugin.
+Key differences between Tailwind CSS v3 and v4 for developers migrating from the previous version, focusing on installation changes, configuration syntax, and performance improvements with the native Vite plugin.
 
 ### When to use?
 
@@ -843,6 +863,8 @@ Reference this section when migrating an existing Tailwind v3 project to v4, und
 Do not use this section if you are starting fresh with v4 (refer to main setup instead). Do not migrate to v4 if your project has dependencies incompatible with the new version or if using build tools other than Vite.
 
 ### Example
+
+Compare v3 and v4 approaches for migration.
 
 **v3 Approach:**
 

@@ -1,18 +1,22 @@
-# How to setup the backend from scratch
+# How to Setup Backend from Scratch
 
-Complete guide to configure a NestJS TypeORM backend project from scratch with PostgreSQL database integration, JWT authentication system, path aliases configuration, and all required dependencies for modern backend development.
+Complete guide to configure a NestJS TypeORM backend project from scratch with PostgreSQL database integration, JWT authentication system, path aliases, and all dependencies.
 
-## [Node.js and PostgreSQL Prerequisites Installation]()
+## [Step 1 - Install Node.js and PostgreSQL Prerequisites]()
 
 System requirements and essential tools verification before initializing NestJS backend project including Node.js version 18 or higher installation, PostgreSQL database server setup and running verification, npm or yarn package manager availability, and NestJS CLI global installation for project scaffolding.
 
 ### When to use?
+
 Use this prerequisites check before starting any new NestJS backend project, when setting up development environment on new machine, when onboarding new developers to team requiring local development setup, or when troubleshooting project initialization failures.
 
 ### When NOT to use?
+
 Do not use for Docker-based development where dependencies are containerized, skip for cloud-based development environments with pre-configured tooling, avoid for contributing to existing project where setup is already complete.
 
 ### Example
+
+Verify Node.js, npm, PostgreSQL installation and install NestJS CLI globally for project creation.
 
 **Prerequisites Verification:**
 
@@ -41,6 +45,7 @@ npm install -g @nestjs/cli
 ```
 
 ### Checklist
+
 - [ ] Node.js 18+ installed and verified with `node --version`
 - [ ] npm or yarn package manager available
 - [ ] PostgreSQL 14+ installed and server running
@@ -61,23 +66,28 @@ npm install -g @nestjs/cli
 - **Solution**: Verify npm global bin directory is in PATH, restart terminal, use npx @nestjs/cli instead
 
 ### Best Practices
+
 - Use Node Version Manager (nvm) for managing multiple Node.js versions across projects
 - Install PostgreSQL via official package manager or Docker for consistent environment
 - Keep NestJS CLI updated to latest version for newest features and bug fixes
 - Document specific version requirements in team wiki or README
 - Consider using Docker Compose for PostgreSQL to simplify developer onboarding
 
-## [NestJS Project Initialization with Folder Structure]()
+## [Step 2 - Initialize NestJS Project and Create Folder Structure]()
 
 Complete project creation process using NestJS CLI including running nest new command for backend folder generation, selecting npm or yarn package manager, creating modular folder structure for business logic separation, establishing common shared code organization, and setting up database-related directories for migrations and entities.
 
 ### When to use?
+
 Use NestJS CLI initialization when starting new backend project from scratch, when creating microservice within monorepo architecture, when establishing backend for full-stack application, or when prototyping new API service requiring rapid scaffolding.
 
 ### When NOT to use?
+
 Do not use for contributing to existing NestJS project where structure is established, skip for non-Node.js backend projects, avoid for serverless functions requiring different architecture, and do not use when organization has custom project generator.
 
 ### Example
+
+Create NestJS project and organize modular folder structure for business modules, common code, and database files.
 
 **Create NestJS Project:**
 
@@ -138,6 +148,7 @@ backend/
 - **Module Entities**: `src/modules/[name]/entities/` (feature-specific entities)
 
 ### Checklist
+
 - [ ] Execute `nest new backend` command successfully
 - [ ] Select appropriate package manager (npm recommended)
 - [ ] Verify node_modules and package-lock.json created
@@ -159,6 +170,7 @@ backend/
 - **Solution**: Use npm for consistency with most NestJS documentation, use yarn if team already standardized on it
 
 ### Best Practices
+
 - Follow modular architecture separating business domains into modules folder
 - Centralize common code (decorators, guards, filters) in common folder for reusability
 - Keep migrations separate from entities for clear database versioning
@@ -166,17 +178,21 @@ backend/
 - Document folder structure purpose in README for new team members
 - Maintain flat module structure initially, refactor to nested when complexity increases
 
-## [TypeScript Configuration with Path Aliases]()
+## [Step 3 - Configure TypeScript with Path Aliases]()
 
 TypeScript compiler configuration optimizing for NestJS development including ES2021 target compilation, decorator metadata emission, strict null checks disabled for flexibility, and path alias setup enabling clean imports using @ symbol avoiding relative path complexity.
 
 ### When to use?
+
 Configure path aliases in every NestJS project to simplify imports, when project has deep folder nesting making relative paths cumbersome, when establishing coding standards requiring consistent import patterns, or when improving code readability and maintainability.
 
 ### When NOT to use?
+
 Do not skip path alias configuration as it significantly improves developer experience, avoid complex path mapping schemes confusing developers, skip custom aliases for small projects with flat structure where relative paths are simple.
 
 ### Example
+
+Configure tsconfig.json with path aliases to enable clean imports using @ symbol instead of relative paths.
 
 **Configure tsconfig.json with Path Aliases:**
 
@@ -224,6 +240,7 @@ import { AuthService } from '@/modules/auth/auth.service';
 ```
 
 ### Checklist
+
 - [ ] Add `"baseUrl": "./"` to tsconfig.json compilerOptions
 - [ ] Add `"paths": { "@/*": ["src/*"] }` to compilerOptions
 - [ ] Verify target is set to ES2021 or higher
@@ -244,6 +261,7 @@ import { AuthService } from '@/modules/auth/auth.service';
 - **Solution**: Install tsconfig-paths package, require it in main.ts before bootstrap
 
 ### Best Practices
+
 - Use single @ prefix for all path aliases for consistency across codebase
 - Keep path alias mapping simple, prefer flat structure over complex hierarchies
 - Document path alias usage in README for new developers
@@ -251,17 +269,21 @@ import { AuthService } from '@/modules/auth/auth.service';
 - Add path alias mapping to Jest config for test compatibility
 - Use path aliases consistently across entire codebase, avoid mixing with relative imports
 
-## [Environment Variables Configuration with dotenv]()
+## [Step 4 - Configure Environment Variables with dotenv]()
 
 Environment-based configuration management using dotenv pattern including .env file creation for local development, defining server port database credentials JWT secrets, .gitignore configuration preventing secret commit, and .env.example template for documentation purposes.
 
 ### When to use?
+
 Use environment variables for all configuration varying across environments including database credentials, API keys, JWT secrets, external service URLs, feature flags, or any sensitive data requiring protection from version control.
 
 ### When NOT to use?
+
 Do not use for static configuration that never changes across environments, avoid for non-sensitive public data that can be committed to repository, skip for configuration better suited for database or configuration service.
 
 ### Example
+
+Create .env file with database credentials and JWT secrets, configure .gitignore, and create .env.example template.
 
 **Create .env File:**
 
@@ -322,6 +344,7 @@ Ensure `backend/.gitignore` includes:
 ```
 
 ### Checklist
+
 - [ ] Create .env file in backend root directory
 - [ ] Define PORT for server (3000 default)
 - [ ] Define NODE_ENV for environment (development/production)
@@ -344,6 +367,7 @@ Ensure `backend/.gitignore` includes:
 - **Solution**: Remove from git history using git filter-branch or BFG Repo-Cleaner, rotate all exposed credentials immediately, update .gitignore
 
 ### Best Practices
+
 - Never commit .env files to version control, always add to .gitignore
 - Use strong random values for JWT_SECRET in production (minimum 32 characters)
 - Create separate .env files for development, staging, production with appropriate values
@@ -353,17 +377,21 @@ Ensure `backend/.gitignore` includes:
 - Validate all required environment variables at application startup failing fast if missing
 - Document environment variable purpose and expected format in README
 
-## [Database Connection Configuration with TypeORM]()
+## [Step 5 - Configure Database Connection with TypeORM]()
 
 TypeORM database configuration setup including database.config.ts file creation with ConfigService integration, PostgreSQL connection parameters from environment variables, entities auto-loading pattern, migrations configuration, synchronize disabled for production safety, and DataSource export for CLI operations.
 
 ### When to use?
+
 Configure TypeORM connection for every NestJS project using PostgreSQL database, when setting up database integration for first time, when migrating from different ORM to TypeORM, or when establishing connection for multiple database instances.
 
 ### When NOT to use?
+
 Do not use for NoSQL databases like MongoDB requiring different drivers, skip for projects using raw SQL without ORM, avoid for read-only applications not requiring database write access.
 
 ### Example
+
+Create database.config.ts with TypeORM configuration loading credentials from environment variables and exporting DataSource for CLI.
 
 **Create Database Configuration:**
 
@@ -406,6 +434,7 @@ export const dataSource = new DataSource(dataSourceOptions);
 ```
 
 ### Checklist
+
 - [ ] Create database.config.ts in src/config folder
 - [ ] Import TypeOrmModuleOptions and DataSourceOptions from typeorm
 - [ ] Create getDatabaseConfig function accepting ConfigService parameter
@@ -429,6 +458,7 @@ export const dataSource = new DataSource(dataSourceOptions);
 - **Solution**: Verify dataSource is exported from database.config.ts, check migration scripts reference correct config file path
 
 ### Best Practices
+
 - Always set synchronize to false in production to prevent accidental schema changes
 - Use ConfigService to load database credentials from environment variables
 - Enable logging in development for debugging SQL queries
@@ -438,17 +468,21 @@ export const dataSource = new DataSource(dataSourceOptions);
 - Use connection pooling for production deployments to handle concurrent requests
 - Implement health check endpoint verifying database connectivity
 
-## [Package Dependencies Installation for NestJS Backend]()
+## [Step 6 - Install Package Dependencies for NestJS Backend]()
 
 Comprehensive dependency installation including TypeORM and PostgreSQL driver for database integration, Passport and JWT for authentication system, class-validator and class-transformer for DTO validation, ConfigService for environment management, Swagger for API documentation, and utility libraries like axios and dayjs.
 
 ### When to use?
+
 Install these dependencies immediately after NestJS project creation when setting up production-ready backend, when implementing authentication and database features, when adding API documentation, or when establishing validation and configuration infrastructure.
 
 ### When NOT to use?
+
 Do not install all dependencies if not needed for specific project, skip authentication packages for public read-only APIs, avoid Swagger if not documenting public API, and skip specific packages based on actual project requirements.
 
 ### Example
+
+Install core dependencies for TypeORM, authentication, validation, configuration, documentation, and utilities.
 
 **Install Core Dependencies:**
 
@@ -491,6 +525,7 @@ ls node_modules | head -20
 ```
 
 ### Checklist
+
 - [ ] Install @nestjs/typeorm typeorm pg for database integration
 - [ ] Install @nestjs/passport passport @nestjs/jwt passport-jwt bcrypt for authentication
 - [ ] Install @types/passport-jwt @types/bcrypt as dev dependencies for TypeScript types
@@ -514,6 +549,7 @@ ls node_modules | head -20
 - **Solution**: Install @types packages for libraries missing TypeScript definitions, check DefinitelyTyped repository
 
 ### Best Practices
+
 - Install dependencies incrementally as needed rather than all at once initially
 - Keep package versions compatible with NestJS version to avoid conflicts
 - Use exact versions in package.json for production deployments to prevent unexpected updates
@@ -522,17 +558,21 @@ ls node_modules | head -20
 - Use package-lock.json to ensure consistent installations across environments
 - Consider using npm ci in CI/CD pipelines for deterministic installations
 
-## [Migration Scripts Configuration in package.json]()
+## [Step 7 - Configure Migration Scripts in package.json]()
 
 TypeORM migration command shortcuts setup in package.json scripts section including typeorm CLI wrapper with ts-node and tsconfig-paths, migration generation from entity changes, manual migration creation, migration execution and rollback, and migration status display commands.
 
 ### When to use?
+
 Configure migration scripts in every project using TypeORM for database schema management, when establishing database versioning workflow, when team needs consistent commands for database operations, or when automating deployment pipelines with database migrations.
 
 ### When NOT to use?
+
 Do not use for projects with synchronize enabled in development only, skip for read-only applications not managing database schema, avoid for NoSQL databases not requiring migrations.
 
 ### Example
+
+Add TypeORM migration scripts to package.json enabling generate, create, run, revert, and show commands.
 
 **Add Migration Scripts to package.json:**
 
@@ -576,6 +616,7 @@ npm run migration:show
 ```
 
 ### Checklist
+
 - [ ] Add typeorm base script with ts-node and tsconfig-paths registration
 - [ ] Add migration:generate script for auto-generating migrations from entity changes
 - [ ] Add migration:create script for creating blank migration files
@@ -597,6 +638,7 @@ npm run migration:show
 - **Solution**: Verify entities properly decorated with TypeORM decorators, check database connection is configured correctly
 
 ### Best Practices
+
 - Always use migration:generate to create migrations from entity changes for accuracy
 - Use descriptive migration names following pattern: VerbNounTable (e.g., CreateUsersTable, AddEmailIndexToUsers)
 - Run migration:show before migration:run to verify pending migrations
@@ -606,17 +648,21 @@ npm run migration:show
 - Document migration execution order and dependencies
 - Run migrations as part of deployment pipeline before starting application
 
-## [AppModule Configuration with TypeORM and ConfigModule]()
+## [Step 8 - Configure AppModule with TypeORM and ConfigModule]()
 
 Root module configuration integrating ConfigModule for environment variables globally, TypeORM connection with async factory pattern using database configuration, and preparing module imports array for future business modules enabling centralized application bootstrap.
 
 ### When to use?
+
 Configure AppModule in every NestJS project as central orchestration point, when integrating database connection with environment-based configuration, when establishing global module availability, or when preparing application for modular architecture growth.
 
 ### When NOT to use?
+
 Do not modify AppModule for feature-specific logic belonging in feature modules, avoid placing business logic directly in AppModule, skip complex orchestration better suited for dedicated modules.
 
 ### Example
+
+Configure AppModule with ConfigModule and TypeORM integration using async factory pattern for dynamic configuration.
 
 **Configure AppModule:**
 
@@ -661,6 +707,7 @@ export class AppModule {}
 4. **inject**: Provides ConfigService to factory function for environment variable access
 
 ### Checklist
+
 - [ ] Import ConfigModule and ConfigService from @nestjs/config
 - [ ] Import TypeOrmModule from @nestjs/typeorm
 - [ ] Import getDatabaseConfig from config/database.config
@@ -684,6 +731,7 @@ export class AppModule {}
 - **Solution**: Review module imports ensuring no circular references, use forwardRef if necessary for specific cases
 
 ### Best Practices
+
 - Always set ConfigModule isGlobal to true for environment variable access across all modules
 - Use TypeOrmModule.forRootAsync with factory pattern for dynamic configuration
 - Keep AppModule focused on orchestration, delegate business logic to feature modules
@@ -692,17 +740,21 @@ export class AppModule {}
 - Use ConfigService validation to fail fast if required environment variables missing
 - Consider creating separate configuration modules for complex configurations
 
-## [Next Steps and Related Documentation]()
+## [Next Steps - Complete Backend Setup with Additional Features]()
 
 Recommended follow-up guides for completing backend setup including main.ts configuration with Swagger and validation pipes, user module creation with CRUD operations, authentication system implementation with JWT, and migration execution workflow.
 
 ### When to use?
+
 Reference these next steps after completing basic backend setup when ready to implement features, when training new developers on complete setup workflow, when planning development roadmap for new project, or when troubleshooting by following guides in sequence.
 
 ### When NOT to use?
+
 Do not skip to advanced guides without completing basic setup, avoid following all guides if only subset of features needed, skip guides not applicable to specific project requirements.
 
 ### Example
+
+Follow recommended development workflow progression from basic setup through feature implementation.
 
 **Development Workflow Progression:**
 
@@ -743,6 +795,7 @@ Do not skip to advanced guides without completing basic setup, avoid following a
    - Verify schema changes
 
 ### Checklist
+
 - [ ] Complete basic backend setup with this guide
 - [ ] Proceed to main.ts configuration guide
 - [ ] Implement user module with CRUD operations
@@ -763,6 +816,7 @@ Do not skip to advanced guides without completing basic setup, avoid following a
 - **Solution**: Newer guides take precedence, check last updated date, ask team for clarifications
 
 ### Best Practices
+
 - Follow guides in recommended sequence for smooth development experience
 - Complete each section fully before proceeding to next guide
 - Test application after each major configuration change
@@ -771,17 +825,21 @@ Do not skip to advanced guides without completing basic setup, avoid following a
 - Create project template from completed setup for future projects
 - Maintain guide index documenting when to use each guide
 
-## [References and Official Documentation]()
+## [References - Official Documentation and Related Guides]()
 
 Links to official documentation and related internal guides for NestJS framework, TypeORM database integration, and project-specific implementation patterns supporting comprehensive understanding of backend setup process.
 
 ### When to use?
+
 Reference official documentation when needing detailed explanation beyond this guide, when troubleshooting errors not covered here, when learning advanced features, or when validating configuration against framework recommendations.
 
 ### When NOT to use?
+
 Do not use as primary setup guide always follow this document first, do not assume external documentation reflects project-specific standards, avoid spending excessive time reading docs before attempting setup.
 
 ### Example
+
+Reference essential official documentation and project-specific guides for comprehensive understanding.
 
 **Essential References:**
 
@@ -798,6 +856,7 @@ Do not use as primary setup guide always follow this document first, do not assu
 - [PostgreSQL Documentation](https://www.postgresql.org/docs/) - Database reference
 
 ### Checklist
+
 - [ ] Bookmark NestJS documentation for framework reference
 - [ ] Review TypeORM documentation for entity and migration patterns
 - [ ] Read project-specific guides for implementation standards
@@ -816,6 +875,7 @@ Do not use as primary setup guide always follow this document first, do not assu
 - **Solution**: Ensure reading docs matching installed NestJS and TypeORM versions from package.json
 
 ### Best Practices
+
 - Keep reference links updated with latest documentation versions
 - Contribute improvements to official docs when discovering issues
 - Share helpful documentation sections with team during code review

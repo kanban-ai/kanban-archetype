@@ -2,7 +2,7 @@
 
 Complete guide to configure and create unit tests exclusively for Use-Case classes using Jest, mocking all external dependencies for isolated execution.
 
-## [Jest Initial Setup and Configuration]()
+## [Jest Initial Setup and Configuration for NestJS Backend]()
 
 This section covers the complete installation and configuration of Jest testing framework for NestJS backend applications, including TypeScript support, coverage collection for use-case files, and integration with the project structure.
 
@@ -15,6 +15,8 @@ Use this Jest setup when starting a new backend project that requires unit testi
 Do not use this configuration if the project already has a different testing framework established. Do not apply to integration or e2e tests which require different configuration. Do not use for testing repositories or controllers which should not have unit tests.
 
 ### Example
+
+Installation command for testing dependencies:
 
 ```bash
 # Install dependencies
@@ -85,7 +87,7 @@ module.exports = {
 - Use test:watch during development for fast feedback
 - Run test:cov before commits to verify coverage targets
 
-## [Use-Case Testing Principles and Philosophy]()
+## [Use-Case Testing Principles - Isolated Execution with Mocked Dependencies]()
 
 This section establishes the fundamental principles for testing use-cases, emphasizing isolated execution with mocked dependencies, focus on business logic validation, and the Arrange-Act-Assert pattern for clear and maintainable test organization.
 
@@ -149,7 +151,7 @@ it('should calculate balance correctly', async () => {
 - Organize tests in describe blocks by method being tested
 - Aim for 100% coverage on use-case files
 
-## [Use-Case Test File Structure and Location]()
+## [Use-Case Test File Structure - Naming and Location Conventions]()
 
 This section defines the mandatory file naming conventions and folder organization for test files, ensuring tests are located next to their corresponding use-case files for easy discovery and maintenance.
 
@@ -204,7 +206,7 @@ src/
 - One test file per use-case for maintainability
 - Keep test files focused on single use-case class
 
-## [Basic Use-Case Test Template and Structure]()
+## [Basic Use-Case Test Template with NestJS Testing Module]()
 
 This section provides a complete template for creating use-case tests with proper setup, teardown, mock configuration, and test organization that can be copied and adapted for any use-case testing scenario.
 
@@ -314,7 +316,7 @@ describe('NameOfUseCase', () => {
 - Test both success and error scenarios
 - Use descriptive test names explaining the scenario
 
-## [Mocking Multiple Dependencies in Use-Cases]()
+## [Mocking Multiple Dependencies - Repositories, HttpService, and ConfigService]()
 
 This section demonstrates how to mock multiple dependencies including repositories, external services like HttpService, ConfigService, and other injected dependencies to achieve complete isolation in use-case tests.
 
@@ -444,7 +446,7 @@ describe('StockQuoteUseCase', () => {
 - Keep mock configuration consistent across tests
 - Use separate describe blocks for testing different dependency interactions
 
-## [Testing Exception Handling and Error Scenarios]()
+## [Testing Exception Handling - Validation, Business Rules, and Error Scenarios]()
 
 This section covers comprehensive techniques for testing error conditions, exception throwing, validation failures, and error propagation in use-cases to ensure robust error handling throughout the application.
 
@@ -525,7 +527,7 @@ describe('error handling', () => {
 - Use descriptive test names explaining the error scenario
 - Group error tests in dedicated describe block
 
-## [Testing with Date and Time Manipulation]()
+## [Testing with Date and Time - Using Jest Fake Timers]()
 
 This section demonstrates how to test use-cases that depend on current time or date calculations using Jest's fake timers to ensure consistent and reliable test results regardless of when tests are executed.
 
@@ -606,7 +608,7 @@ describe('date operations', () => {
 - Use ISO 8601 format for date strings
 - Test edge cases like month boundaries, leap years if relevant
 
-## [Code Coverage Requirements and Configuration]()
+## [Code Coverage Requirements - 100% Coverage for Use-Case Business Logic]()
 
 This section defines coverage requirements for use-cases, explains how to run coverage reports, configure coverage thresholds, and interpret coverage metrics to maintain high-quality business logic testing.
 
@@ -674,7 +676,7 @@ payment.usecase     |      95 |       90 |     100 |      95
 - Use coverage as guide but focus on meaningful tests
 - Include coverage checks in CI/CD pipeline
 
-## [Complete Practical Example with Financial Rules]()
+## [Complete Practical Example - Financial Rules Use-Case Testing]()
 
 This section provides a comprehensive real-world example testing a financial rules use-case with multiple methods, complex business logic, interdependent calculations, and various test scenarios demonstrating all testing techniques.
 
@@ -812,7 +814,7 @@ describe('FinancialRulesUseCase', () => {
 - Test both positive and negative scenarios
 - Verify repository methods are called with correct parameters
 
-## [Useful Jest Commands and Workflows]()
+## [Useful Jest Commands and Workflows for Daily Development]()
 
 This section lists essential Jest commands for running tests in different modes, debugging test failures, filtering specific tests, and integrating testing into development workflow for efficient test-driven development.
 
@@ -882,7 +884,7 @@ npm test -- --verbose
 - Debug failing tests instead of adding console.logs
 - Run all tests before committing to ensure no regressions
 
-## [Common Testing Errors and Solutions]()
+## [Common Testing Errors and Solutions for Faster Troubleshooting]()
 
 This section provides solutions to frequently encountered testing errors including module resolution issues, dependency injection problems, mock configuration errors, and test isolation failures for faster troubleshooting.
 
@@ -967,7 +969,7 @@ jest.spyOn(useCase, 'methodName');
 - Check that all async operations use await
 - Ensure test isolation with proper beforeEach/afterEach
 
-## [References and Related Documentation]()
+## [References and Related Documentation for Comprehensive Understanding]()
 
 This section provides links to official documentation, related project rules for use-case implementation, backend patterns, and additional testing resources for comprehensive understanding of the testing ecosystem.
 

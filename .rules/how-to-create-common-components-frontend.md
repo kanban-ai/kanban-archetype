@@ -1,6 +1,6 @@
 # How to Create Common Components in Frontend
 
-Comprehensive guide to creating reusable React components with TypeScript and Tailwind CSS following component composition patterns, type safety principles, and project styling conventions.
+Comprehensive guide to creating reusable React components with TypeScript and Tailwind CSS following component composition patterns, type safety principles, and project conventions.
 
 ## [React Common Component Design Principles]()
 
@@ -8,11 +8,11 @@ Common components serve as foundational UI building blocks that work across diff
 
 ### When to use?
 
-Create common components for UI elements used in multiple places across the application such as buttons, inputs, modals, cards, and other interface primitives. Common components provide consistency in design, behavior, and accessibility while reducing code duplication.
+Create common components for UI elements used in multiple places across the application such as buttons, inputs, modals, cards, and other interface primitives. Common components provide consistency in design, behavior, and accessibility while reducing code duplication and improving maintainability.
 
 ### When NOT to use?
 
-Avoid creating common components for feature-specific or domain-specific UI that only appears in one context. Don't over-abstract components that are unlikely to be reused. Simple one-off elements should remain inline in their parent components.
+Avoid creating common components for feature-specific or domain-specific UI that only appears in one context. Don't over-abstract components that are unlikely to be reused. Simple one-off elements should remain inline in their parent components to reduce unnecessary abstraction layers.
 
 ### Example
 
@@ -49,11 +49,11 @@ src/components/common/
 
 ### Troubleshooting
 
-**Component too coupled to context**: Extract context-specific logic into parent components and pass data via props.
+**Component too coupled to context**: Extract context-specific logic into parent components and pass data via props to maintain reusability.
 
-**TypeScript errors with props**: Ensure interface extends appropriate HTML element attributes when wrapping native elements.
+**TypeScript errors with props**: Ensure interface extends appropriate HTML element attributes when wrapping native elements for proper type inheritance.
 
-**Styling conflicts**: Use Tailwind utility classes and allow className override for component customization.
+**Styling conflicts**: Use Tailwind utility classes and allow className override for component customization while maintaining base styles.
 
 ### Best Practices
 
@@ -64,7 +64,7 @@ src/components/common/
 - Document complex props with JSDoc comments
 - Test components in isolation with various prop combinations
 
-## [Button Component Implementation]()
+## [Button Component - Reusable Action Element with Variants]()
 
 Configurable button component with variant styles (primary, secondary, danger), size options (sm, md, lg), loading state support, and full TypeScript typing extending native HTML button attributes for comprehensive customization and type safety.
 
@@ -74,7 +74,7 @@ Use Button component for all clickable actions throughout the application includ
 
 ### When NOT to use?
 
-Don't use Button for navigation links that should be anchor tags for SEO and accessibility. Avoid using Button when a native HTML button with minimal styling is more appropriate or when building specialized button variants.
+Don't use Button for navigation links that should be anchor tags for SEO and accessibility. Avoid using Button when a native HTML button with minimal styling is more appropriate or when building specialized button variants with significantly different behavior.
 
 ### Example
 
@@ -142,11 +142,11 @@ export function Button({
 
 ### Troubleshooting
 
-**onClick not firing**: Check if loading or disabled state is preventing interaction.
+**onClick not firing**: Check if loading or disabled state is preventing interaction. Verify button is not inside a form preventing default behavior.
 
-**Styles not applying**: Verify Tailwind classes are valid and className concatenation includes spaces.
+**Styles not applying**: Verify Tailwind classes are valid and className concatenation includes spaces. Check for CSS specificity conflicts.
 
-**TypeScript errors**: Ensure component extends ButtonHTMLAttributes and all native props are spread.
+**TypeScript errors**: Ensure component extends ButtonHTMLAttributes and all native props are spread correctly to underlying button element.
 
 ### Best Practices
 
@@ -157,17 +157,17 @@ export function Button({
 - Use transition classes for smooth hover effects
 - Handle disabled state with visual and cursor feedback
 
-## [Modal Component Implementation]()
+## [Modal Component - Dialog Overlay with Header, Body, Footer]()
 
-Full-featured modal dialog component with overlay backdrop, header section, scrollable body content, optional footer area, and close functionality providing flexible container for forms, confirmations, and detailed content display.
+Full-featured modal dialog component with overlay backdrop, header section, scrollable body content, optional footer area, and close functionality providing flexible container for forms, confirmations, and detailed content display with proper focus management.
 
 ### When to use?
 
-Use Modal for focused user interactions requiring attention such as confirmations, forms, detailed views, or any content that should temporarily overlay the main interface while maintaining context and providing escape mechanisms.
+Use Modal for focused user interactions requiring attention such as confirmations, forms, detailed views, or any content that should temporarily overlay the main interface while maintaining context and providing clear escape mechanisms for user control.
 
 ### When NOT to use?
 
-Avoid Modal for simple tooltips, dropdowns, or content that should remain accessible while viewing other parts of the interface. Don't use for critical blocking operations without clear escape paths.
+Avoid Modal for simple tooltips, dropdowns, or content that should remain accessible while viewing other parts of the interface. Don't use for critical blocking operations without clear escape paths that might frustrate users.
 
 ### Example
 
@@ -254,11 +254,11 @@ const [isOpen, setIsOpen] = useState(false);
 
 ### Troubleshooting
 
-**Modal not closing**: Verify onClose callback is properly wired to state setter.
+**Modal not closing**: Verify onClose callback is properly wired to state setter. Check for event propagation issues preventing overlay clicks.
 
-**Content overflow issues**: Check max-h and overflow-auto classes are applied to modal container.
+**Content overflow issues**: Check max-h and overflow-auto classes are applied to modal container. Verify content doesn't have fixed heights preventing scrolling.
 
-**Modal behind other content**: Ensure z-50 or higher z-index and verify no parent elements have stacking context issues.
+**Modal behind other content**: Ensure z-50 or higher z-index and verify no parent elements have stacking context issues. Check for conflicting z-index values.
 
 ### Best Practices
 
@@ -269,7 +269,7 @@ const [isOpen, setIsOpen] = useState(false);
 - Use overflow-auto for scrollable content when needed
 - Include semantic ARIA labels for accessibility
 
-## [Form Input Component Implementation]()
+## [Form Input Component - Text Field with Label and Validation]()
 
 Versatile input field component with integrated label, error message display, focus states, and validation feedback extending native HTML input attributes while providing consistent styling and user experience across all forms.
 
@@ -279,7 +279,7 @@ Use Input component for all text-based form fields including text, email, passwo
 
 ### When NOT to use?
 
-Avoid Input for textarea, select, checkbox, or radio inputs which require specialized components. Don't use when building custom input types with significantly different interaction patterns or visual requirements.
+Avoid Input for textarea, select, checkbox, or radio inputs which require specialized components with different interaction patterns. Don't use when building custom input types with significantly different visual requirements or behavior.
 
 ### Example
 
@@ -347,11 +347,11 @@ Input.displayName = 'Input';
 
 ### Troubleshooting
 
-**Ref not working with form libraries**: Ensure forwardRef is implemented and ref parameter is passed to input element.
+**Ref not working with form libraries**: Ensure forwardRef is implemented and ref parameter is passed to input element. Verify form library is compatible.
 
-**Label not associated**: Consider using htmlFor attribute if label needs explicit association with input id.
+**Label not associated**: Consider using htmlFor attribute if label needs explicit association with input id for improved accessibility.
 
-**Error styles not showing**: Verify error prop is being passed and className concatenation includes proper spacing.
+**Error styles not showing**: Verify error prop is being passed and className concatenation includes proper spacing. Check Tailwind configuration includes error colors.
 
 ### Best Practices
 
@@ -362,7 +362,7 @@ Input.displayName = 'Input';
 - Set displayName for better debugging in React DevTools
 - Allow className override for custom styling needs
 
-## [Select Dropdown Component Implementation]()
+## [Select Dropdown Component - Choice Input with Options]()
 
 Dropdown selection component with label support, error display, dynamic option rendering from array, and full native select element functionality providing consistent styling and user experience for choice-based inputs.
 
@@ -372,7 +372,7 @@ Use Select component for dropdown choice inputs where users select from predefin
 
 ### When NOT to use?
 
-Avoid Select for large option lists where search/autocomplete is needed, multi-select scenarios, or when building custom dropdown UI with advanced features like icons, images, or complex option rendering.
+Avoid Select for large option lists where search/autocomplete is needed, multi-select scenarios, or when building custom dropdown UI with advanced features like icons, images, or complex option rendering requiring custom components.
 
 ### Example
 
@@ -449,11 +449,11 @@ export function Select({ label, error, options, className = '', ...props }: Sele
 
 ### Troubleshooting
 
-**Wrong value selected**: Ensure option values match the format expected by controlled state (string vs number).
+**Wrong value selected**: Ensure option values match the format expected by controlled state (string vs number). Verify type consistency between state and options.
 
-**Missing options**: Verify options array is populated before rendering and map function has proper key.
+**Missing options**: Verify options array is populated before rendering and map function has proper key. Check for undefined or null values.
 
-**Styling inconsistencies**: Ensure Select uses same base classes as Input component for visual consistency.
+**Styling inconsistencies**: Ensure Select uses same base classes as Input component for visual consistency across form elements.
 
 ### Best Practices
 
@@ -464,17 +464,17 @@ export function Select({ label, error, options, className = '', ...props }: Sele
 - Include empty/placeholder option when appropriate
 - Handle empty options array gracefully
 
-## [Card Container Component Implementation]()
+## [Card Container Component - Bordered Content Container]()
 
-Versatile card container component with optional header, scrollable body content, and footer section providing consistent bordered, shadowed containers for grouping related content and creating visual hierarchy.
+Versatile card container component with optional header, scrollable body content, and footer section providing consistent bordered, shadowed containers for grouping related content and creating visual hierarchy throughout the application.
 
 ### When to use?
 
-Use Card component to group related content, create visual containers, display summaries, organize dashboard widgets, or wrap forms providing clear visual boundaries and consistent styling for content sections.
+Use Card component to group related content, create visual containers, display summaries, organize dashboard widgets, or wrap forms providing clear visual boundaries and consistent styling for content sections that need visual separation.
 
 ### When NOT to use?
 
-Avoid Card for simple div wrappers without visual distinction needs, full-page layouts, or when simpler container elements are sufficient without the visual weight of borders and shadows.
+Avoid Card for simple div wrappers without visual distinction needs, full-page layouts, or when simpler container elements are sufficient without the visual weight of borders and shadows that might create unnecessary visual complexity.
 
 ### Example
 
@@ -532,11 +532,11 @@ export function Card({ title, children, className = '', footer }: CardProps) {
 
 ### Troubleshooting
 
-**Card not visible**: Ensure parent container has appropriate background color to contrast with white card background.
+**Card not visible**: Ensure parent container has appropriate background color to contrast with white card background. Check for z-index or opacity issues.
 
-**Content overflow**: Add overflow handling classes to card or content sections as needed.
+**Content overflow**: Add overflow handling classes to card or content sections as needed. Verify content width doesn't exceed card boundaries.
 
-**Spacing issues**: Verify padding classes are consistent and not overridden by custom className.
+**Spacing issues**: Verify padding classes are consistent and not overridden by custom className. Check for margin collapse issues.
 
 ### Best Practices
 
@@ -547,17 +547,17 @@ export function Card({ title, children, className = '', footer }: CardProps) {
 - Maintain consistent padding throughout sections
 - Use semantic HTML structure within card content
 
-## [Loading Spinner Component Implementation]()
+## [Loading Spinner Component - Animated Progress Indicator]()
 
-Animated loading indicator component with configurable sizes (sm, md, lg) using CSS animations and Tailwind utilities providing visual feedback during asynchronous operations and data loading states.
+Animated loading indicator component with configurable sizes (sm, md, lg) using CSS animations and Tailwind utilities providing visual feedback during asynchronous operations and data loading states with proper accessibility labels.
 
 ### When to use?
 
-Use Spinner component to indicate loading states during data fetching, form submission, page transitions, or any asynchronous operation where users should wait for completion providing clear visual feedback that prevents confusion.
+Use Spinner component to indicate loading states during data fetching, form submission, page transitions, or any asynchronous operation where users should wait for completion providing clear visual feedback that prevents confusion and improves user experience.
 
 ### When NOT to use?
 
-Avoid Spinner for very fast operations (under 200ms) where loading indicator would flash, or when more specific progress indicators like progress bars are more appropriate for long-running operations.
+Avoid Spinner for very fast operations (under 200ms) where loading indicator would flash creating visual noise, or when more specific progress indicators like progress bars are more appropriate for long-running operations with measurable progress.
 
 ### Example
 
@@ -607,11 +607,11 @@ export function Spinner({ size = 'md', className = '' }: SpinnerProps) {
 
 ### Troubleshooting
 
-**Animation not working**: Verify Tailwind CSS is configured and animate-spin utility is available.
+**Animation not working**: Verify Tailwind CSS is configured and animate-spin utility is available. Check for conflicting CSS animations.
 
-**Size not matching context**: Use appropriate size variant or custom className for specific use cases.
+**Size not matching context**: Use appropriate size variant or custom className for specific use cases. Verify border width scales with size.
 
-**Screen readers not announcing**: Ensure role="status" and aria-label are present.
+**Screen readers not announcing**: Ensure role="status" and aria-label are present. Verify sr-only class hides text visually but keeps it accessible.
 
 ### Best Practices
 
@@ -622,17 +622,17 @@ export function Spinner({ size = 'md', className = '' }: SpinnerProps) {
 - Combine with Button component for loading button states
 - Consider skeleton loaders for content-heavy loading states
 
-## [Alert Message Component Implementation]()
+## [Alert Message Component - User Feedback Notifications]()
 
-Dismissible alert component with type variants (success, error, warning, info) providing color-coded user feedback messages with optional close functionality for confirmations, errors, warnings, and informational notices.
+Dismissible alert component with type variants (success, error, warning, info) providing color-coded user feedback messages with optional close functionality for confirmations, errors, warnings, and informational notices ensuring consistent messaging.
 
 ### When to use?
 
-Use Alert component to display user feedback messages including success confirmations, error notifications, warnings about actions, or informational notices ensuring consistent styling and behavior across all feedback scenarios.
+Use Alert component to display user feedback messages including success confirmations, error notifications, warnings about actions, or informational notices ensuring consistent styling and behavior across all feedback scenarios throughout the application.
 
 ### When NOT to use?
 
-Avoid Alert for validation errors that should appear inline with form fields, toast notifications that should auto-dismiss, or critical blocking errors that require modal dialog treatment.
+Avoid Alert for validation errors that should appear inline with form fields, toast notifications that should auto-dismiss and float above content, or critical blocking errors that require modal dialog treatment for user acknowledgment.
 
 ### Example
 
@@ -686,11 +686,11 @@ export function Alert({ type, message, onClose }: AlertProps) {
 
 ### Troubleshooting
 
-**Colors not showing**: Verify Tailwind safelist includes all alert color variants or they're used elsewhere.
+**Colors not showing**: Verify Tailwind safelist includes all alert color variants or they're used elsewhere. Check for PurgeCSS configuration issues.
 
-**Close button not aligned**: Ensure flex layout and items-start alignment are applied to parent div.
+**Close button not aligned**: Ensure flex layout and items-start alignment are applied to parent div. Verify flex-shrink-0 on close button.
 
-**Alert not dismissing**: Check onClose callback is properly wired to state management.
+**Alert not dismissing**: Check onClose callback is properly wired to state management. Verify button onClick handler is firing.
 
 ### Best Practices
 
@@ -701,17 +701,17 @@ export function Alert({ type, message, onClose }: AlertProps) {
 - Consider auto-dismiss timeout for success messages
 - Use error type for validation and operation failures
 
-## [Badge Label Component Implementation]()
+## [Badge Label Component - Inline Status Indicator]()
 
-Small inline label component with color variants (default, success, danger, warning) for displaying status indicators, tags, counts, and category labels with consistent sizing and color-coded meaning.
+Small inline label component with color variants (default, success, danger, warning) for displaying status indicators, tags, counts, and category labels with consistent sizing and color-coded meaning throughout the application.
 
 ### When to use?
 
-Use Badge component for status indicators, tags, counts, labels, or any small inline text that needs visual distinction and color-coded meaning such as active/inactive status, notification counts, or category labels.
+Use Badge component for status indicators, tags, counts, labels, or any small inline text that needs visual distinction and color-coded meaning such as active/inactive status, notification counts, or category labels providing quick visual recognition.
 
 ### When NOT to use?
 
-Avoid Badge for large text blocks, primary navigation elements, or when full Button component is more appropriate for interactive elements. Don't overuse badges as they can create visual clutter.
+Avoid Badge for large text blocks, primary navigation elements, or when full Button component is more appropriate for interactive elements. Don't overuse badges as they can create visual clutter and diminish their effectiveness.
 
 ### Example
 
@@ -755,11 +755,11 @@ export function Badge({ children, variant = 'default' }: BadgeProps) {
 
 ### Troubleshooting
 
-**Badge too large**: Verify text-xs class is applied and padding is minimal.
+**Badge too large**: Verify text-xs class is applied and padding is minimal. Check for inherited font-size overrides.
 
-**Colors not distinct**: Ensure sufficient contrast between background and text colors.
+**Colors not distinct**: Ensure sufficient contrast between background and text colors. Test with color blindness simulators.
 
-**Layout breaks**: Check parent container can accommodate inline-block elements.
+**Layout breaks**: Check parent container can accommodate inline-block elements. Verify no width constraints causing wrapping issues.
 
 ### Best Practices
 
@@ -770,17 +770,17 @@ export function Badge({ children, variant = 'default' }: BadgeProps) {
 - Pair badges with descriptive text for accessibility
 - Don't rely solely on color to convey meaning
 
-## [Component Organization and Export Strategy]()
+## [Component Organization and Barrel Export Strategy]()
 
 Centralized component organization with barrel export pattern enabling clean imports throughout application while maintaining clear file structure and reducing import statement complexity for common components.
 
 ### When to use?
 
-Organize all common components in dedicated directory with barrel export file enabling simplified imports throughout application. This pattern should be used for all shared UI components accessed across multiple features.
+Organize all common components in dedicated directory with barrel export file enabling simplified imports throughout application. This pattern should be used for all shared UI components accessed across multiple features and pages.
 
 ### When NOT to use?
 
-Avoid barrel exports for very large component libraries where tree-shaking may be impacted. Don't use for feature-specific components that should remain in their feature directories.
+Avoid barrel exports for very large component libraries where tree-shaking may be impacted negatively. Don't use for feature-specific components that should remain in their feature directories maintaining proper code organization.
 
 ### Example
 
@@ -832,11 +832,11 @@ import { Modal } from '@/components/common/Modal';
 
 ### Troubleshooting
 
-**Import path not resolving**: Verify tsconfig.json includes path alias for @/components.
+**Import path not resolving**: Verify tsconfig.json includes path alias for @/components. Check bundler configuration supports path aliases.
 
-**Components not found**: Check barrel export file includes all component exports.
+**Components not found**: Check barrel export file includes all component exports. Verify file names match exactly.
 
-**Circular dependency warnings**: Ensure components don't import each other creating circular references.
+**Circular dependency warnings**: Ensure components don't import each other creating circular references. Refactor shared logic into separate utilities.
 
 ### Best Practices
 
@@ -857,7 +857,7 @@ Apply these TypeScript patterns to all common components ensuring type safety, a
 
 ### When NOT to use?
 
-These patterns are universally applicable to all common components. However, overly complex generic types should be avoided when simpler interfaces suffice.
+These patterns are universally applicable to all common components. However, overly complex generic types should be avoided when simpler interfaces suffice to maintain code readability and reduce cognitive overhead.
 
 ### Example
 
@@ -938,11 +938,11 @@ interface ButtonProps {
 
 ### Troubleshooting
 
-**Type errors with native props**: Ensure interface extends correct HTMLAttributes type for element being wrapped.
+**Type errors with native props**: Ensure interface extends correct HTMLAttributes type for element being wrapped. Verify TypeScript version compatibility.
 
-**Ref not working**: Verify forwardRef is implemented and ref is passed to underlying DOM element.
+**Ref not working**: Verify forwardRef is implemented and ref is passed to underlying DOM element. Check form library compatibility.
 
-**Autocomplete not showing**: Check TypeScript server is running and prop types are properly exported.
+**Autocomplete not showing**: Check TypeScript server is running and prop types are properly exported. Restart IDE if necessary.
 
 ### Best Practices
 
@@ -957,6 +957,8 @@ interface ButtonProps {
 ## [Common Components Implementation Checklist]()
 
 Comprehensive verification checklist ensuring all common component implementations follow established patterns for type safety, styling consistency, accessibility, reusability, and project conventions.
+
+### Checklist
 
 - [ ] Component accepts className prop for customization
 - [ ] Props fully typed with TypeScript interfaces

@@ -2,7 +2,7 @@
 
 Step-by-step guide to create a complete REST API in NestJS with TypeORM entities, DTOs, services, controllers, and migrations following project standards.
 
-## [NestJS Resource Generation with CLI]()
+## [Step 1 - Generate Resource with NestJS CLI]()
 
 Using NestJS CLI to automatically generate complete module structure including controllers, services, entities, and DTOs saves development time and ensures framework convention compliance across the codebase.
 
@@ -16,8 +16,10 @@ Avoid using CLI generation when creating custom architectures that deviate from 
 
 ### Example
 
+Generate a new NestJS resource with CLI for complete CRUD scaffolding.
+
 ```bash
-cd back
+cd backend
 nest g resource module-name
 ```
 
@@ -65,7 +67,7 @@ src/modules/module-name/
 - Remove unused files if certain operations aren't needed
 - Follow single responsibility principle when naming modules
 
-## [TypeORM Entity Definition as Data Model]()
+## [Step 2 - Define TypeORM Entity as Data Model]()
 
 TypeORM entities define database table structure through TypeScript decorators, specifying columns, data types, relationships, and constraints while providing type-safe database access and automatic schema synchronization capabilities.
 
@@ -78,6 +80,8 @@ Create TypeORM entities when defining new database tables or modifying existing 
 Avoid creating entities for temporary data structures, API response objects, view models, or database views that don't represent persistent tables. Use DTOs for API data transfer and interfaces for non-persistent type definitions.
 
 ### Example
+
+Define entity structure with columns, types, and relationships for database mapping.
 
 **File**: `entities/module-name.entity.ts`
 
@@ -134,7 +138,7 @@ export class ModuleName extends SuperEntity {
 - Use appropriate data types matching database capabilities
 - Document complex relationships with inline comments
 
-## [Data Transfer Objects with Validation]()
+## [Step 3 - Create Data Transfer Objects with Validation]()
 
 DTOs define API request/response structure with class-validator decorators ensuring data integrity through automatic validation. They separate external API contracts from internal entity representations protecting database models from direct exposure.
 
@@ -147,6 +151,8 @@ Create DTOs for all API endpoints accepting user input to validate data format, 
 Skip DTOs for internal service-to-service communication, database query results, or when response data exactly matches entity structure without transformation. Don't create DTOs for GET endpoints that simply return entity data without modification.
 
 ### Example
+
+Build validated DTOs with decorators for request body validation and API documentation.
 
 **Create DTO** (`dto/create-module-name.dto.ts`):
 
@@ -220,7 +226,7 @@ export class UpdateModuleNameDto extends PartialType(CreateModuleNameDto) {}
 - Use PartialType for update DTOs to inherit validations
 - Validate nested objects with @ValidateNested and @Type decorators
 
-## [Service Implementation with Business Logic]()
+## [Step 4 - Implement Service with Business Logic]()
 
 Services contain business logic, CRUD operations, and data access orchestration using injected TypeORM repositories. They implement security through user isolation, handle exceptions appropriately, and return processed data to controllers.
 
@@ -233,6 +239,8 @@ Implement services for all business logic, data manipulation, and database opera
 Avoid putting HTTP-specific logic, request/response transformation, or authentication/authorization logic in services. These concerns belong in controllers, guards, or interceptors. Don't create services for simple data pass-through without business logic.
 
 ### Example
+
+Develop service layer with CRUD operations, repository injection, and user isolation logic.
 
 **File**: `module-name.service.ts`
 
@@ -320,7 +328,7 @@ export class ModuleNameService {
 - Use TypeORM's built-in methods (find, findOne, save) for standard operations
 - Implement pagination for list operations handling large datasets
 
-## [Controller with Versioned REST Endpoints]()
+## [Step 5 - Create Controller with Versioned REST Endpoints]()
 
 Controllers define HTTP route handlers with versioning, Swagger documentation, and request/response transformation. They delegate business logic to services while handling HTTP-specific concerns like status codes, parameter parsing, and authentication context access.
 
@@ -333,6 +341,8 @@ Create controllers for every module exposing REST API endpoints. Controllers sho
 Don't put business logic, database access, or complex calculations in controllers. Avoid creating controllers for internal modules, background jobs, or event handlers that don't require HTTP endpoints. Use services or specialized handlers instead.
 
 ### Example
+
+Build HTTP route handlers with versioning, Swagger docs, and service delegation.
 
 **File**: `module-name.controller.ts`
 
@@ -426,7 +436,7 @@ export class ModuleNameController {
 - Always use versioning from the start: version: '1'
 - Document all possible response status codes
 
-## [NestJS Module Configuration and Registration]()
+## [Step 6 - Configure NestJS Module and Registration]()
 
 NestJS modules organize application structure by grouping related controllers, services, and dependencies. Module registration with TypeORM establishes repository availability and enables dependency injection throughout the module scope while exports allow cross-module service sharing.
 
@@ -439,6 +449,8 @@ Configure modules when creating new features or organizing related functionality
 Avoid creating modules for single utilities, helpers, or when functionality naturally fits into an existing module. Don't over-modularize by creating too many small modules that increase complexity without providing organizational benefits.
 
 ### Example
+
+Register entities, controllers, and services in module for dependency injection setup.
 
 **File**: `module-name.module.ts`
 
@@ -500,7 +512,7 @@ export class AppModule {}
 - Use feature modules to organize domain-specific functionality
 - Import shared modules when needed for cross-cutting concerns
 
-## [Database Migration Creation for Schema Changes]()
+## [Step 7 - Create Database Migration for Schema Changes]()
 
 TypeORM migrations provide version-controlled database schema evolution using pure SQL. They ensure consistent schema across environments, enable rollback capabilities, and maintain change history while supporting automated deployment and team synchronization through sequential timestamped files.
 
@@ -513,6 +525,8 @@ Create migrations for all database schema changes including new tables, column m
 Avoid migrations for temporary development changes, data seeding that varies by environment, or experimental schema modifications during early prototyping. Don't use migrations for data-only updates that should be handled by application logic or separate data scripts.
 
 ### Example
+
+Generate migration file, write SQL schema changes, and execute migration to database.
 
 ```bash
 npm run typeorm -- migration:create src/database/migrations/CreateModuleNameTable
@@ -591,7 +605,7 @@ npm run typeorm -- migration:run
 - One responsibility per migration file
 - Document complex migrations with comments
 
-## [API Testing with Swagger and HTTP Tools]()
+## [Step 8 - Test API with Swagger and HTTP Tools]()
 
 Testing REST APIs using Swagger UI interactive documentation or command-line curl requests validates endpoint functionality, authentication, request/response formats, and error handling ensuring API contracts are correctly implemented and documented.
 
@@ -604,6 +618,8 @@ Test APIs after implementation, before deployment, and when debugging issues. Us
 Don't rely solely on manual testing for production validation. Supplement with automated unit tests, integration tests, and end-to-end tests. Avoid using production databases for testing to prevent data corruption or accidental operations.
 
 ### Example
+
+Validate endpoints using Swagger UI interface and curl commands for all CRUD operations.
 
 **Via Swagger UI**:
 
@@ -669,21 +685,21 @@ curl -X DELETE http://localhost:3000/api/v1/module-name/1 \
 - Validate response data types match API documentation
 - Test pagination, filtering, and sorting when implemented
 
-## [Advanced REST API Features]()
+## [Advanced Feature - Implement Pagination for Large Datasets]()
 
-Advanced API functionality including pagination for large datasets, filtering and search capabilities, and relationship loading strategies enhance API usability, performance, and flexibility while maintaining consistent patterns and efficient database queries.
+Pagination divides large result sets into manageable pages improving API performance and user experience. Implementation includes skip/take logic, metadata response with total count, page number, and total pages calculation for client-side pagination controls.
 
 ### When to use?
 
-Implement pagination when endpoints return large datasets to improve performance and user experience. Add filtering and search when users need to narrow results by specific criteria. Include relationship loading when frontend needs related entity data to avoid multiple requests.
+Implement pagination when endpoints return large datasets to improve performance and user experience. Essential for list operations that could return hundreds or thousands of records preventing memory issues and slow response times.
 
 ### When NOT to use?
 
-Skip pagination for endpoints that always return small result sets (under 50 items). Avoid complex filtering for simple use cases where standard queries suffice. Don't eager load relationships when related data isn't needed to reduce query overhead and response size.
+Skip pagination for endpoints that always return small result sets (under 50 items). Avoid for single resource endpoints (GET by ID) or when the business logic requires returning all items at once.
 
 ### Example
 
-**Pagination**:
+Add pagination logic with page and pageSize parameters returning metadata with results.
 
 ```typescript
 // Service
@@ -715,7 +731,47 @@ findAll(
 }
 ```
 
-**Filters and Search**:
+### Checklist
+
+- [ ] Pagination returns metadata (total, page, totalPages)
+- [ ] Default page size set to reasonable value
+- [ ] Page and pageSize parameters validated
+- [ ] Skip and take calculations correct
+- [ ] Query performance tested with large datasets
+- [ ] API documentation includes pagination parameters
+
+### Troubleshooting
+
+**Poor pagination performance**: Add database indexes on sorting columns and ensure proper query optimization.
+
+**Incorrect page count**: Verify totalPages calculation uses Math.ceil for proper rounding of division result.
+
+**Negative page numbers**: Add validation to ensure page is at least 1 and pageSize is within acceptable range.
+
+### Best Practices
+
+- Return pagination metadata for client-side pagination controls
+- Provide sensible defaults for page size (10-25 items)
+- Validate page and pageSize parameters to prevent abuse
+- Add indexes on columns used for sorting
+- Document pagination parameters clearly in Swagger
+- Consider maximum pageSize limit to prevent performance issues
+
+## [Advanced Feature - Add Filtering and Search Capabilities]()
+
+Filtering and search enable users to narrow results by specific criteria using query parameters. Implementation uses TypeORM's where conditions with Like operator for partial text matching and exact matching for boolean and enum fields.
+
+### When to use?
+
+Add filtering and search when users need to narrow results by specific criteria. Common for list endpoints where users want to find records matching certain conditions like name contains text, status equals value, or date ranges.
+
+### When NOT to use?
+
+Skip complex filtering for simple use cases where standard queries suffice. Avoid when performance impact of dynamic queries outweighs benefits or when search requirements are better served by full-text search engines like Elasticsearch.
+
+### Example
+
+Create filter DTO and implement dynamic where conditions for flexible querying.
 
 ```typescript
 // DTO
@@ -745,7 +801,46 @@ async findAll(userId: number, filters: FilterModuleNameDto) {
 }
 ```
 
-**Relationships**:
+### Checklist
+
+- [ ] Filter DTO created with validation
+- [ ] Search uses LIKE operator for partial matching
+- [ ] Optional filters don't affect query if not provided
+- [ ] Boolean filters check for undefined to allow false values
+- [ ] API documentation includes filter parameters
+
+### Troubleshooting
+
+**Filter not working**: Verify TypeORM's Like operator imported from 'typeorm' and syntax is correct.
+
+**Boolean filter ignoring false**: Check condition uses `!== undefined` instead of truthy check.
+
+**SQL injection risk**: Never concatenate user input directly into raw SQL. Use parameterized queries or TypeORM query builder.
+
+### Best Practices
+
+- Use separate DTO for filter parameters with validation
+- Implement search with case-insensitive LIKE queries
+- Check for undefined to allow false boolean values
+- Sanitize user input to prevent SQL injection
+- Document filter behavior clearly in Swagger
+- Consider adding database indexes on filtered columns
+
+## [Advanced Feature - Load Entity Relationships Efficiently]()
+
+Relationship loading retrieves related entity data in queries using TypeORM's relations option or eager loading. Proper relationship management prevents N+1 query problems and reduces unnecessary database calls while providing complete data structures to API consumers.
+
+### When to use?
+
+Include relationship loading when frontend needs related entity data to avoid multiple requests. Use for detail endpoints (GET by ID) when showing complete object with related data or when relationships are frequently accessed together.
+
+### When NOT to use?
+
+Don't eager load relationships when related data isn't needed to reduce query overhead and response size. Avoid for list endpoints unless specifically required as relationships multiply result set size significantly impacting performance.
+
+### Example
+
+Configure relationship loading using relations option for selective data inclusion.
 
 ```typescript
 async findOne(id: number, userId: number) {
@@ -764,30 +859,27 @@ async findOne(id: number, userId: number) {
 
 ### Checklist
 
-- [ ] Pagination returns metadata (total, page, totalPages)
-- [ ] Default page size set to reasonable value
-- [ ] Filter DTO created with validation
-- [ ] Search uses LIKE operator for partial matching
 - [ ] Relationships loaded only when needed
-- [ ] Query performance tested with large datasets
-- [ ] API documentation includes pagination parameters
+- [ ] Relations array includes only required entities
+- [ ] Query performance tested with relationships
+- [ ] Circular references handled appropriately
 
 ### Troubleshooting
 
-**Poor pagination performance**: Add database indexes on sorting columns and ensure proper query optimization.
-
-**Filter not working**: Verify TypeORM's Like operator imported from 'typeorm' and syntax is correct.
-
 **Relationship errors**: Check that relationship names match entity definitions and referenced entities exist.
+
+**Performance degradation**: Limit relationship depth and avoid loading relationships in list endpoints without pagination.
+
+**Circular JSON error**: Use @Transform decorator or response interceptor to exclude circular references from JSON serialization.
 
 ### Best Practices
 
-- Return pagination metadata for client-side pagination controls
-- Provide sensible defaults for page size (10-25 items)
-- Use separate DTO for filter parameters with validation
-- Implement search with case-insensitive LIKE queries
 - Load relationships selectively to optimize performance
-- Document advanced features clearly in Swagger
+- Use relations option for lazy-loaded relationships
+- Avoid deep relationship trees that cause performance issues
+- Consider separate endpoints for related data if relationships are complex
+- Document which endpoints include relationships in Swagger
+- Test query performance with relationships on large datasets
 
 ## [Naming Conventions for NestJS Resources]()
 
@@ -802,6 +894,8 @@ Follow these naming conventions for all new resources, files, classes, and datab
 Maintain consistency with existing patterns when working on legacy code that uses different conventions. Don't retroactively rename existing resources unless performing systematic refactoring. Prioritize consistency within a module over strict adherence to new conventions.
 
 ### Example
+
+Standard naming patterns for all NestJS components and database objects.
 
 | Type | Pattern | Rules | Example |
 |------|---------|-------|---------|
@@ -845,7 +939,7 @@ Maintain consistency with existing patterns when working on legacy code that use
 
 ## [Complete API Implementation Checklist]()
 
-Comprehensive verification checklist ensuring all components of REST API implementation are complete including code generation, entity definition, DTO validation, service logic, controller routing, module configuration, database migration, documentation, security, and versioning.
+Comprehensive verification ensuring all components of REST API implementation are complete including code generation, entity definition, DTO validation, service logic, controller routing, module configuration, database migration, documentation, security, and versioning.
 
 - [ ] Resource generated with `nest g resource`
 - [ ] Entity created extending SuperEntity
@@ -862,7 +956,7 @@ Comprehensive verification checklist ensuring all components of REST API impleme
 
 ## [Official Documentation References]()
 
-Official framework and library documentation providing comprehensive reference for NestJS architecture patterns, TypeORM entity management, validation decorators, and advanced features beyond this guide's scope for deeper understanding and troubleshooting.
+Official framework and library documentation providing comprehensive reference for NestJS architecture patterns, TypeORM entity management, validation decorators, and advanced features beyond this guide's scope.
 
 - [NestJS Controllers](https://docs.nestjs.com/controllers)
 - [NestJS Providers](https://docs.nestjs.com/providers)

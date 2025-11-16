@@ -1,4 +1,4 @@
-# How routing works in Frontend
+# How Routing Works in Frontend
 
 Complete guide on routing with React Router DOM in the project, including route configuration, navigation patterns, authentication guards, and advanced features for building scalable single-page applications.
 
@@ -6,17 +6,19 @@ Complete guide on routing with React Router DOM in the project, including route 
 
 ## [Centralized Route Configuration]()
 
-Centralized route configuration organizes all application routes in a single configuration file, making routes manageable, type-safe, and easily accessible for navigation menus. This pattern separates public routes from private authenticated routes.
+Centralized route configuration organizes all application routes in a single configuration file, making routes manageable, type-safe, and easily accessible throughout the application. This pattern separates public routes from private authenticated routes, providing metadata like icons and visibility flags for automatic menu generation.
 
 ### When to use?
 
-Use centralized route configuration when building applications with multiple routes, when you need dynamic menu generation, when managing complex routing logic with public and private routes, or when you want type-safe route definitions with metadata like icons and visibility.
+Use centralized route configuration when building applications with multiple routes, when you need dynamic menu generation from route metadata, when managing complex routing logic with public and private routes, or when you want type-safe route definitions with additional properties like icons and menu visibility.
 
 ### When NOT to use?
 
-Do not use centralized configuration for very simple applications with only 2-3 routes, prototypes where routes change frequently, or when using route-based code splitting with framework-specific conventions. Start simple and centralize as complexity grows.
+Do not use centralized configuration for very simple applications with only 2-3 routes, quick prototypes where routes change frequently during exploration, or when using route-based code splitting with framework-specific conventions that handle routing differently. Start simple and centralize as complexity grows naturally.
 
 ### Example
+
+Centralized route configuration with TypeScript interfaces and metadata for menu generation.
 
 **`src/config/routes.config.tsx`**:
 
@@ -69,47 +71,49 @@ export const privateRoutes: RouteConfig[] = [
 
 ### Checklist
 
-- [ ] Route configuration file created
+- [ ] Route configuration file created (`routes.config.tsx`)
 - [ ] RouteConfig interface defined with TypeScript
-- [ ] Public and private routes separated
-- [ ] showInMenu property for menu generation
-- [ ] Icons included for menu items
-- [ ] All pages imported correctly
-- [ ] Path parameters clearly defined
+- [ ] Public and private routes separated into distinct arrays
+- [ ] showInMenu property configured for menu generation
+- [ ] Icons included for menu items that require visual indicators
+- [ ] All page components imported correctly
+- [ ] Path parameters clearly defined with colon syntax (`:id`)
 
 ### Troubleshooting
 
-**Routes not found**: Ensure all page components are properly imported in routes.config.tsx
+**Routes not found**: Ensure all page components are properly imported in routes.config.tsx and export statements match
 
-**Menu not updating**: Check that showInMenu is set to true for items that should appear
+**Menu not updating**: Check that showInMenu is set to true for items that should appear in navigation
 
-**Type errors**: Verify RouteConfig interface matches all route properties
+**Type errors**: Verify RouteConfig interface matches all route properties being used in configuration arrays
 
-**Icons not displaying**: Ensure icon components are imported and wrapped in JSX
+**Icons not displaying**: Ensure icon components are imported and wrapped in JSX elements, not passed as component references
 
 ### Best Practices
 
-1. Separate public and private routes clearly
-2. Use TypeScript interfaces for type safety
-3. Include metadata (icons, names) for UI generation
-4. Keep route paths consistent with REST conventions
-5. Document dynamic parameters in comments
-6. Use showInMenu to control navigation visibility
-7. Centralize all routes in one file for easy management
+1. Separate public and private routes clearly into different arrays
+2. Use TypeScript interfaces for type safety and IDE autocomplete
+3. Include metadata (icons, names, descriptions) for UI generation
+4. Keep route paths consistent with REST conventions and resource naming
+5. Document dynamic parameters in comments above route definitions
+6. Use showInMenu to control navigation visibility without removing routes
+7. Centralize all routes in one file for easy management and discovery
 
 ## [App Component with React Router]()
 
-The App component configures React Router with BrowserRouter, sets up authentication context, and maps route configurations to Route components. This creates the foundation for client-side routing with authentication guards and nested layouts.
+The App component configures React Router with BrowserRouter, sets up authentication context, and maps route configurations to Route components. This creates the foundation for client-side routing with authentication guards, nested layouts, and proper route organization for both public and private areas of the application.
 
 ### When to use?
 
-Use this pattern when setting up the root application component that needs to configure routing, authentication context, and distinguish between public and private routes. This is required in every React application using React Router with authentication.
+Use this pattern when setting up the root application component that needs to configure client-side routing, authentication context, and distinguish between public and private routes with different layouts. This is required in every React application using React Router with authentication requirements and shared layouts.
 
 ### When NOT to use?
 
-Do not use this exact pattern if you're using a different routing library (like Next.js routing), if you don't need authentication guards, or if using server-side rendering. Adapt the pattern based on your specific routing and authentication needs.
+Do not use this exact pattern if you're using a different routing library (like Next.js App Router or Remix), if you don't need authentication guards at all, or if using server-side rendering with different routing requirements. Adapt the pattern based on your specific routing library and authentication architecture needs.
 
 ### Example
+
+Root App component configuring BrowserRouter with authentication and route mapping.
 
 ```typescript
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
@@ -157,48 +161,50 @@ function App() {
 
 ### Checklist
 
-- [ ] BrowserRouter wraps entire application
-- [ ] AuthProvider configured before routes
-- [ ] Public routes mapped without guards
-- [ ] Private routes wrapped with PrivateRoute
-- [ ] Layout component wraps authenticated routes
-- [ ] Root redirect configured
-- [ ] 404 catch-all route added
-- [ ] All routes have unique keys
+- [ ] BrowserRouter wraps entire application as outermost component
+- [ ] AuthProvider configured before routes to provide authentication context
+- [ ] Public routes mapped without authentication guards
+- [ ] Private routes wrapped with PrivateRoute component
+- [ ] Layout component wraps authenticated routes for shared UI
+- [ ] Root redirect configured for default landing page
+- [ ] 404 catch-all route added at the end
+- [ ] All routes have unique keys to prevent React warnings
 
 ### Troubleshooting
 
-**Routes not working**: Ensure BrowserRouter is the outermost router component
+**Routes not working**: Ensure BrowserRouter is the outermost router component and not nested inside another router
 
-**Authentication not working**: Verify AuthProvider is configured and wraps Routes
+**Authentication not working**: Verify AuthProvider is configured correctly and wraps Routes component before route definitions
 
-**404 not caught**: Check that catch-all route (*) is last in Routes
+**404 not caught**: Check that catch-all route with path="*" is last in Routes and doesn't conflict with other patterns
 
-**Redirects looping**: Verify redirect paths exist and don't create circular redirects
+**Redirects looping**: Verify redirect paths exist in route configuration and don't create circular redirect chains
 
 ### Best Practices
 
-1. Use BrowserRouter not HashRouter for clean URLs
-2. Wrap routes with appropriate providers (Auth, Theme, etc.)
-3. Use key prop when mapping routes to prevent React warnings
-4. Configure 404 catch-all as the last route
-5. Use replace prop on redirects to prevent history clutter
-6. Keep App component focused on routing structure
-7. Extract complex logic to custom hooks or contexts
+1. Use BrowserRouter not HashRouter for clean URLs without hash fragments
+2. Wrap routes with appropriate providers (Auth, Theme, etc.) in logical order
+3. Use key prop when mapping routes to prevent React reconciliation warnings
+4. Configure 404 catch-all as the last route to catch unmatched paths
+5. Use replace prop on redirects to prevent history clutter and back button issues
+6. Keep App component focused on routing structure, extract complex logic elsewhere
+7. Extract complex configuration logic to custom hooks or separate configuration files
 
 ## [PrivateRoute Authentication Guard]()
 
-PrivateRoute component protects routes requiring authentication by checking for valid tokens and redirecting unauthenticated users to login. This implements security-by-default pattern, ensuring sensitive routes are inaccessible without proper authentication.
+PrivateRoute component protects routes requiring authentication by checking for valid tokens and redirecting unauthenticated users to login. This implements a security-by-default pattern, ensuring sensitive routes are completely inaccessible without proper authentication, preventing unauthorized access to protected application areas.
 
 ### When to use?
 
-Use PrivateRoute to protect any route or layout that requires user authentication. Wrap individual routes or parent layout components to protect multiple child routes at once. Essential for dashboards, user profiles, and any authenticated functionality.
+Use PrivateRoute to protect any route or layout that requires user authentication before access. Wrap individual routes or parent layout components to protect multiple child routes at once. Essential for dashboards, user profiles, settings pages, and any authenticated functionality that should not be publicly accessible.
 
 ### When NOT to use?
 
-Do not use PrivateRoute for public pages like login, signup, landing pages, or documentation. Do not use if authentication is handled differently (API-level only). Skip for applications without authentication requirements.
+Do not use PrivateRoute for public pages like login, signup, landing pages, marketing pages, or public documentation. Do not use if authentication is handled differently (API-level only without client guards). Skip for applications without any authentication requirements or proof-of-concept projects.
 
 ### Example
+
+Authentication guard component with loading states and automatic login redirect.
 
 ```typescript
 import { Navigate } from 'react-router-dom';
@@ -225,47 +231,49 @@ export function PrivateRoute({ children }: PrivateRouteProps) {
 
 ### Checklist
 
-- [ ] PrivateRoute component created
-- [ ] useAuth hook implemented
-- [ ] Loading state handled
-- [ ] Redirect to login on missing token
-- [ ] replace prop used on Navigate
-- [ ] TypeScript props properly typed
-- [ ] Loading spinner or skeleton shown
+- [ ] PrivateRoute component created in components directory
+- [ ] useAuth hook implemented and imported
+- [ ] Loading state handled before authentication check
+- [ ] Redirect to login on missing or invalid token
+- [ ] replace prop used on Navigate to prevent back button issues
+- [ ] TypeScript props properly typed with interface
+- [ ] Loading spinner or skeleton shown during authentication check
 
 ### Troubleshooting
 
-**Infinite redirect loop**: Ensure login page is not wrapped with PrivateRoute
+**Infinite redirect loop**: Ensure login page is not wrapped with PrivateRoute, creating circular redirects
 
-**Flash of content**: Add proper loading state handling before checking token
+**Flash of content**: Add proper loading state handling before checking token to prevent unauthorized content flashing
 
-**Token not detected**: Verify useAuth hook is accessing correct context and storage
+**Token not detected**: Verify useAuth hook is accessing correct context and storage (localStorage/sessionStorage)
 
-**Not redirecting**: Check that Navigate component has replace prop and correct path
+**Not redirecting**: Check that Navigate component has replace prop and correct path, and that Routes are configured properly
 
 ### Best Practices
 
-1. Always handle loading state before checking authentication
-2. Use replace prop to avoid back button issues
-3. Show loading spinner instead of blank screen
-4. Consider adding return URL for post-login redirect
-5. Validate token expiration not just presence
-6. Log authentication failures for debugging
-7. Handle expired tokens gracefully with refresh logic
+1. Always handle loading state before checking authentication to avoid flashing
+2. Use replace prop to avoid back button issues when redirecting to login
+3. Show loading spinner or skeleton instead of blank screen for better UX
+4. Consider adding return URL parameter for post-login redirect to original destination
+5. Validate token expiration and format, not just presence in storage
+6. Log authentication failures for debugging without exposing sensitive information
+7. Handle expired tokens gracefully with automatic refresh logic when possible
 
 ## [Layout with Outlet for Nested Routes]()
 
-Layout component provides shared structure for authenticated pages including sidebar navigation, header, and main content area. The Outlet component from React Router renders the current child route, enabling consistent layouts across multiple pages.
+Layout component provides shared structure for authenticated pages including sidebar navigation, header, and main content area. The Outlet component from React Router renders the current child route in the designated content area, enabling consistent layouts across multiple pages while maintaining component separation and reusability.
 
 ### When to use?
 
-Use Layout with Outlet when you need consistent navigation, header, or footer across multiple routes. Ideal for authenticated dashboards, admin panels, or any multi-page section sharing common UI elements. Enables clean separation of layout from page content.
+Use Layout with Outlet when you need consistent navigation, header, footer, or sidebar across multiple routes in a section. Ideal for authenticated dashboards, admin panels, user settings areas, or any multi-page section sharing common UI elements. Enables clean separation of layout structure from page content logic.
 
 ### When NOT to use?
 
-Do not use shared layout for pages with completely different structures (login vs dashboard), for single-page applications without navigation, or when each page needs unique layouts. Use route-specific layouts or conditional rendering instead.
+Do not use shared layout for pages with completely different structures (login page vs dashboard), for single-page applications without navigation between views, or when each page in a section needs unique layout requirements. Use route-specific layouts or conditional rendering instead for varied structures.
 
 ### Example
+
+Shared layout component with sidebar navigation and header using Outlet for route content.
 
 ```typescript
 import { Outlet } from 'react-router-dom';
@@ -293,47 +301,49 @@ export function Layout() {
 
 ### Checklist
 
-- [ ] Layout component created
+- [ ] Layout component created in components directory
 - [ ] Outlet imported from react-router-dom
-- [ ] Sidebar component implemented
-- [ ] Header component implemented
-- [ ] Responsive flexbox layout
-- [ ] Overflow handling for scrollable content
-- [ ] Layout wraps private routes correctly
+- [ ] Sidebar component implemented with navigation
+- [ ] Header component implemented with user actions
+- [ ] Responsive flexbox or grid layout structure
+- [ ] Overflow handling for scrollable content areas
+- [ ] Layout wraps private routes correctly in App component
 
 ### Troubleshooting
 
-**Outlet not rendering**: Verify Layout is used as parent route with nested children
+**Outlet not rendering**: Verify Layout is used as parent route with nested children routes configured properly
 
-**Styling issues**: Check flexbox properties and ensure h-screen doesn't conflict
+**Styling issues**: Check flexbox properties and ensure h-screen doesn't conflict with body or parent styling
 
-**Content overflowing**: Add overflow-auto to main content area
+**Content overflowing**: Add overflow-auto to main content area to enable scrolling when content exceeds viewport
 
-**Sidebar not showing**: Verify Sidebar component is properly imported and rendered
+**Sidebar not showing**: Verify Sidebar component is properly imported, rendered, and has defined width
 
 ### Best Practices
 
-1. Use Outlet for rendering child routes dynamically
-2. Implement responsive design for mobile/tablet
-3. Add overflow handling for long content
-4. Keep Layout focused on structure not business logic
-5. Use CSS Grid or Flexbox for reliable layouts
-6. Consider sticky headers and fixed sidebars
-7. Extract layout variations into separate components
+1. Use Outlet for rendering child routes dynamically in the content area
+2. Implement responsive design for mobile, tablet, and desktop breakpoints
+3. Add overflow handling for long content to prevent layout breaking
+4. Keep Layout focused on structure and positioning, not business logic
+5. Use CSS Grid or Flexbox for reliable and maintainable layouts
+6. Consider sticky headers and fixed sidebars for better navigation UX
+7. Extract layout variations into separate components rather than conditional logic
 
-## [Navigation with useNavigate and Link]()
+## [Navigation with useNavigate and Link Components]()
 
-React Router provides multiple navigation methods including programmatic navigation with useNavigate hook and declarative navigation with Link and NavLink components. Each method suits different navigation scenarios.
+React Router provides multiple navigation methods including programmatic navigation with useNavigate hook and declarative navigation with Link and NavLink components. Each method suits different navigation scenarios: programmatic for post-action redirects, Link for standard navigation, and NavLink for menu items requiring active state styling.
 
 ### When to use?
 
-Use useNavigate for programmatic navigation after form submissions, API calls, or user actions like button clicks. Use Link for standard anchor-style navigation. Use NavLink when you need active state styling for menu items.
+Use useNavigate for programmatic navigation after form submissions, API calls, button clicks, or user actions requiring redirects. Use Link for standard anchor-style navigation in content and UI. Use NavLink when you need active state styling for navigation menus, sidebars, or tabs showing current location.
 
 ### When NOT to use?
 
-Do not use useNavigate for simple anchor links (use Link instead). Do not use Link for external URLs (use regular anchor tags). Avoid Navigate component for programmatic redirects (use useNavigate instead).
+Do not use useNavigate for simple anchor links that should use Link component instead. Do not use Link for external URLs outside your application (use regular anchor tags). Avoid Navigate component for programmatic redirects in event handlers (use useNavigate hook instead for better control).
 
 ### Example
+
+Programmatic navigation with useNavigate hook for button actions.
 
 **useNavigate Hook**:
 
@@ -418,47 +428,49 @@ function Sidebar() {
 
 ### Checklist
 
-- [ ] useNavigate used for programmatic navigation
-- [ ] Link used for declarative anchor navigation
-- [ ] NavLink used for menu items with active states
-- [ ] Template literals for dynamic paths
-- [ ] navigate(-1) for back navigation
-- [ ] className function for conditional styling
-- [ ] Key prop on mapped Links
+- [ ] useNavigate hook used for programmatic navigation in handlers
+- [ ] Link component used for declarative anchor navigation
+- [ ] NavLink component used for menu items requiring active states
+- [ ] Template literals used for dynamic path construction
+- [ ] navigate(-1) used for back navigation when appropriate
+- [ ] className function used for conditional styling on NavLink
+- [ ] Key prop applied on mapped Link components
 
 ### Troubleshooting
 
-**Navigation not working**: Ensure routes are properly configured in App.tsx
+**Navigation not working**: Ensure routes are properly configured in App.tsx and paths match exactly
 
-**Active state not applying**: Check NavLink className receives function not string
+**Active state not applying**: Check NavLink className receives function not string for dynamic styling
 
-**Back button issues**: Use replace option when you don't want history entries
+**Back button issues**: Use replace option on navigate when you don't want history entries created
 
-**Link styling issues**: Apply className or use styled-components/CSS modules
+**Link styling issues**: Apply className prop or use styled-components/CSS modules for consistent styling
 
 ### Best Practices
 
-1. Use Link for better accessibility than onClick navigation
-2. Use NavLink for navigation menus to show active routes
-3. Use navigate for post-action redirects (after save, delete, etc.)
-4. Template literals for cleaner dynamic path construction
-5. Add loading states during navigation if needed
-6. Use relative paths when possible for portability
-7. Consider navigation state for passing data between routes
+1. Use Link over onClick navigation for better accessibility and SEO
+2. Use NavLink for navigation menus to automatically show active routes
+3. Use navigate hook for post-action redirects (after save, delete, form submit)
+4. Use template literals for cleaner dynamic path construction with parameters
+5. Add loading states during navigation if fetching data or processing
+6. Use relative paths when possible for better code portability
+7. Consider navigation state for passing data between routes when needed
 
-## [Route Parameters with useParams]()
+## [Route Parameters with useParams Hook]()
 
-The useParams hook extracts dynamic parameters from the current URL, enabling pages to load specific resources based on ID or other identifiers. Essential for detail pages, edit forms, and any route that displays specific entity data.
+The useParams hook extracts dynamic parameters from the current URL path, enabling pages to load specific resources based on ID or other identifiers. Essential for detail pages, edit forms, profile pages, and any route that displays or manipulates specific entity data based on URL parameters.
 
 ### When to use?
 
-Use useParams when routes have dynamic segments like /products/:id or /users/:userId/posts/:postId. Required for detail pages, edit forms, or any component that needs to identify which specific resource to load or display.
+Use useParams when routes have dynamic segments like /products/:id, /users/:userId/posts/:postId, or any URL pattern identifying specific resources. Required for detail pages, edit forms, profile pages, or any component that needs to identify which specific resource to load, display, or modify based on URL.
 
 ### When NOT to use?
 
-Do not use useParams for optional data (use query parameters instead). Avoid for data that doesn't identify a resource (use query params or state). Not needed for static routes without dynamic segments.
+Do not use useParams for optional data that doesn't identify resources (use query parameters with useSearchParams instead). Avoid for data that shouldn't appear in URL path (use query params or component state). Not needed for static routes without dynamic segments or variable parts.
 
 ### Example
+
+Extracting route parameters with TypeScript typing for type safety.
 
 **Single Parameter**:
 
@@ -493,47 +505,49 @@ function WalletAssetDetail() {
 
 ### Checklist
 
-- [ ] useParams imported from react-router-dom
-- [ ] TypeScript types defined for parameters
-- [ ] Parameters destructured from hook
-- [ ] Parameters converted to correct types (Number, etc.)
-- [ ] useEffect dependencies include parameters
-- [ ] Route configuration matches parameter names
-- [ ] Handle undefined/invalid parameters
+- [ ] useParams hook imported from react-router-dom
+- [ ] TypeScript generic types defined for all parameters
+- [ ] Parameters destructured from hook return value
+- [ ] Parameters converted to correct types (Number, Date, etc.)
+- [ ] useEffect dependencies include parameters when used for data fetching
+- [ ] Route configuration matches parameter names exactly
+- [ ] Handle undefined or invalid parameters gracefully
 
 ### Troubleshooting
 
-**Parameters undefined**: Verify route path includes :paramName segments
+**Parameters undefined**: Verify route path includes :paramName segments in route configuration
 
-**Type errors**: Add TypeScript generic with parameter names and types
+**Type errors**: Add TypeScript generic with parameter names and string types to useParams call
 
-**Stale data**: Include params in useEffect dependency array
+**Stale data when params change**: Include params in useEffect dependency array for proper re-fetching
 
-**Wrong parameter names**: Match destructured names with route definition exactly
+**Wrong parameter names**: Match destructured variable names with route definition parameter names exactly
 
 ### Best Practices
 
-1. Always type useParams with TypeScript generics
-2. Convert string params to appropriate types (Number, Date, etc.)
-3. Include params in useEffect dependencies
-4. Validate params before using (check for undefined)
-5. Handle invalid IDs gracefully (404, error message)
-6. Use meaningful parameter names (:userId not :id)
-7. Document expected parameter format in route config
+1. Always type useParams with TypeScript generics for type safety
+2. Convert string params to appropriate types (Number, Date, etc.) immediately
+3. Include params in useEffect dependencies when fetching data
+4. Validate params before using (check for undefined, invalid formats)
+5. Handle invalid IDs gracefully with 404 pages or error messages
+6. Use meaningful parameter names in routes (:userId not :id when nested)
+7. Document expected parameter format and validation rules in route config
 
-## [Query Parameters with useSearchParams]()
+## [Query Parameters with useSearchParams Hook]()
 
-The useSearchParams hook manages URL query parameters enabling filtering, pagination, search, and other optional parameters. Unlike route params, search params don't affect routing but provide flexible state management in the URL.
+The useSearchParams hook manages URL query parameters for filtering, pagination, search, sorting, and other optional parameters. Unlike route params, search params don't affect route matching but provide flexible state management in the URL, enabling shareable filtered views, bookmarkable searches, and stateful list pages.
 
 ### When to use?
 
-Use useSearchParams for pagination (page, limit), filtering (status, category), search terms, sorting options, or any optional parameters that should persist in URL for sharing and bookmarking. Ideal for list pages with filters.
+Use useSearchParams for pagination controls (page, limit), filtering options (status, category, date range), search terms, sorting preferences, or any optional parameters that should persist in URL for sharing and bookmarking. Ideal for list pages with filters, search results, or any view with multiple display options.
 
 ### When NOT to use?
 
-Do not use for required resource identifiers (use route params instead). Avoid for sensitive data that shouldn't appear in URLs. Not ideal for complex nested objects (use state instead).
+Do not use for required resource identifiers that define the route (use route params instead). Avoid for sensitive data that shouldn't appear in URLs or browser history. Not ideal for complex nested objects or large data structures (use component state or session storage instead for better performance).
 
 ### Example
+
+Managing pagination and search with URL query parameters for shareable state.
 
 ```typescript
 import { useSearchParams } from 'react-router-dom';
@@ -567,47 +581,49 @@ function ProductList() {
 
 ### Checklist
 
-- [ ] useSearchParams imported and used
-- [ ] Default values provided for missing params
+- [ ] useSearchParams hook imported and destructured
+- [ ] Default values provided for missing or undefined params
 - [ ] setSearchParams preserves existing params when needed
-- [ ] Parameters properly typed/converted
-- [ ] Reset to page 1 when filters change
-- [ ] URL updates reflect in component state
-- [ ] Parameters validated before use
+- [ ] Parameters properly typed and converted from strings
+- [ ] Reset to page 1 when filters or search change
+- [ ] URL updates properly reflect in component state
+- [ ] Parameters validated before use in queries
 
 ### Troubleshooting
 
-**Params disappear on update**: Use spread operator to preserve existing params when setting
+**Params disappear on update**: Use object spread to preserve existing params when calling setSearchParams
 
-**Infinite loops**: Don't call setSearchParams in render or without dependencies
+**Infinite loops**: Don't call setSearchParams in render or without proper useEffect dependencies
 
-**Type issues**: Remember get() returns string | null, convert as needed
+**Type issues**: Remember get() returns string | null, always provide defaults and convert types
 
-**State not syncing**: Ensure useEffect dependencies include searchParams
+**State not syncing with URL**: Ensure useEffect dependencies include searchParams when deriving state
 
 ### Best Practices
 
-1. Provide sensible defaults for missing parameters
-2. Reset page to 1 when changing filters
-3. Preserve unrelated params when updating (spread current params)
-4. Validate and sanitize parameter values
-5. Use meaningful parameter names
-6. Document expected parameter formats
-7. Consider debouncing search param updates
+1. Provide sensible defaults for missing or invalid parameters
+2. Reset page to 1 when changing filters to avoid empty results
+3. Preserve unrelated params when updating (spread current params object)
+4. Validate and sanitize parameter values before using in queries
+5. Use meaningful and descriptive parameter names for clarity
+6. Document expected parameter formats and valid values
+7. Consider debouncing search param updates to reduce URL changes
 
-## [Nested Routes and Layouts]()
+## [Nested Routes and Hierarchical Layouts]()
 
-Nested routes enable hierarchical URL structures with parent layouts wrapping child content. This pattern creates sub-sections with shared UI elements while maintaining clean URL structures and component organization.
+Nested routes enable hierarchical URL structures with parent layouts wrapping child content, creating logical sub-sections with shared UI elements. This pattern organizes complex features into coherent sections while maintaining clean URL structures, component organization, and reusable layout components for related pages.
 
 ### When to use?
 
-Use nested routes for sub-sections that share layout elements (admin panel, user settings tabs), for multi-level navigation hierarchies, or when building complex features with consistent sub-navigation. Ideal for settings pages, dashboards with tabs.
+Use nested routes for sub-sections that share layout elements like tabs or sub-navigation (admin panel sections, user settings categories), for multi-level navigation hierarchies, or when building complex features with consistent sub-navigation. Ideal for settings pages with categories, dashboards with multiple tabs, or feature sections with shared context.
 
 ### When NOT to use?
 
-Do not use nested routes when child routes don't share layout, for simple flat route structures, or when nesting adds unnecessary complexity. Start with flat routes and nest only when patterns emerge.
+Do not use nested routes when child routes don't share any layout or navigation elements, for simple flat route structures where nesting adds unnecessary complexity, or when url structure doesn't match layout hierarchy. Start with flat routes and introduce nesting only when clear patterns emerge requiring shared layouts.
 
 ### Example
+
+Nested route configuration with parent layout containing Outlet for child routes.
 
 ```typescript
 // Configuration
@@ -647,47 +663,49 @@ function AssetLayout() {
 
 ### Checklist
 
-- [ ] Parent route has element with Outlet
+- [ ] Parent route has element containing Outlet component
 - [ ] Child routes configured in children array
-- [ ] Empty path ('') for index route
-- [ ] Relative paths for children (no leading /)
-- [ ] Outlet component in parent layout
-- [ ] Proper route parameter handling
-- [ ] Index route redirects if needed
+- [ ] Empty path ('') configured for index route matching parent
+- [ ] Relative paths for children without leading slashes
+- [ ] Outlet component properly placed in parent layout
+- [ ] Route parameters handled correctly in child routes
+- [ ] Index route redirects or shows default content
 
 ### Troubleshooting
 
-**Children not rendering**: Ensure parent element contains Outlet component
+**Children not rendering**: Ensure parent element contains Outlet component in the correct position
 
-**Wrong paths**: Use relative paths without leading slash for children
+**Wrong paths generated**: Use relative paths without leading slash for children routes
 
-**Index route not working**: Use empty string '' for path that matches parent exactly
+**Index route not working**: Use empty string '' for path that matches parent URL exactly
 
-**Styling conflicts**: Ensure parent layout doesn't interfere with child content
+**Styling conflicts**: Ensure parent layout doesn't interfere with child content dimensions or overflow
 
 ### Best Practices
 
-1. Use Outlet in parent layouts for child route rendering
-2. Keep child paths relative (no leading /)
-3. Provide index route for default child content
-4. Share navigation/tabs in parent layout
-5. Limit nesting depth (2-3 levels max)
-6. Use descriptive parent element components
-7. Consider breadcrumbs for nested route navigation
+1. Use Outlet in parent layouts for child route rendering area
+2. Keep child paths relative without leading slashes for clarity
+3. Provide index route for default child content when accessing parent path
+4. Share navigation, tabs, or breadcrumbs in parent layout component
+5. Limit nesting depth to 2-3 levels max for maintainability
+6. Use descriptive parent element components, not generic wrappers
+7. Consider breadcrumbs for nested route navigation and context
 
 ## [Redirects and Navigate Component]()
 
-The Navigate component provides declarative redirects, enabling automatic route changes based on conditions like authentication state, feature flags, or data availability. Essential for conditional access control and user flow management.
+The Navigate component provides declarative redirects, enabling automatic route changes based on runtime conditions like authentication state, feature flags, data availability, or application requirements. Essential for conditional access control, enforcing required steps, user flow management, and handling deprecated routes.
 
 ### When to use?
 
-Use Navigate for conditional redirects based on authentication, permissions, or data state. Ideal for redirecting unauthenticated users, enforcing required steps (email verification), or replacing deprecated routes with new ones.
+Use Navigate for conditional redirects based on authentication status, user permissions, required verification steps, or data availability. Ideal for redirecting unauthenticated users to login, enforcing required onboarding steps like email verification, replacing deprecated routes with new ones, or handling missing resources with fallback routes.
 
 ### When NOT to use?
 
-Do not use Navigate for user-initiated navigation (use Link or useNavigate instead). Avoid for external redirects (use window.location). Not needed for simple links or buttons.
+Do not use Navigate for user-initiated navigation actions (use Link or useNavigate hook instead). Avoid for external redirects outside your application (use window.location.href). Not needed for simple clickable links or button handlers where useNavigate is more appropriate and provides better control.
 
 ### Example
+
+Conditional redirect based on authentication state with loading handling.
 
 **Simple Redirect**:
 
@@ -715,47 +733,49 @@ function Dashboard() {
 
 ### Checklist
 
-- [ ] Navigate imported from react-router-dom
-- [ ] replace prop used for permanent redirects
-- [ ] Conditional logic properly implemented
-- [ ] Target route exists and is configured
-- [ ] Loading states handled before redirect
-- [ ] Redirect loops prevented
-- [ ] State passed if needed for return URLs
+- [ ] Navigate component imported from react-router-dom
+- [ ] replace prop used for permanent redirects preventing back
+- [ ] Conditional logic properly implemented before render
+- [ ] Target route exists and is configured correctly
+- [ ] Loading states handled before redirect check
+- [ ] Redirect loops prevented with proper conditions
+- [ ] State passed via state prop if needed for return URLs
 
 ### Troubleshooting
 
-**Infinite redirect loops**: Ensure redirect condition eventually becomes false
+**Infinite redirect loops**: Ensure redirect condition eventually becomes false or leads to stable route
 
-**Back button issues**: Use replace prop to prevent history clutter
+**Back button issues**: Use replace prop to prevent adding redirect to history stack
 
-**Redirect not working**: Verify target route is properly configured
+**Redirect not working**: Verify target route is properly configured and path is correct
 
-**Flash of content**: Add loading state before checking redirect conditions
+**Flash of content before redirect**: Add loading state before checking redirect conditions
 
 ### Best Practices
 
-1. Always use replace prop for permanent redirects
-2. Handle loading states before conditional redirects
-3. Prevent redirect loops with proper conditions
-4. Pass state for post-redirect navigation
-5. Log redirects for debugging complex flows
-6. Consider user experience during redirects
-7. Document redirect logic clearly in code
+1. Always use replace prop for permanent redirects to clean history
+2. Handle loading states before conditional redirects to prevent flashing
+3. Prevent redirect loops with careful condition logic and testing
+4. Pass state for post-redirect navigation or return URL tracking
+5. Log redirects in development for debugging complex flows
+6. Consider user experience during redirects with loading indicators
+7. Document redirect logic clearly in code comments for maintainability
 
-## [Dynamic Menu Generation]()
+## [Dynamic Menu Generation from Routes]()
 
-Dynamic menu generation creates navigation automatically from route configuration, ensuring menus stay synchronized with routes. This DRY approach reduces maintenance overhead and prevents menu-route mismatches.
+Dynamic menu generation creates navigation automatically from centralized route configuration, ensuring menus stay perfectly synchronized with available routes. This DRY approach reduces maintenance overhead, prevents menu-route mismatches, and enables consistent navigation behavior across the entire application with automatic updates.
 
 ### When to use?
 
-Use dynamic menu generation when you have centralized route configuration, when navigation structure matches route structure, or when you need consistent menu behavior across application. Ideal for applications with many routes or frequent route changes.
+Use dynamic menu generation when you have centralized route configuration with metadata, when navigation structure closely matches route structure, or when you need consistent menu behavior across application sections. Ideal for applications with many routes, frequent route changes, or when menu visibility depends on route configuration properties.
 
 ### When NOT to use?
 
-Do not use when menu structure differs significantly from routes, when you need complex conditional menu logic, or for very simple static menus (2-3 items). Custom menus may be simpler for complex navigation requirements.
+Do not use when menu structure differs significantly from route hierarchy, when you need complex conditional menu logic beyond simple filtering, or for very simple static menus with 2-3 items. Custom menus may be simpler for complex navigation requirements with special grouping or ordering needs.
 
 ### Example
+
+Sidebar component generating navigation items automatically from route configuration.
 
 ```typescript
 import { NavLink } from 'react-router-dom';
@@ -785,56 +805,58 @@ function Sidebar() {
 
 ### Checklist
 
-- [ ] Route config includes showInMenu property
-- [ ] Filter applied to select menu items
-- [ ] NavLink used for active state
-- [ ] Icons displayed correctly
-- [ ] Key prop on mapped items
-- [ ] Conditional styling for active state
-- [ ] Menu updates when routes change
+- [ ] Route config includes showInMenu boolean property
+- [ ] Filter applied to select only menu-visible items
+- [ ] NavLink component used for automatic active state
+- [ ] Icons displayed correctly from route config
+- [ ] Key prop applied on mapped menu items
+- [ ] Conditional styling for active state using className function
+- [ ] Menu updates automatically when routes change
 
 ### Troubleshooting
 
-**Menu items missing**: Verify showInMenu is true on route config
+**Menu items missing**: Verify showInMenu property is true on route config objects
 
-**Icons not showing**: Ensure icon property contains valid JSX element
+**Icons not showing**: Ensure icon property contains valid JSX element, not component reference
 
-**Active state wrong**: Check NavLink className uses function not string
+**Active state styling wrong**: Check NavLink className uses function not string for dynamic classes
 
-**Order incorrect**: Add order property to route config if needed
+**Order incorrect**: Add optional order property to route config for custom menu ordering
 
 ### Best Practices
 
-1. Filter routes by showInMenu property
-2. Use NavLink for automatic active state
-3. Include icons and labels in route config
-4. Add order property for custom menu ordering
-5. Consider nested menus for grouped routes
-6. Handle permissions in route config
-7. Keep menu generation logic simple and readable
+1. Filter routes by showInMenu property for menu inclusion control
+2. Use NavLink for automatic active state without manual tracking
+3. Include icons and labels in route config for consistency
+4. Add optional order property for custom menu ordering when needed
+5. Consider nested menus for grouped routes with shared context
+6. Handle permissions and role-based visibility in route config
+7. Keep menu generation logic simple and readable for maintenance
 
 ## [Lazy Loading Routes for Code Splitting]()
 
-Lazy loading splits route components into separate bundles loaded on demand, reducing initial bundle size and improving application performance. Critical for large applications with many routes or heavy components.
+Lazy loading splits route components into separate JavaScript bundles loaded on demand, dramatically reducing initial bundle size and improving application startup performance. Critical optimization for large applications with many routes, heavy components, or complex features that most users don't access immediately.
 
 ### When to use?
 
-Use lazy loading for heavy routes with large dependencies, for routes users rarely visit, in applications with many routes, or when initial bundle size is too large. Essential for production applications optimizing performance.
+Use lazy loading for heavy routes with large dependencies like chart libraries or editors, for routes users rarely visit like admin panels or settings, in applications with many routes where initial bundle exceeds reasonable size, or when optimizing Core Web Vitals and initial load performance for production applications.
 
 ### When NOT to use?
 
-Do not lazy load critical routes that most users visit immediately (like login or home), very small components where overhead exceeds benefits, or when you need synchronous rendering without Suspense fallback.
+Do not lazy load critical routes that most users visit immediately (like login, home, or landing pages), very small components where code splitting overhead exceeds benefits, or when you need guaranteed synchronous rendering without Suspense fallback delays. Balance load time savings against user experience impact.
 
 ### Example
+
+Lazy loaded route components with Suspense fallback for loading states.
 
 ```typescript
 import { lazy, Suspense } from 'react';
 
-// Lazy load
+// Lazy load components
 const AssetListPage = lazy(() => import('@/pages/assets/AssetListPage'));
 const AssetProfilePage = lazy(() => import('@/pages/assets/AssetProfilePage'));
 
-// Usage
+// Usage in routes
 <Route
   path="/assets"
   element={
@@ -847,33 +869,33 @@ const AssetProfilePage = lazy(() => import('@/pages/assets/AssetProfilePage'));
 
 ### Checklist
 
-- [ ] lazy imported from react
-- [ ] Suspense imported from react
-- [ ] Dynamic import syntax used
-- [ ] Suspense fallback provided
-- [ ] Loading indicator styled appropriately
-- [ ] Bundle sizes verified in build
-- [ ] Critical routes not lazy loaded
+- [ ] lazy function imported from react
+- [ ] Suspense component imported from react
+- [ ] Dynamic import syntax with arrow function used
+- [ ] Suspense fallback provided with loading indicator
+- [ ] Loading indicator styled appropriately for context
+- [ ] Bundle sizes verified in production build
+- [ ] Critical first-load routes not lazy loaded
 
 ### Troubleshooting
 
-**Blank screen**: Ensure Suspense wrapper with fallback is present
+**Blank screen during load**: Ensure Suspense wrapper with meaningful fallback is present
 
-**Loading flicker**: Add minimum delay or better loading indicator
+**Loading flicker on fast connections**: Add minimum delay or better loading indicator design
 
-**Failed chunk loading**: Handle network errors with error boundaries
+**Failed chunk loading errors**: Handle network errors with error boundaries and retry logic
 
-**Build errors**: Verify import paths are correct and modules export default
+**Build errors**: Verify import paths are correct and modules export default, not named exports
 
 ### Best Practices
 
-1. Wrap lazy components with Suspense
-2. Provide meaningful loading fallbacks
-3. Don't lazy load critical first routes
-4. Group related components in same chunk
-5. Monitor bundle sizes with tools like webpack-bundle-analyzer
-6. Test lazy loading in production builds
-7. Handle loading errors gracefully with error boundaries
+1. Always wrap lazy components with Suspense providing fallback UI
+2. Provide meaningful loading fallbacks matching page context
+3. Don't lazy load critical first routes users always visit
+4. Group related components in same chunk for efficiency
+5. Monitor bundle sizes with webpack-bundle-analyzer or similar tools
+6. Test lazy loading behavior in production builds, not development
+7. Handle loading errors gracefully with error boundaries and retry mechanisms
 
 ## [References]()
 

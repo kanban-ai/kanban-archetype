@@ -1,8 +1,6 @@
 # How to Create Migrations in the Backend
 
-Complete guide to creating and managing database migrations with TypeORM using pure SQL ensuring version control, schema evolution, data integrity, and rollback capabilities across all environments.
-
-**IMPORTANT**: All migrations must be written using pure SQL through queryRunner.query, not TypeORM objects like new Table or new TableColumn.
+Complete guide to creating and managing database migrations with TypeORM using pure SQL ensuring version control, schema evolution, data integrity, and rollback capabilities.
 
 ## [TypeORM Migration System Overview]()
 
@@ -225,7 +223,7 @@ npm run typeorm -- migration:run
 - Test up method followed by down method in development
 - Document complex migrations with inline comments
 
-## [Common SQL Operations in Migrations]()
+## [Common SQL Operations in Migrations - DDL and DML Patterns]()
 
 Comprehensive catalog of DDL and DML operations for migrations including table creation, column modifications, index management, foreign key constraints, and data seeding. These patterns cover all common schema evolution scenarios with PostgreSQL-specific syntax and best practices.
 
@@ -355,7 +353,7 @@ await queryRunner.query(`
 - Add indexes for columns used frequently in WHERE, ORDER BY, or JOIN clauses
 - Use descriptive constraint and index names following naming conventions
 
-## [Adding Column to Existing Table]()
+## [Adding Column to Existing Table - Single Column Modification]()
 
 End-to-end example demonstrating column addition to existing table with proper default value, data type specification, and complete rollback implementation. This pattern applies to any single-column modification scenario requiring backward compatibility.
 
@@ -416,7 +414,7 @@ export class AddActiveToProducts1234567890001 implements MigrationInterface {
 - Test migration with production-like data volumes
 - Document reason for default value choice in migration comments
 
-## [Adding Foreign Key Relationship]()
+## [Adding Foreign Key Relationship - Table Relationship Establishment]()
 
 Comprehensive foreign key addition example including column creation, constraint definition with cascade rules, index creation for query performance, and complete rollback logic. Demonstrates proper relationship establishment between tables with referential integrity.
 
@@ -505,7 +503,7 @@ export class AddCategoryToProducts1234567890002 implements MigrationInterface {
 - Make foreign key columns nullable when relationship is optional
 - Remove components in reverse order in down method
 
-## [Automatic Migration Generation from Entities]()
+## [Automatic Migration Generation from Entities - Entity-Driven Schema Sync]()
 
 Automated migration generation comparing entity definitions with current database schema to produce synchronization migrations. This approach accelerates development by automatically detecting and scripting schema differences while requiring careful review before execution.
 
@@ -588,7 +586,7 @@ npm run typeorm -- migration:run
 - Prefer manual migrations for complex operations or data transformations
 - Commit generated migrations with descriptive commit messages
 
-## [Migration Best Practices and Safety Guidelines]()
+## [Migration Best Practices and Safety Guidelines - Production-Safe Migration Standards]()
 
 Critical guidelines ensuring safe, reversible, and maintainable migrations including down method implementation, transaction usage, development testing, descriptive naming, single responsibility, data preservation, documentation, and avoiding database logic ensuring production-safe migrations.
 
@@ -760,7 +758,7 @@ updated_at: Date;
 - Commit migrations to version control immediately
 - Never edit migrations after deployment to other environments
 
-## [Troubleshooting Common Migration Issues]()
+## [Troubleshooting Common Migration Issues - Error Recovery Procedures]()
 
 Common error scenarios and solutions including migration detection issues, duplicate execution errors, forced re-execution procedures, and database recovery from failed migrations. These patterns help diagnose and resolve migration failures systematically.
 
@@ -845,7 +843,7 @@ npm run typeorm -- migration:revert  # Reverts next most recent
 - Use migration:revert rather than manual database modifications
 - Document resolution of complex migration issues for team reference
 
-## [Package.json Scripts for Migration Workflow]()
+## [Package.json Scripts for Migration Workflow - NPM Command Shortcuts]()
 
 Essential NPM scripts simplifying migration workflow by providing short commands for creation, generation, execution, rollback, and status checking. Verify these scripts exist in package.json for streamlined migration management and consistent team workflow.
 
@@ -917,7 +915,7 @@ npm run migration:show
 - Version control package.json with migration scripts
 - Document any custom migration scripts added to package.json
 
-## [Real Project Migration Examples Reference]()
+## [Real Project Migration Examples Reference - Production Migration Patterns]()
 
 Reference to actual project migrations demonstrating real-world implementation patterns including genesis schema, performance indexes, calculated fields, and feature tables. Review these examples for practical migration patterns and conventions followed in production codebase.
 
@@ -984,12 +982,49 @@ Don't blindly copy existing migrations without understanding context and require
 - Document new patterns that deviate from existing examples
 - Keep migration examples updated as best practices evolve
 
-## [Official TypeORM Migration Documentation]()
+## [Official TypeORM Migration Documentation - External Resources]()
 
 Official TypeORM documentation links covering migration concepts, API reference, and advanced patterns. These resources provide comprehensive framework-specific details beyond this guide for in-depth understanding and advanced scenarios.
 
-- [TypeORM Migrations](https://typeorm.io/migrations)
-- [TypeORM Migration API](https://typeorm.io/migrations#migration-api)
-- [TypeORM CLI Documentation](https://typeorm.io/using-cli)
-- [PostgreSQL ALTER TABLE](https://www.postgresql.org/docs/current/sql-altertable.html)
-- [PostgreSQL CREATE INDEX](https://www.postgresql.org/docs/current/sql-createindex.html)
+### When to use?
+
+Reference official documentation when seeking in-depth framework details, exploring advanced migration features not covered here, troubleshooting TypeORM-specific issues, or understanding underlying migration API mechanics.
+
+### When NOT to use?
+
+Don't rely solely on official documentation without understanding project-specific conventions and patterns. Avoid implementing advanced patterns without team discussion and approval.
+
+### Example
+
+**Official Documentation Resources**:
+
+- [TypeORM Migrations](https://typeorm.io/migrations) - Core migration concepts and workflows
+- [TypeORM Migration API](https://typeorm.io/migrations#migration-api) - Detailed API reference
+- [TypeORM CLI Documentation](https://typeorm.io/using-cli) - Command-line interface guide
+- [PostgreSQL ALTER TABLE](https://www.postgresql.org/docs/current/sql-altertable.html) - PostgreSQL DDL reference
+- [PostgreSQL CREATE INDEX](https://www.postgresql.org/docs/current/sql-createindex.html) - Index creation syntax
+
+### Checklist
+
+- [ ] Official documentation links accessible
+- [ ] TypeORM version matches documentation version
+- [ ] PostgreSQL version compatible with examples
+- [ ] Project conventions checked before applying patterns
+- [ ] Team consulted for advanced implementations
+
+### Troubleshooting
+
+**Documentation version mismatch**: Verify TypeORM version installed matches documentation being referenced.
+
+**PostgreSQL syntax differences**: Check PostgreSQL version for syntax compatibility with examples.
+
+**Pattern conflicts with project**: Prioritize project-specific conventions over generic documentation patterns.
+
+### Best Practices
+
+- Bookmark official documentation for quick reference
+- Verify TypeORM and PostgreSQL versions before following examples
+- Cross-reference official docs with project patterns
+- Share useful documentation sections with team
+- Keep documentation links updated as versions change
+- Consult team before implementing advanced patterns from docs
