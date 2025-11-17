@@ -50,11 +50,11 @@ export class Product extends SuperEntity {
 
 ### Best Practices
 
-Always extend SuperEntity or SoftDeletableEntity base classes for consistency. Use explicit column type definitions. Apply decorators correctly (@Entity, @Column). Keep entities focused on data structure, not business logic. Document complex field purposes with comments.
+Always extend SuperEntity, SoftDeletableEntity, or JunctionEntity base classes for consistency. Use explicit column type definitions. Apply decorators correctly (@Entity, @Column). Keep entities focused on data structure, not business logic. Document complex field purposes with comments.
 
 ## [Entity File Organization - Modular Architecture Pattern]()
 
-Entity organization follows modular architecture with entities residing within their respective module folders rather than centralized location. Only SuperEntity base class is centralized in database folder, ensuring each module maintains its own domain models for better encapsulation, separation of concerns, and module independence.
+Entity organization follows modular architecture with entities residing within their respective module folders rather than centralized location. Only base entity classes (SuperEntity, SoftDeletableEntity, JunctionEntity) are centralized in database folder, ensuring each module maintains its own domain models for better encapsulation, separation of concerns, and module independence.
 
 ### When to use?
 
@@ -73,7 +73,8 @@ src/
 ├── database/
 │   └── entities/
 │       ├── super.entity.ts              # ← Centralized base entity
-│       └── soft-deletable.entity.ts     # ← Centralized base entity
+│       ├── soft-deletable.entity.ts     # ← Centralized base entity
+│       └── junction.entity.ts           # ← Centralized base for junction tables
 └── modules/
     ├── products/
     │   └── entities/
@@ -87,6 +88,7 @@ src/
 
 - [ ] SuperEntity exists in database/entities folder
 - [ ] SoftDeletableEntity exists in database/entities folder
+- [ ] JunctionEntity exists in database/entities folder
 - [ ] Each module has its own entities folder
 - [ ] Entity files use kebab-case with .entity.ts suffix
 - [ ] No business entities in central database/entities folder
@@ -105,7 +107,7 @@ src/
 
 ### Best Practices
 
-Always keep SuperEntity and SoftDeletableEntity centralized while placing business entities in their respective modules. Use barrel exports (index.ts) to simplify imports. Follow consistent folder structure across all modules. Document cross-module entity dependencies clearly.
+Always keep SuperEntity, SoftDeletableEntity, and JunctionEntity centralized while placing business entities in their respective modules. Use barrel exports (index.ts) to simplify imports. Follow consistent folder structure across all modules. Document cross-module entity dependencies clearly.
 
 ## [SuperEntity Base Class - Automatic ID and Timestamps]()
 
@@ -117,7 +119,7 @@ Use SuperEntity when creating standard database tables that need automatic ID ge
 
 ### When NOT to use?
 
-Don't use SuperEntity when you need soft delete capability (use SoftDeletableEntity instead), when entity requires custom primary key strategy like UUID or composite keys, or when working with legacy databases with non-standard ID patterns requiring manual configuration.
+Don't use SuperEntity when you need soft delete capability (use SoftDeletableEntity instead), when entity requires composite keys for junction tables (use JunctionEntity instead), when entity requires custom primary key strategy like UUID, or when working with legacy databases with non-standard ID patterns requiring manual configuration.
 
 ### Example
 
@@ -266,6 +268,97 @@ export class ProductService {
 ### Best Practices
 
 Always use TypeORM's native softDelete() and restore() methods. Never manually set deleted_at timestamps. Document which entities use soft delete and why. Implement cleanup jobs for truly removing old soft-deleted records if needed. Consider index on deleted_at for query performance.
+
+## [JunctionEntity Base Class - Composite Key Junction Tables with Timestamps]()
+
+Base class for explicit junction entities requiring composite primary keys with automatic timestamp management. Unlike SuperEntity which provides auto-generated ID, JunctionEntity provides only created_at and updated_at fields, allowing composite primary keys to be defined by the implementing entity.
+
+### When to use?
+
+Use JunctionEntity as base class for many-to-many junction tables that need timestamp tracking but use composite primary keys from foreign key pairs. Ideal when you need to track when associations were created or modified, while maintaining the standard pattern of composite keys in junction tables.
+
+### When NOT to use?
+
+Don't use JunctionEntity when using TypeORM's automatic @ManyToMany with @JoinTable (no explicit entity needed). Avoid when junction table doesn't need timestamps - use plain entity with @PrimaryColumn only. Skip if you need soft delete on relationships (rare case - consider architecture if deleting relationships needs audit).
+
+### Example
+
+**JunctionEntity Implementation:**
+```typescript
+// File: src/database/entities/junction.entity.ts
+import { BaseEntity, CreateDateColumn, UpdateDateColumn } from 'typeorm';
+
+export abstract class JunctionEntity extends BaseEntity {
+  @CreateDateColumn({ type: 'timestamptz' })
+  created_at: Date;
+
+  @UpdateDateColumn({ type: 'timestamptz' })
+  updated_at: Date;
+}
+```
+
+**Usage in Junction Entity:**
+```typescript
+import { Entity, PrimaryColumn, Column, ManyToOne, JoinColumn } from 'typeorm';
+import { JunctionEntity } from '@database/entities/junction.entity';
+import { Product } from '@/modules/products/entities/product.entity';
+import { Category } from '@/modules/categories/entities/category.entity';
+
+@Entity('product_categories')
+export class ProductCategory extends JunctionEntity {
+  // Composite Primary Key - Part 1
+  @PrimaryColumn({ type: 'int' })
+  product_id: number;
+
+  // Composite Primary Key - Part 2
+  @PrimaryColumn({ type: 'int' })
+  category_id: number;
+
+  // Relationships
+  @ManyToOne(() => Product, product => product.productCategories)
+  @JoinColumn({ name: 'product_id' })
+  product: Product;
+
+  @ManyToOne(() => Category, category => category.productCategories)
+  @JoinColumn({ name: 'category_id' })
+  category: Category;
+
+  // Additional business fields
+  @Column({ type: 'int', default: 0 })
+  display_order: number;
+
+  @Column({ type: 'boolean', default: true })
+  is_primary: boolean;
+
+  // JunctionEntity provides:
+  // - created_at: Date (timestamptz)
+  // - updated_at: Date (timestamptz)
+}
+```
+
+### Checklist
+
+- [ ] JunctionEntity.ts created in database/entities folder
+- [ ] JunctionEntity extends BaseEntity (not SuperEntity)
+- [ ] Only @CreateDateColumn and @UpdateDateColumn defined
+- [ ] Abstract class to prevent direct instantiation
+- [ ] Exported for use by junction entities
+- [ ] No @PrimaryGeneratedColumn (left for implementing classes)
+
+### Troubleshooting
+
+**Issue**: TypeORM error "Entity must have primary key"
+**Solution**: JunctionEntity intentionally has no PK. Implementing entity must define @PrimaryColumn fields for composite key.
+
+**Issue**: Timestamps not auto-updating
+**Solution**: Ensure entity extends JunctionEntity and columns are timestamptz type. Verify TypeORM entity is registered in module.
+
+**Issue**: Should JunctionEntity have id field?
+**Solution**: No. JunctionEntity is specifically for composite key tables. Use SuperEntity if you need generated ID.
+
+### Best Practices
+
+Always extend JunctionEntity for many-to-many junction tables needing timestamps. Never add id field to junction entities - defeats purpose of composite key pattern. Use JunctionEntity for consistency even if updated_at seems unnecessary (disk space is cheap, consistency is valuable). Keep JunctionEntity in database/entities folder alongside SuperEntity and SoftDeletableEntity for discoverability.
 
 ## [PostgreSQL Column Types - Text Fields for String Data]()
 
@@ -658,11 +751,225 @@ const product = await repository.findOne({
 **Solution**: Add unique composite index on junction table (product_id, category_id).
 
 **Issue**: Can't add attributes to relationship
-**Solution**: Convert to explicit junction entity inheriting from SuperEntity with its own fields.
+**Solution**: Convert to explicit junction entity inheriting from JunctionEntity with its own fields.
 
 ### Best Practices
 
 Always define explicit junction table name and column names in @JoinTable. Choose owner side logically (usually entity more frequently accessed first). Consider creating explicit junction entity if you'll need additional fields later. Use cascade insert/update carefully, avoid cascade remove. Index foreign keys in junction table.
+
+## [Entity Relationships - Explicit Junction Entity Pattern with JunctionEntity]()
+
+Explicit junction entity implementation for many-to-many relationships requiring additional fields, business logic, or timestamp tracking. Extends JunctionEntity base class for automatic timestamp management while using composite primary keys from foreign key pairs instead of generated ID.
+
+### When to use?
+
+Use explicit junction entity when relationship needs additional attributes (priority, status, metadata), when you need created_at/updated_at for the association, when business logic requires operating on the relationship as first-class entity, when you need custom queries or indexes on the junction table, or when relationship data has business meaning beyond simple linking.
+
+### When NOT to use?
+
+Don't use when simple @ManyToMany with @JoinTable suffices without extra fields. Avoid when junction table will never need additional attributes or queries - adds unnecessary complexity. Skip when performance is critical and you want minimal junction table overhead. Don't use for pure linking tables without business meaning or audit requirements.
+
+### Example
+
+```typescript
+import { Entity, PrimaryColumn, Column, ManyToOne, JoinColumn, Index } from 'typeorm';
+import { JunctionEntity } from '@database/entities/junction.entity';
+import { Product } from '@/modules/products/entities/product.entity';
+import { Category } from '@/modules/categories/entities/category.entity';
+
+@Entity('product_categories')
+@Index(['category_id', 'display_order']) // For sorting products within category
+export class ProductCategory extends JunctionEntity {
+  @PrimaryColumn({ type: 'int' })
+  product_id: number;
+
+  @PrimaryColumn({ type: 'int' })
+  category_id: number;
+
+  @ManyToOne(() => Product, product => product.productCategories, {
+    onDelete: 'CASCADE',
+  })
+  @JoinColumn({ name: 'product_id' })
+  product: Product;
+
+  @ManyToOne(() => Category, category => category.productCategories, {
+    onDelete: 'CASCADE',
+  })
+  @JoinColumn({ name: 'category_id' })
+  category: Category;
+
+  // Business fields specific to the relationship
+  @Column({ type: 'int', default: 0 })
+  display_order: number;
+
+  @Column({ type: 'boolean', default: false })
+  is_featured: boolean;
+
+  // Inherited from JunctionEntity:
+  // - created_at: Date
+  // - updated_at: Date
+}
+
+// Parent entities with inverse relationships
+@Entity('products')
+export class Product extends SuperEntity {
+  @Column({ type: 'varchar', length: 255 })
+  name: string;
+
+  @OneToMany(() => ProductCategory, pc => pc.product)
+  productCategories: ProductCategory[];
+}
+
+@Entity('categories')
+export class Category extends SuperEntity {
+  @Column({ type: 'varchar', length: 100 })
+  name: string;
+
+  @OneToMany(() => ProductCategory, pc => pc.category)
+  productCategories: ProductCategory[];
+}
+
+// Service with junction entity operations
+@Injectable()
+export class ProductService {
+  constructor(
+    @InjectRepository(Product)
+    private productRepo: Repository<Product>,
+    @InjectRepository(ProductCategory)
+    private junctionRepo: Repository<ProductCategory>,
+  ) {}
+
+  async addProductToCategory(
+    productId: number,
+    categoryId: number,
+    options: { displayOrder?: number; isFeatured?: boolean } = {},
+  ) {
+    const junction = this.junctionRepo.create({
+      product_id: productId,
+      category_id: categoryId,
+      display_order: options.displayOrder ?? 0,
+      is_featured: options.isFeatured ?? false,
+    });
+
+    return await this.junctionRepo.save(junction);
+  }
+
+  async updateCategoryOrder(
+    productId: number,
+    categoryId: number,
+    newOrder: number,
+  ) {
+    await this.junctionRepo.update(
+      { product_id: productId, category_id: categoryId },
+      { display_order: newOrder },
+    );
+  }
+
+  async getProductWithCategories(productId: number) {
+    return await this.productRepo.findOne({
+      where: { id: productId },
+      relations: ['productCategories', 'productCategories.category'],
+      order: {
+        productCategories: { display_order: 'ASC' },
+      },
+    });
+  }
+
+  async getFeaturedProductsInCategory(categoryId: number) {
+    return await this.junctionRepo.find({
+      where: { category_id: categoryId, is_featured: true },
+      relations: ['product'],
+      order: { display_order: 'ASC' },
+    });
+  }
+}
+```
+
+### Checklist
+
+- [ ] Junction entity extends JunctionEntity (not SuperEntity)
+- [ ] Both foreign keys marked with @PrimaryColumn
+- [ ] Both @ManyToOne relationships with @JoinColumn
+- [ ] Cascade options defined (usually CASCADE on delete)
+- [ ] @OneToMany inverse relationships on parent entities
+- [ ] Entity name combines both table names in snake_case
+- [ ] Additional fields represent relationship properties
+- [ ] Indexes added for common query patterns
+- [ ] No manual created_at/updated_at (inherited from JunctionEntity)
+
+### Troubleshooting
+
+**Issue**: Error "Entity must have at least one primary key"
+**Solution**: Ensure both FK columns have @PrimaryColumn decorator, not @Column.
+
+**Issue**: Duplicate key violations on insert
+**Solution**: Composite PK prevents duplicates automatically. Check if attempting to insert same pair twice without checking existence.
+
+**Issue**: updated_at not changing when updating display_order
+**Solution**: Ensure using repository.update() or repository.save() methods, not raw queries. TypeORM only updates timestamp on ORM operations.
+
+**Issue**: Can't find junction records efficiently
+**Solution**: Add index on foreign keys individually for single-parent queries. Add composite index on reverse order (category_id, product_id) if querying both directions.
+
+**Issue**: Should I add separate id field?
+**Solution**: No. Only add id if other tables need to reference the junction record itself (very rare). Composite PK is the standard pattern.
+
+### Best Practices
+
+Always extend JunctionEntity for timestamp-aware junction tables - maintains consistency with SuperEntity pattern. Define both @PrimaryColumn fields explicitly for composite key. Use cascade DELETE on both relationships so removing parent entity cleans up associations. Add indexes on foreign keys for query performance in tables with >1000 records. Keep additional fields focused on relationship properties, never parent entity data. Use meaningful column names for business fields (display_order, not just "order"). Consider unique constraints beyond composite PK if business rules require (e.g., only one "primary" category per product).
+
+### Migration Example
+
+```typescript
+import { MigrationInterface, QueryRunner } from 'typeorm';
+
+export class CreateProductCategoriesTable1234567890123 implements MigrationInterface {
+  public async up(queryRunner: QueryRunner): Promise<void> {
+    await queryRunner.query(`
+      CREATE TABLE product_categories (
+        product_id INT NOT NULL,
+        category_id INT NOT NULL,
+        display_order INT NOT NULL DEFAULT 0,
+        is_featured BOOLEAN NOT NULL DEFAULT false,
+        created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+        updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+
+        PRIMARY KEY (product_id, category_id),
+
+        CONSTRAINT fk_product_categories_product
+          FOREIGN KEY (product_id)
+          REFERENCES products(id)
+          ON DELETE CASCADE
+          ON UPDATE CASCADE,
+
+        CONSTRAINT fk_product_categories_category
+          FOREIGN KEY (category_id)
+          REFERENCES categories(id)
+          ON DELETE CASCADE
+          ON UPDATE CASCADE
+      );
+    `);
+
+    // Index for reverse queries (finding products by category)
+    await queryRunner.query(`
+      CREATE INDEX idx_product_categories_category_id
+      ON product_categories(category_id);
+    `);
+
+    // Composite index for ordered queries within category
+    await queryRunner.query(`
+      CREATE INDEX idx_product_categories_category_display
+      ON product_categories(category_id, display_order);
+    `);
+  }
+
+  public async down(queryRunner: QueryRunner): Promise<void> {
+    await queryRunner.query(`DROP TABLE product_categories;`);
+  }
+}
+```
+
+**Important**: The `updated_at` column is automatically managed by TypeORM through the `@UpdateDateColumn` decorator. No database triggers or functions are needed - TypeORM handles timestamp updates in the application layer when using `repository.save()` or `repository.update()` methods.
 
 ## [Advanced Entity Features - Database Indexes for Performance]()
 
@@ -1373,8 +1680,9 @@ These are general guidelines that apply to 95% of cases. Some may not apply to l
 Critical checklist items for every entity:
 
 1. **Choose the correct base class**:
-   - `SuperEntity`: For normal entities without soft delete
+   - `SuperEntity`: For normal entities with auto-generated ID
    - `SoftDeletableEntity`: For entities needing soft delete
+   - `JunctionEntity`: For many-to-many junction tables with composite keys
 
 2. **Always use `timestamptz` for dates**: NEVER use `timestamp with time zone` in TypeORM entities
 
@@ -1394,7 +1702,7 @@ Critical checklist items for every entity:
 
 ### Checklist
 
-- [ ] Correct base class chosen (SuperEntity vs SoftDeletableEntity)
+- [ ] Correct base class chosen (SuperEntity vs SoftDeletableEntity vs JunctionEntity)
 - [ ] All timestamps use timestamptz type
 - [ ] Column names in snake_case with @Column({ name })
 - [ ] Explicit name in @JoinColumn for foreign keys

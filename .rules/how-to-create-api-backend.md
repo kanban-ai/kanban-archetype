@@ -73,7 +73,7 @@ TypeORM entities define database table structure through TypeScript decorators, 
 
 ### When to use?
 
-Create TypeORM entities when defining new database tables or modifying existing table structures. Entities are the source of truth for your data model and should always extend SuperEntity to inherit standard fields like id, created_at, and updated_at.
+Create TypeORM entities when defining new database tables or modifying existing table structures. Entities are the source of truth for your data model and should extend appropriate base class: SuperEntity for standard entities, SoftDeletableEntity for soft delete support, or JunctionEntity for many-to-many junction tables with composite keys.
 
 ### When NOT to use?
 
@@ -113,7 +113,7 @@ export class ModuleName extends SuperEntity {
 
 ### Checklist
 
-- [ ] Entity extends SuperEntity
+- [ ] Entity extends appropriate base class (SuperEntity, SoftDeletableEntity, or JunctionEntity)
 - [ ] Table name uses snake_case convention
 - [ ] Column names use snake_case with explicit name attribute
 - [ ] Relationships use @JoinColumn with explicit name
@@ -131,7 +131,7 @@ export class ModuleName extends SuperEntity {
 
 ### Best Practices
 
-- Always extend SuperEntity for id, created_at, updated_at fields
+- Always extend appropriate base class: SuperEntity (standard), SoftDeletableEntity (soft delete), or JunctionEntity (composite keys)
 - Use snake_case for database column names (PostgreSQL convention)
 - Specify explicit names in @JoinColumn for relationship clarity
 - Add separate userId columns to facilitate efficient queries
@@ -942,7 +942,7 @@ Standard naming patterns for all NestJS components and database objects.
 Comprehensive verification ensuring all components of REST API implementation are complete including code generation, entity definition, DTO validation, service logic, controller routing, module configuration, database migration, documentation, security, and versioning.
 
 - [ ] Resource generated with `nest g resource`
-- [ ] Entity created extending SuperEntity
+- [ ] Entity created extending appropriate base class (SuperEntity, SoftDeletableEntity, or JunctionEntity)
 - [ ] DTOs created with class-validator decorators
 - [ ] Service implemented with complete CRUD operations
 - [ ] Controller implemented with REST routes and v1 versioning

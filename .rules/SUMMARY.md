@@ -222,8 +222,9 @@ Documentation about TypeORM, entities, migrations and database schema management
 - **Basic Structure** - Simple entity, SuperEntity and SoftDeletableEntity
 - **SuperEntity** - Base class with id, created_at, updated_at
 - **SoftDeletableEntity** - Base class for soft delete (extends SuperEntity)
+- **JunctionEntity** - Base class for junction tables with composite keys
 - **Column Types** - Text, numbers, boolean, date, JSON
-- **Relationships** - Many-to-One, One-to-Many, Many-to-Many
+- **Relationships** - Many-to-One, One-to-Many, Many-to-Many, Explicit Junction Entity
 - **Advanced Features** - Indexes, unique, default values
 - **Optional Columns** - nullable
 - **Enums** - Definition and usage
@@ -517,6 +518,18 @@ Complete guides for React development, API consumption and reusable component cr
 - **Breadcrumbs** - Hierarchical navigation
 - **Best Practices** - Checklist
 
+### [Search Debounce - `./how-to-implement-search-debounce-frontend.md`]()
+
+- **Debounce Pattern** - Prevent API request throttling
+- **useDebounce Hook** - Custom React hook implementation
+- **Search Input Component** - API integration with debounce
+- **AbortController** - Request cancellation and race condition prevention
+- **Generic Debounce Utility** - Reusable function for non-React contexts
+- **Loading States** - User feedback during search
+- **Error Handling** - Manage search failures gracefully
+- **Best Practices** - Production-ready search implementation
+- **Checklist** - Complete verification
+
 ## [📖 Quick Guides]()
 
 Shortcuts for common tasks with direct links to specific guide sections.
@@ -574,6 +587,12 @@ Alphabetical index of technical terms with direct links to corresponding guides.
 | NestJS Setup | [Initial Setup](./how-to-setup-backend.md) |
 | Vite Setup | [Frontend Setup](./how-to-setup-frontend.md) |
 | TypeORM | [Entity](./how-to-create-typeorm-entity-backend.md), [Migration](./how-to-create-migration-backend.md) |
+| SuperEntity | [Entity Base Class](./how-to-create-typeorm-entity-backend.md#superentity-base-class---automatic-id-and-timestamps) |
+| SoftDeletableEntity | [Soft Delete](./how-to-create-typeorm-entity-backend.md#softdeletableentity-base-class---recoverable-deletion-pattern) |
+| JunctionEntity | [Junction Tables](./how-to-create-typeorm-entity-backend.md#junctionentity-base-class---composite-key-junction-tables-with-timestamps) |
+| Composite Key | [Junction Tables](./how-to-create-typeorm-entity-backend.md#junctionentity-base-class---composite-key-junction-tables-with-timestamps) |
+| Many-to-Many | [Entity Relationships](./how-to-create-typeorm-entity-backend.md#entity-relationships---many-to-many-junction-table-pattern) |
+| Junction Table | [Explicit Junction Entity](./how-to-create-typeorm-entity-backend.md#entity-relationships---explicit-junction-entity-pattern-with-junctionentity) |
 | JWT | [Authentication](./how-authentication-works.md) |
 | Swagger | [API Documentation](./how-to-document-swagger-backend.md) |
 | Validation | [API Data](./how-to-use-data-validation-api-backend.md) |
@@ -589,6 +608,10 @@ Alphabetical index of technical terms with direct links to corresponding guides.
 | DTOs | [Validation](./how-to-use-data-validation-api-backend.md), [Create API](./how-to-create-api-backend.md#passo-3-criar-dtos-validação) |
 | CRUD | [Create API](./how-to-create-api-backend.md#passo-4-implementar-o-service) |
 | Hooks | [Consume API](./how-to-consume-api-frontend.md#custom-hook-para-api) |
+| Debounce | [Search Debounce](./how-to-implement-search-debounce-frontend.md) |
+| Search Input | [Search Debounce](./how-to-implement-search-debounce-frontend.md) |
+| AbortController | [Search Debounce - Request Cancellation](./how-to-implement-search-debounce-frontend.md#advanced-debounce---request-cancellation-with-abortcontroller) |
+| Performance Optimization | [Search Debounce](./how-to-implement-search-debounce-frontend.md) |
 | Dates | [Date Handling](./how-to-handle-dates-backend-frontend.md) |
 | dayjs | [Date Handling](./how-to-handle-dates-backend-frontend.md) |
 | UTC | [Date Handling](./how-to-handle-dates-backend-frontend.md) |
@@ -656,6 +679,7 @@ Guides organized by complexity level: beginner, intermediate and advanced.
 10. [Date Handling](./how-to-handle-dates-backend-frontend.md#princípios-fundamentais)
 11. [Create Components](./how-to-create-common-components-frontend.md#exemplos-práticos)
 12. [Frontend Routes](./how-routing-works-frontend.md#configuração-centralizada)
+13. [Search Debounce](./how-to-implement-search-debounce-frontend.md#search-debounce-pattern---prevent-api-request-throttling)
 
 ### [🌳 Advanced]()
 
@@ -713,21 +737,22 @@ Complete directory tree showing organization of all documentation files.
     ├── how-to-setup-frontend.md                           (17 steps)
     ├── how-to-consume-api-frontend.md                     (14 topics)
     ├── how-to-create-common-components-frontend.md        (8 examples + practices)
-    └── how-routing-works-frontend.md                      (14 concepts)
+    ├── how-routing-works-frontend.md                      (14 concepts)
+    └── how-to-implement-search-debounce-frontend.md       (9 sections + examples)
 ```
 
 ## [📊 Statistics]()
 
-- **Total documents**: 27
+- **Total documents**: 28
 - **Agent System**: 1 document (12 sections)
 - **Backend**: 18 documents (247 sections)
-- **Frontend**: 4 documents (53 sections)
+- **Frontend**: 5 documents (62 sections)
 - **Stack**: 3 documents (31 sections)
-- **Total sections**: 343 documented sections
+- **Total sections**: 352 documented sections
 
 
 ---
 
-**Last update**: November 16, 2025
+**Last update**: November 17, 2025
 **Documentation maintained by**: Claude Code
 **Version**: 1.1.0
