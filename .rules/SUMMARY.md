@@ -87,6 +87,25 @@ Complete guides for API development, service integration and backend feature imp
 - **Checklist** - Implementation verification
 - **Troubleshooting** - Common issues
 
+### [Real-Time SSE and MQTT - `./how-to-implement-realtime-sse-mqtt-backend.md`]()
+
+- **Architecture Overview** - SSE frontend to MQTT backend bridge pattern
+- **When to Use** - Real-time dashboards, notifications, webhooks, IoT updates, instant reactivity
+- **MQTT Setup** - Eclipse Mosquitto with Docker Compose configuration
+- **NestJS MQTT Integration** - Global module configuration and environment setup
+- **SSE Controller** - Server-Sent Events endpoints with authentication and user context
+- **SSE Service** - MQTT subscription orchestration with business logic and topic management
+- **Publishing Events** - Emit to MQTT from services, use-cases, and webhook handlers
+- **Frontend SSE Client** - React hook implementation with automatic reconnection
+- **Business Rules** - Topic authorization, access control, security patterns
+- **RabbitMQ Bridge** - Forward RabbitMQ events to MQTT for frontend distribution
+- **Performance** - Connection pooling, message filtering, QoS levels, load balancing
+- **Testing** - Unit tests, integration tests, manual testing tools
+- **Use Cases** - Order tracking, live dashboards, webhook notifications, IoT monitoring
+- **Security** - JWT authentication, topic authorization, rate limiting, input sanitization
+- **Troubleshooting** - Connection drops, message delivery issues, memory leaks, CORS
+- **Related Docs** - Integration with RabbitMQ, webhooks, external APIs
+
 ### [Scheduler Bull - `./how-to-use-scheduler-bull-redis-backend.md`]()
 
 - **When to Use** - Distributed scheduled tasks, horizontal scalability, automatic retry
@@ -714,6 +733,7 @@ Complete directory tree showing organization of all documentation files.
 │   ├── how-to-handle-dates-backend-frontend.md            (12 sections + examples)
 │   ├── how-to-use-redis-backend.md                        (15 sections + examples)
 │   ├── how-to-use-rabbitmq-backend.md                     (17 sections + examples)
+│   ├── how-to-implement-realtime-sse-mqtt-backend.md      (16 sections + examples)
 │   └── how-to-use-scheduler-bull-redis-backend.md         (17 sections + examples)
 │
 ├── Backend - Database
@@ -743,16 +763,16 @@ Complete directory tree showing organization of all documentation files.
 
 ## [📊 Statistics]()
 
-- **Total documents**: 28
+- **Total documents**: 29
 - **Agent System**: 1 document (12 sections)
-- **Backend**: 18 documents (247 sections)
+- **Backend**: 19 documents (263 sections)
 - **Frontend**: 5 documents (62 sections)
 - **Stack**: 3 documents (31 sections)
-- **Total sections**: 352 documented sections
+- **Total sections**: 368 documented sections
 
 
 ---
 
-**Last update**: November 17, 2025
+**Last update**: January 21, 2025
 **Documentation maintained by**: Claude Code
 **Version**: 1.1.0

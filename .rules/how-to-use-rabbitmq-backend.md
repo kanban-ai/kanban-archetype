@@ -1087,4 +1087,11 @@ Official documentation, tutorials, and resources for RabbitMQ and NestJS microse
 - [Dead Letter Exchanges Documentation](https://www.rabbitmq.com/dlx.html)
 - [AMQP Concepts - Routing Keys and Bindings](https://www.rabbitmq.com/tutorials/amqp-concepts.html)
 - [RabbitMQ Best Practices](https://www.rabbitmq.com/production-checklist.html)
+
+## [Related Documentation]()
+
+See also:
+- [How to Implement Real-Time with SSE and MQTT](./how-to-implement-realtime-sse-mqtt-backend.md#integration-with-rabbitmq-events) - Bridging RabbitMQ events to MQTT for real-time frontend distribution
+- [How to Integrate External APIs in Backend](./how-to-integrate-external-api-backend.md) - External API integration patterns
+- [How to Create an API in the Backend](./how-to-create-api-backend.md) - REST API structure and controller patterns
 - [CloudAMQP RabbitMQ for Beginners](https://www.cloudamqp.com/blog/part1-rabbitmq-for-beginners-what-is-rabbitmq.html)

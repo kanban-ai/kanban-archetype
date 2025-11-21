@@ -1539,6 +1539,13 @@ Do not use as primary implementation guide always follow patterns in this docume
 - Contribute back to open source projects when discovering bugs or improvements
 - Build internal knowledge base capturing project-specific learnings beyond external documentation
 
+## [Related Documentation]()
+
+See also:
+- [How to Implement Real-Time with SSE and MQTT](./how-to-implement-realtime-sse-mqtt-backend.md#publishing-events-to-mqtt-topics) - Real-time notification patterns for webhook events
+- [How to use RabbitMQ in Backend](./how-to-use-rabbitmq-backend.md) - Alternative event-driven architecture with message queuing
+- [How to Create an API in the Backend](./how-to-create-api-backend.md) - REST API structure and controller patterns
+
 ---
 
 **Last updated**: January 16, 2025
