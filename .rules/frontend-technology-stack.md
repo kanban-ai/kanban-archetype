@@ -1,4 +1,4 @@
-# Frontend Technology Stack
+# [Frontend Technology Stack]()
 
 Complete documentation of technologies, frameworks, and libraries used in the frontend application including React, TypeScript, Vite, styling, routing, HTTP client, and development tools.
 

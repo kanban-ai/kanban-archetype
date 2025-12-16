@@ -1,4 +1,4 @@
-# How API Key Authentication Works
+# [How API Key Authentication Works]()
 
 Comprehensive guide on implementing API Key authentication for service-to-service integrations, webhooks, and automated scripts as an alternative to JWT authentication in NestJS applications.
 

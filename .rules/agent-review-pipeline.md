@@ -1,4 +1,4 @@
-# Agent Review Pipeline
+# [Agent Review Pipeline]()
 
 Complete guide to the two-stage review pipeline ensuring implementation completeness and code quality compliance with technical standards in the SDD project.
 

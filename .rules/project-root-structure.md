@@ -1,4 +1,4 @@
-# Project Root Structure
+# [Project Root Structure]()
 
 Standardized root directory organization defining allowed files, folders, and restrictions to maintain a clean and organized monorepo structure with clear separation between backend, frontend, and configuration files.
 

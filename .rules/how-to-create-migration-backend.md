@@ -1,4 +1,4 @@
-# How to Create Migrations in the Backend
+# [How to Create Migrations in the Backend]()
 
 Complete guide to creating and managing database migrations with TypeORM using pure SQL ensuring version control, schema evolution, data integrity, and rollback capabilities.
 

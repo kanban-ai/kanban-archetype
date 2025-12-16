@@ -1,4 +1,4 @@
-# How to Create Common Components in Frontend
+# [How to Create Common Components in Frontend]()
 
 Comprehensive guide to creating reusable React components with TypeScript and Tailwind CSS following component composition patterns, type safety principles, and project conventions.
 

@@ -1,4 +1,4 @@
-# How to Setup Frontend
+# [How to Setup Frontend]()
 
 Complete guide to configure a React + TypeScript + Vite + Tailwind CSS project from scratch with all dependencies and folder structure.
 

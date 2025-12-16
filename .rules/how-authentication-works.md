@@ -1,4 +1,4 @@
-# How Authentication Works
+# [How Authentication Works]()
 
 Complete guide explaining JWT-based authentication system, token validation, user isolation, and secure request handling in the project.
 

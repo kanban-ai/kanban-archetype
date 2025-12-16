@@ -1,4 +1,4 @@
-# TypeScript Patterns and Standards
+# [TypeScript Patterns and Standards]()
 
 Mandatory rules and best practices for TypeScript code ensuring type-safe, maintainable, and high-quality code in both backend (NestJS) and frontend (React) implementations.
 

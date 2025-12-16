@@ -1,4 +1,4 @@
-# How to Consume API in Frontend
+# [How to Consume API in Frontend]()
 
 Complete guide on consuming REST APIs in React applications using Axios, including instance configuration with interceptors, service layer patterns, error handling strategies, and advanced techniques for robust client-server integration.
 

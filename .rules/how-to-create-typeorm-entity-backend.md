@@ -1,4 +1,4 @@
-# How to Create TypeORM Entities in NestJS Backend
+# [How to Create TypeORM Entities in NestJS Backend]()
 
 Comprehensive guide for creating TypeORM entities with relationships, soft delete, proper naming conventions, and PostgreSQL column types in NestJS backend applications.
 

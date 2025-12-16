@@ -1,4 +1,4 @@
-# How to Implement Search Input Debounce in Frontend
+# [How to Implement Search Input Debounce in Frontend]()
 
 Comprehensive guide for implementing debounce pattern in search inputs that trigger API requests, preventing excessive backend calls during rapid typing and optimizing application performance while maintaining responsive user experience.
 

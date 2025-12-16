@@ -1,4 +1,4 @@
-# Scalable Implementation Patterns for Backend Modules
+# [Scalable Implementation Patterns for Backend Modules]()
 
 Complete guide to building scalable and maintainable NestJS modules using SOLID principles, dependency injection, and proven design patterns for long-term code quality.
 
