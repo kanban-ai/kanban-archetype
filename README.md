@@ -70,16 +70,7 @@ Antes de iniciar:
 ## Exemplo backend + frontend
 
 ```bash
-name=backend;
-install=bash -c "test -d backend/node_modules || (cd backend && npm ci)";
-cmd=bash -c "(cd backend && npm run migration:run && PORT=3000 npm run start:dev)";
-check=http;
-target=localhost:3000/api/docs,
-name=frontend;
-install=bash -c "test -d frontend/node_modules || (cd frontend && npm ci)";
-cmd=bash -c "(cd frontend && npm run dev)";
-check=http;
-target=localhost:5173
+name=backend;install=bash -c "test -d backend/node_modules || (cd backend && npm ci)";cmd=bash -c "(cd backend && npm run migration:run && PORT=3000 npm run start:dev)";check=http;target=localhost:3000/api/docs,name=frontend;install=bash -c "test -d frontend/node_modules || (cd frontend && npm ci)";cmd=bash -c "(cd frontend && npm run dev)";check=http;target=localhost:5173
 ```
 
 ---
