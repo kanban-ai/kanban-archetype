@@ -89,7 +89,7 @@ Essas portas ficam disponíveis para uso dinâmico.
 O script deve injetar automaticamente:
 
 ```bash
-VITE_API_URL=http://kanban.devmania.ai:{{port_backend}}/api
+http://kanban.devmania.ai:{{port_backend}}/api
 ```
 
 * `port_backend` = porta registrada do backend (ex: `3000`)
