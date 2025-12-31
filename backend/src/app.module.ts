@@ -22,7 +22,7 @@ import { HelloWorldModule } from './modules/hello-world/hello-world.module';
         database: configService.get('DATABASE_NAME', 'postgres'),
         entities: [__dirname + '/modules/**/*.entity{.ts,.js}'],
         migrations: [__dirname + '/database/migrations/*{.ts,.js}'],
-        synchronize: configService.get('NODE_ENV') !== 'production',
+        synchronize: false,
         logging: configService.get('NODE_ENV') !== 'production',
       }),
     }),
