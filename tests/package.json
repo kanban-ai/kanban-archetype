@@ -1,0 +1,20 @@
+{
+  "name": "kanban-archetype-e2e-tests",
+  "version": "1.0.0",
+  "description": "Testes E2E automatizados com Playwright para Hello World CRUD",
+  "scripts": {
+    "test": "playwright test",
+    "test:headed": "playwright test --headed",
+    "test:debug": "playwright test --debug",
+    "test:crud": "playwright test hello-world-crud.spec.ts",
+    "test:create": "playwright test hello-world-crud.spec.ts --grep 'CREATE'",
+    "test:read": "playwright test hello-world-crud.spec.ts --grep 'READ'",
+    "test:update": "playwright test hello-world-crud.spec.ts --grep 'UPDATE'",
+    "test:delete": "playwright test hello-world-crud.spec.ts --grep 'DELETE'"
+  },
+  "devDependencies": {
+    "@playwright/test": "^1.40.0",
+    "@types/node": "^25.0.3",
+    "typescript": "~5.9.3"
+  }
+}
