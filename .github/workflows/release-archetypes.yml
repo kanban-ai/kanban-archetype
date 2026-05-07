@@ -2,13 +2,9 @@ name: Release Archetypes
 
 on:
   push:
-    tags:
-      - 'v*'
+    branches:
+      - main
   workflow_dispatch:
-    inputs:
-      tag:
-        description: 'Tag da release (ex: v1.0.0)'
-        required: true
 
 permissions:
   contents: write
@@ -25,19 +21,13 @@ jobs:
           chmod +x ./build-archetypes.sh
           ./build-archetypes.sh
 
-      - name: Resolve tag name
-        id: tag
-        run: |
-          if [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
-            echo "name=${{ github.event.inputs.tag }}" >> "$GITHUB_OUTPUT"
-          else
-            echo "name=${GITHUB_REF#refs/tags/}" >> "$GITHUB_OUTPUT"
-          fi
-
-      - name: Create GitHub Release
+      - name: Publish rolling "latest" release
         uses: softprops/action-gh-release@v2
         with:
-          tag_name: ${{ steps.tag.outputs.name }}
-          name: ${{ steps.tag.outputs.name }}
-          generate_release_notes: true
+          tag_name: latest
+          name: Latest Archetypes
+          body: |
+            Build automático do commit ${{ github.sha }}.
+            Atualizado em cada push na branch `main`.
           files: dist/*.zip
+          make_latest: true
